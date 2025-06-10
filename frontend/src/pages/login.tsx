@@ -1,0 +1,176 @@
+import { useState } from "react";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+  CardDescription,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { z } from "zod";
+import { useAuth } from "@/hooks/use-auth";
+import { authService } from "@/services/api/auth";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
+
+const loginSchema = z.object({
+  username: z.string().min(3, "Username is required"),
+  appPassword: z
+    .string()
+    .regex(
+      /^[a-zA-Z0-9]{4} [a-zA-Z0-9]{4} [a-zA-Z0-9]{4} [a-zA-Z0-9]{4} [a-zA-Z0-9]{4} [a-zA-Z0-9]{4}$/,
+      "Invalid application password format"
+    ),
+});
+
+export default function Login() {
+  const [form, setForm] = useState({ username: "", appPassword: "" });
+  const [touched, setTouched] = useState<{ [k: string]: boolean }>({});
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { signIn } = useAuth();
+
+  const result = loginSchema.safeParse(form);
+  const errors = !result.success ? result.error.formErrors.fieldErrors : {};
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    setTouched((prev) => ({ ...prev, [e.target.name]: true }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setTouched({ username: true, appPassword: true });
+    setError("");
+    setSuccess(false);
+    if (!loginSchema.safeParse(form).success) return;
+    setLoading(true);
+    const token = btoa(`${form.username}:${form.appPassword}`);
+    try {
+      const userData = await authService.login(token);
+      await signIn(token, userData);
+
+      setSuccess(true);
+
+      // Redirect to the page they tried to visit or home
+      const from = location.state?.from?.pathname || "/";
+      navigate(from, { replace: true });
+    } catch {
+      setError("Invalid username or password");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 via-white to-emerald-100 dark:from-slate-900 dark:via-slate-950 dark:to-emerald-900 px-4">
+      <Card className="w-full max-w-md mx-auto shadow-xl border-emerald-100 dark:border-emerald-900/40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md">
+        <CardHeader className="flex flex-col items-center gap-2 pb-2">
+          <div className="w-16 h-16 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center mb-2 shadow-lg">
+            <span className="text-white text-3xl">🏔️</span>
+          </div>
+          <CardTitle className="text-center text-2xl font-bold tracking-tight">
+            Sign in to Pika
+          </CardTitle>
+          <CardDescription className="text-center text-muted-foreground text-sm">
+            Enter your credentials to continue
+          </CardDescription>
+        </CardHeader>
+        <form onSubmit={handleSubmit} autoComplete="on">
+          <CardContent className="space-y-6 pt-2">
+            <div className="space-y-2">
+              <Label htmlFor="username">Username</Label>
+              <Input
+                id="username"
+                name="username"
+                type="text"
+                autoComplete="username"
+                value={form.username}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                placeholder="Enter your username"
+                aria-invalid={!!errors.username && touched.username}
+                required
+              />
+              {touched.username && errors.username && (
+                <div className="text-red-500 text-xs mt-1">
+                  {errors.username}
+                </div>
+              )}
+            </div>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="appPassword">Application Password</Label>
+                <a
+                  href="https://wordpress.com/support/application-passwords/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-emerald-600 hover:underline"
+                >
+                  What is this?
+                </a>
+              </div>
+              <Input
+                id="appPassword"
+                name="appPassword"
+                type="password"
+                autoComplete="current-password"
+                value={form.appPassword}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                placeholder="Enter your application password"
+                aria-invalid={!!errors.appPassword && touched.appPassword}
+                required
+              />
+              {touched.appPassword && errors.appPassword && (
+                <div className="text-red-500 text-xs mt-1">
+                  {errors.appPassword}
+                </div>
+              )}
+            </div>
+            {error && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+            {success && (
+              <Badge
+                variant="default"
+                className="w-full justify-center py-2 text-base bg-emerald-500 text-white"
+              >
+                Login successful!
+              </Badge>
+            )}
+          </CardContent>
+          <CardFooter className="flex flex-col gap-2 pt-8">
+            <Button
+              type="submit"
+              className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold text-base shadow-md"
+              disabled={loading}
+              size="lg"
+            >
+              {loading ? (
+                <span className="animate-pulse">Signing in...</span>
+              ) : (
+                "Sign in"
+              )}
+            </Button>
+          </CardFooter>
+        </form>
+      </Card>
+    </div>
+  );
+}
