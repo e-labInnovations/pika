@@ -1,8 +1,14 @@
-import { ArrowDownLeft, ArrowRightLeft, ArrowUpRight } from "lucide-react";
+import {
+  ArrowDownLeft,
+  ArrowRightLeft,
+  ArrowUpRight,
+  CircleCheck,
+} from "lucide-react";
 import FilterTabHeader from "./filter-tab-header";
 import { useState } from "react";
 import SearchItem from "./search-item";
 import { cn } from "@/lib/utils";
+import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
 
 type TransactionType = {
   id: string;
@@ -12,6 +18,10 @@ type TransactionType = {
   bgColor: string;
   icon: React.ElementType;
 };
+
+interface Filters {
+  types: string[];
+}
 
 const transactionTypes: TransactionType[] = [
   {
@@ -41,8 +51,8 @@ const transactionTypes: TransactionType[] = [
 ];
 
 interface TypesTabContentProps {
-  filters: any;
-  setFilters: any;
+  filters: Filters;
+  setFilters: (filters: Filters | ((prev: Filters) => Filters)) => void;
 }
 
 const TypesTabContent = ({ filters, setFilters }: TypesTabContentProps) => {
@@ -51,17 +61,17 @@ const TypesTabContent = ({ filters, setFilters }: TypesTabContentProps) => {
   // Select/Unselect all functions
   const handleSelectAllTypes = () => {
     const allSelected = transactionTypes.length === filters.types.length;
-    setFilters((prev: any) => ({
+    setFilters((prev: Filters) => ({
       ...prev,
       types: allSelected ? [] : transactionTypes.map((type) => type.id),
     }));
   };
 
   const handleTypeToggle = (typeId: string) => {
-    setFilters((prev) => ({
+    setFilters((prev: Filters) => ({
       ...prev,
       types: prev.types.includes(typeId)
-        ? prev.types.filter((id) => id !== typeId)
+        ? prev.types.filter((id: string) => id !== typeId)
         : [...prev.types, typeId],
     }));
   };
@@ -94,37 +104,40 @@ const TypesTabContent = ({ filters, setFilters }: TypesTabContentProps) => {
         placeholder="Search types..."
       />
 
-      <div className="space-y-2">
+      <div className="grid grid-cols-1 gap-2">
         {getFilteredTypes().map((type) => {
           const Icon = type.icon;
           return (
-            <div
+            <CheckboxPrimitive.Root
               key={type.id}
+              checked={filters.types.includes(type.id)}
+              onCheckedChange={() => handleTypeToggle(type.id)}
               className={cn(
-                "flex items-center space-x-3 p-3 rounded-lg border cursor-pointer transition-all",
-                filters.types.includes(type.id)
-                  ? "border-emerald-300 bg-emerald-50 dark:bg-emerald-900/20"
-                  : "border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800"
+                "relative ring-[0.25px] ring-border rounded-lg px-4 py-3 text-start text-muted-foreground",
+                "data-[state=checked]:ring-[1.5px] data-[state=checked]:ring-primary data-[state=checked]:text-primary",
+                "hover:bg-accent/50"
               )}
-              onClick={() => handleTypeToggle(type.id)}
             >
-              <div
-                className={cn(
-                  "w-8 h-8 rounded-full flex items-center justify-center",
-                  type.bgColor
-                )}
-              >
-                <Icon className={cn("w-4 h-4", type.color)} />
+              <div className="flex items-center space-x-3">
+                <div
+                  className={cn(
+                    "w-8 h-8 rounded-full flex items-center justify-center",
+                    type.bgColor
+                  )}
+                >
+                  <Icon className={cn("w-4 h-4", type.color)} />
+                </div>
+                <div className="flex-1">
+                  <p className="font-medium">{type.name}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {type.description}
+                  </p>
+                </div>
               </div>
-              <div className="flex-1">
-                <p className="font-medium text-slate-900 dark:text-white">
-                  {type.name}
-                </p>
-                <p className="text-sm text-slate-500 dark:text-slate-400">
-                  {type.description}
-                </p>
-              </div>
-            </div>
+              <CheckboxPrimitive.Indicator className="absolute top-2 right-2">
+                <CircleCheck className="fill-primary text-primary-foreground" />
+              </CheckboxPrimitive.Indicator>
+            </CheckboxPrimitive.Root>
           );
         })}
       </div>

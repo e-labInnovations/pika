@@ -19,12 +19,12 @@ import {
   User,
 } from "lucide-react";
 import { useState } from "react";
-import TypesTabContent from "./types-tab-content";
-import CategoriesTabContent from "./categories-tab-content";
-import TagsTabContent from "./tags-tab-content";
-import PeopleTabContent from "./people-tab-content";
-import DateTabContent from "./date-tab-content";
-import AmountTabContent from "./amount-tab-content";
+import TypesTabContent from "./filter/types-tab-content";
+import CategoriesTabContent from "./filter/categories-tab-content";
+import TagsTabContent from "./filter/tags-tab-content";
+import PeopleTabContent from "./filter/people-tab-content";
+import DateTabContent from "./filter/date-tab-content";
+import AmountTabContent from "./filter/amount-tab-content";
 
 const tabs = [
   { id: "types", label: "Type", icon: DollarSign, content: TypesTabContent },

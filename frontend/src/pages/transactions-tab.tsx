@@ -11,7 +11,7 @@ import { ArrowDownUp } from "lucide-react";
 import TransactionsFilter, {
   type AmountFilter,
   type DateFilter,
-} from "@/components/transactions-tab/filter/filter";
+} from "@/components/transactions-tab/filter";
 
 interface RightActionsProps {
   showTransactionSearch: boolean;
