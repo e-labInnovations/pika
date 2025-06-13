@@ -1,8 +1,10 @@
-import { Tag } from "lucide-react";
+import { CircleCheck, Icon, Tag } from "lucide-react";
 import { useState } from "react";
 import SearchItem from "./search-item";
 import FilterTabHeader from "./filter-tab-header";
 import { transactions } from "@/data/dummy-data";
+import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
+import { cn } from "@/lib/utils";
 
 interface TagsTabContentProps {
   filters: any;
@@ -29,10 +31,10 @@ const TagsTabContent = ({ filters, setFilters }: TagsTabContentProps) => {
   };
 
   const handleSelectAllTags = () => {
-    const allSelected = uniqueTags.length === filters.tags.length;
+    const allSelected = getFilteredTags().length === filters.tags.length;
     setFilters((prev) => ({
       ...prev,
-      tags: allSelected ? [] : [...uniqueTags],
+      tags: allSelected ? [] : getFilteredTags().map((tag) => tag),
     }));
   };
   return (
@@ -41,9 +43,9 @@ const TagsTabContent = ({ filters, setFilters }: TagsTabContentProps) => {
         title="Tags"
         handleSelectAll={handleSelectAllTags}
         isAllSelected={
-          filters.tags.length === uniqueTags.length
+          filters.tags.length === getFilteredTags().length
             ? true
-            : filters.types.length > 0
+            : filters.tags.length > 0
             ? "indeterminate"
             : false
         }
@@ -54,30 +56,38 @@ const TagsTabContent = ({ filters, setFilters }: TagsTabContentProps) => {
         placeholder="Search tags..."
       />
 
-      <div className="space-y-2">
+      <div className="grid grid-cols-1 gap-2">
         {getFilteredTags().map((tag) => (
-          <div
+          <CheckboxPrimitive.Root
             key={tag}
-            className={`flex items-center space-x-3 p-3 rounded-lg border cursor-pointer transition-all ${
-              filters.tags.includes(tag)
-                ? "border-emerald-300 bg-emerald-50 dark:bg-emerald-900/20"
-                : "border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800"
-            }`}
-            onClick={() => handleTagToggle(tag)}
+            checked={filters.tags.includes(tag)}
+            onCheckedChange={() => handleTagToggle(tag)}
+            className={cn(
+              "relative ring-[0.25px] ring-border rounded-lg px-4 py-3 text-start text-muted-foreground",
+              "data-[state=checked]:ring-[1.5px] data-[state=checked]:ring-primary data-[state=checked]:text-primary",
+              "hover:bg-accent/50"
+            )}
           >
-            <div className="w-8 h-8 bg-slate-200 dark:bg-slate-700 rounded-full flex items-center justify-center">
-              <Tag className="w-4 h-4 text-slate-600 dark:text-slate-400" />
+            <div className="flex items-center space-x-3">
+              <div
+                className={
+                  "w-8 h-8 rounded-full flex items-center justify-center bg-slate-200 dark:bg-slate-700"
+                }
+              >
+                <Tag className="w-4 h-4 text-slate-600 dark:text-slate-400" />
+              </div>
+              <div className="flex-1">
+                <p className="font-medium">{tag}</p>
+                <p className="text-sm text-muted-foreground">
+                  {transactions.filter((t) => t.tags.includes(tag)).length}{" "}
+                  transactions
+                </p>
+              </div>
             </div>
-            <div className="flex-1">
-              <p className="font-medium text-slate-900 dark:text-white">
-                {tag}
-              </p>
-              <p className="text-sm text-slate-500 dark:text-slate-400">
-                {transactions.filter((t) => t.tags.includes(tag)).length}{" "}
-                transactions
-              </p>
-            </div>
-          </div>
+            <CheckboxPrimitive.Indicator className="absolute top-2 right-2">
+              <CircleCheck className="fill-primary text-primary-foreground" />
+            </CheckboxPrimitive.Indicator>
+          </CheckboxPrimitive.Root>
         ))}
       </div>
     </div>

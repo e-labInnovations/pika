@@ -78,6 +78,10 @@ const TransactionsTab = () => {
     return () => setTransactions(transactionsData);
   }, []);
 
+  useEffect(() => {
+    console.log("🚀 ~ useEffect ~ filters:", filters);
+  }, [filters]);
+
   const updateTransaction = (id: number, updates: Partial<Transaction>) => {
     setTransactions((prev) =>
       prev.map((t) => (t.id === id ? { ...t, ...updates } : t))

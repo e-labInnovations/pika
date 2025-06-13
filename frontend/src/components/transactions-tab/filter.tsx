@@ -76,16 +76,8 @@ const TransactionsFilter = ({
   filters,
   setFilters,
 }: TransactionsFilterProps) => {
-  // Add search states for each tab
-  const [tabSearchTerms, setTabSearchTerms] = useState({
-    types: "",
-    categories: "",
-    tags: "",
-    people: "",
-  });
-
   const getActiveFiltersCount = () => {
-    return 1;
+    return Object.keys(filters).filter((key) => filters[key].length > 0).length;
   };
 
   return (

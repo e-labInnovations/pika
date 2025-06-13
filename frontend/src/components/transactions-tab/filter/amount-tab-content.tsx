@@ -30,8 +30,10 @@ const AmountTabContent = ({ filters, setFilters }: AmountTabContentProps) => {
     <div className="space-y-3">
       <FilterTabHeader title="Amount" />
       <div className="space-y-4">
-        <div>
-          <Label htmlFor="amount-operator">Condition</Label>
+        <div className="flex flex-col gap-3">
+          <Label htmlFor="amount-operator" className="px-1">
+            Condition
+          </Label>
           <Select
             value={filters.amount.operator}
             onValueChange={(value) =>
@@ -53,8 +55,8 @@ const AmountTabContent = ({ filters, setFilters }: AmountTabContentProps) => {
             </SelectContent>
           </Select>
         </div>
-        <div>
-          <Label htmlFor="amount-value1">
+        <div className="flex flex-col gap-3">
+          <Label htmlFor="amount-value1" className="px-1">
             {filters.amount.operator === "between"
               ? "Minimum Amount"
               : "Amount"}
@@ -74,8 +76,10 @@ const AmountTabContent = ({ filters, setFilters }: AmountTabContentProps) => {
           />
         </div>
         {filters.amount.operator === "between" && (
-          <div>
-            <Label htmlFor="amount-value2">Maximum Amount</Label>
+          <div className="flex flex-col gap-3">
+            <Label htmlFor="amount-value2" className="px-1">
+              Maximum Amount
+            </Label>
             <Input
               id="amount-value2"
               type="number"

@@ -1,12 +1,56 @@
 import { Input } from "@/components/ui/input";
-import React from "react";
 import FilterTabHeader from "./filter-tab-header";
 import { Label } from "@/components/ui/label";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { ChevronDownIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
 interface DateTabContentProps {
   filters: any;
   setFilters: (filters: any) => void;
 }
+
+const DatePicker = ({
+  date,
+  setDate,
+}: {
+  date: Date | undefined;
+  setDate: (date: Date | undefined) => void;
+}) => {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          id="date"
+          className="w-48 justify-between font-normal"
+        >
+          {date ? date.toLocaleDateString() : "Select date"}
+          <ChevronDownIcon />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+        <Calendar
+          mode="single"
+          selected={date}
+          captionLayout="dropdown"
+          onSelect={(date) => {
+            setDate(date);
+            setOpen(false);
+          }}
+        />
+      </PopoverContent>
+    </Popover>
+  );
+};
 
 const DateTabContent = ({ filters, setFilters }: DateTabContentProps) => {
   return (
@@ -14,40 +58,38 @@ const DateTabContent = ({ filters, setFilters }: DateTabContentProps) => {
       <FilterTabHeader title="Date" />
 
       <div className="space-y-4">
-        <div>
-          <Label htmlFor="date-from">From Date</Label>
-          <Input
-            id="date-from"
-            type="date"
-            value={filters.dateRange.from}
-            onChange={(e) =>
+        <div className="flex flex-col gap-3">
+          <Label htmlFor="date" className="px-1">
+            From Date
+          </Label>
+          <DatePicker
+            date={filters.dateRange.from}
+            setDate={(date) =>
               setFilters((prev) => ({
                 ...prev,
                 dateRange: {
                   ...prev.dateRange,
-                  from: e.target.value,
+                  from: date,
                 },
               }))
             }
-            className="mt-1"
           />
         </div>
-        <div>
-          <Label htmlFor="date-to">To Date</Label>
-          <Input
-            id="date-to"
-            type="date"
-            value={filters.dateRange.to}
-            onChange={(e) =>
+        <div className="flex flex-col gap-3">
+          <Label htmlFor="date" className="px-1">
+            To Date
+          </Label>
+          <DatePicker
+            date={filters.dateRange.to}
+            setDate={(date) =>
               setFilters((prev) => ({
                 ...prev,
                 dateRange: {
                   ...prev.dateRange,
-                  to: e.target.value,
+                  to: date,
                 },
               }))
             }
-            className="mt-1"
           />
         </div>
       </div>

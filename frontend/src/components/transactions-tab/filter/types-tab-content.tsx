@@ -58,12 +58,19 @@ interface TypesTabContentProps {
 const TypesTabContent = ({ filters, setFilters }: TypesTabContentProps) => {
   const [searchTerm, setSearchTerm] = useState("");
 
+  // Filter functions for search within tabs
+  const getFilteredTypes = () => {
+    return transactionTypes.filter((type) =>
+      type.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  };
+
   // Select/Unselect all functions
   const handleSelectAllTypes = () => {
-    const allSelected = transactionTypes.length === filters.types.length;
+    const allSelected = getFilteredTypes().length === filters.types.length;
     setFilters((prev: Filters) => ({
       ...prev,
-      types: allSelected ? [] : transactionTypes.map((type) => type.id),
+      types: allSelected ? [] : getFilteredTypes().map((type) => type.id),
     }));
   };
 
@@ -76,20 +83,13 @@ const TypesTabContent = ({ filters, setFilters }: TypesTabContentProps) => {
     }));
   };
 
-  // Filter functions for search within tabs
-  const getFilteredTypes = () => {
-    return transactionTypes.filter((type) =>
-      type.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  };
-
   return (
     <div className="space-y-3">
       <FilterTabHeader
         title="Transaction Types"
         handleSelectAll={handleSelectAllTypes}
         isAllSelected={
-          filters.types.length === transactionTypes.length
+          filters.types.length === getFilteredTypes().length
             ? true
             : filters.types.length > 0
             ? "indeterminate"
