@@ -5,6 +5,57 @@ import {
   transactions as transactionsData,
   type Transaction,
 } from "@/data/dummy-data";
+import { Filter, Search } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ArrowDownUp } from "lucide-react";
+import TransactionsFilter, {
+  type AmountFilter,
+  type DateFilter,
+} from "@/components/transactions-tab/filter/filter";
+
+interface RightActionsProps {
+  showTransactionSearch: boolean;
+  setShowTransactionSearch: (show: boolean) => void;
+  showFilterModal: boolean;
+  setShowFilterModal: (show: boolean) => void;
+  showSortModal: boolean;
+  setShowSortModal: (show: boolean) => void;
+}
+const RightActions = ({
+  showTransactionSearch,
+  setShowTransactionSearch,
+  setShowFilterModal,
+  setShowSortModal,
+}: RightActionsProps) => {
+  return (
+    <div className="flex items-center space-x-2">
+      <Button
+        variant="ghost"
+        size="sm"
+        className="text-slate-600 dark:text-slate-400"
+        onClick={() => setShowTransactionSearch(!showTransactionSearch)}
+      >
+        <Search className="w-4 h-4" />
+      </Button>
+      <Button
+        variant="ghost"
+        size="sm"
+        className="text-slate-600 dark:text-slate-400"
+        onClick={() => setShowFilterModal(true)}
+      >
+        <Filter className="w-4 h-4" />
+      </Button>
+      <Button
+        variant="ghost"
+        size="sm"
+        className="text-slate-600 dark:text-slate-400"
+        onClick={() => setShowSortModal(true)}
+      >
+        <ArrowDownUp className="w-4 h-4" />
+      </Button>
+    </div>
+  );
+};
 
 const TransactionsTab = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -13,6 +64,15 @@ const TransactionsTab = () => {
   >(null);
   const [showTransactionSearch, setShowTransactionSearch] = useState(false);
   const [showFilterModal, setShowFilterModal] = useState(false);
+  const [showSortModal, setShowSortModal] = useState(false);
+  const [filters, setFilters] = useState<any>({
+    types: [] as string[],
+    categories: [] as string[],
+    tags: [] as string[],
+    people: [] as string[],
+    dateRange: { from: "", to: "" } as DateFilter,
+    amount: { operator: "between", value1: "", value2: "" } as AmountFilter,
+  });
 
   useEffect(() => {
     return () => setTransactions(transactionsData);
@@ -33,6 +93,16 @@ const TransactionsTab = () => {
       header={{
         title: "Transactions",
         description: "Your financial transactions",
+        rightActions: (
+          <RightActions
+            showTransactionSearch={showTransactionSearch}
+            setShowTransactionSearch={setShowTransactionSearch}
+            showFilterModal={showFilterModal}
+            setShowFilterModal={setShowFilterModal}
+            showSortModal={showSortModal}
+            setShowSortModal={setShowSortModal}
+          />
+        ),
       }}
     >
       <TransactionsList
@@ -44,6 +114,13 @@ const TransactionsTab = () => {
         onSearchToggle={setShowTransactionSearch}
         showFilterModal={showFilterModal}
         onFilterModalClose={() => setShowFilterModal(false)}
+      />
+
+      <TransactionsFilter
+        open={showFilterModal}
+        setOpen={setShowFilterModal}
+        filters={filters}
+        setFilters={setFilters}
       />
     </TabsLayout>
   );

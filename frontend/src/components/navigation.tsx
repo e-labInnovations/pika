@@ -42,9 +42,9 @@ export function Navigation({ isDesktop = false }: NavigationProps) {
               variant={isActive(tab.href) ? "default" : "ghost"}
               className={`w-full justify-start ${
                 tab.isSpecial
-                  ? "bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white"
+                  ? "bg-primary hover:bg-primary/90 text-primary-foreground"
                   : isActive(tab.href)
-                  ? "bg-emerald-100 dark:bg-emerald-900 text-emerald-700 dark:text-emerald-300"
+                  ? "bg-primary/10 text-primary"
                   : ""
               }`}
               onClick={() => navigate(tab.href)}
@@ -59,7 +59,7 @@ export function Navigation({ isDesktop = false }: NavigationProps) {
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border-t border-slate-200 dark:border-slate-700">
+    <div className="fixed bottom-0 left-0 right-0 bg-card/90 backdrop-blur-sm border-t border-border">
       <div className="flex items-center justify-around py-2">
         {tabs.map((tab) => {
           const Icon = tab.icon;
@@ -67,10 +67,10 @@ export function Navigation({ isDesktop = false }: NavigationProps) {
             return (
               <Button
                 key={tab.id}
-                className="w-12 h-12 rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 shadow-lg"
+                className="w-12 h-12 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg"
                 onClick={() => navigate(tab.href)}
               >
-                <Icon className="w-6 h-6 text-white" />
+                <Icon className="w-6 h-6" />
               </Button>
             );
           }
@@ -79,9 +79,7 @@ export function Navigation({ isDesktop = false }: NavigationProps) {
               key={tab.id}
               variant="ghost"
               className={`flex-1 flex flex-col items-center py-3 ${
-                isActive(tab.href)
-                  ? "text-emerald-600 dark:text-emerald-400"
-                  : "text-slate-500 dark:text-slate-400"
+                isActive(tab.href) ? "text-primary" : "text-muted-foreground"
               }`}
               onClick={() => navigate(tab.href)}
             >
