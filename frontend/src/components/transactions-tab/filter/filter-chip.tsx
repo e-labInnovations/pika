@@ -21,7 +21,7 @@ const FilterChip = ({
   return (
     <Badge
       className={cn(
-        "rounded-full pr-1 gap-1 text-[10px] px-1 py-0.5 flex-shrink-0",
+        "rounded-full gap-1 text-[10px] px-2 py-0.5 flex-shrink-0",
         color ?? "",
         bgColor ?? ""
       )}

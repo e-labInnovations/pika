@@ -20,6 +20,7 @@ import {
   type Sort,
 } from "@/components/transactions-tab/sort/types";
 import FilterSortBar from "@/components/transactions-tab/filter-sort-bar";
+import SearchBar from "@/components/transactions-tab/search-bar";
 
 interface RightActionsProps {
   showTransactionSearch: boolean;
@@ -78,9 +79,6 @@ const RightActions = ({
 
 const TransactionsTab = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [selectedTransactionId, setSelectedTransactionId] = useState<
-    number | null
-  >(null);
   const [showTransactionSearch, setShowTransactionSearch] = useState(false);
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [showSortModal, setShowSortModal] = useState(false);
@@ -89,6 +87,7 @@ const TransactionsTab = () => {
   const [activeFilterTab, setActiveFilterTab] = useState<FilterTab | undefined>(
     undefined
   );
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     return () => setTransactions(transactionsData);
@@ -102,21 +101,18 @@ const TransactionsTab = () => {
     console.log("🚀 ~ useEffect ~ sort:", sort);
   }, [sort]);
 
-  const updateTransaction = (id: number, updates: Partial<Transaction>) => {
-    setTransactions((prev) =>
-      prev.map((t) => (t.id === id ? { ...t, ...updates } : t))
-    );
-  };
-
-  const deleteTransaction = (id: number) => {
-    setTransactions((prev) => prev.filter((t) => t.id !== id));
-  };
-
   const getFilterCount = () => {
     return Object.keys(filters).filter((key) => {
       const value = filters[key as keyof Filter];
       return Array.isArray(value) && value.length > 0;
     }).length;
+  };
+
+  const clearSearchAndFilters = () => {
+    setSearchTerm("");
+    setFilters(defaultFilterValues);
+    setSort(defaultSort);
+    setShowTransactionSearch(false);
   };
 
   const handleFilterClick = (
@@ -178,15 +174,20 @@ const TransactionsTab = () => {
         onFilterClick={handleFilterClick}
       />
 
+      {showTransactionSearch && (
+        <SearchBar
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          onSearchToggle={setShowTransactionSearch}
+        />
+      )}
+
       <TransactionsList
-        onTransactionSelect={setSelectedTransactionId}
         transactions={transactions}
-        onEdit={updateTransaction}
-        onDelete={deleteTransaction}
-        showSearch={showTransactionSearch}
-        onSearchToggle={setShowTransactionSearch}
-        showFilterModal={showFilterModal}
-        onFilterModalClose={() => setShowFilterModal(false)}
+        searchTerm={searchTerm}
+        onClearSearchAndFilters={clearSearchAndFilters}
+        filters={filters}
+        sort={sort}
       />
 
       <TransactionsFilter
