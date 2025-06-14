@@ -1,14 +1,15 @@
-import { CircleCheck, Icon, Tag } from "lucide-react";
+import { CircleCheck, Tag } from "lucide-react";
 import { useState } from "react";
 import SearchItem from "./search-item";
 import FilterTabHeader from "./filter-tab-header";
 import { transactions } from "@/data/dummy-data";
 import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
 import { cn } from "@/lib/utils";
+import type { Filter } from "./types";
 
 interface TagsTabContentProps {
-  filters: any;
-  setFilters: (filters: any) => void;
+  filters: Filter;
+  setFilters: (filters: Filter | ((prev: Filter) => Filter)) => void;
 }
 
 const TagsTabContent = ({ filters, setFilters }: TagsTabContentProps) => {
@@ -22,7 +23,7 @@ const TagsTabContent = ({ filters, setFilters }: TagsTabContentProps) => {
   };
 
   const handleTagToggle = (tag: string) => {
-    setFilters((prev) => ({
+    setFilters((prev: Filter) => ({
       ...prev,
       tags: prev.tags.includes(tag)
         ? prev.tags.filter((t) => t !== tag)
@@ -32,7 +33,7 @@ const TagsTabContent = ({ filters, setFilters }: TagsTabContentProps) => {
 
   const handleSelectAllTags = () => {
     const allSelected = getFilteredTags().length === filters.tags.length;
-    setFilters((prev) => ({
+    setFilters((prev: Filter) => ({
       ...prev,
       tags: allSelected ? [] : getFilteredTags().map((tag) => tag),
     }));

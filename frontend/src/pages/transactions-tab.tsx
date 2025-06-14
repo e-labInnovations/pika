@@ -5,13 +5,15 @@ import {
   transactions as transactionsData,
   type Transaction,
 } from "@/data/dummy-data";
-import { Filter, Search } from "lucide-react";
+import { Filter as FilterIcon, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ArrowDownUp } from "lucide-react";
-import TransactionsFilter, {
-  type AmountFilter,
-  type DateFilter,
-} from "@/components/transactions-tab/filter";
+import TransactionsFilter from "@/components/transactions-tab/filter";
+import {
+  defaultFilterValues,
+  type Filter,
+} from "@/components/transactions-tab/filter/types";
+import { Badge } from "@/components/ui/badge";
 
 interface RightActionsProps {
   showTransactionSearch: boolean;
@@ -20,12 +22,14 @@ interface RightActionsProps {
   setShowFilterModal: (show: boolean) => void;
   showSortModal: boolean;
   setShowSortModal: (show: boolean) => void;
+  filterCount: number;
 }
 const RightActions = ({
   showTransactionSearch,
   setShowTransactionSearch,
   setShowFilterModal,
   setShowSortModal,
+  filterCount,
 }: RightActionsProps) => {
   return (
     <div className="flex items-center space-x-2">
@@ -37,14 +41,23 @@ const RightActions = ({
       >
         <Search className="w-4 h-4" />
       </Button>
-      <Button
-        variant="ghost"
-        size="sm"
-        className="text-slate-600 dark:text-slate-400"
-        onClick={() => setShowFilterModal(true)}
-      >
-        <Filter className="w-4 h-4" />
-      </Button>
+
+      <div className="relative">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="text-slate-600 dark:text-slate-400"
+          onClick={() => setShowFilterModal(true)}
+        >
+          <FilterIcon className="w-4 h-4" />
+        </Button>
+        {filterCount > 0 && (
+          <span className="absolute top-1 right-1 px-1 min-w-4 translate-x-1/2 -translate-y-1/2 origin-center flex items-center justify-center rounded-full text-xs bg-destructive text-destructive-foreground">
+            {filterCount}
+          </span>
+        )}
+      </div>
+
       <Button
         variant="ghost"
         size="sm"
@@ -65,14 +78,7 @@ const TransactionsTab = () => {
   const [showTransactionSearch, setShowTransactionSearch] = useState(false);
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [showSortModal, setShowSortModal] = useState(false);
-  const [filters, setFilters] = useState<any>({
-    types: [] as string[],
-    categories: [] as string[],
-    tags: [] as string[],
-    people: [] as string[],
-    dateRange: { from: "", to: "" } as DateFilter,
-    amount: { operator: "between", value1: "", value2: "" } as AmountFilter,
-  });
+  const [filters, setFilters] = useState<Filter>(defaultFilterValues);
 
   useEffect(() => {
     return () => setTransactions(transactionsData);
@@ -92,6 +98,13 @@ const TransactionsTab = () => {
     setTransactions((prev) => prev.filter((t) => t.id !== id));
   };
 
+  const getFilterCount = () => {
+    return Object.keys(filters).filter((key) => {
+      const value = filters[key as keyof Filter];
+      return Array.isArray(value) && value.length > 0;
+    }).length;
+  };
+
   return (
     <TabsLayout
       header={{
@@ -105,6 +118,7 @@ const TransactionsTab = () => {
             setShowFilterModal={setShowFilterModal}
             showSortModal={showSortModal}
             setShowSortModal={setShowSortModal}
+            filterCount={getFilterCount()}
           />
         ),
       }}

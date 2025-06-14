@@ -1,4 +1,3 @@
-import React from "react";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -9,22 +8,20 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import FilterTabHeader from "./filter-tab-header";
+import { amountOperators, type AmountOperator, type Filter } from "./types";
 
 interface AmountTabContentProps {
-  filters: any;
-  setFilters: (filters: any) => void;
+  filters: Filter;
+  setFilters: (filters: Filter | ((prev: Filter) => Filter)) => void;
 }
 
 const AmountTabContent = ({ filters, setFilters }: AmountTabContentProps) => {
-  const amountOperators = [
-    { value: "between", label: "Between" },
-    { value: "greater", label: "Greater than" },
-    { value: "less", label: "Less than" },
-    { value: "equal", label: "Equal to" },
-    { value: "not_equal", label: "Not equal to" },
-    { value: "greater_equal", label: "Greater than or equal to" },
-    { value: "less_equal", label: "Less than or equal to" },
-  ];
+  const handleOperatorChange = (operator: AmountOperator) => {
+    setFilters((prev) => ({
+      ...prev,
+      amount: { ...prev.amount, operator },
+    }));
+  };
 
   return (
     <div className="space-y-3">
@@ -37,10 +34,7 @@ const AmountTabContent = ({ filters, setFilters }: AmountTabContentProps) => {
           <Select
             value={filters.amount.operator}
             onValueChange={(value) =>
-              setFilters((prev) => ({
-                ...prev,
-                amount: { ...prev.amount, operator: value as any },
-              }))
+              handleOperatorChange(value as AmountOperator)
             }
           >
             <SelectTrigger className="mt-1">
@@ -57,7 +51,8 @@ const AmountTabContent = ({ filters, setFilters }: AmountTabContentProps) => {
         </div>
         <div className="flex flex-col gap-3">
           <Label htmlFor="amount-value1" className="px-1">
-            {filters.amount.operator === "between"
+            {filters.amount.operator ===
+            ("between" as keyof typeof amountOperators)
               ? "Minimum Amount"
               : "Amount"}
           </Label>
@@ -88,10 +83,7 @@ const AmountTabContent = ({ filters, setFilters }: AmountTabContentProps) => {
               onChange={(e) =>
                 setFilters((prev) => ({
                   ...prev,
-                  amount: {
-                    ...prev.amount,
-                    value2: e.target.value,
-                  },
+                  amount: { ...prev.amount, value2: e.target.value },
                 }))
               }
               className="mt-1"

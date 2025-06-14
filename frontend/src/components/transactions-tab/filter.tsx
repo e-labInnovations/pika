@@ -17,14 +17,16 @@ import {
   Folder,
   Tag,
   User,
+  X,
 } from "lucide-react";
-import { useState } from "react";
 import TypesTabContent from "./filter/types-tab-content";
 import CategoriesTabContent from "./filter/categories-tab-content";
 import TagsTabContent from "./filter/tags-tab-content";
 import PeopleTabContent from "./filter/people-tab-content";
 import DateTabContent from "./filter/date-tab-content";
 import AmountTabContent from "./filter/amount-tab-content";
+import { defaultFilterValues, type Filter } from "./filter/types";
+import { useEffect, useState } from "react";
 
 const tabs = [
   { id: "types", label: "Type", icon: DollarSign, content: TypesTabContent },
@@ -48,27 +50,9 @@ const tabs = [
 interface TransactionsFilterProps {
   open: boolean;
   setOpen: (open: boolean) => void;
-  filters: any;
-  setFilters: (filters: any) => void;
+  filters: Filter;
+  setFilters: (filters: Filter | ((prev: Filter) => Filter)) => void;
 }
-
-export type AmountFilter = {
-  operator:
-    | "between"
-    | "greater"
-    | "less"
-    | "equal"
-    | "not_equal"
-    | "greater_equal"
-    | "less_equal";
-  value1: string;
-  value2?: string; // For "between" operator
-};
-
-export type DateFilter = {
-  from: string;
-  to: string;
-};
 
 const TransactionsFilter = ({
   open,
@@ -76,24 +60,48 @@ const TransactionsFilter = ({
   filters,
   setFilters,
 }: TransactionsFilterProps) => {
+  const [localFilters, setLocalFilters] = useState<Filter>(defaultFilterValues);
+
+  useEffect(() => {
+    setLocalFilters(filters);
+  }, [filters]);
+
   const getActiveFiltersCount = () => {
-    return Object.keys(filters).filter((key) => filters[key].length > 0).length;
+    return Object.keys(filters).filter((key) => {
+      const value = filters[key as keyof Filter];
+      return Array.isArray(value) && value.length > 0;
+    }).length;
+  };
+
+  const handleClearFilters = () => {
+    setLocalFilters(defaultFilterValues);
+  };
+
+  const handleSubmitFilters = () => {
+    setFilters(localFilters);
+    setOpen(false);
   };
 
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerContent className="h-[75%]">
         <DrawerHeader className="items-start">
-          <DrawerTitle className="flex gap-2">
-            <span>Filter Transactions</span>
-            {getActiveFiltersCount() > 0 && (
-              <Badge
-                variant="secondary"
-                className="bg-emerald-100 text-emerald-800"
-              >
-                {getActiveFiltersCount()} active
-              </Badge>
-            )}
+          <DrawerTitle className="flex gap-2 w-full">
+            <div className="flex grow items-center gap-2">
+              <span>Filter Transactions</span>
+              {getActiveFiltersCount() > 0 && (
+                <Badge variant="secondary" className="rounded-full">
+                  {getActiveFiltersCount()} active
+                </Badge>
+              )}
+            </div>
+            <Button
+              variant="outline"
+              className="rounded-full flex-none"
+              onClick={handleClearFilters}
+            >
+              <X /> Clear
+            </Button>
           </DrawerTitle>
         </DrawerHeader>
         <div className="flex px-4 h-full">
@@ -121,7 +129,10 @@ const TransactionsFilter = ({
             <div className="flex-1 w-full min-h-full border rounded-lg p-2">
               {tabs.map((item) => (
                 <TabsContent key={item.id} value={item.id} className="h-full">
-                  <item.content filters={filters} setFilters={setFilters} />
+                  <item.content
+                    filters={localFilters}
+                    setFilters={setLocalFilters}
+                  />
                 </TabsContent>
               ))}
             </div>
@@ -133,7 +144,9 @@ const TransactionsFilter = ({
               Cancel
             </Button>
           </DrawerClose>
-          <Button className="w-1/2">Submit</Button>
+          <Button className="w-1/2" onClick={handleSubmitFilters}>
+            Submit
+          </Button>
         </DrawerFooter>
       </DrawerContent>
     </Drawer>

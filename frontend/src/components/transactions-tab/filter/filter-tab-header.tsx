@@ -17,7 +17,7 @@ const FilterTabHeader = ({
 
       {handleSelectAll && (
         <Checkbox
-          className="h-5 w-5 data-[state=checked]:bg-primary data-[state=checked]:border-primary dark:text-foreground"
+          className="h-5 w-5 rounded-full data-[state=checked]:bg-primary data-[state=checked]:border-primary dark:text-foreground"
           checked={isAllSelected}
           onCheckedChange={handleSelectAll}
         />

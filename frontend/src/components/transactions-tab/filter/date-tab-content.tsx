@@ -1,4 +1,3 @@
-import { Input } from "@/components/ui/input";
 import FilterTabHeader from "./filter-tab-header";
 import { Label } from "@/components/ui/label";
 import {
@@ -10,10 +9,11 @@ import { Calendar } from "@/components/ui/calendar";
 import { ChevronDownIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import type { Filter } from "./types";
 
 interface DateTabContentProps {
-  filters: any;
-  setFilters: (filters: any) => void;
+  filters: Filter;
+  setFilters: (filters: Filter | ((prev: Filter) => Filter)) => void;
 }
 
 const DatePicker = ({
@@ -63,13 +63,17 @@ const DateTabContent = ({ filters, setFilters }: DateTabContentProps) => {
             From Date
           </Label>
           <DatePicker
-            date={filters.dateRange.from}
+            date={
+              filters.dateRange.from
+                ? new Date(filters.dateRange.from)
+                : undefined
+            }
             setDate={(date) =>
               setFilters((prev) => ({
                 ...prev,
                 dateRange: {
                   ...prev.dateRange,
-                  from: date,
+                  from: date ? date.toISOString() : "",
                 },
               }))
             }
@@ -80,13 +84,15 @@ const DateTabContent = ({ filters, setFilters }: DateTabContentProps) => {
             To Date
           </Label>
           <DatePicker
-            date={filters.dateRange.to}
+            date={
+              filters.dateRange.to ? new Date(filters.dateRange.to) : undefined
+            }
             setDate={(date) =>
               setFilters((prev) => ({
                 ...prev,
                 dateRange: {
                   ...prev.dateRange,
-                  to: date,
+                  to: date ? date.toISOString() : "",
                 },
               }))
             }

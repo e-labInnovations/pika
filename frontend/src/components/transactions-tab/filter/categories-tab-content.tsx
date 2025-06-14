@@ -2,6 +2,7 @@ import { IconRenderer } from "@/components/icon-renderer";
 import { useState } from "react";
 import FilterTabHeader from "./filter-tab-header";
 import SearchItem from "./search-item";
+import type { Filter } from "./types";
 
 // Mock parent categories with children (in a real app, this would come from props)
 const categoryHierarchy = [
@@ -115,8 +116,8 @@ const categoryHierarchy = [
 ];
 
 interface CategoriesTabContentProps {
-  filters: any;
-  setFilters: (filters: any) => void;
+  filters: Filter;
+  setFilters: (filters: Filter | ((prev: Filter) => Filter)) => void;
 }
 
 const CategoriesTabContent = ({
@@ -133,10 +134,10 @@ const CategoriesTabContent = ({
       ),
     ];
     const allSelected = allCategoryIds.length === filters.categories.length;
-    setFilters((prev) => ({
-      ...prev,
+    setFilters({
+      ...filters,
       categories: allSelected ? [] : allCategoryIds,
-    }));
+    });
   };
 
   const getFilteredCategories = () => {
@@ -150,7 +151,7 @@ const CategoriesTabContent = ({
   };
 
   const handleCategoryToggle = (categoryId: string) => {
-    setFilters((prev) => {
+    setFilters((prev: Filter) => {
       const newCategories = prev.categories.includes(categoryId)
         ? prev.categories.filter((id) => id !== categoryId)
         : [...prev.categories, categoryId];

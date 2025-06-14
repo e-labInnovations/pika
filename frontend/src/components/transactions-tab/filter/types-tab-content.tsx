@@ -9,9 +9,10 @@ import { useState } from "react";
 import SearchItem from "./search-item";
 import { cn } from "@/lib/utils";
 import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
+import type { Filter, TransactionType } from "./types";
 
-type TransactionType = {
-  id: string;
+type TransactionItemType = {
+  id: TransactionType;
   name: string;
   description: string;
   color: string;
@@ -19,11 +20,7 @@ type TransactionType = {
   icon: React.ElementType;
 };
 
-interface Filters {
-  types: string[];
-}
-
-const transactionTypes: TransactionType[] = [
+const transactionTypes: TransactionItemType[] = [
   {
     id: "income",
     name: "Income",
@@ -51,8 +48,8 @@ const transactionTypes: TransactionType[] = [
 ];
 
 interface TypesTabContentProps {
-  filters: Filters;
-  setFilters: (filters: Filters | ((prev: Filters) => Filters)) => void;
+  filters: Filter;
+  setFilters: (filters: Filter | ((prev: Filter) => Filter)) => void;
 }
 
 const TypesTabContent = ({ filters, setFilters }: TypesTabContentProps) => {
@@ -68,14 +65,14 @@ const TypesTabContent = ({ filters, setFilters }: TypesTabContentProps) => {
   // Select/Unselect all functions
   const handleSelectAllTypes = () => {
     const allSelected = getFilteredTypes().length === filters.types.length;
-    setFilters((prev: Filters) => ({
+    setFilters((prev: Filter) => ({
       ...prev,
       types: allSelected ? [] : getFilteredTypes().map((type) => type.id),
     }));
   };
 
-  const handleTypeToggle = (typeId: string) => {
-    setFilters((prev: Filters) => ({
+  const handleTypeToggle = (typeId: TransactionType) => {
+    setFilters((prev: Filter) => ({
       ...prev,
       types: prev.types.includes(typeId)
         ? prev.types.filter((id: string) => id !== typeId)

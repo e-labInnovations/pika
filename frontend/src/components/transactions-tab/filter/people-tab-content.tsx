@@ -1,23 +1,15 @@
-import { Button } from "@/components/ui/button";
-import {
-  CheckSquare,
-  CircleCheck,
-  Icon,
-  Search,
-  Square,
-  User,
-} from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { CircleCheck, User } from "lucide-react";
 import { transactions } from "@/data/dummy-data";
 import { useState } from "react";
 import SearchItem from "./search-item";
 import FilterTabHeader from "./filter-tab-header";
 import { cn } from "@/lib/utils";
 import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
+import type { Filter } from "./types";
 
 interface PeopleTabContentProps {
-  filters: any;
-  setFilters: (filters: any) => void;
+  filters: Filter;
+  setFilters: (filters: Filter | ((prev: Filter) => Filter)) => void;
 }
 
 const PeopleTabContent = ({ filters, setFilters }: PeopleTabContentProps) => {
@@ -113,35 +105,6 @@ const PeopleTabContent = ({ filters, setFilters }: PeopleTabContentProps) => {
                 <CircleCheck className="fill-primary text-primary-foreground" />
               </CheckboxPrimitive.Indicator>
             </CheckboxPrimitive.Root>
-
-            // <div
-            //   key={personId}
-            //   className={`flex items-center space-x-3 p-3 rounded-lg border cursor-pointer transition-all ${
-            //     filters.people.includes(personId)
-            //       ? "border-emerald-300 bg-emerald-50 dark:bg-emerald-900/20"
-            //       : "border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800"
-            //   }`}
-            //   onClick={() => handlePersonToggle(personId)}
-            // >
-            //   <div className="w-8 h-8 bg-orange-200 dark:bg-orange-700 rounded-full flex items-center justify-center">
-            //     <User className="w-4 h-4 text-orange-600 dark:text-orange-400" />
-            //   </div>
-            //   <div className="flex-1">
-            //     <p className="font-medium text-slate-900 dark:text-white">
-            //       {person.name}
-            //     </p>
-            //     <p className="text-sm text-slate-500 dark:text-slate-400">
-            //       {
-            //         transactions.filter(
-            //           (t) =>
-            //             t.person?.id?.toString() === personId ||
-            //             t.person?.name === person.name
-            //         ).length
-            //       }{" "}
-            //       transactions
-            //     </p>
-            //   </div>
-            // </div>
           );
         })}
       </div>
