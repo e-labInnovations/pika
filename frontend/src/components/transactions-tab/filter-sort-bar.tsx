@@ -9,7 +9,7 @@ import FilterChip from "./filter/filter-chip";
 import { Badge } from "../ui/badge";
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { Button } from "../ui/button";
-import { categories, people } from "@/data/dummy-data";
+import { accounts, categories, people } from "@/data/dummy-data";
 import { useEffect, useState } from "react";
 import { defaultSort, type Sort, sortOptions } from "./sort/types";
 
@@ -215,6 +215,33 @@ const FilterSortBar = ({
                   shouldShowRemove={false}
                   bgColor="bg-pink-100 dark:bg-pink-900"
                   color="text-pink-800 dark:text-pink-200"
+                />
+              )}
+              {filters.accounts.slice(0, 1).map((accountId) => {
+                const account = accounts.find(
+                  (a) => a.id?.toString() === accountId || a.name === accountId
+                );
+                return account ? (
+                  <FilterChip
+                    id={accountId}
+                    name={account.name}
+                    onClick={() =>
+                      onFilterClick("remove", "accounts", accountId)
+                    }
+                    shouldShowRemove={true}
+                    bgColor="bg-orange-100 dark:bg-orange-900"
+                    color="text-orange-800 dark:text-orange-200"
+                  />
+                ) : null;
+              })}
+              {filters.accounts.length > 1 && (
+                <FilterChip
+                  id="more-accounts"
+                  name={`+${filters.accounts.length - 1} more`}
+                  onClick={() => onFilterClick("open", "accounts", "")}
+                  shouldShowRemove={false}
+                  color="text-slate-500"
+                  bgColor="bg-slate-100 dark:bg-slate-800"
                 />
               )}
             </div>

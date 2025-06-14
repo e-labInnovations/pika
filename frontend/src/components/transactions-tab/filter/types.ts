@@ -36,6 +36,7 @@ export type Filter = {
   tags: string[]; // tag id
   amount: AmountFilter;
   dateRange: DateFilter;
+  accounts: string[]; // account id
 };
 
 export type FilterTab =
@@ -44,7 +45,8 @@ export type FilterTab =
   | "tags"
   | "people"
   | "date"
-  | "amount";
+  | "amount"
+  | "accounts";
 
 export const defaultFilterValues: Filter = {
   types: [] as TransactionType[],
@@ -53,6 +55,7 @@ export const defaultFilterValues: Filter = {
   people: [] as string[],
   dateRange: { from: "", to: "" } as DateFilter,
   amount: { operator: "between", value1: "", value2: "" } as AmountFilter,
+  accounts: [] as string[],
 };
 
 type TransactionItemType = {

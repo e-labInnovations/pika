@@ -11,6 +11,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import {
+  Banknote,
   Calculator,
   Calendar,
   DollarSign,
@@ -27,6 +28,7 @@ import DateTabContent from "./filter/date-tab-content";
 import AmountTabContent from "./filter/amount-tab-content";
 import { defaultFilterValues, type Filter } from "./filter/types";
 import { useEffect, useState } from "react";
+import AccountTabContent from "./filter/account-tab-content";
 
 const tabs = [
   { id: "types", label: "Type", icon: DollarSign, content: TypesTabContent },
@@ -44,6 +46,12 @@ const tabs = [
     label: "Amount",
     icon: Calculator,
     content: AmountTabContent,
+  },
+  {
+    id: "account",
+    label: "Account",
+    icon: Banknote,
+    content: AccountTabContent,
   },
 ];
 
