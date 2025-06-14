@@ -694,7 +694,7 @@ export function TransactionsList({
   ];
 
   return (
-    <div className="px-4 py-6 space-y-6">
+    <div className="px-0 py-0 space-y-6">
       {/* Conditional Search Input */}
       {showSearch && (
         <div className="relative">

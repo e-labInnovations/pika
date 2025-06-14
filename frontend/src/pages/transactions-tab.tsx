@@ -12,14 +12,20 @@ import TransactionsFilter from "@/components/transactions-tab/filter";
 import {
   defaultFilterValues,
   type Filter,
+  type FilterTab,
 } from "@/components/transactions-tab/filter/types";
-import { Badge } from "@/components/ui/badge";
+import TransactionsSort from "@/components/transactions-tab/sort";
+import {
+  defaultSort,
+  type Sort,
+} from "@/components/transactions-tab/sort/types";
+import FilterSortBar from "@/components/transactions-tab/filter-sort-bar";
 
 interface RightActionsProps {
   showTransactionSearch: boolean;
   setShowTransactionSearch: (show: boolean) => void;
   showFilterModal: boolean;
-  setShowFilterModal: (show: boolean) => void;
+  handleFilterOpen: () => void;
   showSortModal: boolean;
   setShowSortModal: (show: boolean) => void;
   filterCount: number;
@@ -27,7 +33,7 @@ interface RightActionsProps {
 const RightActions = ({
   showTransactionSearch,
   setShowTransactionSearch,
-  setShowFilterModal,
+  handleFilterOpen,
   setShowSortModal,
   filterCount,
 }: RightActionsProps) => {
@@ -47,7 +53,7 @@ const RightActions = ({
           variant="ghost"
           size="sm"
           className="text-slate-600 dark:text-slate-400"
-          onClick={() => setShowFilterModal(true)}
+          onClick={handleFilterOpen}
         >
           <FilterIcon className="w-4 h-4" />
         </Button>
@@ -79,6 +85,10 @@ const TransactionsTab = () => {
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [showSortModal, setShowSortModal] = useState(false);
   const [filters, setFilters] = useState<Filter>(defaultFilterValues);
+  const [sort, setSort] = useState<Sort>(defaultSort);
+  const [activeFilterTab, setActiveFilterTab] = useState<FilterTab | undefined>(
+    undefined
+  );
 
   useEffect(() => {
     return () => setTransactions(transactionsData);
@@ -87,6 +97,10 @@ const TransactionsTab = () => {
   useEffect(() => {
     console.log("🚀 ~ useEffect ~ filters:", filters);
   }, [filters]);
+
+  useEffect(() => {
+    console.log("🚀 ~ useEffect ~ sort:", sort);
+  }, [sort]);
 
   const updateTransaction = (id: number, updates: Partial<Transaction>) => {
     setTransactions((prev) =>
@@ -105,6 +119,39 @@ const TransactionsTab = () => {
     }).length;
   };
 
+  const handleFilterClick = (
+    action: "open" | "remove",
+    type: FilterTab,
+    value: string
+  ) => {
+    if (action === "open") {
+      setActiveFilterTab(type);
+      setShowFilterModal(true);
+    } else if (action === "remove") {
+      if (type === "types") {
+        setFilters((prev) => ({
+          ...prev,
+          types: prev.types.filter((t) => t !== value),
+        }));
+      } else if (type === "categories") {
+        setFilters((prev) => ({
+          ...prev,
+          categories: prev.categories.filter((c) => c !== value),
+        }));
+      } else if (type === "tags") {
+        setFilters((prev) => ({
+          ...prev,
+          tags: prev.tags.filter((t) => t !== value),
+        }));
+      } else if (type === "people") {
+        setFilters((prev) => ({
+          ...prev,
+          people: prev.people.filter((p) => p !== value),
+        }));
+      }
+    }
+  };
+
   return (
     <TabsLayout
       header={{
@@ -115,7 +162,7 @@ const TransactionsTab = () => {
             showTransactionSearch={showTransactionSearch}
             setShowTransactionSearch={setShowTransactionSearch}
             showFilterModal={showFilterModal}
-            setShowFilterModal={setShowFilterModal}
+            handleFilterOpen={() => handleFilterClick("open", "types", "")}
             showSortModal={showSortModal}
             setShowSortModal={setShowSortModal}
             filterCount={getFilterCount()}
@@ -123,6 +170,14 @@ const TransactionsTab = () => {
         ),
       }}
     >
+      <FilterSortBar
+        filters={filters}
+        setFilters={setFilters}
+        sort={sort}
+        onSortClick={() => setShowSortModal(true)}
+        onFilterClick={handleFilterClick}
+      />
+
       <TransactionsList
         onTransactionSelect={setSelectedTransactionId}
         transactions={transactions}
@@ -139,6 +194,14 @@ const TransactionsTab = () => {
         setOpen={setShowFilterModal}
         filters={filters}
         setFilters={setFilters}
+        defaultTab={activeFilterTab}
+      />
+
+      <TransactionsSort
+        open={showSortModal}
+        setOpen={setShowSortModal}
+        sort={sort}
+        setSort={setSort}
       />
     </TabsLayout>
   );

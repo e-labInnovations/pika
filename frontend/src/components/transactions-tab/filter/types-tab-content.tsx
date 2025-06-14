@@ -1,51 +1,10 @@
-import {
-  ArrowDownLeft,
-  ArrowRightLeft,
-  ArrowUpRight,
-  CircleCheck,
-} from "lucide-react";
+import { CircleCheck } from "lucide-react";
 import FilterTabHeader from "./filter-tab-header";
 import { useState } from "react";
 import SearchItem from "./search-item";
 import { cn } from "@/lib/utils";
 import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
-import type { Filter, TransactionType } from "./types";
-
-type TransactionItemType = {
-  id: TransactionType;
-  name: string;
-  description: string;
-  color: string;
-  bgColor: string;
-  icon: React.ElementType;
-};
-
-const transactionTypes: TransactionItemType[] = [
-  {
-    id: "income",
-    name: "Income",
-    description: "Money received",
-    color: "text-emerald-600",
-    bgColor: "bg-emerald-100 dark:bg-emerald-900",
-    icon: ArrowDownLeft,
-  },
-  {
-    id: "expense",
-    name: "Expense",
-    description: "Money spent",
-    color: "text-red-600",
-    bgColor: "bg-red-100 dark:bg-red-900",
-    icon: ArrowUpRight,
-  },
-  {
-    id: "transfer",
-    name: "Transfer",
-    description: "Money moved between accounts",
-    color: "text-blue-600",
-    bgColor: "bg-blue-100 dark:bg-blue-900",
-    icon: ArrowRightLeft,
-  },
-];
+import { type Filter, type TransactionType, transactionTypes } from "./types";
 
 interface TypesTabContentProps {
   filters: Filter;

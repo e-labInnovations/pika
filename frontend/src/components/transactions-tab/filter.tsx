@@ -52,6 +52,7 @@ interface TransactionsFilterProps {
   setOpen: (open: boolean) => void;
   filters: Filter;
   setFilters: (filters: Filter | ((prev: Filter) => Filter)) => void;
+  defaultTab?: string;
 }
 
 const TransactionsFilter = ({
@@ -59,6 +60,7 @@ const TransactionsFilter = ({
   setOpen,
   filters,
   setFilters,
+  defaultTab,
 }: TransactionsFilterProps) => {
   const [localFilters, setLocalFilters] = useState<Filter>(defaultFilterValues);
 
@@ -106,7 +108,7 @@ const TransactionsFilter = ({
         </DrawerHeader>
         <div className="flex px-4 h-full">
           <Tabs
-            defaultValue={tabs[0].id}
+            defaultValue={defaultTab ?? tabs[0].id}
             orientation="vertical"
             className="w-full h-full flex items-start items-stretch justify-center gap-2"
           >
