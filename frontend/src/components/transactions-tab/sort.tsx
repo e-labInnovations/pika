@@ -48,8 +48,7 @@ const TransactionsSort = ({
     return `${field}-${direction}`;
   };
 
-  const handleClearSort = () => {
-    console.log("clear sort");
+  const handleResetSort = () => {
     setLocalSort(defaultSort);
   };
 
@@ -67,15 +66,15 @@ const TransactionsSort = ({
             <Button
               variant="outline"
               className="rounded-full flex-none"
-              onClick={handleClearSort}
+              onClick={handleResetSort}
             >
-              <X /> Clear
+              <X /> Reset
             </Button>
           </DrawerTitle>
         </DrawerHeader>
 
         <RadioGroup.Root
-          defaultValue={getRadioValue(localSort.field, localSort.direction)}
+          value={getRadioValue(localSort.field, localSort.direction)}
           onValueChange={handleSortChange}
           className="flex flex-col gap-2 px-4 h-[70%] overflow-y-auto"
         >
