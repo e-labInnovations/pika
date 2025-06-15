@@ -18,7 +18,7 @@ import {
 } from "@/components/transactions-tab/sort/types";
 import FilterSortBar from "@/components/transactions-tab/filter-sort-bar";
 import SearchBar from "@/components/transactions-tab/search-bar";
-import HeaderRightActions from "@/components/transactions-tab/hedaer-right-actions";
+import HeaderRightActions from "@/components/transactions-tab/header-right-actions";
 
 const TransactionsTab = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);

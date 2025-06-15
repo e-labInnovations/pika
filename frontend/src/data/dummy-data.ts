@@ -61,6 +61,15 @@ export interface Tag {
   color: string;
 }
 
+export interface AnalysisOutput {
+  title: string;
+  date: string;
+  total: number;
+  category: Category;
+  tags: Tag[];
+  notes: string;
+}
+
 export const accounts: Account[] = [
   {
     id: "checking",
@@ -263,4 +272,24 @@ export const categories: Category[] = [
   },
 ];
 
-export const tags: Tag[] = [];
+export const tags: Tag[] = [
+  {
+    id: "1",
+    name: "Coffee",
+    color: "bg-amber-500",
+  },
+  {
+    id: "2",
+    name: "MalabarBites",
+    color: "bg-orange-500",
+  },
+];
+
+export const analysisOutput: AnalysisOutput = {
+  title: "Coffee at MalabarBites",
+  date: "2025-06-15",
+  total: 15.0,
+  category: categories[0].children?.[0] as Category,
+  tags: [tags[0] as Tag, tags[1] as Tag],
+  notes: "This is a note about the receipt",
+};
