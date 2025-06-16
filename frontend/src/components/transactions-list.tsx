@@ -241,7 +241,11 @@ export function TransactionsList({
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3 flex-1">
                     <div
-                      className={`w-10 h-10 ${transaction.category.color} rounded-full flex items-center justify-center relative`}
+                      className="w-10 h-10 rounded-full flex items-center justify-center relative"
+                      style={{
+                        backgroundColor: transaction.category.bgColor,
+                        color: transaction.category.color,
+                      }}
                     >
                       <IconRenderer
                         iconName={transaction.category.icon}
@@ -274,7 +278,11 @@ export function TransactionsList({
                           {transaction.date} • {transaction.time}
                         </span>
                         <div
-                          className={`w-4 h-4 ${transaction.account.color} rounded-full flex items-center justify-center`}
+                          className="w-4 h-4 rounded-full flex items-center justify-center"
+                          style={{
+                            backgroundColor: transaction.account.bgColor,
+                            color: transaction.account.color,
+                          }}
                         >
                           <IconRenderer
                             iconName={transaction.account.icon}

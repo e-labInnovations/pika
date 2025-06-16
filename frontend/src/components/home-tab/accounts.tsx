@@ -39,10 +39,11 @@ const Accounts = ({ accounts }: AccountsProps) => {
             <CardContent className="h-full py-0 px-2">
               <div className="flex flex-col items-center justify-between gap-2 h-full">
                 <div
-                  className={cn(
-                    "w-10 h-10 rounded-full flex items-center justify-center ",
-                    account.color
-                  )}
+                  className="w-10 h-10 rounded-full flex items-center justify-center"
+                  style={{
+                    backgroundColor: account.bgColor,
+                    color: account.color,
+                  }}
                 >
                   <DynamicIcon
                     name={account.icon as IconName}

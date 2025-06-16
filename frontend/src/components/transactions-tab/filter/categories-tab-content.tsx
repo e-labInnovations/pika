@@ -145,8 +145,8 @@ const CategoriesTabContent = ({
                 <p className="font-medium text-slate-900 dark:text-white">
                   {parent.name}
                 </p>
-                <p className="text-sm text-slate-500 dark:text-slate-400">
-                  {parent.children?.length} subcategories
+                <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-1">
+                  {parent.description}
                 </p>
               </div>
             </div>
@@ -179,9 +179,14 @@ const CategoriesTabContent = ({
                         className="w-3 h-3 text-white"
                       />
                     </div>
-                    <p className="text-sm font-medium text-slate-900 dark:text-white">
-                      {child.name}
-                    </p>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-slate-900 dark:text-white">
+                        {child.name}
+                      </p>
+                      <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-1">
+                        {child.description}
+                      </p>
+                    </div>
                   </div>
                 ))}
             </div>

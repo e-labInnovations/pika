@@ -1,11 +1,12 @@
-import { CircleCheck, User } from "lucide-react";
-import { transactions } from "@/data/dummy-data";
+import { CircleCheck } from "lucide-react";
+import { people } from "@/data/dummy-data";
 import { useState } from "react";
 import SearchItem from "./search-item";
 import FilterTabHeader from "./filter-tab-header";
 import { cn } from "@/lib/utils";
 import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
 import type { Filter } from "./types";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface PeopleTabContentProps {
   filters: Filter;
@@ -15,17 +16,8 @@ interface PeopleTabContentProps {
 const PeopleTabContent = ({ filters, setFilters }: PeopleTabContentProps) => {
   const [searchTerm, setSearchTerm] = useState("");
 
-  const uniquePeople = Array.from(
-    new Set(
-      transactions
-        .map((t) => t.person)
-        .filter(Boolean)
-        .map((p) => JSON.stringify(p))
-    )
-  ).map((p) => JSON.parse(p));
-
   const getFilteredPeople = () => {
-    return uniquePeople.filter((person) =>
+    return people.filter((person) =>
       person.name.toLowerCase().includes(searchTerm)
     );
   };
@@ -84,20 +76,16 @@ const PeopleTabContent = ({ filters, setFilters }: PeopleTabContentProps) => {
               )}
             >
               <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-orange-200 dark:bg-orange-700 rounded-full flex items-center justify-center">
-                  <User className="w-4 h-4 text-orange-600 dark:text-orange-400" />
-                </div>
+                <Avatar>
+                  <AvatarImage src={person.avatar} />
+                  <AvatarFallback>
+                    {person.name.split(" ")[0].charAt(0)}
+                  </AvatarFallback>
+                </Avatar>
                 <div className="flex-1">
                   <p className="font-medium">{person.name}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {
-                      transactions.filter(
-                        (t) =>
-                          t.person?.id?.toString() === personId ||
-                          t.person?.name === person.name
-                      ).length
-                    }{" "}
-                    transactions
+                  <p className="text-sm text-muted-foreground line-clamp-1">
+                    {person.description}
                   </p>
                 </div>
               </div>

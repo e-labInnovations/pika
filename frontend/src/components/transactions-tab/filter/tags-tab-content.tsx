@@ -2,7 +2,7 @@ import { CircleCheck } from "lucide-react";
 import { useState } from "react";
 import SearchItem from "./search-item";
 import FilterTabHeader from "./filter-tab-header";
-import { transactions } from "@/data/dummy-data";
+import { tags } from "@/data/dummy-data";
 import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
 import { cn } from "@/lib/utils";
 import type { Filter } from "./types";
@@ -16,9 +16,8 @@ interface TagsTabContentProps {
 const TagsTabContent = ({ filters, setFilters }: TagsTabContentProps) => {
   const [searchTerm, setSearchTerm] = useState("");
 
-  const uniqueTags = Array.from(new Set(transactions.flatMap((t) => t.tags)));
   const getFilteredTags = () => {
-    return uniqueTags.filter((tag) =>
+    return tags.filter((tag) =>
       tag.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
   };
@@ -82,13 +81,8 @@ const TagsTabContent = ({ filters, setFilters }: TagsTabContentProps) => {
               </div>
               <div className="flex-1">
                 <p className="font-medium">{tag.name}</p>
-                <p className="text-sm text-muted-foreground">
-                  {
-                    transactions.filter((t) =>
-                      t.tags.some((t) => t.id === tag.id)
-                    ).length
-                  }{" "}
-                  transactions
+                <p className="text-sm text-muted-foreground line-clamp-1">
+                  {tag.description}
                 </p>
               </div>
             </div>

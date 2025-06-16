@@ -4,12 +4,14 @@ interface FilterTabHeaderProps {
   title: string;
   handleSelectAll?: () => void;
   isAllSelected?: boolean | "indeterminate";
+  action?: React.ReactNode;
 }
 
 const FilterTabHeader = ({
   title,
   handleSelectAll,
   isAllSelected,
+  action,
 }: FilterTabHeaderProps) => {
   return (
     <div className="flex items-center justify-between">
@@ -22,6 +24,7 @@ const FilterTabHeader = ({
           onCheckedChange={handleSelectAll}
         />
       )}
+      {action}
     </div>
   );
 };

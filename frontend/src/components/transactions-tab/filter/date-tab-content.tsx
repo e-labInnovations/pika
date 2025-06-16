@@ -9,7 +9,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { ChevronDownIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import type { Filter } from "./types";
+import { defaultFilterValues, type Filter } from "./types";
 
 interface DateTabContentProps {
   filters: Filter;
@@ -55,7 +55,23 @@ const DatePicker = ({
 const DateTabContent = ({ filters, setFilters }: DateTabContentProps) => {
   return (
     <div className="space-y-3">
-      <FilterTabHeader title="Date" />
+      <FilterTabHeader
+        title="Date"
+        action={
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() =>
+              setFilters((prev) => ({
+                ...prev,
+                dateRange: defaultFilterValues.dateRange,
+              }))
+            }
+          >
+            Clear
+          </Button>
+        }
+      />
 
       <div className="space-y-4">
         <div className="flex flex-col gap-3">

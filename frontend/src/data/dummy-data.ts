@@ -38,6 +38,7 @@ export interface TransactionAccount {
   id: string;
   name: string;
   icon: string;
+  bgColor: string;
   color: string;
 }
 
@@ -48,6 +49,7 @@ export interface Category {
   color: string;
   bgColor: string;
   type: TransactionType;
+  description: string;
   children?: Category[];
 }
 
@@ -56,6 +58,7 @@ export interface TransactionCategory {
   name: string;
   icon: string;
   color: string;
+  bgColor: string;
 }
 
 export interface Tag {
@@ -64,6 +67,7 @@ export interface Tag {
   color: string;
   bgColor: string;
   icon: string;
+  description: string;
 }
 
 export interface TransactionTag {
@@ -139,7 +143,7 @@ export const people: Person[] = [
   {
     id: 1,
     name: "Sarah Johnson",
-    avatar: "/placeholder.svg?height=40&width=40",
+    avatar: "https://i.pravatar.cc/150?u=sarah",
     email: "sarah@example.com",
     phone: "+1 (555) 123-4567",
     description: "College friend and roommate",
@@ -152,7 +156,7 @@ export const people: Person[] = [
   {
     id: 2,
     name: "John Smith",
-    avatar: "/placeholder.svg?height=40&width=40",
+    avatar: "https://i.pravatar.cc/150?u=john",
     email: "john@example.com",
     phone: "+1 (555) 987-6543",
     description: "Work colleague",
@@ -161,6 +165,18 @@ export const people: Person[] = [
     transactionCount: 8,
     totalSpent: 200.0,
     totalReceived: 174.25,
+  },
+  {
+    id: 3,
+    name: "Jane Doe",
+    email: "jane@example.com",
+    phone: "+1 (555) 123-4567",
+    description: "College friend and roommate",
+    balance: 125.5,
+    lastTransaction: "2024-11-15",
+    transactionCount: 12,
+    totalSpent: 450.75,
+    totalReceived: 325.25,
   },
 ];
 
@@ -172,6 +188,7 @@ export const categories: Category[] = [
     bgColor: "#f97316",
     color: "#ffffff",
     type: "expense",
+    description: "Food & Dining",
     children: [
       {
         id: "2",
@@ -180,6 +197,7 @@ export const categories: Category[] = [
         bgColor: "#f97316",
         color: "#ffffff",
         type: "expense",
+        description: "Restaurants",
       },
       {
         id: "3",
@@ -188,6 +206,7 @@ export const categories: Category[] = [
         bgColor: "#f97316",
         color: "#ffffff",
         type: "expense",
+        description: "Groceries",
       },
     ],
   },
@@ -198,6 +217,7 @@ export const categories: Category[] = [
     bgColor: "#3B82F6",
     color: "#ffffff",
     type: "expense",
+    description: "Transportation",
     children: [
       {
         id: "5",
@@ -206,6 +226,7 @@ export const categories: Category[] = [
         bgColor: "#3B82F6",
         color: "#ffffff",
         type: "expense",
+        description: "Gas",
       },
       {
         id: "6",
@@ -214,6 +235,7 @@ export const categories: Category[] = [
         bgColor: "#3B82F6",
         color: "#ffffff",
         type: "expense",
+        description: "Public Transit",
       },
     ],
   },
@@ -224,6 +246,7 @@ export const categories: Category[] = [
     bgColor: "#22C55E",
     color: "#ffffff",
     type: "income",
+    description: "Income",
     children: [
       {
         id: "8",
@@ -232,6 +255,7 @@ export const categories: Category[] = [
         bgColor: "#22C55E",
         color: "#ffffff",
         type: "income",
+        description: "Salary",
       },
       {
         id: "9",
@@ -240,6 +264,7 @@ export const categories: Category[] = [
         bgColor: "#22C55E",
         color: "#ffffff",
         type: "income",
+        description: "Freelance",
       },
     ],
   },
@@ -252,6 +277,7 @@ export const tags: Tag[] = [
     icon: "coffee",
     color: "#ffffff",
     bgColor: "#f59e0b",
+    description: "Coffee at MalabarBites",
   },
   {
     id: "2",
@@ -259,6 +285,7 @@ export const tags: Tag[] = [
     icon: "shopping-cart",
     color: "#ffffff",
     bgColor: "#f97316",
+    description: "MalabarBites",
   },
 ];
 
