@@ -9,16 +9,15 @@ import {
   User,
   FileText,
   Paperclip,
-  EllipsisVertical,
 } from "lucide-react";
 import { IconRenderer } from "@/components/icon-renderer";
 import { Badge } from "@/components/ui/badge";
 import { useParams } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { transactionTypes } from "@/data/transaction-types";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { DynamicIcon, type IconName } from "lucide-react/dynamic";
+import HeaderDropdownMenu from "@/components/transaction-details/header-dropdown-menu";
 
 const TransactionDetails = () => {
   const { id } = useParams();
@@ -33,9 +32,24 @@ const TransactionDetails = () => {
   };
 
   const getAmountColor = (type: string) => {
-    if (type === "income") return "text-emerald-600 dark:text-emerald-400";
-    if (type === "expense") return "text-red-500 dark:text-red-400";
-    return "text-blue-600 dark:text-blue-400";
+    if (type === "income") return transactionTypes[0].color;
+    if (type === "expense") return transactionTypes[1].color;
+    return transactionTypes[2].color;
+  };
+
+  const formatDate = (date: string) => {
+    return new Date(date).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  };
+
+  const formatTime = (date: string) => {
+    return new Date(date).toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   };
 
   return (
@@ -44,15 +58,7 @@ const TransactionDetails = () => {
         title: "Transaction Details",
         description: "Manage your transaction details",
         linkBackward: "/transactions",
-        rightActions: (
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-slate-600 dark:text-slate-400"
-          >
-            <EllipsisVertical className="w-4 h-4" />
-          </Button>
-        ),
+        rightActions: <HeaderDropdownMenu />,
       }}
     >
       {transaction && (
@@ -71,15 +77,13 @@ const TransactionDetails = () => {
                   className="w-6 h-6 text-white"
                 />
                 <div
-                  className={cn(
-                    "absolute -bottom-1 -right-1 w-6 h-6 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center",
+                  className={`absolute -bottom-1 -right-1 w-6 h-6 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center ${
                     getTransactionType(transaction.type)?.color
-                    // ToDo: Fix this, this color not working
-                  )}
+                  }`}
                 >
                   <IconRenderer
                     iconName={getTransactionType(transaction.type)?.icon}
-                    className="w-6 h-6 text-white"
+                    className="w-6 h-6"
                   />
                 </div>
               </div>
@@ -92,7 +96,6 @@ const TransactionDetails = () => {
                 transaction.type
               )}`}
             >
-              {transaction.amount > 0 ? "+" : ""}$
               {Math.abs(transaction.amount).toLocaleString("en-US", {
                 minimumFractionDigits: 2,
               })}
@@ -123,7 +126,7 @@ const TransactionDetails = () => {
                     <span>Date</span>
                   </div>
                   <p className="font-medium text-slate-900 dark:text-white">
-                    {transaction.date}
+                    {formatDate(transaction.date)}
                   </p>
                 </div>
 
@@ -133,7 +136,7 @@ const TransactionDetails = () => {
                     <span>Time</span>
                   </div>
                   <p className="font-medium text-slate-900 dark:text-white">
-                    {transaction.time}
+                    {formatTime(transaction.date)}
                   </p>
                 </div>
               </div>
@@ -253,7 +256,7 @@ const TransactionDetails = () => {
                   <FileText className="w-4 h-4" />
                   <span>Note</span>
                 </div>
-                <p className="text-slate-900 dark:text-white italic">
+                <p className="text-slate-900 dark:text-white text-sm bg-slate-50 dark:bg-slate-800/50 p-3 rounded-lg border border-slate-200 dark:border-slate-700">
                   {transaction.note}
                 </p>
               </div>
@@ -274,7 +277,7 @@ const TransactionDetails = () => {
                       className="border border-slate-200 dark:border-slate-700 rounded-lg p-3 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-colors"
                     >
                       {attachment.type === "image" ? (
-                        <div className="flex flex-col items-center justify-center space-y-2 h-full">
+                        <div className="flex flex-col items-center justify-center h-full gap-2">
                           <img
                             src={attachment.url || "/placeholder.svg"}
                             alt={attachment.name}
@@ -285,8 +288,8 @@ const TransactionDetails = () => {
                           </p>
                         </div>
                       ) : (
-                        <div className="flex flex-col items-center justify-center space-x-2 h-full">
-                          <div className="w-8 h-8 bg-red-100 dark:bg-red-900 rounded flex items-center justify-center">
+                        <div className="flex flex-col items-center justify-center h-full gap-2">
+                          <div className="w-20 h-20 bg-red-100 dark:bg-red-900 rounded flex items-center justify-center">
                             <FileText className="w-4 h-4 text-red-600 dark:text-red-400" />
                           </div>
                           <p className="text-xs text-slate-600 dark:text-slate-400 truncate">

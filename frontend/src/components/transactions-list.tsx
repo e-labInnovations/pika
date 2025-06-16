@@ -8,6 +8,7 @@ import type { Filter } from "./transactions-tab/filter/types";
 import type { Sort } from "./transactions-tab/sort/types";
 import { useNavigate } from "react-router-dom";
 import { DynamicIcon, type IconName } from "lucide-react/dynamic";
+import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 
 interface TransactionsListProps {
   transactions: Transaction[];
@@ -132,8 +133,8 @@ export function TransactionsList({
     // Extract values based on sort field
     switch (sort.field) {
       case "date":
-        valueA = new Date(`${a.date} ${a.time}`).getTime();
-        valueB = new Date(`${b.date} ${b.time}`).getTime();
+        valueA = new Date(a.date).getTime();
+        valueB = new Date(b.date).getTime();
         break;
       case "amount":
         valueA = Math.abs(a.amount);
@@ -193,7 +194,7 @@ export function TransactionsList({
     }
   };
 
-  const getAmountColor = (amount: number, type: string) => {
+  const getAmountColor = (type: string) => {
     if (type === "income") return "text-emerald-600 dark:text-emerald-400";
     if (type === "expense") return "text-red-500 dark:text-red-400";
     return "text-blue-600 dark:text-blue-400";
@@ -223,6 +224,16 @@ export function TransactionsList({
   const handleSelect = (id: string) => {
     alert(`Open functionality for transaction with id: ${id}`);
     navigate(`/transactions/${id}`);
+  };
+
+  const formatDateTime = (date: string) => {
+    return new Date(date).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   };
 
   return (
@@ -266,41 +277,61 @@ export function TransactionsList({
                         </h4>
                         <span
                           className={`font-semibold ${getAmountColor(
-                            transaction.amount,
                             transaction.type
                           )}`}
                         >
-                          {transaction.amount > 0 ? "+" : ""}$
                           {Math.abs(transaction.amount).toLocaleString(
                             "en-US",
                             { minimumFractionDigits: 2 }
                           )}
                         </span>
                       </div>
-                      <div className="flex items-center space-x-2 mt-1">
-                        <span className="text-sm text-slate-500 dark:text-slate-400">
-                          {transaction.date} • {transaction.time}
-                        </span>
-                        <div
-                          className="w-4 h-4 rounded-full flex items-center justify-center"
-                          style={{
-                            backgroundColor: transaction.account.bgColor,
-                            color: transaction.account.color,
-                          }}
-                        >
-                          <IconRenderer
-                            iconName={transaction.account.icon}
-                            className="w-2 h-2 text-white"
-                          />
+
+                      <div className="flex items-center gap-2">
+                        <div className="flex flex-col gap-2 grow">
+                          <div className="flex items-center space-x-2 mt-1">
+                            <span className="text-sm text-slate-500 dark:text-slate-400">
+                              {formatDateTime(transaction.date)}
+                            </span>
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            <div
+                              className="w-4 h-4 rounded-full flex items-center justify-center"
+                              style={{
+                                backgroundColor: transaction.account.bgColor,
+                                color: transaction.account.color,
+                              }}
+                            >
+                              <IconRenderer
+                                iconName={transaction.account.icon}
+                                className="w-2 h-2 text-white"
+                              />
+                            </div>
+                            <span className="text-xs text-slate-500 dark:text-slate-400">
+                              {transaction.account.name}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {transaction.person && (
+                            <Avatar className="w-8 h-8">
+                              <AvatarImage
+                                src={transaction.person?.avatar}
+                                alt={transaction.person?.name}
+                                className="rounded-full"
+                              />
+                              <AvatarFallback>
+                                {transaction.person?.name
+                                  .split(" ")
+                                  .map((name) => name[0])
+                                  .join("")}
+                              </AvatarFallback>
+                            </Avatar>
+                          )}
                         </div>
                       </div>
-                      {transaction.person?.name && (
-                        <div className="flex items-center space-x-2 mt-1">
-                          <span className="text-xs text-slate-500 dark:text-slate-400">
-                            with {transaction.person?.name}
-                          </span>
-                        </div>
-                      )}
+
                       <div className="flex flex-wrap gap-1 mt-2">
                         {transaction.tags.map((tag, index) => (
                           <span

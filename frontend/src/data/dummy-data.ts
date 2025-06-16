@@ -90,7 +90,6 @@ export interface Transaction {
   title: string;
   amount: number;
   date: string;
-  time: string;
   type: TransactionType;
   category: TransactionCategory;
   account: TransactionAccount;
@@ -325,9 +324,8 @@ export const transactions: Transaction[] = [
   {
     id: "1",
     title: "Grocery Shopping",
-    amount: -85.5,
-    date: "2024-11-15",
-    time: "14:30",
+    amount: 85.5,
+    date: "2024-11-15T14:30:00.000Z",
     type: "expense",
     category: categories[0],
     account: accounts[0],
@@ -352,9 +350,8 @@ export const transactions: Transaction[] = [
   {
     id: "2",
     title: "Coffee with John",
-    amount: -12.75,
-    date: "2024-11-15",
-    time: "09:15",
+    amount: 12.75,
+    date: "2024-11-15T09:15:00.000Z",
     type: "expense",
     category: categories[1],
     account: accounts[1],
@@ -366,8 +363,7 @@ export const transactions: Transaction[] = [
     id: "3",
     title: "Salary Deposit",
     amount: 3500.0,
-    date: "2024-11-14",
-    time: "08:00",
+    date: "2024-11-14T08:00:00.000Z",
     type: "income",
     category: categories[2],
     account: accounts[0],
