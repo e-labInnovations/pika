@@ -78,8 +78,15 @@ export interface TransactionTag {
   icon: string;
 }
 
+export interface TransactionAttachment {
+  id: string;
+  name: string;
+  url: string;
+  type: "image" | "pdf";
+}
+
 export interface Transaction {
-  id: number;
+  id: string;
   title: string;
   amount: number;
   date: string;
@@ -89,7 +96,8 @@ export interface Transaction {
   account: TransactionAccount;
   tags: TransactionTag[];
   person?: TransactionPerson;
-  description: string;
+  note: string;
+  attachments?: TransactionAttachment[];
 }
 
 export interface AnalysisOutput {
@@ -282,16 +290,40 @@ export const tags: Tag[] = [
   {
     id: "2",
     name: "MalabarBites",
-    icon: "shopping-cart",
+    icon: "hamburger",
     color: "#ffffff",
     bgColor: "#f97316",
     description: "MalabarBites",
+  },
+  {
+    id: "3",
+    name: "CasualTea",
+    icon: "coffee",
+    color: "#ffffff",
+    bgColor: "#2563eb",
+    description: "Casual Tea",
+  },
+  {
+    id: "4",
+    name: "Birthday",
+    icon: "cake",
+    color: "#ffffff",
+    bgColor: "#10b981",
+    description: "Birthday",
+  },
+  {
+    id: "5",
+    name: "WeddingGift",
+    icon: "gift",
+    color: "#ffffff",
+    bgColor: "#ef4444",
+    description: "Wedding Gift",
   },
 ];
 
 export const transactions: Transaction[] = [
   {
-    id: 1,
+    id: "1",
     title: "Grocery Shopping",
     amount: -85.5,
     date: "2024-11-15",
@@ -299,11 +331,26 @@ export const transactions: Transaction[] = [
     type: "expense",
     category: categories[0],
     account: accounts[0],
-    tags: [tags[0]],
-    description: "Weekly grocery shopping",
+    tags: [tags[0], tags[1], tags[2], tags[3], tags[4]],
+    person: people[1],
+    note: "This is a note about the receipt",
+    attachments: [
+      {
+        id: "1",
+        name: "receipt.pdf",
+        url: "https://example.com/receipt.pdf",
+        type: "pdf",
+      },
+      {
+        id: "2",
+        name: "payslip.jpg",
+        url: "https://placehold.co/600x400",
+        type: "image",
+      },
+    ],
   },
   {
-    id: 2,
+    id: "2",
     title: "Coffee with John",
     amount: -12.75,
     date: "2024-11-15",
@@ -313,10 +360,10 @@ export const transactions: Transaction[] = [
     account: accounts[1],
     tags: [tags[1]],
     person: people[1],
-    description: "Morning coffee meeting",
+    note: "This is a note about the receipt",
   },
   {
-    id: 3,
+    id: "3",
     title: "Salary Deposit",
     amount: 3500.0,
     date: "2024-11-14",
@@ -325,7 +372,15 @@ export const transactions: Transaction[] = [
     category: categories[2],
     account: accounts[0],
     tags: [tags[0]],
-    description: "Monthly salary deposit",
+    note: "This is a note about the receipt",
+    attachments: [
+      {
+        id: "2",
+        name: "payslip.jpg",
+        url: "https://placehold.co/600x400",
+        type: "image",
+      },
+    ],
   },
 ];
 

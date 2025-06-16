@@ -4,8 +4,8 @@ const SettingsTab = () => {
   return (
     <TabsLayout
       header={{
-        title: "People",
-        description: "Manage your people",
+        title: "Settings",
+        description: "Manage your settings",
       }}
     >
       settings

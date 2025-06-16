@@ -6,6 +6,8 @@ import { SwipeableTransaction } from "@/components/swipeable-transaction";
 import type { Transaction } from "@/data/dummy-data";
 import type { Filter } from "./transactions-tab/filter/types";
 import type { Sort } from "./transactions-tab/sort/types";
+import { useNavigate } from "react-router-dom";
+import { DynamicIcon, type IconName } from "lucide-react/dynamic";
 
 interface TransactionsListProps {
   transactions: Transaction[];
@@ -22,6 +24,7 @@ export function TransactionsList({
   filters,
   sort,
 }: TransactionsListProps) {
+  const navigate = useNavigate();
   // Filter transactions
   const filteredTransactions = transactions.filter((transaction) => {
     // Search filter
@@ -219,6 +222,7 @@ export function TransactionsList({
 
   const handleSelect = (id: string) => {
     alert(`Open functionality for transaction with id: ${id}`);
+    navigate(`/transactions/${id}`);
   };
 
   return (
@@ -301,8 +305,16 @@ export function TransactionsList({
                         {transaction.tags.map((tag, index) => (
                           <span
                             key={index}
-                            className={`px-2 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200`}
+                            className="flex items-center gap-1 px-1 py-0.5 rounded-full text-[10px] font-medium"
+                            style={{
+                              backgroundColor: tag.bgColor,
+                              color: tag.color,
+                            }}
                           >
+                            <DynamicIcon
+                              name={tag.icon as IconName}
+                              className="w-3 h-3"
+                            />
                             {tag.name}
                           </span>
                         ))}

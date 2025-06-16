@@ -12,6 +12,7 @@ import TransactionsTab from "@/pages/transactions-tab";
 import AddTransactionTab from "@/pages/add-transaction-tab";
 import PeopleTab from "./pages/people-tab";
 import SettingsTab from "./pages/settings-tab";
+import TransactionDetails from "./pages/transaction-details";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -27,6 +28,7 @@ const router = createBrowserRouter(
         <Route path="/" element={<HomeTab />} />
         <Route path="/old-home" element={<Home />} />
         <Route path="/transactions" element={<TransactionsTab />} />
+        <Route path="/transactions/:id" element={<TransactionDetails />} />
         <Route path="/add" element={<AddTransactionTab />} />
         <Route path="/people" element={<PeopleTab />} />
         <Route path="/settings" element={<SettingsTab />} />
