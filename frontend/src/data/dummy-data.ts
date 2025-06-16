@@ -1,26 +1,4 @@
-import {
-  Briefcase,
-  CreditCard,
-  PiggyBank,
-  Wallet,
-  Coffee,
-  ShoppingCart,
-  Car,
-} from "lucide-react";
-
-export interface Transaction {
-  id: number;
-  title: string;
-  amount: number;
-  date: string;
-  time: string;
-  type: "income" | "expense" | "transfer";
-  category: any;
-  account: any;
-  tags: string[];
-  person?: any;
-  description: string;
-}
+import type { TransactionType } from "@/data/types";
 
 export interface Person {
   id: number;
@@ -36,29 +14,78 @@ export interface Person {
   totalReceived?: number;
 }
 
+type TransactionPerson = {
+  id: number;
+  name: string;
+  avatar?: string;
+  email: string;
+  phone: string;
+};
+
 export interface Account {
   id: string;
   name: string;
-  icon: any;
+  icon: string;
+  bgColor: string;
+  avatar?: string;
   color: string;
   balance: number;
   type: string;
   bank?: string;
 }
 
+export interface TransactionAccount {
+  id: string;
+  name: string;
+  icon: string;
+  color: string;
+}
+
 export interface Category {
   id: string;
   name: string;
-  icon: any;
+  icon: string;
   color: string;
-  type: "income" | "expense" | "transfer";
+  bgColor: string;
+  type: TransactionType;
   children?: Category[];
+}
+
+export interface TransactionCategory {
+  id: string;
+  name: string;
+  icon: string;
+  color: string;
 }
 
 export interface Tag {
   id: string;
   name: string;
   color: string;
+  bgColor: string;
+  icon: string;
+}
+
+export interface TransactionTag {
+  id: string;
+  name: string;
+  color: string;
+  bgColor: string;
+  icon: string;
+}
+
+export interface Transaction {
+  id: number;
+  title: string;
+  amount: number;
+  date: string;
+  time: string;
+  type: TransactionType;
+  category: TransactionCategory;
+  account: TransactionAccount;
+  tags: TransactionTag[];
+  person?: TransactionPerson;
+  description: string;
 }
 
 export interface AnalysisOutput {
@@ -70,12 +97,18 @@ export interface AnalysisOutput {
   notes: string;
 }
 
+export interface WeeklyExpense {
+  day: string;
+  amount: number;
+}
+
 export const accounts: Account[] = [
   {
     id: "checking",
     name: "Checking Account",
-    icon: Wallet,
-    color: "bg-blue-500",
+    icon: "wallet",
+    bgColor: "#3B82F6",
+    color: "#ffffff",
     balance: 2450.5,
     type: "checking",
     bank: "Chase Bank",
@@ -83,8 +116,9 @@ export const accounts: Account[] = [
   {
     id: "savings",
     name: "Savings Account",
-    icon: PiggyBank,
-    color: "bg-green-500",
+    icon: "piggy-bank",
+    bgColor: "#22C55E",
+    color: "#ffffff",
     balance: 8920.0,
     type: "savings",
     bank: "Chase Bank",
@@ -92,82 +126,12 @@ export const accounts: Account[] = [
   {
     id: "credit",
     name: "Credit Card",
-    icon: CreditCard,
-    color: "bg-red-500",
+    icon: "credit-card",
+    bgColor: "#EF4444",
+    color: "#ffffff",
     balance: -1250.75,
     type: "credit",
     bank: "American Express",
-  },
-];
-
-export const transactions: Transaction[] = [
-  {
-    id: 1,
-    title: "Grocery Shopping",
-    amount: -85.5,
-    date: "2024-11-15",
-    time: "14:30",
-    type: "expense",
-    category: {
-      id: "food",
-      name: "Food & Dining",
-      icon: ShoppingCart,
-      color: "bg-orange-500",
-    },
-    account: {
-      id: "checking",
-      name: "Checking",
-      icon: Wallet,
-      color: "bg-blue-500",
-    },
-    tags: ["Essential"],
-    person: { id: 1, name: "Sarah" },
-    description: "Weekly grocery shopping",
-  },
-  {
-    id: 2,
-    title: "Coffee with John",
-    amount: -12.75,
-    date: "2024-11-15",
-    time: "09:15",
-    type: "expense",
-    category: {
-      id: "coffee",
-      name: "Coffee & Drinks",
-      icon: Coffee,
-      color: "bg-amber-500",
-    },
-    account: {
-      id: "credit",
-      name: "Credit Card",
-      icon: CreditCard,
-      color: "bg-red-500",
-    },
-    tags: ["Social"],
-    person: { id: 2, name: "John" },
-    description: "Morning coffee meeting",
-  },
-  {
-    id: 3,
-    title: "Salary Deposit",
-    amount: 3500.0,
-    date: "2024-11-14",
-    time: "08:00",
-    type: "income",
-    category: {
-      id: "salary",
-      name: "Salary",
-      icon: Briefcase,
-      color: "bg-emerald-500",
-    },
-    account: {
-      id: "checking",
-      name: "Checking",
-      icon: Wallet,
-      color: "bg-blue-500",
-    },
-    tags: ["Work"],
-    description: "Monthly salary deposit",
   },
 ];
 
@@ -202,70 +166,79 @@ export const people: Person[] = [
 
 export const categories: Category[] = [
   {
-    id: "food",
+    id: "1",
     name: "Food & Dining",
-    icon: ShoppingCart,
-    color: "bg-orange-500",
+    icon: "shopping-cart",
+    bgColor: "#f97316",
+    color: "#ffffff",
     type: "expense",
     children: [
       {
-        id: "restaurants",
+        id: "2",
         name: "Restaurants",
-        icon: ShoppingCart,
-        color: "bg-orange-400",
+        icon: "shopping-cart",
+        bgColor: "#f97316",
+        color: "#ffffff",
         type: "expense",
       },
       {
-        id: "groceries",
+        id: "3",
         name: "Groceries",
-        icon: ShoppingCart,
-        color: "bg-orange-600",
+        icon: "shopping-cart",
+        bgColor: "#f97316",
+        color: "#ffffff",
         type: "expense",
       },
     ],
   },
   {
-    id: "transport",
+    id: "4",
     name: "Transportation",
-    icon: Car,
-    color: "bg-blue-500",
+    icon: "car",
+    bgColor: "#3B82F6",
+    color: "#ffffff",
     type: "expense",
     children: [
       {
-        id: "gas",
+        id: "5",
         name: "Gas",
-        icon: Car,
-        color: "bg-blue-400",
+        icon: "car",
+        bgColor: "#3B82F6",
+        color: "#ffffff",
         type: "expense",
       },
       {
-        id: "public",
+        id: "6",
         name: "Public Transit",
-        icon: Car,
-        color: "bg-blue-600",
+        icon: "car",
+        bgColor: "#3B82F6",
+        color: "#ffffff",
         type: "expense",
       },
     ],
   },
   {
-    id: "income",
+    id: "7",
     name: "Income",
-    icon: Briefcase,
-    color: "bg-emerald-500",
+    icon: "briefcase",
+    bgColor: "#22C55E",
+    color: "#ffffff",
     type: "income",
     children: [
       {
-        id: "salary",
+        id: "8",
         name: "Salary",
-        icon: Briefcase,
-        color: "bg-emerald-400",
+        icon: "briefcase",
+        bgColor: "#22C55E",
+        color: "#ffffff",
         type: "income",
       },
       {
-        id: "freelance",
+        id: "9",
         name: "Freelance",
-        icon: Briefcase,
-        color: "bg-emerald-600",
+        icon: "briefcase",
+        bgColor: "#22C55E",
+        color: "#ffffff",
         type: "income",
       },
     ],
@@ -276,12 +249,56 @@ export const tags: Tag[] = [
   {
     id: "1",
     name: "Coffee",
-    color: "bg-amber-500",
+    icon: "coffee",
+    color: "#ffffff",
+    bgColor: "#f59e0b",
   },
   {
     id: "2",
     name: "MalabarBites",
-    color: "bg-orange-500",
+    icon: "shopping-cart",
+    color: "#ffffff",
+    bgColor: "#f97316",
+  },
+];
+
+export const transactions: Transaction[] = [
+  {
+    id: 1,
+    title: "Grocery Shopping",
+    amount: -85.5,
+    date: "2024-11-15",
+    time: "14:30",
+    type: "expense",
+    category: categories[0],
+    account: accounts[0],
+    tags: [tags[0]],
+    description: "Weekly grocery shopping",
+  },
+  {
+    id: 2,
+    title: "Coffee with John",
+    amount: -12.75,
+    date: "2024-11-15",
+    time: "09:15",
+    type: "expense",
+    category: categories[1],
+    account: accounts[1],
+    tags: [tags[1]],
+    person: people[1],
+    description: "Morning coffee meeting",
+  },
+  {
+    id: 3,
+    title: "Salary Deposit",
+    amount: 3500.0,
+    date: "2024-11-14",
+    time: "08:00",
+    type: "income",
+    category: categories[2],
+    account: accounts[0],
+    tags: [tags[0]],
+    description: "Monthly salary deposit",
   },
 ];
 
@@ -293,3 +310,13 @@ export const analysisOutput: AnalysisOutput = {
   tags: [tags[0] as Tag, tags[1] as Tag],
   notes: "This is a note about the receipt",
 };
+
+export const weeklyExpenses = [
+  { day: "Mon", amount: 45.5 },
+  { day: "Tue", amount: 120.0 },
+  { day: "Wed", amount: 85.25 },
+  { day: "Thu", amount: 200.0 },
+  { day: "Fri", amount: 95.75 },
+  { day: "Sat", amount: 180.5 },
+  { day: "Sun", amount: 65.0 },
+];

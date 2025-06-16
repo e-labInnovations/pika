@@ -1,5 +1,5 @@
 import { ArrowDownLeft, ArrowRightLeft, ArrowUpRight } from "lucide-react";
-import { type TransactionType } from "@/components/transactions-tab/filter/types";
+import type { TransactionType } from "@/data/types";
 
 export type TransactionItemType = {
   id: TransactionType;

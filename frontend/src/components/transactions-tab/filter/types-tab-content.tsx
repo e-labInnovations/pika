@@ -4,7 +4,8 @@ import { useState } from "react";
 import SearchItem from "./search-item";
 import { cn } from "@/lib/utils";
 import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
-import { type Filter, type TransactionType } from "./types";
+import { type Filter } from "./types";
+import type { TransactionType } from "@/data/types";
 import { transactionTypes } from "@/data/transaction-types";
 
 interface TypesTabContentProps {

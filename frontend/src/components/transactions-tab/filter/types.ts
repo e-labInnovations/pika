@@ -1,3 +1,5 @@
+import type { TransactionType } from "@/data/types";
+
 export const amountOperators = [
   { value: "between", label: "Between", shortLabel: "" },
   { value: "greater", label: "Greater than", shortLabel: "<" },
@@ -11,8 +13,6 @@ export const amountOperators = [
   },
   { value: "less_equal", label: "Less than or equal to", shortLabel: "≤" },
 ];
-
-export type TransactionType = "income" | "expense" | "transfer";
 
 export type AmountOperator = (typeof amountOperators)[number]["value"];
 

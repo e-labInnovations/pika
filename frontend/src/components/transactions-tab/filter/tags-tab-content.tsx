@@ -1,4 +1,4 @@
-import { CircleCheck, Tag } from "lucide-react";
+import { CircleCheck } from "lucide-react";
 import { useState } from "react";
 import SearchItem from "./search-item";
 import FilterTabHeader from "./filter-tab-header";
@@ -6,6 +6,7 @@ import { transactions } from "@/data/dummy-data";
 import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
 import { cn } from "@/lib/utils";
 import type { Filter } from "./types";
+import { DynamicIcon, type IconName } from "lucide-react/dynamic";
 
 interface TagsTabContentProps {
   filters: Filter;
@@ -18,7 +19,7 @@ const TagsTabContent = ({ filters, setFilters }: TagsTabContentProps) => {
   const uniqueTags = Array.from(new Set(transactions.flatMap((t) => t.tags)));
   const getFilteredTags = () => {
     return uniqueTags.filter((tag) =>
-      tag.toLowerCase().includes(searchTerm.toLowerCase())
+      tag.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
   };
 
@@ -35,7 +36,7 @@ const TagsTabContent = ({ filters, setFilters }: TagsTabContentProps) => {
     const allSelected = getFilteredTags().length === filters.tags.length;
     setFilters((prev: Filter) => ({
       ...prev,
-      tags: allSelected ? [] : getFilteredTags().map((tag) => tag),
+      tags: allSelected ? [] : getFilteredTags().map((tag) => tag.id),
     }));
   };
   return (
@@ -60,9 +61,9 @@ const TagsTabContent = ({ filters, setFilters }: TagsTabContentProps) => {
       <div className="grid grid-cols-1 gap-2">
         {getFilteredTags().map((tag) => (
           <CheckboxPrimitive.Root
-            key={tag}
-            checked={filters.tags.includes(tag)}
-            onCheckedChange={() => handleTagToggle(tag)}
+            key={tag.id}
+            checked={filters.tags.includes(tag.id)}
+            onCheckedChange={() => handleTagToggle(tag.id)}
             className={cn(
               "relative ring-[0.25px] ring-border rounded-lg px-4 py-3 text-start text-muted-foreground",
               "data-[state=checked]:ring-[1.5px] data-[state=checked]:ring-primary data-[state=checked]:text-primary",
@@ -71,16 +72,22 @@ const TagsTabContent = ({ filters, setFilters }: TagsTabContentProps) => {
           >
             <div className="flex items-center space-x-3">
               <div
-                className={
-                  "w-8 h-8 rounded-full flex items-center justify-center bg-slate-200 dark:bg-slate-700"
-                }
+                className="w-8 h-8 rounded-full flex items-center justify-center"
+                style={{
+                  backgroundColor: tag.bgColor,
+                  color: tag.color,
+                }}
               >
-                <Tag className="w-4 h-4 text-slate-600 dark:text-slate-400" />
+                <DynamicIcon name={tag.icon as IconName} className="w-4 h-4" />
               </div>
               <div className="flex-1">
-                <p className="font-medium">{tag}</p>
+                <p className="font-medium">{tag.name}</p>
                 <p className="text-sm text-muted-foreground">
-                  {transactions.filter((t) => t.tags.includes(tag)).length}{" "}
+                  {
+                    transactions.filter((t) =>
+                      t.tags.some((t) => t.id === tag.id)
+                    ).length
+                  }{" "}
                   transactions
                 </p>
               </div>

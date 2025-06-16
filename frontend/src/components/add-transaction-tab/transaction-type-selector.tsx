@@ -1,6 +1,6 @@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { type TransactionType } from "@/components/transactions-tab/filter/types";
 import { transactionTypes } from "@/data/transaction-types";
+import type { TransactionType } from "@/data/types";
 import { cn } from "@/lib/utils";
 
 interface TransactionTypeSelectorProps {

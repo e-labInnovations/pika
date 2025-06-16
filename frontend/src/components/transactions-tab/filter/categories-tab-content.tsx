@@ -1,119 +1,9 @@
-import { IconRenderer } from "@/components/icon-renderer";
 import { useState } from "react";
 import FilterTabHeader from "./filter-tab-header";
 import SearchItem from "./search-item";
 import type { Filter } from "./types";
-
-// Mock parent categories with children (in a real app, this would come from props)
-const categoryHierarchy = [
-  {
-    id: "food",
-    name: "Food & Dining",
-    icon: "ShoppingCart",
-    color: "bg-orange-500",
-    children: [
-      {
-        id: "restaurants",
-        name: "Restaurants",
-        icon: "ShoppingCart",
-        color: "bg-orange-400",
-      },
-      {
-        id: "groceries",
-        name: "Groceries",
-        icon: "ShoppingCart",
-        color: "bg-orange-600",
-      },
-      {
-        id: "coffee",
-        name: "Coffee Shops",
-        icon: "Coffee",
-        color: "bg-amber-500",
-      },
-      {
-        id: "fastfood",
-        name: "Fast Food",
-        icon: "ShoppingCart",
-        color: "bg-orange-300",
-      },
-    ],
-  },
-  {
-    id: "transport",
-    name: "Transportation",
-    icon: "Car",
-    color: "bg-blue-500",
-    children: [
-      { id: "gas", name: "Gas", icon: "Car", color: "bg-blue-400" },
-      {
-        id: "public",
-        name: "Public Transit",
-        icon: "Car",
-        color: "bg-blue-600",
-      },
-      { id: "parking", name: "Parking", icon: "Car", color: "bg-blue-300" },
-      {
-        id: "maintenance",
-        name: "Car Maintenance",
-        icon: "Car",
-        color: "bg-blue-700",
-      },
-    ],
-  },
-  {
-    id: "shopping",
-    name: "Shopping",
-    icon: "Gift",
-    color: "bg-purple-500",
-    children: [
-      {
-        id: "clothing",
-        name: "Clothing",
-        icon: "Gift",
-        color: "bg-purple-400",
-      },
-      {
-        id: "electronics",
-        name: "Electronics",
-        icon: "Gift",
-        color: "bg-purple-600",
-      },
-      { id: "books", name: "Books", icon: "Gift", color: "bg-purple-300" },
-    ],
-  },
-  {
-    id: "income",
-    name: "Income",
-    icon: "Briefcase",
-    color: "bg-emerald-500",
-    children: [
-      {
-        id: "salary",
-        name: "Salary",
-        icon: "Briefcase",
-        color: "bg-emerald-400",
-      },
-      {
-        id: "freelance",
-        name: "Freelance",
-        icon: "Briefcase",
-        color: "bg-emerald-600",
-      },
-      {
-        id: "bonus",
-        name: "Bonus",
-        icon: "Briefcase",
-        color: "bg-emerald-300",
-      },
-      {
-        id: "investment",
-        name: "Investment",
-        icon: "Briefcase",
-        color: "bg-emerald-700",
-      },
-    ],
-  },
-];
+import { categories as categoryHierarchy } from "@/data/dummy-data";
+import { DynamicIcon, type IconName } from "lucide-react/dynamic";
 
 interface CategoriesTabContentProps {
   filters: Filter;
@@ -129,8 +19,8 @@ const CategoriesTabContent = ({
   const handleSelectAllCategories = () => {
     const allCategoryIds = [
       ...categoryHierarchy.map((parent) => parent.id),
-      ...categoryHierarchy.flatMap((parent) =>
-        parent.children.map((child) => child.id)
+      ...categoryHierarchy.flatMap(
+        (parent) => parent.children?.map((child) => child.id) ?? []
       ),
     ];
     const allSelected = allCategoryIds.length === filters.categories.length;
@@ -144,9 +34,10 @@ const CategoriesTabContent = ({
     return categoryHierarchy.filter(
       (parent) =>
         parent.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        parent.children.some((child) =>
+        (parent.children?.some((child) =>
           child.name.toLowerCase().includes(searchTerm.toLowerCase())
-        )
+        ) ??
+          false)
     );
   };
 
@@ -158,21 +49,21 @@ const CategoriesTabContent = ({
 
       // Handle parent-child logic
       const parent = categoryHierarchy.find((p) => p.id === categoryId);
-      const child = categoryHierarchy.find((p) =>
-        p.children.some((c) => c.id === categoryId)
+      const child = categoryHierarchy.find(
+        (p) => p.children?.some((c) => c.id === categoryId) ?? false
       );
 
       if (parent) {
         // If parent is being selected, select all children
         if (!prev.categories.includes(categoryId)) {
-          parent.children.forEach((child) => {
+          parent.children?.forEach((child) => {
             if (!newCategories.includes(child.id)) {
               newCategories.push(child.id);
             }
           });
         } else {
           // If parent is being deselected, deselect all children
-          parent.children.forEach((child) => {
+          parent.children?.forEach((child) => {
             const index = newCategories.indexOf(child.id);
             if (index > -1) {
               newCategories.splice(index, 1);
@@ -181,7 +72,7 @@ const CategoriesTabContent = ({
         }
       } else if (child) {
         // If child is being selected/deselected, check if all siblings are selected
-        const allChildrenSelected = child.children.every((sibling) =>
+        const allChildrenSelected = child.children?.every((sibling) =>
           sibling.id === categoryId
             ? !prev.categories.includes(categoryId)
             : newCategories.includes(sibling.id)
@@ -239,10 +130,14 @@ const CategoriesTabContent = ({
               onClick={() => handleCategoryToggle(parent.id)}
             >
               <div
-                className={`w-8 h-8 ${parent.color} rounded-full flex items-center justify-center`}
+                className={`w-8 h-8 rounded-full flex items-center justify-center`}
+                style={{
+                  backgroundColor: parent.bgColor,
+                  color: parent.color,
+                }}
               >
-                <IconRenderer
-                  iconName={parent.icon}
+                <DynamicIcon
+                  name={parent.icon as IconName}
                   className="w-4 h-4 text-white"
                 />
               </div>
@@ -251,7 +146,7 @@ const CategoriesTabContent = ({
                   {parent.name}
                 </p>
                 <p className="text-sm text-slate-500 dark:text-slate-400">
-                  {parent.children.length} subcategories
+                  {parent.children?.length} subcategories
                 </p>
               </div>
             </div>
@@ -259,7 +154,7 @@ const CategoriesTabContent = ({
             {/* Child Categories */}
             <div className="ml-6 space-y-2">
               {parent.children
-                .filter((child) =>
+                ?.filter((child) =>
                   child.name.toLowerCase().includes(searchTerm.toLowerCase())
                 )
                 .map((child) => (
@@ -273,10 +168,14 @@ const CategoriesTabContent = ({
                     onClick={() => handleCategoryToggle(child.id)}
                   >
                     <div
-                      className={`w-6 h-6 ${child.color} rounded-full flex items-center justify-center`}
+                      className="w-6 h-6 rounded-full flex items-center justify-center"
+                      style={{
+                        backgroundColor: child.bgColor,
+                        color: child.color,
+                      }}
                     >
-                      <IconRenderer
-                        iconName={child.icon}
+                      <DynamicIcon
+                        name={child.icon as IconName}
                         className="w-3 h-3 text-white"
                       />
                     </div>

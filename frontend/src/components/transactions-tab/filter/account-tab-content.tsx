@@ -6,6 +6,7 @@ import { accounts } from "@/data/dummy-data";
 import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
 import { cn } from "@/lib/utils";
 import { CircleCheck } from "lucide-react";
+import { DynamicIcon, type IconName } from "lucide-react/dynamic";
 
 interface AccountTabContentProps {
   filters: Filter;
@@ -76,12 +77,16 @@ const AccountTabContent = ({ filters, setFilters }: AccountTabContentProps) => {
             >
               <div className="flex items-center space-x-3">
                 <div
-                  className={cn(
-                    "w-8 h-8 rounded-full text-white flex items-center justify-center",
-                    account.color
-                  )}
+                  className="w-8 h-8 rounded-full text-white flex items-center justify-center"
+                  style={{
+                    backgroundColor: account.bgColor,
+                    color: account.color,
+                  }}
                 >
-                  <account.icon className="w-4 h-4" />
+                  <DynamicIcon
+                    name={account.icon as IconName}
+                    className="w-4 h-4"
+                  />
                 </div>
                 <div className="flex-1">
                   <p className="font-medium">{account.name}</p>

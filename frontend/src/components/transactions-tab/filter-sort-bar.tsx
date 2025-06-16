@@ -1,7 +1,6 @@
 import {
   amountOperators,
   defaultFilterValues,
-  transactionTypes,
   type Filter,
   type FilterTab,
 } from "./filter/types";
@@ -9,9 +8,10 @@ import FilterChip from "./filter/filter-chip";
 import { Badge } from "../ui/badge";
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { Button } from "../ui/button";
-import { accounts, categories, people } from "@/data/dummy-data";
+import { accounts, categories, people, tags } from "@/data/dummy-data";
 import { useEffect, useState } from "react";
 import { defaultSort, type Sort, sortOptions } from "./sort/types";
+import { transactionTypes } from "@/data/transaction-types";
 
 interface FilterSortBarProps {
   filters: Filter;
@@ -152,16 +152,19 @@ const FilterSortBar = ({
                   bgColor="bg-slate-100 dark:bg-slate-800"
                 />
               )}
-              {filters.tags.slice(0, 2).map((tag) => (
-                <FilterChip
-                  id={tag}
-                  name={tag}
-                  onClick={() => onFilterClick("remove", "tags", tag)}
-                  shouldShowRemove={true}
-                  bgColor="bg-emerald-100 dark:bg-emerald-900"
-                  color="text-emerald-800 dark:text-emerald-200"
-                />
-              ))}
+              {filters.tags.slice(0, 2).map((tagId) => {
+                const tag = tags.find((t) => t.id === tagId);
+                return tag ? (
+                  <FilterChip
+                    id={tagId}
+                    name={tag.name}
+                    onClick={() => onFilterClick("remove", "tags", tagId)}
+                    shouldShowRemove={true}
+                    bgColor="bg-emerald-100 dark:bg-emerald-900"
+                    color="text-emerald-800 dark:text-emerald-200"
+                  />
+                ) : null;
+              })}
               {filters.tags.length > 2 && (
                 <FilterChip
                   id="more-tags"

@@ -1,10 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { EyeIcon, EyeOff, Wallet } from "lucide-react";
-import { IconRenderer } from "@/components/icon-renderer";
 import type { Account } from "@/data/dummy-data";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { DynamicIcon, type IconName } from "lucide-react/dynamic";
 
 interface AccountsProps {
   accounts: Account[];
@@ -44,8 +44,8 @@ const Accounts = ({ accounts }: AccountsProps) => {
                     account.color
                   )}
                 >
-                  <IconRenderer
-                    iconName={account.icon}
+                  <DynamicIcon
+                    name={account.icon as IconName}
                     className="w-5 h-5 text-white"
                   />
                 </div>

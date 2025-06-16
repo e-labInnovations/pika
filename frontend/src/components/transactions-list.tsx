@@ -49,7 +49,7 @@ export function TransactionsList({
     // Tags filter
     const matchesTags =
       filters.tags.length === 0 ||
-      filters.tags.some((tag) => transaction.tags.includes(tag));
+      filters.tags.some((tag) => transaction.tags.some((t) => t.id === tag));
 
     // People filter
     const matchesPeople =
@@ -141,8 +141,8 @@ export function TransactionsList({
         valueB = b.category.name.toLowerCase();
         break;
       case "tags":
-        valueA = a.tags[0]?.toLowerCase() || "";
-        valueB = b.tags[0]?.toLowerCase() || "";
+        valueA = a.tags[0]?.name.toLowerCase() || "";
+        valueB = b.tags[0]?.name.toLowerCase() || "";
         break;
       case "title":
         valueA = a.title.toLowerCase();
@@ -159,9 +159,21 @@ export function TransactionsList({
 
     // Compare values based on sort direction
     if (sort.direction === "asc") {
-      return valueA > valueB ? 1 : valueA < valueB ? -1 : 0;
+      return valueA && valueB
+        ? valueA > valueB
+          ? 1
+          : valueA < valueB
+          ? -1
+          : 0
+        : 0;
     } else {
-      return valueA < valueB ? 1 : valueA > valueB ? -1 : 0;
+      return valueA && valueB
+        ? valueA < valueB
+          ? 1
+          : valueA > valueB
+          ? -1
+          : 0
+        : 0;
     }
   });
 
@@ -283,7 +295,7 @@ export function TransactionsList({
                             key={index}
                             className={`px-2 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200`}
                           >
-                            {tag}
+                            {tag.name}
                           </span>
                         ))}
                       </div>

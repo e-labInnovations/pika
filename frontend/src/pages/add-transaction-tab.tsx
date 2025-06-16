@@ -2,7 +2,7 @@ import { AddTransaction } from "@/components/add-transaction";
 import HeaderRightActions from "@/components/add-transaction-tab/header-right-actions";
 import ScanReceipt from "@/components/add-transaction-tab/scan-receipt";
 import TransactionTypeSelector from "@/components/add-transaction-tab/transaction-type-selector";
-import type { TransactionType } from "@/components/transactions-tab/filter/types";
+import type { TransactionType } from "@/data/types";
 import {
   transactions as transactionsData,
   people,

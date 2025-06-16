@@ -18,13 +18,19 @@ const FilterChip = ({
   onClick,
   shouldShowRemove = true,
 }: FilterChipProps) => {
+  const isHexColor = color?.startsWith("#") && color;
+  const isHexBgColor = bgColor?.startsWith("#") && bgColor;
   return (
     <Badge
       className={cn(
         "rounded-full gap-1 text-[10px] px-2 py-0.5 flex-shrink-0",
-        color ?? "",
-        bgColor ?? ""
+        !isHexBgColor && bgColor,
+        isHexBgColor && color
       )}
+      style={{
+        backgroundColor: isHexBgColor ? bgColor : undefined,
+        color: isHexColor ? color : undefined,
+      }}
       key={id}
       variant="secondary"
       onClick={onClick}
