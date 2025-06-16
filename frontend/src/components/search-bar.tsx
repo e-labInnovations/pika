@@ -7,18 +7,20 @@ interface SearchBarProps {
   searchTerm: string;
   setSearchTerm: (searchTerm: string) => void;
   onSearchToggle: (show: boolean) => void;
+  placeholder?: string;
 }
 
 const SearchBar = ({
   searchTerm,
   setSearchTerm,
   onSearchToggle,
+  placeholder = "Search...",
 }: SearchBarProps) => {
   return (
     <div className="relative">
       <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
       <Input
-        placeholder="Search transactions..."
+        placeholder={placeholder}
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         className={cn(

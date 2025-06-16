@@ -1,4 +1,6 @@
 import { PeopleList } from "@/components/people-list";
+import HeaderRightActions from "@/components/people-tab/header-right-actions";
+import SearchBar from "@/components/search-bar";
 import { people as peopleData, type Person } from "@/data/dummy-data";
 import TabsLayout from "@/layouts/tabs";
 import { useEffect, useState } from "react";
@@ -6,6 +8,8 @@ import { useEffect, useState } from "react";
 const PeopleTab = () => {
   const [selectedPersonId, setSelectedPersonId] = useState<number | null>(null);
   const [people, setPeople] = useState<Person[]>([]);
+  const [showPeopleSearch, setShowPeopleSearch] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     return () => setPeople(peopleData);
@@ -36,15 +40,24 @@ const PeopleTab = () => {
       header={{
         title: "People",
         description: "Manage your people",
+        rightActions: (
+          <HeaderRightActions
+            showPeopleSearch={showPeopleSearch}
+            setShowPeopleSearch={setShowPeopleSearch}
+          />
+        ),
       }}
     >
-      <PeopleList
-        onPersonSelect={setSelectedPersonId}
-        people={people}
-        onAdd={addPerson}
-        onEdit={updatePerson}
-        onDelete={deletePerson}
-      />
+      {showPeopleSearch && (
+        <SearchBar
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          onSearchToggle={setShowPeopleSearch}
+          placeholder="Search people..."
+        />
+      )}
+
+      <PeopleList people={people} searchTerm={searchTerm} />
     </TabsLayout>
   );
 };
