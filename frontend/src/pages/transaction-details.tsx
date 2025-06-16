@@ -70,7 +70,13 @@ const TransactionDetails = () => {
                   iconName={transaction.category.icon}
                   className="w-6 h-6 text-white"
                 />
-                <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center">
+                <div
+                  className={cn(
+                    "absolute -bottom-1 -right-1 w-6 h-6 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center",
+                    getTransactionType(transaction.type)?.color
+                    // ToDo: Fix this, this color not working
+                  )}
+                >
                   <IconRenderer
                     iconName={getTransactionType(transaction.type)?.icon}
                     className="w-6 h-6 text-white"

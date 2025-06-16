@@ -8,7 +8,13 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import FilterTabHeader from "./filter-tab-header";
-import { amountOperators, type AmountOperator, type Filter } from "./types";
+import {
+  amountOperators,
+  defaultFilterValues,
+  type AmountOperator,
+  type Filter,
+} from "./types";
+import { Button } from "@/components/ui/button";
 
 interface AmountTabContentProps {
   filters: Filter;
@@ -25,7 +31,23 @@ const AmountTabContent = ({ filters, setFilters }: AmountTabContentProps) => {
 
   return (
     <div className="space-y-3">
-      <FilterTabHeader title="Amount" />
+      <FilterTabHeader
+        title="Amount"
+        action={
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() =>
+              setFilters((prev) => ({
+                ...prev,
+                amount: defaultFilterValues.amount,
+              }))
+            }
+          >
+            Clear
+          </Button>
+        }
+      />
       <div className="space-y-4">
         <div className="flex flex-col gap-3">
           <Label htmlFor="amount-operator" className="px-1">
