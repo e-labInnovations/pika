@@ -1,6 +1,8 @@
 import { AddTransaction } from "@/components/add-transaction";
 import HeaderRightActions from "@/components/add-transaction-tab/header-right-actions";
 import ScanReceipt from "@/components/add-transaction-tab/scan-receipt";
+import TransactionTypeSelector from "@/components/add-transaction-tab/transaction-type-selector";
+import type { TransactionType } from "@/components/transactions-tab/filter/types";
 import {
   transactions as transactionsData,
   people,
@@ -15,6 +17,8 @@ import { useState, useEffect } from "react";
 const AddTransactionTab = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [openAiReceiptScanner, setOpenAiReceiptScanner] = useState(false);
+  const [selectedTransactionType, setSelectedTransactionType] =
+    useState<TransactionType>("expense");
 
   useEffect(() => {
     return () => setTransactions(transactionsData);
@@ -44,6 +48,10 @@ const AddTransactionTab = () => {
         ),
       }}
     >
+      <TransactionTypeSelector
+        value={selectedTransactionType}
+        onChange={setSelectedTransactionType}
+      />
       {/* Will update this soon */}
       <AddTransaction
         onSubmit={addTransaction}
