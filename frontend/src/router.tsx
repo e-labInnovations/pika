@@ -17,11 +17,15 @@ import GeneralSettings from './pages/general-settings';
 import NotificationsSettings from './pages/notifications-settings';
 import SecuritySettings from './pages/security-settings';
 import ProfileSettings from './pages/profile-settings';
+import NotFound from './pages/404';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
+      {/* Public Routes */}
       <Route path="/login" element={<Login />} />
+
+      {/* Protected Routes */}
       <Route
         element={
           <ProtectedRoute>
@@ -29,6 +33,7 @@ const router = createBrowserRouter(
           </ProtectedRoute>
         }
       >
+        {/* Main Routes */}
         <Route path="/" element={<HomeTab />} />
         <Route path="/old-home" element={<Home />} />
         <Route path="/transactions" element={<TransactionsTab />} />
@@ -36,6 +41,8 @@ const router = createBrowserRouter(
         <Route path="/add" element={<AddTransactionTab />} />
         <Route path="/people" element={<PeopleTab />} />
         <Route path="/people/:id" element={<DetailedPerson />} />
+
+        {/* Settings Routes */}
         <Route path="/settings" element={<SettingsTab />} />
         <Route path="/settings/categories" element={<Categories />} />
         <Route path="/settings/tags" element={<Tags />} />
@@ -44,7 +51,12 @@ const router = createBrowserRouter(
         <Route path="/settings/notifications" element={<NotificationsSettings />} />
         <Route path="/settings/security" element={<SecuritySettings />} />
         <Route path="/settings/profile" element={<ProfileSettings />} />
+
+        {/* Other Routes */}
         <Route path="/about" element={<div>About Page</div>} />
+
+        {/* 404 Route - Must be last */}
+        <Route path="*" element={<NotFound />} />
       </Route>
     </>,
   ),

@@ -29,7 +29,7 @@ const Tags = () => {
         linkBackward: '/settings',
       }}
     >
-      <div className="space-y-4">
+      <div className="flex flex-col gap-2">
         {tags.map((tag) => (
           <Card key={tag.id} className="p-0">
             <CardContent className="p-4">
@@ -50,20 +50,24 @@ const Tags = () => {
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Button variant="ghost" size="sm" onClick={() => onEditTag(tag.id)}>
-                    <Edit2 className="h-4 w-4 text-slate-600 dark:text-slate-400" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => {
-                      if (confirm(`Are you sure you want to delete "${tag.name}"?`)) {
-                        onDeleteTag(tag.id);
-                      }
-                    }}
-                  >
-                    <Trash2 className="h-4 w-4 text-red-500" />
-                  </Button>
+                  {!tag.isSystem && (
+                    <>
+                      <Button variant="ghost" size="sm" onClick={() => onEditTag(tag.id)}>
+                        <Edit2 className="h-4 w-4 text-slate-600 dark:text-slate-400" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          if (confirm(`Are you sure you want to delete "${tag.name}"?`)) {
+                            onDeleteTag(tag.id);
+                          }
+                        }}
+                      >
+                        <Trash2 className="h-4 w-4 text-red-500" />
+                      </Button>
+                    </>
+                  )}
                 </div>
               </div>
             </CardContent>

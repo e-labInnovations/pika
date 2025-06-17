@@ -51,6 +51,8 @@ export interface Category {
   type: TransactionType;
   description: string;
   children?: Category[];
+  isSystem: boolean;
+  isParent: boolean;
 }
 
 export interface TransactionCategory {
@@ -68,6 +70,7 @@ export interface Tag {
   bgColor: string;
   icon: string;
   description: string;
+  isSystem: boolean;
 }
 
 export interface TransactionTag {
@@ -106,7 +109,7 @@ export interface AnalysisOutput {
   total: number;
   category: Category;
   tags: Tag[];
-  notes: string;
+  note: string;
 }
 
 export interface WeeklyExpense {
@@ -116,7 +119,7 @@ export interface WeeklyExpense {
 
 export const accounts: Account[] = [
   {
-    id: 'checking',
+    id: '1',
     name: 'Checking Account',
     icon: 'wallet',
     bgColor: '#3B82F6',
@@ -126,7 +129,7 @@ export const accounts: Account[] = [
     bank: 'Chase Bank',
   },
   {
-    id: 'savings',
+    id: '2',
     name: 'Savings Account',
     icon: 'piggy-bank',
     bgColor: '#22C55E',
@@ -136,7 +139,7 @@ export const accounts: Account[] = [
     bank: 'Chase Bank',
   },
   {
-    id: 'credit',
+    id: '3',
     name: 'Credit Card',
     icon: 'credit-card',
     bgColor: '#EF4444',
@@ -236,6 +239,8 @@ export const categories: Category[] = [
     color: '#ffffff',
     type: 'expense',
     description: 'Food & Dining',
+    isSystem: true,
+    isParent: true,
     children: [
       {
         id: '2',
@@ -245,6 +250,8 @@ export const categories: Category[] = [
         color: '#ffffff',
         type: 'expense',
         description: 'Restaurants',
+        isSystem: true,
+        isParent: false,
       },
       {
         id: '3',
@@ -254,6 +261,8 @@ export const categories: Category[] = [
         color: '#ffffff',
         type: 'expense',
         description: 'Groceries',
+        isSystem: true,
+        isParent: false,
       },
     ],
   },
@@ -265,6 +274,8 @@ export const categories: Category[] = [
     color: '#ffffff',
     type: 'expense',
     description: 'Transportation',
+    isSystem: true,
+    isParent: true,
     children: [
       {
         id: '5',
@@ -274,6 +285,8 @@ export const categories: Category[] = [
         color: '#ffffff',
         type: 'expense',
         description: 'Gas',
+        isSystem: true,
+        isParent: false,
       },
       {
         id: '6',
@@ -283,6 +296,8 @@ export const categories: Category[] = [
         color: '#ffffff',
         type: 'expense',
         description: 'Public Transit',
+        isSystem: false,
+        isParent: false,
       },
     ],
   },
@@ -294,6 +309,8 @@ export const categories: Category[] = [
     color: '#ffffff',
     type: 'income',
     description: 'Income',
+    isSystem: false,
+    isParent: true,
     children: [
       {
         id: '8',
@@ -303,6 +320,8 @@ export const categories: Category[] = [
         color: '#ffffff',
         type: 'income',
         description: 'Salary',
+        isSystem: false,
+        isParent: false,
       },
       {
         id: '9',
@@ -312,6 +331,8 @@ export const categories: Category[] = [
         color: '#ffffff',
         type: 'income',
         description: 'Freelance',
+        isSystem: false,
+        isParent: false,
       },
     ],
   },
@@ -319,12 +340,22 @@ export const categories: Category[] = [
 
 export const tags: Tag[] = [
   {
+    id: '0',
+    name: 'Recurring',
+    icon: 'repeat',
+    color: '#ffffff',
+    bgColor: '#000000',
+    description: 'Recurring transactions',
+    isSystem: true,
+  },
+  {
     id: '1',
     name: 'Coffee',
     icon: 'coffee',
     color: '#ffffff',
     bgColor: '#f59e0b',
     description: 'Coffee at MalabarBites',
+    isSystem: false,
   },
   {
     id: '2',
@@ -333,6 +364,7 @@ export const tags: Tag[] = [
     color: '#ffffff',
     bgColor: '#f97316',
     description: 'MalabarBites',
+    isSystem: false,
   },
   {
     id: '3',
@@ -341,6 +373,7 @@ export const tags: Tag[] = [
     color: '#ffffff',
     bgColor: '#2563eb',
     description: 'Casual Tea',
+    isSystem: false,
   },
   {
     id: '4',
@@ -349,6 +382,7 @@ export const tags: Tag[] = [
     color: '#ffffff',
     bgColor: '#10b981',
     description: 'Birthday',
+    isSystem: false,
   },
   {
     id: '5',
@@ -357,6 +391,7 @@ export const tags: Tag[] = [
     color: '#ffffff',
     bgColor: '#ef4444',
     description: 'Wedding Gift',
+    isSystem: false,
   },
 ];
 
@@ -492,7 +527,7 @@ export const analysisOutput: AnalysisOutput = {
   total: 15.0,
   category: categories[0].children?.[0] as Category,
   tags: [tags[0] as Tag, tags[1] as Tag],
-  notes: 'This is a note about the receipt',
+  note: 'This is a note about the receipt',
 };
 
 export const weeklyExpenses = [

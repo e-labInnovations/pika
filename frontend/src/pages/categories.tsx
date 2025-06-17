@@ -53,20 +53,24 @@ const Categories = () => {
                     </div>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Button variant="ghost" size="sm" onClick={() => onEditCategory(category.id)}>
-                      <Edit2 className="h-4 w-4 text-slate-600 dark:text-slate-400" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => {
-                        if (confirm(`Are you sure you want to delete "${category.name}"?`)) {
-                          onDeleteCategory(category.id);
-                        }
-                      }}
-                    >
-                      <Trash2 className="h-4 w-4 text-red-500" />
-                    </Button>
+                    {!category.isSystem && (
+                      <>
+                        <Button variant="ghost" size="sm" onClick={() => onEditCategory(category.id)}>
+                          <Edit2 className="h-4 w-4 text-slate-600 dark:text-slate-400" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            if (confirm(`Are you sure you want to delete "${category.name}"?`)) {
+                              onDeleteCategory(category.id);
+                            }
+                          }}
+                        >
+                          <Trash2 className="h-4 w-4 text-red-500" />
+                        </Button>
+                      </>
+                    )}
                   </div>
                 </div>
 
@@ -93,20 +97,24 @@ const Categories = () => {
                         </div>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <Button variant="ghost" size="sm" onClick={() => onEditCategory(child.id)}>
-                          <Edit2 className="h-3 w-3 text-slate-600 dark:text-slate-400" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => {
-                            if (confirm(`Are you sure you want to delete "${child.name}"?`)) {
-                              onDeleteCategory(child.id);
-                            }
-                          }}
-                        >
-                          <Trash2 className="h-3 w-3 text-red-500" />
-                        </Button>
+                        {!child.isSystem && (
+                          <>
+                            <Button variant="ghost" size="sm" onClick={() => onEditCategory(child.id)}>
+                              <Edit2 className="h-3 w-3 text-slate-600 dark:text-slate-400" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                if (confirm(`Are you sure you want to delete "${child.name}"?`)) {
+                                  onDeleteCategory(child.id);
+                                }
+                              }}
+                            >
+                              <Trash2 className="h-3 w-3 text-red-500" />
+                            </Button>
+                          </>
+                        )}
                       </div>
                     </div>
                   ))}
