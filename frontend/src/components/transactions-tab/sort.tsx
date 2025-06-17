@@ -1,22 +1,10 @@
-import {
-  Drawer,
-  DrawerTitle,
-  DrawerHeader,
-  DrawerContent,
-  DrawerClose,
-  DrawerFooter,
-} from "@/components/ui/drawer";
-import { Button } from "@/components/ui/button";
-import * as RadioGroup from "@radix-ui/react-radio-group";
-import { X } from "lucide-react";
-import { useEffect, useState } from "react";
-import SortRadioItem from "./sort/sort-radio-item";
-import {
-  defaultSort,
-  type Sort,
-  type SortDirection,
-  sortOptions,
-} from "./sort/types";
+import { Drawer, DrawerTitle, DrawerHeader, DrawerContent, DrawerClose, DrawerFooter } from '@/components/ui/drawer';
+import { Button } from '@/components/ui/button';
+import * as RadioGroup from '@radix-ui/react-radio-group';
+import { X } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import SortRadioItem from './sort/sort-radio-item';
+import { defaultSort, type Sort, type SortDirection, sortOptions } from './sort/types';
 
 interface TransactionsSortProps {
   open: boolean;
@@ -25,22 +13,17 @@ interface TransactionsSortProps {
   setSort: (sort: Sort) => void;
 }
 
-const TransactionsSort = ({
-  open,
-  setOpen,
-  sort,
-  setSort,
-}: TransactionsSortProps) => {
+const TransactionsSort = ({ open, setOpen, sort, setSort }: TransactionsSortProps) => {
   const [localSort, setLocalSort] = useState<Sort>(sort);
 
   useEffect(() => {
-    console.log("🚀 ~ useEffect ~ localSort:", localSort);
+    console.log('🚀 ~ useEffect ~ localSort:', localSort);
   }, [localSort]);
 
   const handleSortChange = (value: string) => {
     setLocalSort({
-      field: value.split("-")[0],
-      direction: value.split("-")[1] as SortDirection,
+      field: value.split('-')[0],
+      direction: value.split('-')[1] as SortDirection,
     });
   };
 
@@ -61,13 +44,9 @@ const TransactionsSort = ({
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerContent className="h-[75%]">
         <DrawerHeader className="items-start">
-          <DrawerTitle className="flex gap-2 w-full items-center">
+          <DrawerTitle className="flex w-full items-center gap-2">
             <span className="grow text-left">Sort Transactions</span>
-            <Button
-              variant="outline"
-              className="rounded-full flex-none"
-              onClick={handleResetSort}
-            >
+            <Button variant="outline" className="flex-none rounded-full" onClick={handleResetSort}>
               <X /> Reset
             </Button>
           </DrawerTitle>
@@ -76,23 +55,21 @@ const TransactionsSort = ({
         <RadioGroup.Root
           value={getRadioValue(localSort.field, localSort.direction)}
           onValueChange={handleSortChange}
-          className="flex flex-col gap-2 px-4 h-[70%] overflow-y-auto"
+          className="flex h-[70%] flex-col gap-2 overflow-y-auto px-4"
         >
           {sortOptions.map((option) => (
             <div key={option.value} className="flex flex-col gap-2">
-              <h4 className="font-medium text-slate-900 dark:text-white">
-                {option.label}
-              </h4>
+              <h4 className="font-medium text-slate-900 dark:text-white">{option.label}</h4>
               <div className="grid grid-cols-2 gap-4">
                 <SortRadioItem
                   key={`${option.value}-asc`}
-                  value={getRadioValue(option.value, "asc")}
+                  value={getRadioValue(option.value, 'asc')}
                   label={option.ascLabel}
                   type="asc"
                 />
                 <SortRadioItem
                   key={`${option.value}-desc`}
-                  value={getRadioValue(option.value, "desc")}
+                  value={getRadioValue(option.value, 'desc')}
                   label={option.descLabel}
                   type="desc"
                 />
