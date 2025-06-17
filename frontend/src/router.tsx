@@ -11,6 +11,12 @@ import SettingsTab from './pages/settings-tab';
 import TransactionDetails from './pages/transaction-details';
 import DetailedPerson from './pages/detailed-person';
 import Categories from './pages/categories';
+import Tags from './pages/tags';
+import Accounts from './pages/accounts';
+import GeneralSettings from './pages/general-settings';
+import NotificationsSettings from './pages/notifications-settings';
+import SecuritySettings from './pages/security-settings';
+import ProfileSettings from './pages/profile-settings';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -32,6 +38,12 @@ const router = createBrowserRouter(
         <Route path="/people/:id" element={<DetailedPerson />} />
         <Route path="/settings" element={<SettingsTab />} />
         <Route path="/settings/categories" element={<Categories />} />
+        <Route path="/settings/tags" element={<Tags />} />
+        <Route path="/settings/accounts" element={<Accounts />} />
+        <Route path="/settings/general" element={<GeneralSettings />} />
+        <Route path="/settings/notifications" element={<NotificationsSettings />} />
+        <Route path="/settings/security" element={<SecuritySettings />} />
+        <Route path="/settings/profile" element={<ProfileSettings />} />
         <Route path="/about" element={<div>About Page</div>} />
       </Route>
     </>,

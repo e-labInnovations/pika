@@ -26,6 +26,7 @@ const Categories = () => {
             <Plus className="h-4 w-4" />
           </Button>
         ),
+        linkBackward: '/settings',
       }}
     >
       <div className="">
