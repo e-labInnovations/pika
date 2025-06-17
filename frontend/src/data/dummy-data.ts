@@ -97,6 +97,7 @@ export interface Transaction {
   person?: TransactionPerson;
   note: string;
   attachments?: TransactionAttachment[];
+  toAccount?: TransactionAccount;
 }
 
 export interface AnalysisOutput {
@@ -366,7 +367,7 @@ export const transactions: Transaction[] = [
     amount: 85.5,
     date: "2024-11-15T14:30:00.000Z",
     type: "expense",
-    category: categories[0],
+    category: categories[0].children?.[0] as Category,
     account: accounts[0],
     tags: [tags[0], tags[1], tags[2], tags[3], tags[4]],
     person: people[1],
@@ -392,7 +393,7 @@ export const transactions: Transaction[] = [
     amount: 12.75,
     date: "2024-11-15T09:15:00.000Z",
     type: "expense",
-    category: categories[1],
+    category: categories[1].children?.[0] as Category,
     account: accounts[1],
     tags: [tags[1]],
     person: people[1],
@@ -404,7 +405,7 @@ export const transactions: Transaction[] = [
     amount: 3500.0,
     date: "2024-11-14T08:00:00.000Z",
     type: "income",
-    category: categories[2],
+    category: categories[2].children?.[0] as Category,
     account: accounts[0],
     tags: [tags[0]],
     note: "This is a note about the receipt",
@@ -416,6 +417,72 @@ export const transactions: Transaction[] = [
         type: "image",
       },
     ],
+  },
+  {
+    id: "4",
+    title: "Transfer to Savings",
+    amount: 500.0,
+    date: "2024-11-13T10:00:00.000Z",
+    type: "transfer",
+    category: categories[1].children?.[0] as Category,
+    account: accounts[0],
+    toAccount: accounts[1],
+    tags: [],
+    note: "Monthly savings transfer",
+  },
+  {
+    id: "5",
+    title: "Freelance Payment",
+    amount: 1200.0,
+    date: "2024-11-12T15:45:00.000Z",
+    type: "income",
+    category: categories[2].children?.[0] as Category,
+    account: accounts[0],
+    tags: [tags[0]],
+    note: "Payment for website development project",
+    attachments: [
+      {
+        id: "3",
+        name: "invoice.pdf",
+        url: "https://example.com/invoice.pdf",
+        type: "pdf",
+      },
+    ],
+  },
+  {
+    id: "6",
+    title: "Restaurant Dinner",
+    amount: 65.25,
+    date: "2024-11-12T19:30:00.000Z",
+    type: "expense",
+    category: categories[1].children?.[1] as Category,
+    account: accounts[2],
+    tags: [tags[1]],
+    person: people[0],
+    note: "Dinner at Italian restaurant",
+  },
+  {
+    id: "7",
+    title: "Credit Card Payment",
+    amount: 800.0,
+    date: "2024-11-11T09:00:00.000Z",
+    type: "transfer",
+    category: categories[1].children?.[0] as Category,
+    account: accounts[0],
+    toAccount: accounts[2],
+    tags: [],
+    note: "Monthly credit card payment",
+  },
+  {
+    id: "8",
+    title: "Gym Membership",
+    amount: 45.0,
+    date: "2024-11-10T08:00:00.000Z",
+    type: "expense",
+    category: categories[0].children?.[0] as Category,
+    account: accounts[0],
+    tags: [tags[4]],
+    note: "Monthly gym membership fee",
   },
 ];
 

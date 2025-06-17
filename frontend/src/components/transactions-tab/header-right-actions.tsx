@@ -1,4 +1,4 @@
-import { ArrowDownUp, FilterIcon, Search } from "lucide-react";
+import { ArrowDownUp, FilterIcon, Search, SearchX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface HeaderRightActionsProps {
@@ -26,7 +26,11 @@ const HeaderRightActions = ({
         className="text-slate-600 dark:text-slate-400"
         onClick={() => setShowTransactionSearch(!showTransactionSearch)}
       >
-        <Search className="w-4 h-4" />
+        {showTransactionSearch ? (
+          <SearchX className="w-4 h-4" />
+        ) : (
+          <Search className="w-4 h-4" />
+        )}
       </Button>
 
       <div className="relative">

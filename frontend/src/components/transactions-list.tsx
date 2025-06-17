@@ -1,6 +1,11 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowUpRight, ArrowDownLeft, ArrowRightLeft } from "lucide-react";
+import {
+  ArrowUpRight,
+  ArrowDownLeft,
+  ArrowRightLeft,
+  ArrowBigRightDash,
+} from "lucide-react";
 import { IconRenderer } from "@/components/icon-renderer";
 import { SwipeableTransaction } from "@/components/swipeable-transaction";
 import type { Transaction } from "@/data/dummy-data";
@@ -296,21 +301,46 @@ export function TransactionsList({
                           </div>
 
                           <div className="flex items-center gap-2">
-                            <div
-                              className="w-4 h-4 rounded-full flex items-center justify-center"
-                              style={{
-                                backgroundColor: transaction.account.bgColor,
-                                color: transaction.account.color,
-                              }}
-                            >
-                              <IconRenderer
-                                iconName={transaction.account.icon}
-                                className="w-2 h-2 text-white"
-                              />
+                            <div className="flex items-center gap-2">
+                              <div
+                                className="w-4 h-4 rounded-full flex items-center justify-center"
+                                style={{
+                                  backgroundColor: transaction.account.bgColor,
+                                  color: transaction.account.color,
+                                }}
+                              >
+                                <IconRenderer
+                                  iconName={transaction.account.icon}
+                                  className="w-2 h-2 text-white"
+                                />
+                              </div>
+                              <span className="text-xs text-slate-500 dark:text-slate-400">
+                                {transaction.account.name}
+                              </span>
                             </div>
-                            <span className="text-xs text-slate-500 dark:text-slate-400">
-                              {transaction.account.name}
-                            </span>
+                            {transaction.toAccount && (
+                              <>
+                                <ArrowBigRightDash className="w-4 h-4 text-slate-500 dark:text-slate-400" />
+                                <div className="flex items-center gap-2">
+                                  <div
+                                    className="w-4 h-4 rounded-full flex items-center justify-center"
+                                    style={{
+                                      backgroundColor:
+                                        transaction.toAccount.bgColor,
+                                      color: transaction.toAccount.color,
+                                    }}
+                                  >
+                                    <IconRenderer
+                                      iconName={transaction.toAccount.icon}
+                                      className="w-2 h-2 text-white"
+                                    />
+                                  </div>
+                                  <span className="text-xs text-slate-500 dark:text-slate-400">
+                                    {transaction.toAccount.name}
+                                  </span>
+                                </div>
+                              </>
+                            )}
                           </div>
                         </div>
                         <div className="flex items-center gap-2">

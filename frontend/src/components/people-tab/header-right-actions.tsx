@@ -1,4 +1,4 @@
-import { Search } from "lucide-react";
+import { Search, SearchX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface HeaderRightActionsProps {
@@ -18,7 +18,11 @@ const HeaderRightActions = ({
         className="text-slate-600 dark:text-slate-400"
         onClick={() => setShowPeopleSearch(!showPeopleSearch)}
       >
-        <Search className="w-4 h-4" />
+        {showPeopleSearch ? (
+          <SearchX className="w-4 h-4" />
+        ) : (
+          <Search className="w-4 h-4" />
+        )}
       </Button>
     </div>
   );
