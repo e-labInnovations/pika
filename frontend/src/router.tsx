@@ -10,6 +10,7 @@ import PeopleTab from './pages/people-tab';
 import SettingsTab from './pages/settings-tab';
 import TransactionDetails from './pages/transaction-details';
 import DetailedPerson from './pages/detailed-person';
+import Categories from './pages/categories';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -30,6 +31,7 @@ const router = createBrowserRouter(
         <Route path="/people" element={<PeopleTab />} />
         <Route path="/people/:id" element={<DetailedPerson />} />
         <Route path="/settings" element={<SettingsTab />} />
+        <Route path="/settings/categories" element={<Categories />} />
         <Route path="/about" element={<div>About Page</div>} />
       </Route>
     </>,
