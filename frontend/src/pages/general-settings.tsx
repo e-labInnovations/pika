@@ -1,10 +1,13 @@
+import ColorPicker from '@/components/color-picker';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import TabsLayout from '@/layouts/tabs';
 import { useTheme } from '@/provider/theme-provider';
+import { useState } from 'react';
 
 const GeneralSettings = () => {
   const { theme, setTheme } = useTheme();
+  const [color, setColor] = useState('#FCC838');
   return (
     <TabsLayout
       header={{
@@ -34,6 +37,15 @@ const GeneralSettings = () => {
           <p className="text-xs text-slate-500 dark:text-slate-400">Automatically backup your data</p>
         </div>
         <Switch id="auto-backup" checked={false} onCheckedChange={() => {}} />
+      </div>
+      <div className="flex items-center justify-between">
+        <div>
+          <Label htmlFor="color-picker" className="text-sm font-medium">
+            Color Picker (for testing)
+          </Label>
+          <p className="text-xs text-slate-500 dark:text-slate-400">Select a color</p>
+        </div>
+        <ColorPicker color={color} setColor={setColor} />
       </div>
     </TabsLayout>
   );
