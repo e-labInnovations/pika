@@ -13,6 +13,7 @@ import Attachments from '@/components/add-transaction-tab/attachments';
 import Tags from '@/components/add-transaction-tab/tags';
 import Note from '@/components/add-transaction-tab/note';
 import { Button } from '@/components/ui/button';
+import type { TransactionType } from '@/data/types';
 
 const AddTransactionTab = () => {
   const [openAiReceiptScanner, setOpenAiReceiptScanner] = useState(false);
@@ -35,6 +36,22 @@ const AddTransactionTab = () => {
     console.log(transaction);
   };
 
+  const handleTypeChange = (type: TransactionType) => {
+    const defaultCategoryByType = {
+      expense: '1',
+      income: '10',
+      transfer: '16',
+    };
+    setFormData((prev) => ({ ...prev, type, category: defaultCategoryByType[type] }));
+
+    // TODO: Handle account and person selection
+    // if (type === 'expense' || type === 'income') {
+    //   setFormData((prev) => ({ ...prev, toAccount: null }));
+    // } else {
+    //   setFormData((prev) => ({ ...prev, person: null }));
+    // }
+  };
+
   return (
     <TabsLayout
       header={{
@@ -43,7 +60,7 @@ const AddTransactionTab = () => {
         rightActions: <HeaderRightActions handleScanReceipt={() => setOpenAiReceiptScanner(true)} />,
       }}
     >
-      <TransactionTypeSelector value={formData.type} onChange={(type) => setFormData((prev) => ({ ...prev, type }))} />
+      <TransactionTypeSelector value={formData.type} onChange={handleTypeChange} />
       <BasicInfo formData={formData} setFormData={setFormData} />
       <CategoryAccount formData={formData} setFormData={setFormData} />
       {formData.type !== 'transfer' && <Person formData={formData} setFormData={setFormData} />}

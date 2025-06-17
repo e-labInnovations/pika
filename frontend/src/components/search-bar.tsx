@@ -1,7 +1,6 @@
-import { Search, X } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { Search, X } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 interface SearchBarProps {
   searchTerm: string;
@@ -10,38 +9,28 @@ interface SearchBarProps {
   placeholder?: string;
 }
 
-const SearchBar = ({
-  searchTerm,
-  setSearchTerm,
-  onSearchToggle,
-  placeholder = "Search...",
-}: SearchBarProps) => {
+const SearchBar = ({ searchTerm, setSearchTerm, onSearchToggle, placeholder = 'Search...' }: SearchBarProps) => {
   return (
-    <div className="relative">
-      <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+    <div className="animate-in fade-in slide-in-from-top-2 relative duration-300">
+      <Search className="animate-in fade-in absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-slate-400 duration-300" />
       <Input
         placeholder={placeholder}
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        className={cn(
-          "pl-9 pr-9 h-9",
-          "bg-card/50 backdrop-blur-sm",
-          "border-border focus-visible:ring-1 focus-visible:ring-ring",
-          "placeholder:text-muted-foreground/50"
-        )}
+        className="bg-card/50 border-border focus-visible:ring-ring placeholder:text-muted-foreground/50 h-9 pr-9 pl-9 focus-visible:ring-1"
         autoFocus
       />
       {searchTerm && (
         <Button
           variant="ghost"
           size="sm"
-          className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 p-0 text-muted-foreground hover:text-foreground"
+          className="text-muted-foreground hover:text-foreground animate-in fade-in absolute top-1/2 right-1 h-7 w-7 -translate-y-1/2 p-0 duration-200"
           onClick={() => {
-            setSearchTerm("");
+            setSearchTerm('');
             onSearchToggle(false);
           }}
         >
-          <X className="w-4 h-4" />
+          <X className="h-4 w-4" />
         </Button>
       )}
     </div>
