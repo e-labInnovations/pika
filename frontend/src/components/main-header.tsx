@@ -1,6 +1,7 @@
 import { ChevronLeft } from 'lucide-react';
 import { Button } from './ui/button';
 import { useNavigate } from 'react-router-dom';
+import PikaIcon from './pika-icon';
 
 interface MainHeaderProps {
   linkBackward?: string;
@@ -27,8 +28,8 @@ const MainHeader = ({ linkBackward, title, description, rightActions }: MainHead
               </Button>
             )}
             <div className="flex items-center space-x-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600">
-                <span className="text-lg font-bold text-white">🏔️</span>
+              <div className="border-border bg-card flex h-10 w-10 items-center justify-center rounded-full border bg-gradient-to-br">
+                <PikaIcon size={40} style="filled" />
               </div>
               <div>
                 <h1 className="text-foreground text-xl font-bold">{title}</h1>

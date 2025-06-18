@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Wallet, X } from 'lucide-react';
+import { Pen, Wallet, X } from 'lucide-react';
 import type { TransactionFormData } from './types';
 import { useState } from 'react';
 import { accounts, categories } from '@/data/dummy-data';
@@ -45,39 +45,28 @@ const CategoryAccount = ({ formData, setFormData }: CategoryAccountProps) => {
         <CardContent className="flex flex-col gap-4 p-4">
           <div className="flex flex-col gap-2">
             <Label>Category *</Label>
-            {formData.category ? (
-              <div className="flex items-center justify-between rounded-lg border border-emerald-200 bg-emerald-50 p-3 dark:border-emerald-800 dark:bg-emerald-900/20">
-                <div className="flex items-center space-x-3">
-                  <div
-                    className="flex h-8 w-8 items-center justify-center rounded-full"
-                    style={{
-                      backgroundColor: getCategory(formData.category)?.bgColor,
-                      color: getCategory(formData.category)?.color,
-                    }}
-                  >
-                    <DynamicIcon
-                      name={getCategory(formData.category)?.icon as IconName}
-                      className="h-4 w-4 text-white"
-                    />
-                  </div>
+            <div className="flex items-center justify-between rounded-lg border border-emerald-200 bg-emerald-50 p-3 dark:border-emerald-800 dark:bg-emerald-900/20">
+              <div className="flex items-center space-x-3">
+                <div
+                  className="flex h-8 w-8 items-center justify-center rounded-full"
+                  style={{
+                    backgroundColor: getCategory(formData.category)?.bgColor,
+                    color: getCategory(formData.category)?.color,
+                  }}
+                >
+                  <DynamicIcon name={getCategory(formData.category)?.icon as IconName} className="h-4 w-4 text-white" />
+                </div>
+                <div>
                   <span className="font-medium text-slate-900 dark:text-white">
                     {getCategory(formData.category)?.name}
                   </span>
+                  <p className="text-sm text-slate-500">{getCategory(formData.category)?.description}</p>
                 </div>
-                <Button variant="ghost" size="sm" onClick={() => setFormData((prev) => ({ ...prev, category: '' }))}>
-                  <X className="h-4 w-4" />
-                </Button>
               </div>
-            ) : (
-              <Button
-                type="button"
-                variant="outline"
-                className="h-12 w-full justify-start"
-                onClick={() => setShowCategoryPicker(true)}
-              >
-                Select a category
+              <Button variant="ghost" size="sm" onClick={() => setShowCategoryPicker(true)}>
+                <Pen className="h-4 w-4" />
               </Button>
-            )}
+            </div>
           </div>
 
           <div className="flex flex-col gap-2">
@@ -182,7 +171,7 @@ const CategoryAccount = ({ formData, setFormData }: CategoryAccountProps) => {
         isOpen={showCategoryPicker}
         onClose={() => setShowCategoryPicker(false)}
         onSelect={(category) => setFormData((prev) => ({ ...prev, category: category.id }))}
-        selectedCategoryId={formData.category?.toString()}
+        selectedCategoryId={formData.category}
         transactionType={formData.type}
       />
     </>

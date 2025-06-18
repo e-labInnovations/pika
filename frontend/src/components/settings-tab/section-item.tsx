@@ -7,11 +7,16 @@ import { useNavigate } from 'react-router-dom';
 const SectionsItem = ({ section }: { section: SettingSection }) => {
   const navigate = useNavigate();
   return (
-    <Card key={section.id} className="group p-0" onClick={() => navigate(section.link)}>
+    <Card key={section.id} className={`group p-0 ${section.bgColor}`} onClick={() => navigate(section.link)}>
       <CardContent className="flex flex-col gap-2 p-4">
         <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100 transition-colors group-hover:bg-emerald-200 dark:bg-emerald-900 dark:group-hover:bg-emerald-800">
-            <DynamicIcon name={section.icon} className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+          <div
+            className="flex h-8 w-8 items-center justify-center rounded-full"
+            style={{
+              backgroundColor: section.iconColor,
+            }}
+          >
+            <DynamicIcon name={section.icon} className="h-4 w-4 text-white" />
           </div>
           <h4 className="text-sm font-medium text-slate-900 dark:text-white">{section.title}</h4>
         </div>

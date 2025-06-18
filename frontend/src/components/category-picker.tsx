@@ -20,10 +20,8 @@ interface CategoryPickerProps {
 const CategoryPicker = ({ isOpen, onClose, onSelect, transactionType, selectedCategoryId }: CategoryPickerProps) => {
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Filter categories by transaction type
   const filteredCategories = categories.filter((category) => category.type === transactionType);
 
-  // Filter by search term - show parent if any child matches
   const searchFilteredCategories = filteredCategories.filter((category) => {
     const parentMatches = category.name.toLowerCase().includes(searchTerm.toLowerCase());
     const childMatches = category.children?.some((child) =>
@@ -33,14 +31,12 @@ const CategoryPicker = ({ isOpen, onClose, onSelect, transactionType, selectedCa
   });
 
   const handleCategorySelect = (category: Category) => {
-    // Only allow selecting child categories
     if (!category.isParent) {
       onSelect(category);
       onClose();
     }
   };
 
-  // Filter child categories based on search term and parent match
   const getFilteredChildren = (parentCategory: Category) => {
     const parentMatches = parentCategory.name.toLowerCase().includes(searchTerm.toLowerCase());
     if (parentMatches) {
@@ -96,7 +92,7 @@ const CategoryPicker = ({ isOpen, onClose, onSelect, transactionType, selectedCa
                   {getFilteredChildren(parentCategory).map((childCategory) => (
                     <div
                       key={childCategory.id}
-                      className={`cursor-pointer rounded-lg border p-3 transition-all ${
+                      className={`cursor-pointer rounded-lg border p-2 transition-all ${
                         selectedCategoryId === childCategory.id
                           ? 'border-emerald-300 bg-emerald-50 dark:bg-emerald-900'
                           : 'border-slate-200 hover:border-slate-300 dark:border-slate-700'

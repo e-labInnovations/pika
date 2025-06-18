@@ -18,6 +18,7 @@ import NotificationsSettings from './pages/notifications-settings';
 import SecuritySettings from './pages/security-settings';
 import ProfileSettings from './pages/profile-settings';
 import NotFound from './pages/404';
+import LogoDemo from './pages/logo-demo';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -54,6 +55,7 @@ const router = createBrowserRouter(
 
         {/* Other Routes */}
         <Route path="/about" element={<div>About Page</div>} />
+        <Route path="/logo-demo" element={<LogoDemo />} />
 
         {/* 404 Route - Must be last */}
         <Route path="*" element={<NotFound />} />

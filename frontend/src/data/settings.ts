@@ -7,6 +7,8 @@ export const settingSections: SettingSection[] = [
     icon: 'folder',
     description: 'Manage income and expense categories',
     link: '/settings/categories',
+    bgColor: 'bg-emerald-200 dark:bg-emerald-900',
+    iconColor: '#10b981',
   },
   {
     id: 'tags',
@@ -14,6 +16,8 @@ export const settingSections: SettingSection[] = [
     icon: 'tag',
     description: 'Organize transactions with tags',
     link: '/settings/tags',
+    bgColor: 'bg-blue-200 dark:bg-blue-900',
+    iconColor: '#3b82f6',
   },
   {
     id: 'accounts',
@@ -21,6 +25,8 @@ export const settingSections: SettingSection[] = [
     icon: 'wallet',
     description: 'Manage your bank accounts and wallets',
     link: '/settings/accounts',
+    bgColor: 'bg-amber-200 dark:bg-amber-900',
+    iconColor: '#f59e0b',
   },
   {
     id: 'general',
@@ -28,6 +34,8 @@ export const settingSections: SettingSection[] = [
     icon: 'settings',
     description: 'App preferences and behavior',
     link: '/settings/general',
+    bgColor: 'bg-gray-200 dark:bg-gray-900',
+    iconColor: '#6b7280',
   },
   {
     id: 'notifications',
@@ -35,6 +43,8 @@ export const settingSections: SettingSection[] = [
     icon: 'bell',
     description: 'Manage notification preferences',
     link: '/settings/notifications',
+    bgColor: 'bg-purple-200 dark:bg-purple-900',
+    iconColor: '#8b5cf6',
   },
   {
     id: 'security',
@@ -42,6 +52,8 @@ export const settingSections: SettingSection[] = [
     icon: 'shield',
     description: 'Security settings and data privacy',
     link: '/settings/security',
+    bgColor: 'bg-red-200 dark:bg-red-900',
+    iconColor: '#ef4444',
   },
   {
     id: 'profile',
@@ -49,5 +61,7 @@ export const settingSections: SettingSection[] = [
     icon: 'user',
     description: 'Personal information and preferences',
     link: '/settings/profile',
+    bgColor: 'bg-cyan-200 dark:bg-cyan-950',
+    iconColor: '#06b6d4',
   },
 ];

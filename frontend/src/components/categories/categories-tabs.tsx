@@ -1,14 +1,16 @@
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { transactionTypes } from '@/data/transaction-types';
-import type { TransactionType } from '@/data/types';
 import { cn } from '@/lib/utils';
+import type { TransactionType } from '@/data/types';
 
-interface TransactionTypeSelectorProps {
-  value: TransactionType;
-  onChange: (value: TransactionType) => void;
+interface CategoriesTabsProps {
+  tabContents: {
+    id: TransactionType;
+    content: React.ReactNode;
+  }[];
 }
 
-const TransactionTypeSelector = ({ value, onChange }: TransactionTypeSelectorProps) => {
+const CategoriesTabs = ({ tabContents }: CategoriesTabsProps) => {
   const getTabColorClasses = (transactionType: TransactionType) => {
     switch (transactionType) {
       case 'income':
@@ -21,7 +23,7 @@ const TransactionTypeSelector = ({ value, onChange }: TransactionTypeSelectorPro
   };
 
   return (
-    <Tabs defaultValue={value} className="w-full" onValueChange={(value) => onChange(value as TransactionType)}>
+    <Tabs defaultValue={transactionTypes[0].id} className="w-full">
       <TabsList className="w-full p-1">
         {transactionTypes.map((transactionType) => (
           <TabsTrigger
@@ -33,8 +35,13 @@ const TransactionTypeSelector = ({ value, onChange }: TransactionTypeSelectorPro
           </TabsTrigger>
         ))}
       </TabsList>
+      {tabContents.map((tabContent: { id: TransactionType; content: React.ReactNode }) => (
+        <TabsContent key={tabContent.id} value={tabContent.id}>
+          {tabContent.content}
+        </TabsContent>
+      ))}
     </Tabs>
   );
 };
 
-export default TransactionTypeSelector;
+export default CategoriesTabs;

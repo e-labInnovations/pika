@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Paperclip, Upload, X, File } from 'lucide-react';
 import type { Attachment } from './types';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 
 interface AttachmentsProps {
   attachments: Attachment[];
@@ -84,7 +85,7 @@ const Attachments = ({ attachments, setAttachments }: AttachmentsProps) => {
         {attachments.length > 0 && (
           <div className="space-y-3">
             <h4 className="font-medium text-slate-900 dark:text-white">Attached Files ({attachments.length})</h4>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
               {attachments.map((attachment) => (
                 <div
                   key={attachment.id}
@@ -107,8 +108,15 @@ const Attachments = ({ attachments, setAttachments }: AttachmentsProps) => {
                         alt={attachment.name}
                         className="h-20 w-full rounded object-cover"
                       />
-                      <div className="my-auto flex flex-col items-center gap-1">
-                        <p className="truncate text-xs font-medium text-slate-900 dark:text-white">{attachment.name}</p>
+                      <div className="my-auto flex max-w-full flex-col items-center gap-1 overflow-hidden">
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <p className="max-w-full truncate text-xs font-medium text-slate-900 dark:text-white">
+                              {attachment.name}
+                            </p>
+                          </TooltipTrigger>
+                          <TooltipContent>{attachment.name}</TooltipContent>
+                        </Tooltip>
                         {attachment.size > 0 && (
                           <p className="text-xs text-slate-500 dark:text-slate-400">
                             {formatFileSize(attachment.size)}
@@ -121,8 +129,15 @@ const Attachments = ({ attachments, setAttachments }: AttachmentsProps) => {
                       <div className="my-auto flex h-16 w-16 items-center justify-center rounded bg-red-100 dark:bg-red-900">
                         <File className="h-4 w-4 text-red-600 dark:text-red-400" />
                       </div>
-                      <div className="flex flex-col items-center gap-1">
-                        <p className="truncate text-xs font-medium text-slate-900 dark:text-white">{attachment.name}</p>
+                      <div className="flex max-w-full flex-col items-center gap-1 overflow-hidden">
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <p className="max-w-full truncate text-xs font-medium text-slate-900 dark:text-white">
+                              {attachment.name}
+                            </p>
+                          </TooltipTrigger>
+                          <TooltipContent>{attachment.name}</TooltipContent>
+                        </Tooltip>
                         {attachment.size > 0 && (
                           <p className="text-xs text-slate-500 dark:text-slate-400">
                             {formatFileSize(attachment.size)}

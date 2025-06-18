@@ -7,4 +7,6 @@ export type SettingSection = {
   icon: IconName;
   description: string;
   link: string;
+  bgColor: string; // bg-emerald-900 dark:bg-emerald-950
+  iconColor: string; // hex color
 };
