@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Check } from 'lucide-react';
 import { categories, type Category } from '@/data/dummy-data';
 import SearchBar from './search-bar';
-import type { TransactionType } from '@/data/types';
+import type { TransactionType } from '@/lib/transaction-utils';
 import { IconRenderer } from './icon-renderer';
 
 interface CategoryPickerProps {

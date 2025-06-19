@@ -1,8 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { transactionTypes } from '@/data/transaction-types';
 import { cn } from '@/lib/utils';
-import type { TransactionType } from '@/data/types';
 import { DynamicIcon, type IconName } from 'lucide-react/dynamic';
+import TransactionUtils, { type TransactionType } from '@/lib/transaction-utils';
 
 interface CategoriesTabsProps {
   tabContents: {
@@ -24,9 +23,9 @@ const CategoriesTabs = ({ tabContents }: CategoriesTabsProps) => {
   };
 
   return (
-    <Tabs defaultValue={transactionTypes[0].id} className="w-full">
+    <Tabs defaultValue={TransactionUtils.types[0].id} className="w-full">
       <TabsList className="w-full p-1">
-        {transactionTypes.map((transactionType) => (
+        {TransactionUtils.types.map((transactionType) => (
           <TabsTrigger
             key={transactionType.id}
             value={transactionType.id}

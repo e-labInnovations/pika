@@ -1,4 +1,4 @@
-import type { TransactionType } from '@/data/types';
+import type { TransactionType } from '@/lib/transaction-utils';
 
 export type Attachment = {
   id: string;

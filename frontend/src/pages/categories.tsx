@@ -3,9 +3,8 @@ import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import TabsLayout from '@/layouts/tabs';
 import CategoryItem from '@/components/categories/category-item';
-import type { TransactionType } from '@/data/types';
-import { transactionTypes } from '@/data/transaction-types';
 import CategoriesTabs from '@/components/categories/categories-tabs';
+import TransactionUtils, { type TransactionType } from '@/lib/transaction-utils';
 
 const Categories = () => {
   const onDeleteCategory = (id: string) => {
@@ -27,7 +26,7 @@ const Categories = () => {
     return categories.filter((category) => category.type === type);
   };
 
-  const tabContents = transactionTypes.map((type) => ({
+  const tabContents = TransactionUtils.types.map((type) => ({
     id: type.id,
     content: (
       <div className="flex flex-col gap-2 md:grid md:grid-cols-2 lg:grid-cols-3">

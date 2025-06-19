@@ -13,7 +13,7 @@ import Attachments from '@/components/add-transaction-tab/attachments';
 import Tags from '@/components/add-transaction-tab/tags';
 import Note from '@/components/add-transaction-tab/note';
 import { Button } from '@/components/ui/button';
-import type { TransactionType } from '@/data/types';
+import { type TransactionType } from '@/lib/transaction-utils';
 import { validateTransactionForm } from '@/components/add-transaction-tab/schema';
 import { toast } from 'sonner';
 

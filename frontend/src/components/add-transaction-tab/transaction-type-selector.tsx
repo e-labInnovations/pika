@@ -1,6 +1,5 @@
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { transactionTypes } from '@/data/transaction-types';
-import type { TransactionType } from '@/data/types';
+import TransactionUtils, { type TransactionType } from '@/lib/transaction-utils';
 import { cn } from '@/lib/utils';
 import { DynamicIcon, type IconName } from 'lucide-react/dynamic';
 
@@ -24,7 +23,7 @@ const TransactionTypeSelector = ({ value, onChange }: TransactionTypeSelectorPro
   return (
     <Tabs defaultValue={value} className="w-full" onValueChange={(value) => onChange(value as TransactionType)}>
       <TabsList className="w-full p-1">
-        {transactionTypes.map((transactionType) => (
+        {TransactionUtils.types.map((transactionType) => (
           <TabsTrigger
             key={transactionType.id}
             value={transactionType.id}

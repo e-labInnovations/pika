@@ -1,46 +1,26 @@
 import { transactions } from '@/data/dummy-data';
 import TabsLayout from '@/layouts/tabs';
 import { Card, CardContent } from '@/components/ui/card';
-import { Calendar, Clock, Tag, Wallet, User, FileText, Paperclip } from 'lucide-react';
+import { Calendar, Clock, Tag, Wallet, User, FileText, Paperclip, Eye } from 'lucide-react';
 import { IconRenderer } from '@/components/icon-renderer';
 import { Badge } from '@/components/ui/badge';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { transactionTypes } from '@/data/transaction-types';
 import { cn } from '@/lib/utils';
 import { DynamicIcon, type IconName } from 'lucide-react/dynamic';
 import HeaderDropdownMenu from '@/components/transactions-tab/header-dropdown-menu';
 import { CategoryTransactionIcon } from '@/components/category-transaction-icon';
+import { Button } from '@/components/ui/button';
+import TransactionUtils from '@/lib/transaction-utils';
 
 const TransactionDetails = () => {
   const { id } = useParams();
-
+  const navigate = useNavigate();
   const transaction = transactions.find((transaction) => transaction.id === id);
 
   const getTransactionType = (type: string) => {
-    const transactionType = transactionTypes.find((transactionType) => transactionType.id === type);
+    const transactionType = TransactionUtils.types.find((transactionType) => transactionType.id === type);
     return transactionType;
-  };
-
-  const getAmountColor = (type: string) => {
-    if (type === 'income') return transactionTypes[0].color;
-    if (type === 'expense') return transactionTypes[1].color;
-    return transactionTypes[2].color;
-  };
-
-  const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    });
-  };
-
-  const formatTime = (date: string) => {
-    return new Date(date).toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-    });
   };
 
   return (
@@ -65,7 +45,7 @@ const TransactionDetails = () => {
               />
             </div>
             <h1 className="text-2xl font-bold text-slate-900 dark:text-white">{transaction.title}</h1>
-            <p className={`text-3xl font-bold ${getAmountColor(transaction.type)}`}>
+            <p className={`text-3xl font-bold ${TransactionUtils.getAmountColor(transaction.type)}`}>
               {Math.abs(transaction.amount).toLocaleString('en-US', {
                 minimumFractionDigits: 2,
               })}
@@ -89,7 +69,9 @@ const TransactionDetails = () => {
                     <Calendar className="h-4 w-4" />
                     <span>Date</span>
                   </div>
-                  <p className="font-medium text-slate-900 dark:text-white">{formatDate(transaction.date)}</p>
+                  <p className="font-medium text-slate-900 dark:text-white">
+                    {TransactionUtils.formatDate(transaction.date)}
+                  </p>
                 </div>
 
                 <div className="space-y-1.5">
@@ -97,7 +79,9 @@ const TransactionDetails = () => {
                     <Clock className="h-4 w-4" />
                     <span>Time</span>
                   </div>
-                  <p className="font-medium text-slate-900 dark:text-white">{formatTime(transaction.date)}</p>
+                  <p className="font-medium text-slate-900 dark:text-white">
+                    {TransactionUtils.formatTime(transaction.date)}
+                  </p>
                 </div>
               </div>
 
@@ -146,14 +130,22 @@ const TransactionDetails = () => {
                     <span>Person</span>
                   </div>
                   <div className="flex items-center justify-start gap-3">
-                    <Avatar className="h-8 h-full w-8">
+                    <Avatar className="h-8 w-8">
                       <AvatarImage src={transaction.person?.avatar} alt={transaction.person?.name} />
                       <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
-                    <div className="flex flex-col">
+                    <div className="flex flex-1 flex-col">
                       <span className="font-semibold tracking-tight">{transaction.person?.name}</span>
                       <span className="text-muted-foreground text-sm leading-none">{transaction.person?.email}</span>
                     </div>
+                    <Button
+                      variant="link"
+                      size="sm"
+                      className="h-8 w-8 rounded-full border border-slate-200 bg-white/70 p-2 dark:border-slate-700 dark:bg-slate-800/70"
+                      onClick={() => navigate(`/people/${transaction.person?.id}`)}
+                    >
+                      <Eye className="h-4 w-4" />
+                    </Button>
                   </div>
                 </div>
               )}

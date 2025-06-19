@@ -1,8 +1,7 @@
 import { DynamicIcon, type IconName } from 'lucide-react/dynamic';
 import { cn } from '@/lib/utils';
 import { cva, type VariantProps } from 'class-variance-authority';
-import type { TransactionType } from '@/data/types';
-import { transactionTypesObject } from '@/data/transaction-types';
+import TransactionUtils, { type TransactionType } from '@/lib/transaction-utils';
 
 const iconRendererVariants = cva('flex relative items-center justify-center rounded-full shrink-0', {
   variants: {
@@ -94,8 +93,8 @@ const CategoryTransactionIcon = ({
   const transactionIconPosition = size
     ? sizeVariants[size].transactionIconPosition
     : sizeVariants.default.transactionIconPosition;
-  const transactionIcon = transactionTypesObject[transactionType].icon;
-  const transactionIconColor = transactionTypesObject[transactionType].color;
+  const transactionIcon = TransactionUtils.typesObject[transactionType].icon;
+  const transactionIconColor = TransactionUtils.typesObject[transactionType].color;
 
   const customStyles =
     bgColor || color
