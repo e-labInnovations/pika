@@ -1,5 +1,5 @@
-import { ArrowDownLeft, ArrowRightLeft, ArrowUpRight } from 'lucide-react';
 import type { TransactionType } from '@/data/types';
+import type { IconName } from 'lucide-react/dynamic';
 
 export type TransactionItemType = {
   id: TransactionType;
@@ -7,32 +7,38 @@ export type TransactionItemType = {
   description: string;
   color: string;
   bgColor: string;
-  icon: React.ElementType;
+  icon: IconName;
 };
 
-export const transactionTypes: TransactionItemType[] = [
-  {
+export const transactionTypesObject: Record<TransactionType, TransactionItemType> = Object.freeze({
+  income: {
     id: 'income',
     name: 'Income',
     description: 'Money received',
     color: 'text-emerald-600',
     bgColor: 'bg-emerald-100 dark:bg-emerald-900',
-    icon: ArrowDownLeft,
+    icon: 'arrow-down-left',
   },
-  {
+  expense: {
     id: 'expense',
     name: 'Expense',
     description: 'Money spent',
     color: 'text-red-600',
     bgColor: 'bg-red-100 dark:bg-red-900',
-    icon: ArrowUpRight,
+    icon: 'arrow-up-right',
   },
-  {
+  transfer: {
     id: 'transfer',
     name: 'Transfer',
     description: 'Money moved between accounts',
     color: 'text-blue-600',
     bgColor: 'bg-blue-100 dark:bg-blue-900',
-    icon: ArrowRightLeft,
+    icon: 'arrow-right-left',
   },
+});
+
+export const transactionTypes: TransactionItemType[] = [
+  transactionTypesObject.income,
+  transactionTypesObject.expense,
+  transactionTypesObject.transfer,
 ];

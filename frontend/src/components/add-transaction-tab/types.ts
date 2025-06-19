@@ -14,7 +14,7 @@ export type TransactionFormData = {
   date: string;
   type: TransactionType;
   category: string;
-  account: string | null;
+  account: string;
   toAccount: string | null;
   person: string | null;
   tags: string[];

@@ -10,6 +10,7 @@ import { transactionTypes } from '@/data/transaction-types';
 import { cn } from '@/lib/utils';
 import { DynamicIcon, type IconName } from 'lucide-react/dynamic';
 import HeaderDropdownMenu from '@/components/transactions-tab/header-dropdown-menu';
+import { CategoryTransactionIcon } from '@/components/category-transaction-icon';
 
 const TransactionDetails = () => {
   const { id } = useParams();
@@ -55,22 +56,13 @@ const TransactionDetails = () => {
         <div className="flex flex-col gap-4">
           <div className="space-y-2 text-center">
             <div className="flex items-center justify-center space-x-2">
-              <div
-                className="relative flex h-12 w-12 items-center justify-center rounded-full"
-                style={{
-                  backgroundColor: transaction.category.bgColor,
-                  color: transaction.category.color,
-                }}
-              >
-                <IconRenderer iconName={transaction.category.icon} className="h-6 w-6 text-white" />
-                <div
-                  className={`absolute -right-1 -bottom-1 flex h-6 w-6 items-center justify-center rounded-full bg-white dark:bg-slate-800 ${
-                    getTransactionType(transaction.type)?.color
-                  }`}
-                >
-                  <IconRenderer iconName={getTransactionType(transaction.type)?.icon} className="h-6 w-6" />
-                </div>
-              </div>
+              <CategoryTransactionIcon
+                transactionType={transaction.type}
+                iconName={transaction.category.icon}
+                size="lg"
+                bgColor={transaction.category.bgColor}
+                color={transaction.category.color}
+              />
             </div>
             <h1 className="text-2xl font-bold text-slate-900 dark:text-white">{transaction.title}</h1>
             <p className={`text-3xl font-bold ${getAmountColor(transaction.type)}`}>
@@ -79,7 +71,6 @@ const TransactionDetails = () => {
               })}
             </p>
           </div>
-
           <Card className="border-slate-200 bg-white/70 p-0 backdrop-blur-sm dark:border-slate-700 dark:bg-slate-800/70">
             <CardContent className="flex flex-col gap-4 p-4">
               <div className="flex items-center justify-between">
@@ -117,14 +108,12 @@ const TransactionDetails = () => {
                     <span>Category</span>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <div
-                      className="flex h-6 w-6 items-center justify-center rounded-full"
-                      style={{
-                        backgroundColor: transaction.category.bgColor,
-                      }}
-                    >
-                      <IconRenderer iconName={transaction.category.icon} className="h-3 w-3 text-white" />
-                    </div>
+                    <IconRenderer
+                      iconName={transaction.category.icon as IconName}
+                      size="sm"
+                      bgColor={transaction.category.bgColor}
+                      color={transaction.category.color}
+                    />
                     <span className="text-sm font-medium text-slate-900 dark:text-white">
                       {transaction.category.name}
                     </span>
@@ -137,14 +126,12 @@ const TransactionDetails = () => {
                     <span>Account</span>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <div
-                      className="flex h-6 w-6 items-center justify-center rounded-full"
-                      style={{
-                        backgroundColor: transaction.account.bgColor,
-                      }}
-                    >
-                      <IconRenderer iconName={transaction.account.icon} className="h-3 w-3 text-white" />
-                    </div>
+                    <IconRenderer
+                      iconName={transaction.account.icon as IconName}
+                      size="sm"
+                      bgColor={transaction.account.bgColor}
+                      color={transaction.account.color}
+                    />
                     <span className="text-sm font-medium text-slate-900 dark:text-white">
                       {transaction.account.name}
                     </span>
@@ -194,7 +181,6 @@ const TransactionDetails = () => {
               </div>
             </CardContent>
           </Card>
-
           {/* Description & Notes */}
           <Card className="border-slate-200 bg-white/70 p-0 backdrop-blur-sm dark:border-slate-700 dark:bg-slate-800/70">
             <CardContent className="flex flex-col gap-4 p-4">

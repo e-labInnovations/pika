@@ -3,7 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import TabsLayout from '@/layouts/tabs';
 import { accounts } from '@/data/dummy-data';
 import { Edit2, Plus, Trash2 } from 'lucide-react';
-import { DynamicIcon, type IconName } from 'lucide-react/dynamic';
+import { IconRenderer } from '@/components/icon-renderer';
 
 const Accounts = () => {
   return (
@@ -25,15 +25,7 @@ const Accounts = () => {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <div
-                    className="flex h-10 w-10 items-center justify-center rounded-full"
-                    style={{
-                      backgroundColor: account.bgColor,
-                      color: account.color,
-                    }}
-                  >
-                    <DynamicIcon name={account.icon as IconName} className="h-5 w-5 text-white" />
-                  </div>
+                  <IconRenderer iconName={account.icon} size="md" bgColor={account.bgColor} color={account.color} />
                   <div>
                     <span className="font-medium text-slate-900 dark:text-white">{account.name}</span>
                     <p className="text-xs text-slate-500 dark:text-slate-400">

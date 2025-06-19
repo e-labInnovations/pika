@@ -1,19 +1,15 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import {
-  ArrowUpRight,
-  ArrowDownLeft,
-  ArrowRightLeft,
-  ArrowBigRightDash,
-} from "lucide-react";
-import { IconRenderer } from "@/components/icon-renderer";
-import { SwipeableTransaction } from "@/components/swipeable-transaction";
-import type { Transaction } from "@/data/dummy-data";
-import type { Filter } from "./transactions-tab/filter/types";
-import type { Sort } from "./transactions-tab/sort/types";
-import { useNavigate } from "react-router-dom";
-import { DynamicIcon, type IconName } from "lucide-react/dynamic";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { ArrowBigRightDash } from 'lucide-react';
+import { IconRenderer } from '@/components/icon-renderer';
+import { SwipeableTransaction } from '@/components/swipeable-transaction';
+import type { Transaction } from '@/data/dummy-data';
+import type { Filter } from './transactions-tab/filter/types';
+import type { Sort } from './transactions-tab/sort/types';
+import { useNavigate } from 'react-router-dom';
+import { DynamicIcon, type IconName } from 'lucide-react/dynamic';
+import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
+import { CategoryTransactionIcon } from './category-transaction-icon';
 
 interface TransactionsListProps {
   transactions: Transaction[];
@@ -36,29 +32,19 @@ export function TransactionsList({
     // Search filter
     const matchesSearch =
       transaction.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      transaction.category.name
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      transaction.person?.name
-        ?.toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      transaction.person?.name
-        ?.toLowerCase()
-        .includes(searchTerm.toLowerCase());
+      transaction.category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      transaction.person?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      transaction.person?.name?.toLowerCase().includes(searchTerm.toLowerCase());
 
     // Type filter
-    const matchesType =
-      filters.types.length === 0 || filters.types.includes(transaction.type);
+    const matchesType = filters.types.length === 0 || filters.types.includes(transaction.type);
 
     // Category filter
-    const matchesCategory =
-      filters.categories.length === 0 ||
-      filters.categories.includes(transaction.category.id);
+    const matchesCategory = filters.categories.length === 0 || filters.categories.includes(transaction.category.id);
 
     // Tags filter
     const matchesTags =
-      filters.tags.length === 0 ||
-      filters.tags.some((tag) => transaction.tags.some((t) => t.id === tag));
+      filters.tags.length === 0 || filters.tags.some((tag) => transaction.tags.some((t) => t.id === tag));
 
     // People filter
     const matchesPeople =
@@ -72,12 +58,8 @@ export function TransactionsList({
     const matchesDateRange = (() => {
       if (!filters.dateRange.from && !filters.dateRange.to) return true;
       const transactionDate = new Date(transaction.date);
-      const fromDate = filters.dateRange.from
-        ? new Date(filters.dateRange.from)
-        : null;
-      const toDate = filters.dateRange.to
-        ? new Date(filters.dateRange.to)
-        : null;
+      const fromDate = filters.dateRange.from ? new Date(filters.dateRange.from) : null;
+      const toDate = filters.dateRange.to ? new Date(filters.dateRange.to) : null;
 
       if (fromDate && toDate) {
         return transactionDate >= fromDate && transactionDate <= toDate;
@@ -94,26 +76,22 @@ export function TransactionsList({
       if (!filters.amount.value1) return true;
       const transactionAmount = Math.abs(transaction.amount);
       const value1 = Number.parseFloat(filters.amount.value1);
-      const value2 = filters.amount.value2
-        ? Number.parseFloat(filters.amount.value2)
-        : null;
+      const value2 = filters.amount.value2 ? Number.parseFloat(filters.amount.value2) : null;
 
       switch (filters.amount.operator) {
-        case "between":
-          return value2
-            ? transactionAmount >= value1 && transactionAmount <= value2
-            : true;
-        case "greater":
+        case 'between':
+          return value2 ? transactionAmount >= value1 && transactionAmount <= value2 : true;
+        case 'greater':
           return transactionAmount > value1;
-        case "less":
+        case 'less':
           return transactionAmount < value1;
-        case "equal":
+        case 'equal':
           return transactionAmount === value1;
-        case "not_equal":
+        case 'not_equal':
           return transactionAmount !== value1;
-        case "greater_equal":
+        case 'greater_equal':
           return transactionAmount >= value1;
-        case "less_equal":
+        case 'less_equal':
           return transactionAmount <= value1;
         default:
           return true;
@@ -137,29 +115,29 @@ export function TransactionsList({
 
     // Extract values based on sort field
     switch (sort.field) {
-      case "date":
+      case 'date':
         valueA = new Date(a.date).getTime();
         valueB = new Date(b.date).getTime();
         break;
-      case "amount":
+      case 'amount':
         valueA = Math.abs(a.amount);
         valueB = Math.abs(b.amount);
         break;
-      case "category":
+      case 'category':
         valueA = a.category.name.toLowerCase();
         valueB = b.category.name.toLowerCase();
         break;
-      case "tags":
-        valueA = a.tags[0]?.name.toLowerCase() || "";
-        valueB = b.tags[0]?.name.toLowerCase() || "";
+      case 'tags':
+        valueA = a.tags[0]?.name.toLowerCase() || '';
+        valueB = b.tags[0]?.name.toLowerCase() || '';
         break;
-      case "title":
+      case 'title':
         valueA = a.title.toLowerCase();
         valueB = b.title.toLowerCase();
         break;
-      case "person":
-        valueA = (a.person?.name || "").toLowerCase();
-        valueB = (b.person?.name || "").toLowerCase();
+      case 'person':
+        valueA = (a.person?.name || '').toLowerCase();
+        valueB = (b.person?.name || '').toLowerCase();
         break;
       default:
         valueA = a[sort.field as keyof Transaction];
@@ -167,42 +145,17 @@ export function TransactionsList({
     }
 
     // Compare values based on sort direction
-    if (sort.direction === "asc") {
-      return valueA && valueB
-        ? valueA > valueB
-          ? 1
-          : valueA < valueB
-          ? -1
-          : 0
-        : 0;
+    if (sort.direction === 'asc') {
+      return valueA && valueB ? (valueA > valueB ? 1 : valueA < valueB ? -1 : 0) : 0;
     } else {
-      return valueA && valueB
-        ? valueA < valueB
-          ? 1
-          : valueA > valueB
-          ? -1
-          : 0
-        : 0;
+      return valueA && valueB ? (valueA < valueB ? 1 : valueA > valueB ? -1 : 0) : 0;
     }
   });
 
-  const getTransactionIcon = (type: string) => {
-    switch (type) {
-      case "income":
-        return <ArrowDownLeft className="w-4 h-4 text-emerald-600" />;
-      case "expense":
-        return <ArrowUpRight className="w-4 h-4 text-red-500" />;
-      case "transfer":
-        return <ArrowRightLeft className="w-4 h-4 text-blue-500" />;
-      default:
-        return null;
-    }
-  };
-
   const getAmountColor = (type: string) => {
-    if (type === "income") return "text-emerald-600 dark:text-emerald-400";
-    if (type === "expense") return "text-red-500 dark:text-red-400";
-    return "text-blue-600 dark:text-blue-400";
+    if (type === 'income') return 'text-emerald-600 dark:text-emerald-400';
+    if (type === 'expense') return 'text-red-500 dark:text-red-400';
+    return 'text-blue-600 dark:text-blue-400';
   };
 
   const getActiveFiltersCount = () => {
@@ -218,7 +171,7 @@ export function TransactionsList({
 
   const handleDelete = (id: string) => {
     if (confirm(`Are you sure you want to delete "${id}"?`)) {
-      console.log("Delete transaction with id:", id);
+      console.log('Delete transaction with id:', id);
     }
   };
 
@@ -232,17 +185,17 @@ export function TransactionsList({
   };
 
   const formatDateTime = (date: string) => {
-    return new Date(date).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
+    return new Date(date).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
     });
   };
 
   return (
-    <div className="px-0 py-0 space-y-6">
+    <div className="space-y-6 px-0 py-0">
       {/* Transactions List */}
       <div className="space-y-3">
         {sortedTransactions.map((transaction) => (
@@ -256,45 +209,28 @@ export function TransactionsList({
             }}
             onClick={() => handleSelect(`${transaction.id}`)}
           >
-            <Card className="transition-all duration-200 p-0">
+            <Card className="p-0 transition-all duration-200">
               <CardContent className="p-2">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3 flex-1">
-                    <div
-                      className="w-10 h-10 rounded-full flex items-center justify-center relative"
-                      style={{
-                        backgroundColor: transaction.category.bgColor,
-                        color: transaction.category.color,
-                      }}
-                    >
-                      <IconRenderer
-                        iconName={transaction.category.icon}
-                        className="w-5 h-5 text-white"
-                      />
-                      <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center">
-                        {getTransactionIcon(transaction.type)}
-                      </div>
-                    </div>
-                    <div className="flex-1 min-w-0">
+                  <div className="flex flex-1 items-center space-x-3">
+                    <CategoryTransactionIcon
+                      transactionType={transaction.type}
+                      iconName={transaction.category.icon}
+                      size="md"
+                      bgColor={transaction.category.bgColor}
+                      color={transaction.category.color}
+                    />
+                    <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between">
-                        <h4 className="font-medium text-slate-900 dark:text-white truncate">
-                          {transaction.title}
-                        </h4>
-                        <span
-                          className={`font-semibold ${getAmountColor(
-                            transaction.type
-                          )}`}
-                        >
-                          {Math.abs(transaction.amount).toLocaleString(
-                            "en-US",
-                            { minimumFractionDigits: 2 }
-                          )}
+                        <h4 className="truncate font-medium text-slate-900 dark:text-white">{transaction.title}</h4>
+                        <span className={`font-semibold ${getAmountColor(transaction.type)}`}>
+                          {Math.abs(transaction.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                         </span>
                       </div>
 
                       <div className="flex items-center gap-2">
-                        <div className="flex flex-col gap-2 grow">
-                          <div className="flex items-center space-x-2 mt-1">
+                        <div className="flex grow flex-col gap-2">
+                          <div className="mt-1 flex items-center space-x-2">
                             <span className="text-sm text-slate-500 dark:text-slate-400">
                               {formatDateTime(transaction.date)}
                             </span>
@@ -302,39 +238,26 @@ export function TransactionsList({
 
                           <div className="flex items-center gap-2">
                             <div className="flex items-center gap-2">
-                              <div
-                                className="w-4 h-4 rounded-full flex items-center justify-center"
-                                style={{
-                                  backgroundColor: transaction.account.bgColor,
-                                  color: transaction.account.color,
-                                }}
-                              >
-                                <IconRenderer
-                                  iconName={transaction.account.icon}
-                                  className="w-2 h-2 text-white"
-                                />
-                              </div>
+                              <IconRenderer
+                                iconName={transaction.account.icon as IconName}
+                                size="xs"
+                                bgColor={transaction.account.bgColor}
+                                color={transaction.account.color}
+                              />
                               <span className="text-xs text-slate-500 dark:text-slate-400">
                                 {transaction.account.name}
                               </span>
                             </div>
                             {transaction.toAccount && (
                               <>
-                                <ArrowBigRightDash className="w-4 h-4 text-slate-500 dark:text-slate-400" />
+                                <ArrowBigRightDash className="h-4 w-4 text-slate-500 dark:text-slate-400" />
                                 <div className="flex items-center gap-2">
-                                  <div
-                                    className="w-4 h-4 rounded-full flex items-center justify-center"
-                                    style={{
-                                      backgroundColor:
-                                        transaction.toAccount.bgColor,
-                                      color: transaction.toAccount.color,
-                                    }}
-                                  >
-                                    <IconRenderer
-                                      iconName={transaction.toAccount.icon}
-                                      className="w-2 h-2 text-white"
-                                    />
-                                  </div>
+                                  <IconRenderer
+                                    iconName={transaction.toAccount.icon as IconName}
+                                    size="xs"
+                                    bgColor={transaction.toAccount.bgColor}
+                                    color={transaction.toAccount.color}
+                                  />
                                   <span className="text-xs text-slate-500 dark:text-slate-400">
                                     {transaction.toAccount.name}
                                   </span>
@@ -345,7 +268,7 @@ export function TransactionsList({
                         </div>
                         <div className="flex items-center gap-2">
                           {transaction.person && (
-                            <Avatar className="w-8 h-8">
+                            <Avatar className="h-8 w-8">
                               <AvatarImage
                                 src={transaction.person?.avatar}
                                 alt={transaction.person?.name}
@@ -353,29 +276,26 @@ export function TransactionsList({
                               />
                               <AvatarFallback>
                                 {transaction.person?.name
-                                  .split(" ")
+                                  .split(' ')
                                   .map((name) => name[0])
-                                  .join("")}
+                                  .join('')}
                               </AvatarFallback>
                             </Avatar>
                           )}
                         </div>
                       </div>
 
-                      <div className="flex flex-wrap gap-1 mt-2">
+                      <div className="mt-2 flex flex-wrap gap-1">
                         {transaction.tags.map((tag, index) => (
                           <span
                             key={index}
-                            className="flex items-center gap-1 px-1 py-0.5 rounded-full text-[10px] font-medium"
+                            className="flex items-center gap-1 rounded-full px-1 py-0.5 text-[10px] font-medium"
                             style={{
                               backgroundColor: tag.bgColor,
                               color: tag.color,
                             }}
                           >
-                            <DynamicIcon
-                              name={tag.icon as IconName}
-                              className="w-3 h-3"
-                            />
+                            <DynamicIcon name={tag.icon as IconName} className="h-3 w-3" />
                             {tag.name}
                           </span>
                         ))}
@@ -390,17 +310,10 @@ export function TransactionsList({
       </div>
 
       {sortedTransactions.length === 0 && (
-        <div className="text-center py-12">
-          <p className="text-slate-500 dark:text-slate-400">
-            No transactions found
-          </p>
+        <div className="py-12 text-center">
+          <p className="text-slate-500 dark:text-slate-400">No transactions found</p>
           {(searchTerm || getActiveFiltersCount() > 0) && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={onClearSearchAndFilters}
-              className="mt-2"
-            >
+            <Button variant="outline" size="sm" onClick={onClearSearchAndFilters} className="mt-2">
               Clear search and filters
             </Button>
           )}

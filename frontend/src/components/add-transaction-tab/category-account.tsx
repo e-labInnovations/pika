@@ -5,9 +5,9 @@ import { Pen, Wallet, X } from 'lucide-react';
 import type { TransactionFormData } from './types';
 import { useState } from 'react';
 import { accounts, categories } from '@/data/dummy-data';
-import { DynamicIcon, type IconName } from 'lucide-react/dynamic';
 import AccountPicker from '../account-picker';
 import CategoryPicker from '../category-picker';
+import { IconRenderer } from '../icon-renderer';
 
 interface CategoryAccountProps {
   formData: TransactionFormData;
@@ -47,15 +47,11 @@ const CategoryAccount = ({ formData, setFormData }: CategoryAccountProps) => {
             <Label>Category *</Label>
             <div className="flex items-center justify-between rounded-lg border border-emerald-200 bg-emerald-50 p-3 dark:border-emerald-800 dark:bg-emerald-900/20">
               <div className="flex items-center space-x-3">
-                <div
-                  className="flex h-8 w-8 items-center justify-center rounded-full"
-                  style={{
-                    backgroundColor: getCategory(formData.category)?.bgColor,
-                    color: getCategory(formData.category)?.color,
-                  }}
-                >
-                  <DynamicIcon name={getCategory(formData.category)?.icon as IconName} className="h-4 w-4 text-white" />
-                </div>
+                <IconRenderer
+                  iconName={getCategory(formData.category)?.icon}
+                  bgColor={getCategory(formData.category)?.bgColor}
+                  color={getCategory(formData.category)?.color}
+                />
                 <div>
                   <span className="font-medium text-slate-900 dark:text-white">
                     {getCategory(formData.category)?.name}
@@ -70,19 +66,15 @@ const CategoryAccount = ({ formData, setFormData }: CategoryAccountProps) => {
           </div>
 
           <div className="flex flex-col gap-2">
-            <Label>Account *</Label>
+            <Label>Account</Label>
             {formData.account ? (
               <div className="flex items-center justify-between rounded-lg border border-blue-200 bg-blue-50 p-3 dark:border-blue-800 dark:bg-blue-900/20">
                 <div className="flex items-center space-x-3">
-                  <div
-                    className="flex h-8 w-8 items-center justify-center rounded-full"
-                    style={{
-                      backgroundColor: getAccount(formData.account)?.bgColor,
-                      color: getAccount(formData.account)?.color,
-                    }}
-                  >
-                    <DynamicIcon name={getAccount(formData.account)?.icon as IconName} className="h-4 w-4 text-white" />
-                  </div>
+                  <IconRenderer
+                    iconName={getAccount(formData.account)?.icon}
+                    bgColor={getAccount(formData.account)?.bgColor}
+                    color={getAccount(formData.account)?.color}
+                  />
                   <div>
                     <span className="font-medium text-slate-900 dark:text-white">
                       {getAccount(formData.account)?.name}
@@ -90,7 +82,7 @@ const CategoryAccount = ({ formData, setFormData }: CategoryAccountProps) => {
                     <p className="text-sm text-slate-500">${getAccount(formData.account)?.balance?.toLocaleString()}</p>
                   </div>
                 </div>
-                <Button variant="ghost" size="sm" onClick={() => setFormData((prev) => ({ ...prev, account: null }))}>
+                <Button variant="ghost" size="sm" onClick={() => setFormData((prev) => ({ ...prev, account: '' }))}>
                   <X className="h-4 w-4" />
                 </Button>
               </div>
@@ -111,18 +103,11 @@ const CategoryAccount = ({ formData, setFormData }: CategoryAccountProps) => {
               {formData.toAccount ? (
                 <div className="flex items-center justify-between rounded-lg border border-purple-200 bg-purple-50 p-3 dark:border-purple-800 dark:bg-purple-900/20">
                   <div className="flex items-center space-x-3">
-                    <div
-                      className="flex h-8 w-8 items-center justify-center rounded-full"
-                      style={{
-                        backgroundColor: getAccount(formData.toAccount)?.bgColor,
-                        color: getAccount(formData.toAccount)?.color,
-                      }}
-                    >
-                      <DynamicIcon
-                        name={getAccount(formData.toAccount)?.icon as IconName}
-                        className="h-4 w-4 text-white"
-                      />
-                    </div>
+                    <IconRenderer
+                      iconName={getAccount(formData.toAccount)?.icon}
+                      bgColor={getAccount(formData.toAccount)?.bgColor}
+                      color={getAccount(formData.toAccount)?.color}
+                    />
                     <div>
                       <span className="font-medium text-slate-900 dark:text-white">
                         {getAccount(formData.toAccount)?.name}

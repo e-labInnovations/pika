@@ -3,8 +3,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import { Check } from 'lucide-react';
 import { accounts, type Account } from '@/data/dummy-data';
-import { DynamicIcon, type IconName } from 'lucide-react/dynamic';
 import SearchBar from './search-bar';
+import { IconRenderer } from './icon-renderer';
 
 interface AccountPickerProps {
   isOpen: boolean;
@@ -63,12 +63,7 @@ const AccountPicker = ({ isOpen, onClose, onSelect, selectedAccountId }: Account
                 }`}
                 onClick={() => handleSelect(account)}
               >
-                <div
-                  className="flex h-10 w-10 items-center justify-center rounded-full"
-                  style={{ backgroundColor: account.bgColor, color: account.color }}
-                >
-                  <DynamicIcon name={account.icon as IconName} className="h-5 w-5 text-white" />
-                </div>
+                <IconRenderer iconName={account.icon} size="md" bgColor={account.bgColor} color={account.color} />
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between">
                     <p className="truncate font-medium text-slate-900 dark:text-white">{account.name}</p>

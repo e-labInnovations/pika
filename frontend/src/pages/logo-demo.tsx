@@ -4,7 +4,7 @@ import PikaIcon from '@/components/pika-icon';
 // 2. Usage in different contexts with Tailwind classes
 export const LogoExamples = () => {
   return (
-    <div className="space-y-8 p-6">
+    <div className="space-y-8">
       {/* Header Logo */}
       <header className="flex items-center justify-between bg-white p-4 shadow-sm">
         <div className="flex items-center space-x-3">
@@ -30,6 +30,14 @@ export const LogoExamples = () => {
         <div className="flex flex-col items-center space-y-2">
           <Logo size={48} />
           <span className="text-xs text-gray-600">48px</span>
+        </div>
+        <div className="flex flex-col items-center space-y-2">
+          <Logo size={96} />
+          <span className="text-xs text-gray-600">96px</span>
+        </div>
+        <div className="flex flex-col items-center space-y-2">
+          <Logo size={128} />
+          <span className="text-xs text-gray-600">128px</span>
         </div>
       </div>
 

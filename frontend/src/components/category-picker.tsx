@@ -6,8 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Check } from 'lucide-react';
 import { categories, type Category } from '@/data/dummy-data';
 import SearchBar from './search-bar';
-import { DynamicIcon, type IconName } from 'lucide-react/dynamic';
 import type { TransactionType } from '@/data/types';
+import { IconRenderer } from './icon-renderer';
 
 interface CategoryPickerProps {
   isOpen: boolean;
@@ -74,12 +74,12 @@ const CategoryPicker = ({ isOpen, onClose, onSelect, transactionType, selectedCa
                 {/* Parent Category Header */}
                 <div className="rounded-lg border-2 border-slate-200 bg-slate-50 p-3 dark:border-slate-700 dark:bg-slate-800">
                   <div className="flex items-center space-x-3">
-                    <div
-                      className="flex h-10 w-10 items-center justify-center rounded-full"
-                      style={{ backgroundColor: parentCategory.bgColor, color: parentCategory.color }}
-                    >
-                      <DynamicIcon name={parentCategory.icon as IconName} className="h-5 w-5 text-white" />
-                    </div>
+                    <IconRenderer
+                      iconName={parentCategory.icon}
+                      size="md"
+                      bgColor={parentCategory.bgColor}
+                      color={parentCategory.color}
+                    />
                     <div>
                       <p className="font-semibold text-slate-900 dark:text-white">{parentCategory.name}</p>
                       <p className="text-xs text-slate-500 dark:text-slate-400">{parentCategory.description}</p>
@@ -100,12 +100,11 @@ const CategoryPicker = ({ isOpen, onClose, onSelect, transactionType, selectedCa
                       onClick={() => handleCategorySelect(childCategory)}
                     >
                       <div className="flex items-center space-x-2">
-                        <div
-                          className="flex h-8 w-8 items-center justify-center rounded-full"
-                          style={{ backgroundColor: childCategory.bgColor, color: childCategory.color }}
-                        >
-                          <DynamicIcon name={childCategory.icon as IconName} className="h-4 w-4 text-white" />
-                        </div>
+                        <IconRenderer
+                          iconName={childCategory.icon}
+                          bgColor={childCategory.bgColor}
+                          color={childCategory.color}
+                        />
                         <div className="min-w-0 flex-1">
                           <p className="truncate text-sm font-medium text-slate-900 dark:text-white">
                             {childCategory.name}

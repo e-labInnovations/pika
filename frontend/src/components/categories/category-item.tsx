@@ -1,8 +1,8 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { DynamicIcon, type IconName } from 'lucide-react/dynamic';
 import { Edit2, Trash2, Plus } from 'lucide-react';
 import type { Category } from '@/data/dummy-data';
+import { IconRenderer } from '../icon-renderer';
 
 interface CategoryItemProps {
   category: Category;
@@ -18,15 +18,7 @@ const CategoryItem = ({ category, onEditCategory, onDeleteCategory, onAddChildCa
         {/* Parent Category */}
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div
-              className="flex h-10 w-10 items-center justify-center rounded-full"
-              style={{
-                backgroundColor: category.bgColor,
-                color: category.color,
-              }}
-            >
-              <DynamicIcon name={category.icon as IconName} className="h-5 w-5 text-white" />
-            </div>
+            <IconRenderer iconName={category.icon} size="md" bgColor={category.bgColor} color={category.color} />
             <div>
               <h3 className="font-medium text-slate-900 dark:text-white">{category.name}</h3>
               <p className="text-sm text-slate-500 dark:text-slate-400">{category.description}</p>
@@ -62,15 +54,7 @@ const CategoryItem = ({ category, onEditCategory, onDeleteCategory, onAddChildCa
               className="flex items-center justify-between rounded-lg border border-slate-200 p-2 dark:border-slate-700"
             >
               <div className="flex items-center space-x-3">
-                <div
-                  className="flex h-8 w-8 items-center justify-center rounded-full"
-                  style={{
-                    backgroundColor: child.bgColor,
-                    color: child.color,
-                  }}
-                >
-                  <DynamicIcon name={child.icon as IconName} className="h-4 w-4 text-white" />
-                </div>
+                <IconRenderer iconName={child.icon} bgColor={child.bgColor} color={child.color} />
                 <div>
                   <p className="text-sm font-medium text-slate-900 dark:text-white">{child.name}</p>
                   <p className="text-xs text-slate-500 dark:text-slate-400">{child.description}</p>

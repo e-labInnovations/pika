@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import TabsLayout from '@/layouts/tabs';
 import { Plus, Trash2, Edit2 } from 'lucide-react';
-import { DynamicIcon, type IconName } from 'lucide-react/dynamic';
+import { IconRenderer } from '@/components/icon-renderer';
 
 const Tags = () => {
   const onDeleteTag = (id: string) => {
@@ -35,15 +35,7 @@ const Tags = () => {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <div
-                    className="flex h-10 w-10 items-center justify-center rounded-full"
-                    style={{
-                      backgroundColor: tag.bgColor,
-                      color: tag.color,
-                    }}
-                  >
-                    <DynamicIcon name={tag.icon as IconName} className="h-5 w-5 text-white" />
-                  </div>
+                  <IconRenderer iconName={tag.icon} size="md" bgColor={tag.bgColor} color={tag.color} />
                   <div>
                     <h3 className="font-medium text-slate-900 dark:text-white">{tag.name}</h3>
                     <p className="text-sm text-slate-500 dark:text-slate-400">{tag.description}</p>

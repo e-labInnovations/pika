@@ -2,6 +2,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { transactionTypes } from '@/data/transaction-types';
 import type { TransactionType } from '@/data/types';
 import { cn } from '@/lib/utils';
+import { DynamicIcon, type IconName } from 'lucide-react/dynamic';
 
 interface TransactionTypeSelectorProps {
   value: TransactionType;
@@ -29,7 +30,8 @@ const TransactionTypeSelector = ({ value, onChange }: TransactionTypeSelectorPro
             value={transactionType.id}
             className={cn('px-2.5 sm:px-3', transactionType.color, getTabColorClasses(transactionType.id))}
           >
-            {<transactionType.icon className="h-4 w-4" />} {transactionType.name}
+            <DynamicIcon name={transactionType.icon as IconName} className="h-4 w-4" />
+            {transactionType.name}
           </TabsTrigger>
         ))}
       </TabsList>

@@ -1,69 +1,84 @@
-import {
-  Wallet,
-  CreditCard,
-  PiggyBank,
-  ShoppingCart,
-  Coffee,
-  Car,
-  Briefcase,
-  Gift,
-  Home,
-  User,
-  Tag,
-  Building,
-  Smartphone,
-} from "lucide-react"
+import { DynamicIcon, type IconName } from 'lucide-react/dynamic';
+import { cn } from '@/lib/utils';
+import { cva, type VariantProps } from 'class-variance-authority';
 
-// Icon mapping for string-based icon references
-export const iconMap = {
-  Wallet,
-  CreditCard,
-  PiggyBank,
-  ShoppingCart,
-  Coffee,
-  Car,
-  Briefcase,
-  Gift,
-  Home,
-  User,
-  Tag,
-  Building,
-  Smartphone,
-  // Add string-based mappings for settings
-  "Finance-0": Wallet,
-  "Finance-1": PiggyBank,
-  "Finance-2": CreditCard,
-  "Finance-3": Briefcase,
-  "Finance-4": Briefcase,
-  "Food-0": ShoppingCart,
-  "Food-1": ShoppingCart,
-  "Food-2": Coffee,
-  "Transport-0": Car,
-  "Transport-1": Car,
-  "Transport-2": Car,
-  "Other-0": Tag,
-  "People-0": User,
-  "Lifestyle-0": Home,
+const iconRendererVariants = cva('flex items-center justify-center rounded-full shrink-0', {
+  variants: {
+    size: {
+      xs: 'h-4 w-4',
+      sm: 'h-6 w-6',
+      default: 'h-8 w-8',
+      md: 'h-10 w-10',
+      lg: 'h-12 w-12',
+      xl: 'h-16 w-16',
+    },
+    variant: {
+      default: 'bg-primary text-primary-foreground',
+      secondary: 'bg-secondary text-secondary-foreground',
+      muted: 'bg-muted text-muted-foreground',
+      outline: 'border border-input bg-background text-foreground',
+      ghost: 'bg-transparent text-foreground',
+      destructive: 'bg-destructive text-destructive-foreground',
+    },
+  },
+  defaultVariants: {
+    size: 'default',
+    variant: 'default',
+  },
+});
+
+const iconSizes = {
+  xs: 'h-2 w-2',
+  sm: 'h-3 w-3',
+  default: 'h-4 w-4',
+  md: 'h-5 w-5',
+  lg: 'h-6 w-6',
+  xl: 'h-8 w-8',
+} as const;
+
+interface IconRendererProps extends VariantProps<typeof iconRendererVariants> {
+  /** The lucide icon name */
+  iconName: string | IconName | undefined;
+  /** Additional CSS classes */
+  className?: string;
+  /** Custom background color (overrides variant) */
+  bgColor?: string;
+  /** Custom text/icon color (overrides variant) */
+  color?: string;
+  /** Custom icon size class (overrides size variant) */
+  iconSize?: string;
 }
 
-interface IconRendererProps {
-  iconName: string | any
-  className?: string
-}
+const IconRenderer = ({
+  iconName,
+  size,
+  variant,
+  className,
+  bgColor,
+  color,
+  iconSize,
+  ...props
+}: IconRendererProps) => {
+  const defaultIconSize = size ? iconSizes[size] : iconSizes.default;
+  const finalIconSize = iconSize || defaultIconSize;
 
-export function IconRenderer({ iconName, className = "w-5 h-5" }: IconRendererProps) {
-  // If iconName is already a React component, use it directly
-  if (typeof iconName === "function" || (iconName && iconName.$$typeof)) {
-    const IconComponent = iconName
-    return <IconComponent className={className} />
-  }
+  const customStyles =
+    bgColor || color
+      ? {
+          ...(bgColor && { backgroundColor: bgColor }),
+          ...(color && { color: color }),
+        }
+      : undefined;
 
-  // If iconName is a string, look it up in the map
-  if (typeof iconName === "string") {
-    const IconComponent = iconMap[iconName as keyof typeof iconMap] || Wallet
-    return <IconComponent className={className} />
-  }
+  return (
+    <div className={cn(iconRendererVariants({ size, variant }), className)} style={customStyles} {...props}>
+      <DynamicIcon
+        name={iconName ? (iconName as IconName) : 'dot'}
+        className={cn(finalIconSize, customStyles?.color && 'text-current')}
+      />
+    </div>
+  );
+};
 
-  // Fallback to Wallet icon
-  return <Wallet className={className} />
-}
+export { IconRenderer, iconRendererVariants };
+export type { IconRendererProps };

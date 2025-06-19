@@ -13,7 +13,7 @@ const Note = ({ formData, setFormData }: NoteProps) => {
       <CardHeader className="p-4 pb-0">
         <CardTitle className="flex items-center text-lg">
           <NotebookPen className="mr-2 h-5 w-5" />
-          Note *
+          Note
         </CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-2 p-4">

@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { type AnalysisOutput, analysisOutput as mockAnalysisOutput } from '@/data/dummy-data';
 import { format } from 'date-fns';
 import { DynamicIcon, type IconName } from 'lucide-react/dynamic';
+import { IconRenderer } from '../icon-renderer';
 
 interface ScanReceiptProps {
   open: boolean;
@@ -143,15 +144,11 @@ const ScanReceipt = ({ open, setOpen, handleTransactionDetails }: ScanReceiptPro
 
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <div
-                        className="flex h-8 w-8 items-center justify-center rounded-full"
-                        style={{
-                          backgroundColor: analysisOutput.category.bgColor,
-                          color: analysisOutput.category.color,
-                        }}
-                      >
-                        <DynamicIcon name={analysisOutput.category.icon as IconName} className="h-4 w-4 text-white" />
-                      </div>
+                      <IconRenderer
+                        iconName={analysisOutput.category.icon}
+                        bgColor={analysisOutput.category.bgColor}
+                        color={analysisOutput.category.color}
+                      />
                       <div>
                         <h3 className="font-medium">{analysisOutput.title}</h3>
                         <p className="text-muted-foreground text-sm">
