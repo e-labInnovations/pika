@@ -28,6 +28,8 @@ import AddTag from '@/pages/add-tag';
 import EditTag from '@/pages/edit-tag';
 import AddAccount from '@/pages/add-account';
 import EditAccount from '@/pages/edit-account';
+import AddPerson from './pages/add-person';
+import EditPerson from './pages/edit-person';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -52,6 +54,8 @@ const router = createBrowserRouter(
         <Route path="/transactions/:id/edit" element={<EditTransactionTab />} />
         <Route path="/people" element={<PeopleTab />} />
         <Route path="/people/:id" element={<DetailedPerson />} />
+        <Route path="/people/add" element={<AddPerson />} />
+        <Route path="/people/:id/edit" element={<EditPerson />} />
 
         {/* Settings Routes */}
         <Route path="/settings" element={<SettingsTab />} />

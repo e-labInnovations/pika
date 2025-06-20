@@ -17,7 +17,7 @@ const DetailedPerson = () => {
   const personTransactions = transactions.filter((t) => t.person?.id === id);
 
   const handleEdit = () => {
-    alert('Edit person functionality would open here');
+    navigate(`/people/${id}/edit`);
   };
 
   const handleShare = () => {

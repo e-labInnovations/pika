@@ -1,8 +1,8 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Calendar } from "lucide-react";
-import type { Person } from "@/data/dummy-data";
-import { useNavigate } from "react-router-dom";
+import { Card, CardContent } from '@/components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Calendar } from 'lucide-react';
+import type { Person } from '@/data/dummy-data';
+import { useNavigate } from 'react-router-dom';
 
 interface PeopleListProps {
   people: Person[];
@@ -16,13 +16,17 @@ export function PeopleList({ people, searchTerm }: PeopleListProps) {
       person.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       person.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       person.phone.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      person.description.toLowerCase().includes(searchTerm.toLowerCase())
+      person.description.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const getBalanceColor = (balance: number) => {
-    if (balance > 0) return "text-emerald-600 dark:text-emerald-400";
-    if (balance < 0) return "text-red-500 dark:text-red-400";
-    return "text-slate-600 dark:text-slate-400";
+    if (balance > 0) return 'text-emerald-600 dark:text-emerald-400';
+    if (balance < 0) return 'text-red-500 dark:text-red-400';
+    return 'text-slate-600 dark:text-slate-400';
+  };
+
+  const handleCardClick = (personId: string) => {
+    navigate(`/people/${personId}`);
   };
 
   return (
@@ -31,52 +35,39 @@ export function PeopleList({ people, searchTerm }: PeopleListProps) {
         {filteredPeople.map((person) => (
           <Card
             key={person.id}
-            className="p-0"
-            onClick={() => navigate(`/people/${person.id}`)}
+            className="cursor-pointer p-0 transition-shadow hover:shadow-md"
+            onClick={() => handleCardClick(person.id)}
           >
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3 flex-1">
-                  <Avatar className="w-12 h-12">
-                    <AvatarImage
-                      src={person.avatar || "/placeholder.svg"}
-                      alt={person.name}
-                    />
-                    <AvatarFallback className="bg-emerald-500 text-white font-semibold">
+                <div className="flex flex-1 items-center space-x-3">
+                  <Avatar className="h-12 w-12">
+                    <AvatarImage src={person.avatar || '/placeholder.svg'} alt={person.name} />
+                    <AvatarFallback className="bg-emerald-500 font-semibold text-white">
                       {person.name
-                        .split(" ")
+                        .split(' ')
                         .map((n) => n[0])
-                        .join("")}
+                        .join('')}
                     </AvatarFallback>
                   </Avatar>
-                  <div className="flex-1 min-w-0">
+                  <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between">
-                      <h4 className="font-medium text-slate-900 dark:text-white truncate">
-                        {person.name}
-                      </h4>
+                      <h4 className="truncate font-medium text-slate-900 dark:text-white">{person.name}</h4>
                       <div className="text-right">
-                        <span
-                          className={`font-semibold ${getBalanceColor(
-                            person.balance
-                          )}`}
-                        >
-                          {person.balance === 0
-                            ? "Even"
-                            : `$${Math.abs(person.balance).toFixed(2)}`}
+                        <span className={`font-semibold ${getBalanceColor(person.balance)}`}>
+                          {person.balance === 0 ? 'Even' : `$${Math.abs(person.balance).toFixed(2)}`}
                         </span>
                         {person.balance !== 0 && (
                           <p className="text-xs text-slate-500 dark:text-slate-400">
-                            {person.balance > 0 ? "owes you" : "you owe"}
+                            {person.balance > 0 ? 'owes you' : 'you owe'}
                           </p>
                         )}
                       </div>
                     </div>
-                    <p className="text-sm text-slate-500 dark:text-slate-400 truncate">
-                      {person.description}
-                    </p>
-                    <div className="flex items-center space-x-4 mt-1">
-                      <span className="text-xs text-slate-500 dark:text-slate-400 flex items-center">
-                        <Calendar className="w-3 h-3 mr-1" />
+                    <p className="truncate text-sm text-slate-500 dark:text-slate-400">{person.description}</p>
+                    <div className="mt-1 flex items-center space-x-4">
+                      <span className="flex items-center text-xs text-slate-500 dark:text-slate-400">
+                        <Calendar className="mr-1 h-3 w-3" />
                         Last: {person.lastTransaction}
                       </span>
                       <span className="text-xs text-slate-500 dark:text-slate-400">
@@ -92,7 +83,7 @@ export function PeopleList({ people, searchTerm }: PeopleListProps) {
       </div>
 
       {filteredPeople.length === 0 && (
-        <div className="text-center py-12">
+        <div className="py-12 text-center">
           <p className="text-slate-500 dark:text-slate-400">No people found</p>
         </div>
       )}

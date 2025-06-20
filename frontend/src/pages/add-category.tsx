@@ -63,7 +63,10 @@ const AddCategory = () => {
               {/* Transaction Type Display */}
               <div className="space-y-2">
                 <Label>Transaction Type</Label>
-                <TransactionTypeView type={transactionType} className="rounded-md bg-slate-100 p-3 dark:bg-slate-800" />
+                <TransactionTypeView
+                  type={transactionType}
+                  className="rounded-md border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-800"
+                />
               </div>
 
               {/* Name */}
