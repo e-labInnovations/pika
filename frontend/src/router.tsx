@@ -23,6 +23,8 @@ import AddCategory from './pages/add-category';
 import EditCategory from './pages/edit-category';
 import AddChildCategory from './pages/add-child-category';
 import EditChildCategory from './pages/edit-child-category';
+import AddTag from './pages/add-tag';
+import EditTag from './pages/edit-tag';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -55,6 +57,8 @@ const router = createBrowserRouter(
         <Route path="/settings/categories/:parentCategoryId/add" element={<AddChildCategory />} />
         <Route path="/settings/categories/:parentCategoryId/:childCategoryId/edit" element={<EditChildCategory />} />
         <Route path="/settings/tags" element={<Tags />} />
+        <Route path="/settings/tags/add" element={<AddTag />} />
+        <Route path="/settings/tags/:tagId/edit" element={<EditTag />} />
         <Route path="/settings/accounts" element={<Accounts />} />
         <Route path="/settings/general" element={<GeneralSettings />} />
         <Route path="/settings/notifications" element={<NotificationsSettings />} />

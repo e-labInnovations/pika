@@ -7,11 +7,12 @@ import { Badge } from '@/components/ui/badge';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
-import { DynamicIcon, type IconName } from 'lucide-react/dynamic';
 import HeaderDropdownMenu from '@/components/transactions-tab/header-dropdown-menu';
 import { CategoryTransactionIcon } from '@/components/category-transaction-icon';
 import { Button } from '@/components/ui/button';
 import TransactionUtils from '@/lib/transaction-utils';
+import { TagChip } from '@/components/tag-chip';
+import AccountAvatar from '@/components/account-avatar';
 
 const TransactionDetails = () => {
   const { id } = useParams();
@@ -55,12 +56,13 @@ const TransactionDetails = () => {
             <CardContent className="flex flex-col gap-4 p-4">
               <div className="flex items-center justify-between">
                 <h3 className="font-semibold text-slate-900 dark:text-white">Transaction Details</h3>
-                <Badge
-                  variant="outline"
-                  className={cn('text-xs text-white', getTransactionType(transaction.type)?.bgColor)}
-                >
-                  {getTransactionType(transaction.type)?.name}
-                </Badge>
+                <TagChip
+                  name={getTransactionType(transaction.type)?.name || ''}
+                  iconName={getTransactionType(transaction.type)?.icon || ''}
+                  color="#ffffff"
+                  size="sm"
+                  className={`rounded-md ${getTransactionType(transaction.type)?.bgColor}`}
+                />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -93,7 +95,7 @@ const TransactionDetails = () => {
                   </div>
                   <div className="flex items-center space-x-2">
                     <IconRenderer
-                      iconName={transaction.category.icon as IconName}
+                      iconName={transaction.category.icon}
                       size="sm"
                       bgColor={transaction.category.bgColor}
                       color={transaction.category.color}
@@ -104,24 +106,52 @@ const TransactionDetails = () => {
                   </div>
                 </div>
 
-                <div className="space-y-1.5">
-                  <div className="flex items-center space-x-2 text-sm text-slate-500 dark:text-slate-400">
-                    <Wallet className="h-4 w-4" />
-                    <span>Account</span>
+                {transaction.type !== 'transfer' && (
+                  <div className="space-y-1.5">
+                    <div className="flex items-center space-x-2 text-sm text-slate-500 dark:text-slate-400">
+                      <Wallet className="h-4 w-4" />
+                      <span>Account</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <AccountAvatar account={transaction.account} size="sm" />
+                      <span className="text-sm font-medium text-slate-900 dark:text-white">
+                        {transaction.account.name}
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <IconRenderer
-                      iconName={transaction.account.icon as IconName}
-                      size="sm"
-                      bgColor={transaction.account.bgColor}
-                      color={transaction.account.color}
-                    />
-                    <span className="text-sm font-medium text-slate-900 dark:text-white">
-                      {transaction.account.name}
-                    </span>
+                )}
+              </div>
+
+              {/* Show transfer accounts for transfer transactions */}
+              {transaction.type === 'transfer' && transaction.toAccount && (
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <div className="flex items-center space-x-2 text-sm text-slate-500 dark:text-slate-400">
+                      <Wallet className="h-4 w-4" />
+                      <span>From</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <AccountAvatar account={transaction.account} size="sm" />
+                      <span className="text-sm font-medium text-slate-900 dark:text-white">
+                        {transaction.account.name}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <div className="flex items-center space-x-2 text-sm text-slate-500 dark:text-slate-400">
+                      <Wallet className="h-4 w-4" />
+                      <span>To</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <AccountAvatar account={transaction.toAccount} size="sm" />
+                      <span className="text-sm font-medium text-slate-900 dark:text-white">
+                        {transaction.toAccount.name}
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
 
               {transaction.person?.name && (
                 <div className="space-y-1.5">
@@ -156,18 +186,15 @@ const TransactionDetails = () => {
                   <span>Tags</span>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {transaction.tags.map((tag, index) => (
-                    <Badge
-                      key={index}
-                      className="rounded-full px-2 py-0.5 text-[10px]"
-                      style={{
-                        backgroundColor: tag.bgColor,
-                        color: tag.color,
-                      }}
-                    >
-                      <DynamicIcon name={tag.icon as IconName} className="h-3 w-3" />
-                      {tag.name}
-                    </Badge>
+                  {transaction.tags.map((tag) => (
+                    <TagChip
+                      name={tag.name}
+                      iconName={tag.icon}
+                      bgColor={tag.bgColor}
+                      color={tag.color}
+                      size="xs"
+                      key={tag.id}
+                    />
                   ))}
                 </div>
               </div>

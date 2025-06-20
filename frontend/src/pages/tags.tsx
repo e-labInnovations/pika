@@ -4,16 +4,22 @@ import { Card, CardContent } from '@/components/ui/card';
 import TabsLayout from '@/layouts/tabs';
 import { Plus, Trash2, Edit2 } from 'lucide-react';
 import { IconRenderer } from '@/components/icon-renderer';
+import { useNavigate } from 'react-router-dom';
 
 const Tags = () => {
+  const navigate = useNavigate();
+
   const onDeleteTag = (id: string) => {
     // Handle delete
     console.log('Delete tag:', id);
   };
 
   const onEditTag = (id: string) => {
-    // Handle edit
-    console.log('Edit tag:', id);
+    navigate(`/settings/tags/${id}/edit`);
+  };
+
+  const onAddTag = () => {
+    navigate('/settings/tags/add');
   };
 
   return (
@@ -22,7 +28,7 @@ const Tags = () => {
         title: 'Tags',
         description: 'Manage your tags',
         rightActions: (
-          <Button variant="outline" size="icon" className="rounded-full">
+          <Button variant="outline" size="icon" className="rounded-full" onClick={onAddTag}>
             <Plus className="h-4 w-4" />
           </Button>
         ),
@@ -70,6 +76,7 @@ const Tags = () => {
           variant="ghost"
           size="sm"
           className="flex w-full items-center justify-center gap-2 text-slate-600 hover:text-emerald-600 dark:text-slate-400 dark:hover:text-emerald-400"
+          onClick={onAddTag}
         >
           <Plus className="h-4 w-4" />
           <span>Add Tag</span>

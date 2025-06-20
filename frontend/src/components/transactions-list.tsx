@@ -6,10 +6,10 @@ import type { Transaction } from '@/data/dummy-data';
 import type { Filter } from './transactions-tab/filter/types';
 import type { Sort } from './transactions-tab/sort/types';
 import { useNavigate } from 'react-router-dom';
-import { DynamicIcon, type IconName } from 'lucide-react/dynamic';
 import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
 import { CategoryTransactionIcon } from './category-transaction-icon';
 import AccountAvatar from './account-avatar';
+import { TagChip } from './tag-chip';
 
 interface TransactionsListProps {
   transactions: Transaction[];
@@ -276,18 +276,17 @@ export function TransactionsList({
                       </div>
 
                       <div className="mt-2 flex flex-wrap gap-1">
-                        {transaction.tags.map((tag, index) => (
-                          <span
-                            key={index}
-                            className="flex items-center gap-1 rounded-full px-1 py-0.5 text-[10px] font-medium"
-                            style={{
-                              backgroundColor: tag.bgColor,
-                              color: tag.color,
-                            }}
-                          >
-                            <DynamicIcon name={tag.icon as IconName} className="h-3 w-3" />
-                            {tag.name}
-                          </span>
+                        {transaction.tags.map((tag) => (
+                          <div>
+                            <TagChip
+                              name={tag.name}
+                              iconName={tag.icon}
+                              bgColor={tag.bgColor}
+                              color={tag.color}
+                              size="xs"
+                              key={tag.id}
+                            />
+                          </div>
                         ))}
                       </div>
                     </div>
