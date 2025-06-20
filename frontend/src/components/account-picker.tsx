@@ -19,8 +19,7 @@ const AccountPicker = ({ isOpen, onClose, onSelect, selectedAccountId }: Account
   const filteredAccounts = accounts.filter(
     (account) =>
       account.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      account.bank?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      account.type.toLowerCase().includes(searchTerm.toLowerCase()),
+      account.description?.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const handleSelect = (account: Account) => {
@@ -72,8 +71,7 @@ const AccountPicker = ({ isOpen, onClose, onSelect, selectedAccountId }: Account
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <p className="truncate text-sm text-slate-500 dark:text-slate-400">{account.bank}</p>
-                    <p className="text-xs text-slate-400 capitalize dark:text-slate-500">{account.type}</p>
+                    <p className="truncate text-sm text-slate-500 dark:text-slate-400">{account.description}</p>
                   </div>
                 </div>
                 {selectedAccountId === account.id && (

@@ -1,5 +1,6 @@
 import { format } from 'date-fns';
 import type { IconName } from 'lucide-react/dynamic';
+import type { Transaction, TransactionAccount, TransactionCategory, TransactionTag } from '@/data/dummy-data';
 
 export type TransactionType = 'income' | 'expense' | 'transfer';
 
@@ -68,6 +69,27 @@ class TransactionUtils {
 
   formatDateAndTime = (date: string) => {
     return `${this.formatDate(date)} • ${this.formatTime(date)}`;
+  };
+
+  // Create initial balance transaction
+  createInitialBalanceTransaction = (
+    account: TransactionAccount,
+    amount: number,
+    initialBalanceCategory: TransactionCategory,
+    initialBalanceTag: TransactionTag,
+  ): Omit<Transaction, 'id'> => {
+    const now = new Date().toISOString();
+
+    return {
+      title: `Initial Balance - ${account.name}`,
+      amount: Math.abs(amount),
+      date: now,
+      type: amount >= 0 ? 'income' : 'expense',
+      category: initialBalanceCategory,
+      account: account,
+      tags: [initialBalanceTag],
+      note: `Initial balance for ${account.name}`,
+    };
   };
 }
 

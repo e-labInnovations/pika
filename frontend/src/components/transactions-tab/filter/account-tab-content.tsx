@@ -71,7 +71,7 @@ const AccountTabContent = ({ filters, setFilters }: AccountTabContentProps) => {
                 <AccountAvatar account={account} />
                 <div className="flex-1">
                   <p className="font-medium">{account.name}</p>
-                  <p className="text-muted-foreground text-sm">{account.type}</p>
+                  <p className="text-muted-foreground text-sm">{account.description}</p>
                 </div>
               </div>
               <CheckboxPrimitive.Indicator className="absolute top-2 right-2">

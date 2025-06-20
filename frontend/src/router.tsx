@@ -6,25 +6,27 @@ import ProtectedRoute from '@/layouts/protected';
 import MainLayout from '@/layouts/main';
 import TransactionsTab from '@/pages/transactions-tab';
 import AddTransactionTab from '@/pages/add-transaction-tab';
-import PeopleTab from './pages/people-tab';
-import SettingsTab from './pages/settings-tab';
-import TransactionDetails from './pages/transaction-details';
-import DetailedPerson from './pages/detailed-person';
-import Categories from './pages/categories';
-import Tags from './pages/tags';
-import Accounts from './pages/accounts';
-import GeneralSettings from './pages/general-settings';
-import NotificationsSettings from './pages/notifications-settings';
-import SecuritySettings from './pages/security-settings';
-import ProfileSettings from './pages/profile-settings';
-import NotFound from './pages/404';
-import LogoDemo from './pages/logo-demo';
-import AddCategory from './pages/add-category';
-import EditCategory from './pages/edit-category';
-import AddChildCategory from './pages/add-child-category';
-import EditChildCategory from './pages/edit-child-category';
-import AddTag from './pages/add-tag';
-import EditTag from './pages/edit-tag';
+import PeopleTab from '@/pages/people-tab';
+import SettingsTab from '@/pages/settings-tab';
+import TransactionDetails from '@/pages/transaction-details';
+import DetailedPerson from '@/pages/detailed-person';
+import Categories from '@/pages/categories';
+import Tags from '@/pages/tags';
+import Accounts from '@/pages/accounts';
+import GeneralSettings from '@/pages/general-settings';
+import NotificationsSettings from '@/pages/notifications-settings';
+import SecuritySettings from '@/pages/security-settings';
+import ProfileSettings from '@/pages/profile-settings';
+import NotFound from '@/pages/404';
+import LogoDemo from '@/pages/logo-demo';
+import AddCategory from '@/pages/add-category';
+import EditCategory from '@/pages/edit-category';
+import AddChildCategory from '@/pages/add-child-category';
+import EditChildCategory from '@/pages/edit-child-category';
+import AddTag from '@/pages/add-tag';
+import EditTag from '@/pages/edit-tag';
+import AddAccount from '@/pages/add-account';
+import EditAccount from '@/pages/edit-account';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -60,6 +62,8 @@ const router = createBrowserRouter(
         <Route path="/settings/tags/add" element={<AddTag />} />
         <Route path="/settings/tags/:tagId/edit" element={<EditTag />} />
         <Route path="/settings/accounts" element={<Accounts />} />
+        <Route path="/settings/accounts/add" element={<AddAccount />} />
+        <Route path="/settings/accounts/:accountId/edit" element={<EditAccount />} />
         <Route path="/settings/general" element={<GeneralSettings />} />
         <Route path="/settings/notifications" element={<NotificationsSettings />} />
         <Route path="/settings/security" element={<SecuritySettings />} />

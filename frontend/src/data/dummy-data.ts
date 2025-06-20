@@ -30,8 +30,7 @@ export interface Account {
   avatar?: string;
   color: string;
   balance: number;
-  type: string;
-  bank?: string;
+  description?: string;
 }
 
 export interface TransactionAccount {
@@ -125,8 +124,7 @@ export const accounts: Account[] = [
     bgColor: '#3B82F6',
     color: '#ffffff',
     balance: 2450.5,
-    type: 'checking',
-    bank: 'Chase Bank',
+    description: 'Chase Bank',
   },
   {
     id: '2',
@@ -135,8 +133,7 @@ export const accounts: Account[] = [
     bgColor: '#22C55E',
     color: '#ffffff',
     balance: 8920.0,
-    type: 'savings',
-    bank: 'Federal Bank',
+    description: 'Federal Bank',
     avatar: 'https://i.postimg.cc/sD6vsdSz/image.webp',
   },
   {
@@ -146,8 +143,7 @@ export const accounts: Account[] = [
     bgColor: '#EF4444',
     color: '#ffffff',
     balance: -1250.75,
-    type: 'credit',
-    bank: 'American Express',
+    description: 'American Express',
   },
 ];
 
@@ -384,6 +380,18 @@ export const categories: Category[] = [
         isSystem: true,
         isParent: false,
       },
+      // System Initial Balance Category
+      {
+        id: '22',
+        name: 'Initial Balance',
+        icon: 'plus-circle',
+        bgColor: '#10B981',
+        color: '#ffffff',
+        type: 'income',
+        description: 'Initial account balance',
+        isSystem: true,
+        isParent: false,
+      },
     ],
   },
   // User Income Categories
@@ -550,6 +558,15 @@ export const tags: Tag[] = [
     bgColor: '#ef4444',
     description: 'Wedding Gift',
     isSystem: false,
+  },
+  {
+    id: '6',
+    name: 'Initial Balance',
+    icon: 'plus-circle',
+    color: '#ffffff',
+    bgColor: '#10B981',
+    description: 'Initial account balance transaction',
+    isSystem: true,
   },
 ];
 
