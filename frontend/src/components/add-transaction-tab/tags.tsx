@@ -1,12 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Tag as TagIcon, X } from 'lucide-react';
+import { Tag as TagIcon } from 'lucide-react';
 import type { TransactionFormData } from './types';
 import { useState } from 'react';
 import { tags } from '@/data/dummy-data';
-import { DynamicIcon, type IconName } from 'lucide-react/dynamic';
+import { TagChip } from '../tag-chip';
+import { IconRenderer } from '../icon-renderer';
 
 interface TagsProps {
   formData: TransactionFormData;
@@ -42,6 +41,22 @@ const Tags = ({ formData, setFormData }: TagsProps) => {
       tags: prev.tags.filter((tag) => tag !== tagId),
     }));
   };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setTagInput(value);
+    setShowTagSuggestions(value.length > 0);
+  };
+
+  const handleInputFocus = () => {
+    setShowTagSuggestions(tagInput.length > 0);
+  };
+
+  const handleInputBlur = () => {
+    // Delay hiding suggestions to allow for clicks
+    setTimeout(() => setShowTagSuggestions(false), 150);
+  };
+
   return (
     <Card className="gap-0 p-0">
       <CardHeader className="p-4 pb-0">
@@ -55,22 +70,15 @@ const Tags = ({ formData, setFormData }: TagsProps) => {
         {formData.tags.length > 0 && (
           <div className="flex flex-wrap gap-2">
             {formData.tags.map((tagId) => (
-              <Badge
+              <TagChip
                 key={tagId}
-                variant="secondary"
-                className="bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200"
-              >
-                <DynamicIcon name={getTag(tagId)?.icon as IconName} className="mr-2 h-4 w-4" />
-                {getTag(tagId)?.name}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="ml-1 h-auto p-0 text-emerald-600 hover:text-emerald-800"
-                  onClick={() => removeTag(tagId)}
-                >
-                  <X className="h-3 w-3" />
-                </Button>
-              </Badge>
+                name={getTag(tagId)?.name || ''}
+                iconName={getTag(tagId)?.icon}
+                size="sm"
+                onClose={() => removeTag(tagId)}
+                color={getTag(tagId)?.color}
+                bgColor={getTag(tagId)?.bgColor}
+              />
             ))}
           </div>
         )}
@@ -78,28 +86,39 @@ const Tags = ({ formData, setFormData }: TagsProps) => {
         {/* Tag Input */}
         <div className="relative">
           <Input
-            placeholder="Add tags..."
+            placeholder="Search and add tags..."
             value={tagInput}
-            onChange={(e) => {
-              setTagInput(e.target.value);
-              setShowTagSuggestions(e.target.value.length > 0);
-            }}
-            onFocus={() => setShowTagSuggestions(tagInput.length > 0)}
+            onChange={handleInputChange}
+            onFocus={handleInputFocus}
+            onBlur={handleInputBlur}
           />
 
           {/* Tag Suggestions */}
           {showTagSuggestions && filteredTagSuggestions.length > 0 && (
-            <div className="absolute top-full right-0 left-0 z-10 mt-1 max-h-40 overflow-y-auto rounded-md border border-slate-200 bg-white shadow-lg dark:border-slate-700 dark:bg-slate-800">
+            <div className="absolute top-full right-0 left-0 z-10 mt-1 max-h-48 overflow-y-auto rounded-md border border-slate-200 bg-white shadow-lg dark:border-slate-700 dark:bg-slate-800">
               {filteredTagSuggestions.map((tag) => (
                 <button
                   key={tag.id}
                   type="button"
-                  className="w-full px-3 py-2 text-left text-slate-900 hover:bg-slate-100 dark:text-white dark:hover:bg-slate-700"
+                  className="flex w-full items-center space-x-3 px-3 py-2 text-left text-slate-900 transition-colors hover:bg-slate-100 dark:text-white dark:hover:bg-slate-700"
                   onClick={() => addTag(tag.id)}
                 >
-                  {tag.name}
+                  <IconRenderer iconName={tag.icon} size="sm" color={tag.color} bgColor={tag.bgColor} />
+                  <div className="flex flex-col">
+                    <span className="font-medium">{tag.name}</span>
+                    {tag.description && (
+                      <span className="text-xs text-slate-500 dark:text-slate-400">{tag.description}</span>
+                    )}
+                  </div>
                 </button>
               ))}
+            </div>
+          )}
+
+          {/* No results message */}
+          {showTagSuggestions && filteredTagSuggestions.length === 0 && tagInput.length > 0 && (
+            <div className="absolute top-full right-0 left-0 z-10 mt-1 rounded-md border border-slate-200 bg-white p-3 text-center text-sm text-slate-500 shadow-lg dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400">
+              No tags found matching "{tagInput}"
             </div>
           )}
         </div>

@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import DatePicker from '../date-picker';
 import type { TransactionFormData } from './types';
+import MoneyInput from '../money-input';
 
 interface BasicInfoProps {
   formData: TransactionFormData;
@@ -30,18 +31,15 @@ const BasicInfo = ({ formData, setFormData }: BasicInfoProps) => {
             required
           />
         </div>
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="amount">Amount *</Label>
-          <Input
-            id="amount"
-            type="number"
-            value={formData.amount}
-            onChange={(e) => setFormData((prev) => ({ ...prev, amount: Number(e.target.value) }))}
-            placeholder="0.00"
-            className="py-3 text-2xl font-bold"
-            required
-          />
-        </div>
+        <MoneyInput
+          value={formData.amount}
+          onChange={(amount) => setFormData((prev) => ({ ...prev, amount }))}
+          id="amount"
+          labelText="Amount *"
+          placeholder="0.00"
+          currency="₹"
+          className="text-xl font-bold"
+        />
 
         {/* Enhanced Date Time Picker */}
         <div className="flex flex-col gap-2">

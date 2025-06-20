@@ -2,9 +2,10 @@ import HeaderRightActions from '@/components/add-transaction-tab/header-right-ac
 import ScanReceipt from '@/components/add-transaction-tab/scan-receipt';
 import TransactionTypeSelector from '@/components/add-transaction-tab/transaction-type-selector';
 import type { TransactionFormData } from '@/components/add-transaction-tab/types';
-import { type AnalysisOutput } from '@/data/dummy-data';
+import { type AnalysisOutput, transactions, type Transaction } from '@/data/dummy-data';
 import TabsLayout from '@/layouts/tabs';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import BasicInfo from '@/components/add-transaction-tab/basic-info';
 import CategoryAccount from '@/components/add-transaction-tab/category-account';
 import Person from '@/components/add-transaction-tab/person';
@@ -17,10 +18,14 @@ import { type TransactionType } from '@/lib/transaction-utils';
 import { validateTransactionForm } from '@/components/add-transaction-tab/schema';
 import { toast } from 'sonner';
 
-const AddTransactionTab = () => {
+const EditTransactionTab = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+
   const [openAiReceiptScanner, setOpenAiReceiptScanner] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const [transaction, setTransaction] = useState<Transaction | null>(null);
 
   const [formData, setFormData] = useState<TransactionFormData>({
     title: '',
@@ -36,6 +41,46 @@ const AddTransactionTab = () => {
   });
 
   const [attachments, setAttachments] = useState<Attachment[]>([]);
+
+  // Load transaction data on component mount
+  useEffect(() => {
+    if (id) {
+      const foundTransaction = transactions.find((t) => t.id === id);
+      if (foundTransaction) {
+        setTransaction(foundTransaction);
+
+        // Convert transaction data to form data
+        setFormData({
+          title: foundTransaction.title,
+          amount: Math.abs(foundTransaction.amount),
+          date: foundTransaction.date,
+          type: foundTransaction.type,
+          category: foundTransaction.category.id,
+          account: foundTransaction.account.id,
+          toAccount: foundTransaction.toAccount?.id || null,
+          person: foundTransaction.person?.id || null,
+          tags: foundTransaction.tags.map((tag) => tag.id),
+          note: foundTransaction.note,
+        });
+
+        // Convert attachments
+        if (foundTransaction.attachments) {
+          setAttachments(
+            foundTransaction.attachments.map((att) => ({
+              id: att.id,
+              name: att.name,
+              url: att.url,
+              type: att.type,
+              size: 0, // Default size for existing attachments
+            })),
+          );
+        }
+      } else {
+        toast.error('Transaction not found');
+        navigate('/transactions');
+      }
+    }
+  }, [id, navigate]);
 
   const handleTransactionDetails = (transaction: AnalysisOutput) => {
     console.log('AI Analysis Result:', transaction);
@@ -64,12 +109,10 @@ const AddTransactionTab = () => {
     };
     setFormData((prev) => ({ ...prev, type, category: defaultCategoryByType[type] }));
 
-    // TODO: Handle account and person selection
-    // if (type === 'expense' || type === 'income') {
-    //   setFormData((prev) => ({ ...prev, toAccount: null }));
-    // } else {
-    //   setFormData((prev) => ({ ...prev, person: null }));
-    // }
+    // Clear toAccount for non-transfer transactions
+    if (type !== 'transfer') {
+      setFormData((prev) => ({ ...prev, toAccount: null }));
+    }
   };
 
   const handleSubmit = async () => {
@@ -92,35 +135,40 @@ const AddTransactionTab = () => {
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      toast.success('Transaction saved successfully!');
+      toast.success('Transaction updated successfully!');
 
-      // Reset form
-      setFormData({
-        title: '',
-        amount: 0,
-        date: new Date().toISOString(),
-        type: 'expense',
-        category: '1',
-        account: '1',
-        toAccount: null,
-        person: null,
-        tags: [],
-        note: '',
-      });
-      setAttachments([]);
+      // Navigate back to transaction details
+      navigate(`/transactions/${id}`);
     } catch (error) {
-      console.error('Error saving transaction:', error);
-      toast.error('Failed to save transaction');
+      console.error('Error updating transaction:', error);
+      toast.error('Failed to update transaction');
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  if (!transaction) {
+    return (
+      <TabsLayout
+        header={{
+          title: 'Edit Transaction',
+          description: 'Loading transaction...',
+          linkBackward: '/transactions',
+        }}
+      >
+        <div className="py-8 text-center">
+          <p className="text-slate-500 dark:text-slate-400">Loading...</p>
+        </div>
+      </TabsLayout>
+    );
+  }
+
   return (
     <TabsLayout
       header={{
-        title: 'Add Transaction',
-        description: 'Add a new transaction',
+        title: 'Edit Transaction',
+        description: 'Update transaction details',
+        linkBackward: `/transactions/${id}`,
         rightActions: <HeaderRightActions handleScanReceipt={() => setOpenAiReceiptScanner(true)} />,
       }}
     >
@@ -146,9 +194,11 @@ const AddTransactionTab = () => {
         </div>
       )}
 
-      <Button className="w-full" onClick={handleSubmit} disabled={isSubmitting}>
-        {isSubmitting ? 'Saving...' : 'Save Transaction'}
-      </Button>
+      <div className="flex space-x-2">
+        <Button onClick={handleSubmit} disabled={isSubmitting} className="flex-1">
+          {isSubmitting ? 'Updating...' : 'Update Transaction'}
+        </Button>
+      </div>
 
       <ScanReceipt
         open={openAiReceiptScanner}
@@ -159,4 +209,4 @@ const AddTransactionTab = () => {
   );
 };
 
-export default AddTransactionTab;
+export default EditTransactionTab;

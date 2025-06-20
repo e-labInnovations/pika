@@ -6,6 +6,7 @@ import ProtectedRoute from '@/layouts/protected';
 import MainLayout from '@/layouts/main';
 import TransactionsTab from '@/pages/transactions-tab';
 import AddTransactionTab from '@/pages/add-transaction-tab';
+import EditTransactionTab from '@/pages/edit-transaction-tab';
 import PeopleTab from '@/pages/people-tab';
 import SettingsTab from '@/pages/settings-tab';
 import TransactionDetails from '@/pages/transaction-details';
@@ -48,6 +49,7 @@ const router = createBrowserRouter(
         <Route path="/transactions" element={<TransactionsTab />} />
         <Route path="/transactions/:id" element={<TransactionDetails />} />
         <Route path="/add" element={<AddTransactionTab />} />
+        <Route path="/transactions/:id/edit" element={<EditTransactionTab />} />
         <Route path="/people" element={<PeopleTab />} />
         <Route path="/people/:id" element={<DetailedPerson />} />
 

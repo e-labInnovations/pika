@@ -13,6 +13,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { type IconName } from '@/components/ui/icon-picker';
 import IconColorsFields from '@/components/categories/icon-colors-fields';
 import { categories, tags } from '@/data/dummy-data';
+import MoneyInput from '@/components/money-input';
 
 const AddAccount = () => {
   const navigate = useNavigate();
@@ -131,14 +132,14 @@ const AddAccount = () => {
 
                 {includeInitialBalance && (
                   <div className="space-y-2">
-                    <Label htmlFor="balance">Initial Balance</Label>
-                    <Input
-                      id="balance"
-                      type="number"
-                      step="0.01"
+                    <MoneyInput
                       value={initialBalance}
-                      onChange={(e) => setInitialBalance(parseFloat(e.target.value) || 0)}
+                      onChange={(amount) => setInitialBalance(amount)}
+                      id="balance"
+                      labelText="Initial Balance"
                       placeholder="0.00"
+                      currency="₹"
+                      className="text-xl font-bold"
                     />
                     <p className="text-xs text-slate-500 dark:text-slate-400">
                       This will create a system transaction to set the initial balance for this account.

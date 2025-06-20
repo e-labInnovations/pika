@@ -526,7 +526,7 @@ export const tags: Tag[] = [
   {
     id: '2',
     name: 'MalabarBites',
-    icon: 'hamburger',
+    icon: 'cookie',
     color: '#ffffff',
     bgColor: '#f97316',
     description: 'MalabarBites',

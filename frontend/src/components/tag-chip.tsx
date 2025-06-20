@@ -1,6 +1,7 @@
 import { DynamicIcon, type IconName } from 'lucide-react/dynamic';
 import { cn } from '@/lib/utils';
 import { cva, type VariantProps } from 'class-variance-authority';
+import { Button } from './ui/button';
 
 const tagChipVariants = cva('inline-flex items-center gap-1 rounded-full border-0', {
   variants: {
@@ -64,6 +65,8 @@ interface TagChipProps extends VariantProps<typeof tagChipVariants> {
   onClick?: () => void;
   /** Whether the tag is clickable */
   clickable?: boolean;
+  /** Close action */
+  onClose?: () => void;
 }
 
 const TagChip = ({
@@ -78,6 +81,7 @@ const TagChip = ({
   showIcon = true,
   onClick,
   clickable = false,
+  onClose,
   ...props
 }: TagChipProps) => {
   const defaultIconSize = size ? iconSizes[size] : iconSizes.default;
@@ -108,6 +112,11 @@ const TagChip = ({
         <DynamicIcon name={iconName as IconName} className={cn(finalIconSize, customStyles?.color && 'text-current')} />
       )}
       <span className="font-medium">{name}</span>
+      {onClose && (
+        <Button variant="ghost" size="icon" onClick={onClose} className="h-auto p-0">
+          <DynamicIcon name="x" className={cn(finalIconSize, customStyles?.color && 'text-current')} />
+        </Button>
+      )}
     </span>
   );
 };
