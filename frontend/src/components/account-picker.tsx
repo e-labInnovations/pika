@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Check } from 'lucide-react';
 import { accounts, type Account } from '@/data/dummy-data';
 import SearchBar from './search-bar';
-import { IconRenderer } from './icon-renderer';
+import AccountAvatar from './account-avatar';
 
 interface AccountPickerProps {
   isOpen: boolean;
@@ -63,7 +63,7 @@ const AccountPicker = ({ isOpen, onClose, onSelect, selectedAccountId }: Account
                 }`}
                 onClick={() => handleSelect(account)}
               >
-                <IconRenderer iconName={account.icon} size="md" bgColor={account.bgColor} color={account.color} />
+                <AccountAvatar account={account} size="md" />
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between">
                     <p className="truncate font-medium text-slate-900 dark:text-white">{account.name}</p>

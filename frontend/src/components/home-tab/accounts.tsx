@@ -3,7 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { EyeIcon, EyeOff, Wallet } from 'lucide-react';
 import type { Account } from '@/data/dummy-data';
 import { useState } from 'react';
-import { IconRenderer } from '../icon-renderer';
+import AccountAvatar from '../account-avatar';
 
 interface AccountsProps {
   accounts: Account[];
@@ -27,7 +27,7 @@ const Accounts = ({ accounts }: AccountsProps) => {
           <Card key={account.id} className="py-4">
             <CardContent className="h-full px-2 py-0">
               <div className="flex h-full flex-col items-center justify-between gap-2">
-                <IconRenderer iconName={account.icon} size="md" bgColor={account.bgColor} color={account.color} />
+                <AccountAvatar account={account} size="md" />
                 <span className="text-center text-xs md:text-sm">{account.name}</span>
                 <span
                   className={`font-semibold ${

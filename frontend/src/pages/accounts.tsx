@@ -3,7 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import TabsLayout from '@/layouts/tabs';
 import { accounts } from '@/data/dummy-data';
 import { Edit2, Plus, Trash2 } from 'lucide-react';
-import { IconRenderer } from '@/components/icon-renderer';
+import AccountAvatar from '@/components/account-avatar';
 
 const Accounts = () => {
   return (
@@ -25,7 +25,7 @@ const Accounts = () => {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <IconRenderer iconName={account.icon} size="md" bgColor={account.bgColor} color={account.color} />
+                  <AccountAvatar account={account} size="md" />
                   <div>
                     <span className="font-medium text-slate-900 dark:text-white">{account.name}</span>
                     <p className="text-xs text-slate-500 dark:text-slate-400">

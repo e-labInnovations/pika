@@ -3,12 +3,13 @@
 import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { TrendingUp, TrendingDown, DollarSign, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
-import { IconRenderer } from '@/components/icon-renderer';
+import { Plus, ChevronLeft, ChevronRight, TrendingUp, TrendingDown, DollarSign } from 'lucide-react';
+import AccountAvatar from './account-avatar';
+import type { Account, Transaction } from '@/data/dummy-data';
 
 interface DashboardProps {
-  accounts: any[];
-  transactions: any[];
+  accounts: Account[];
+  transactions: Transaction[];
 }
 
 export function Dashboard({ accounts, transactions }: DashboardProps) {
@@ -74,7 +75,7 @@ export function Dashboard({ accounts, transactions }: DashboardProps) {
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <IconRenderer iconName={account.icon} bgColor={account.bgColor} color={account.color} size="md" />
+                    <AccountAvatar account={account} size="md" />
                     <span className="font-medium text-slate-900 dark:text-white">{account.name}</span>
                   </div>
                   <span

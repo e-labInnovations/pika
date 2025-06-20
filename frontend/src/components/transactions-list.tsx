@@ -1,7 +1,6 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowBigRightDash } from 'lucide-react';
-import { IconRenderer } from '@/components/icon-renderer';
 import { SwipeableTransaction } from '@/components/swipeable-transaction';
 import type { Transaction } from '@/data/dummy-data';
 import type { Filter } from './transactions-tab/filter/types';
@@ -10,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { DynamicIcon, type IconName } from 'lucide-react/dynamic';
 import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
 import { CategoryTransactionIcon } from './category-transaction-icon';
+import AccountAvatar from './account-avatar';
 
 interface TransactionsListProps {
   transactions: Transaction[];
@@ -238,12 +238,7 @@ export function TransactionsList({
 
                           <div className="flex items-center gap-2">
                             <div className="flex items-center gap-2">
-                              <IconRenderer
-                                iconName={transaction.account.icon as IconName}
-                                size="xs"
-                                bgColor={transaction.account.bgColor}
-                                color={transaction.account.color}
-                              />
+                              <AccountAvatar account={transaction.account} size="xs" />
                               <span className="text-xs text-slate-500 dark:text-slate-400">
                                 {transaction.account.name}
                               </span>
@@ -252,12 +247,7 @@ export function TransactionsList({
                               <>
                                 <ArrowBigRightDash className="h-4 w-4 text-slate-500 dark:text-slate-400" />
                                 <div className="flex items-center gap-2">
-                                  <IconRenderer
-                                    iconName={transaction.toAccount.icon as IconName}
-                                    size="xs"
-                                    bgColor={transaction.toAccount.bgColor}
-                                    color={transaction.toAccount.color}
-                                  />
+                                  <AccountAvatar account={transaction.toAccount} size="xs" />
                                   <span className="text-xs text-slate-500 dark:text-slate-400">
                                     {transaction.toAccount.name}
                                   </span>

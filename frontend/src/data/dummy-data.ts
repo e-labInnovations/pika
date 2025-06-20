@@ -136,7 +136,8 @@ export const accounts: Account[] = [
     color: '#ffffff',
     balance: 8920.0,
     type: 'savings',
-    bank: 'Chase Bank',
+    bank: 'Federal Bank',
+    avatar: 'https://i.postimg.cc/sD6vsdSz/image.webp',
   },
   {
     id: '3',

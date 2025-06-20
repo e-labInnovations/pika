@@ -6,7 +6,7 @@ import { accounts } from '@/data/dummy-data';
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import { cn } from '@/lib/utils';
 import { CircleCheck } from 'lucide-react';
-import { IconRenderer } from '@/components/icon-renderer';
+import AccountAvatar from '@/components/account-avatar';
 
 interface AccountTabContentProps {
   filters: Filter;
@@ -68,7 +68,7 @@ const AccountTabContent = ({ filters, setFilters }: AccountTabContentProps) => {
               )}
             >
               <div className="flex items-center space-x-3">
-                <IconRenderer iconName={account.icon} bgColor={account.bgColor} color={account.color} />
+                <AccountAvatar account={account} />
                 <div className="flex-1">
                   <p className="font-medium">{account.name}</p>
                   <p className="text-muted-foreground text-sm">{account.type}</p>
