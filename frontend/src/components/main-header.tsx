@@ -20,11 +20,11 @@ const MainHeader = ({ linkBackward, title, description, rightActions }: MainHead
             {linkBackward && (
               <Button
                 variant="ghost"
-                size="sm"
+                size="icon"
                 onClick={() => navigate(linkBackward)}
-                className="text-muted-foreground p-2"
+                className="text-muted-foreground mr-2"
               >
-                <ChevronLeft className="h-5 w-5" />
+                <ChevronLeft className="size-8" />
               </Button>
             )}
             <div className="flex items-center space-x-3">
@@ -32,7 +32,7 @@ const MainHeader = ({ linkBackward, title, description, rightActions }: MainHead
                 <PikaIcon size={40} style="filled" />
               </div>
               <div>
-                <h1 className="text-foreground text-xl font-bold">{title}</h1>
+                <h1 className="text-foreground text-lg font-bold">{title}</h1>
                 <p className="text-muted-foreground text-xs">{description}</p>
               </div>
             </div>

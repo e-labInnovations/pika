@@ -8,9 +8,11 @@ interface CategoriesTabsProps {
     id: TransactionType;
     content: React.ReactNode;
   }[];
+  onTabChange: (transactionType: TransactionType) => void;
+  tabValue: TransactionType;
 }
 
-const CategoriesTabs = ({ tabContents }: CategoriesTabsProps) => {
+const CategoriesTabs = ({ tabContents, onTabChange, tabValue }: CategoriesTabsProps) => {
   const getTabColorClasses = (transactionType: TransactionType) => {
     switch (transactionType) {
       case 'income':
@@ -23,7 +25,7 @@ const CategoriesTabs = ({ tabContents }: CategoriesTabsProps) => {
   };
 
   return (
-    <Tabs defaultValue={TransactionUtils.types[0].id} className="w-full">
+    <Tabs defaultValue={tabValue} className="w-full" onValueChange={(value) => onTabChange(value as TransactionType)}>
       <TabsList className="w-full p-1">
         {TransactionUtils.types.map((transactionType) => (
           <TabsTrigger

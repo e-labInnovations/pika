@@ -9,9 +9,18 @@ interface CategoryItemProps {
   onEditCategory: (id: string) => void;
   onDeleteCategory: (id: string) => void;
   onAddChildCategory: (id: string) => void;
+  onEditChildCategory: (parentId: string, childId: string) => void;
+  onDeleteChildCategory: (id: string) => void;
 }
 
-const CategoryItem = ({ category, onEditCategory, onDeleteCategory, onAddChildCategory }: CategoryItemProps) => {
+const CategoryItem = ({
+  category,
+  onEditCategory,
+  onDeleteCategory,
+  onAddChildCategory,
+  onEditChildCategory,
+  onDeleteChildCategory,
+}: CategoryItemProps) => {
   return (
     <Card key={category.id} className="p-0">
       <CardContent className="p-4">
@@ -34,9 +43,7 @@ const CategoryItem = ({ category, onEditCategory, onDeleteCategory, onAddChildCa
                   variant="ghost"
                   size="sm"
                   onClick={() => {
-                    if (confirm(`Are you sure you want to delete "${category.name}"?`)) {
-                      onDeleteCategory(category.id);
-                    }
+                    onDeleteCategory(category.id);
                   }}
                 >
                   <Trash2 className="h-4 w-4 text-red-500" />
@@ -63,16 +70,14 @@ const CategoryItem = ({ category, onEditCategory, onDeleteCategory, onAddChildCa
               <div className="flex items-center space-x-2">
                 {!child.isSystem && (
                   <>
-                    <Button variant="ghost" size="sm" onClick={() => onEditCategory(child.id)}>
+                    <Button variant="ghost" size="sm" onClick={() => onEditChildCategory(category.id, child.id)}>
                       <Edit2 className="h-3 w-3 text-slate-600 dark:text-slate-400" />
                     </Button>
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => {
-                        if (confirm(`Are you sure you want to delete "${child.name}"?`)) {
-                          onDeleteCategory(child.id);
-                        }
+                        onDeleteChildCategory(child.id);
                       }}
                     >
                       <Trash2 className="h-3 w-3 text-red-500" />

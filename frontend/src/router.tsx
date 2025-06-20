@@ -19,6 +19,10 @@ import SecuritySettings from './pages/security-settings';
 import ProfileSettings from './pages/profile-settings';
 import NotFound from './pages/404';
 import LogoDemo from './pages/logo-demo';
+import AddCategory from './pages/add-category';
+import EditCategory from './pages/edit-category';
+import AddChildCategory from './pages/add-child-category';
+import EditChildCategory from './pages/edit-child-category';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -46,6 +50,10 @@ const router = createBrowserRouter(
         {/* Settings Routes */}
         <Route path="/settings" element={<SettingsTab />} />
         <Route path="/settings/categories" element={<Categories />} />
+        <Route path="/settings/categories/add" element={<AddCategory />} />
+        <Route path="/settings/categories/:categoryId/edit" element={<EditCategory />} />
+        <Route path="/settings/categories/:parentCategoryId/add" element={<AddChildCategory />} />
+        <Route path="/settings/categories/:parentCategoryId/:childCategoryId/edit" element={<EditChildCategory />} />
         <Route path="/settings/tags" element={<Tags />} />
         <Route path="/settings/accounts" element={<Accounts />} />
         <Route path="/settings/general" element={<GeneralSettings />} />
