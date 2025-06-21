@@ -39,6 +39,15 @@ export const settingSections: SettingSection[] = [
     iconColor: '#f59e0b',
   },
   {
+    id: 'currency',
+    title: 'Currency',
+    icon: 'dollar-sign',
+    description: 'Set your default currency',
+    link: '/settings/currency',
+    bgColor: '',
+    iconColor: '#22c55e',
+  },
+  {
     id: 'general',
     title: 'General Settings',
     icon: 'settings',

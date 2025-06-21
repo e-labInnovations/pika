@@ -3,6 +3,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Calendar } from 'lucide-react';
 import type { Person } from '@/data/dummy-data';
 import { useNavigate } from 'react-router-dom';
+import { currencyUtils } from '@/lib/currency-utils';
+import { useAuth } from '@/hooks/use-auth';
 
 interface PeopleListProps {
   people: Person[];
@@ -11,6 +13,7 @@ interface PeopleListProps {
 
 export function PeopleList({ people, searchTerm }: PeopleListProps) {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const filteredPeople = people.filter(
     (person) =>
       person.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -55,7 +58,9 @@ export function PeopleList({ people, searchTerm }: PeopleListProps) {
                       <h4 className="truncate font-medium text-slate-900 dark:text-white">{person.name}</h4>
                       <div className="text-right">
                         <span className={`font-semibold ${getBalanceColor(person.balance)}`}>
-                          {person.balance === 0 ? 'Even' : `$${Math.abs(person.balance).toFixed(2)}`}
+                          {person.balance === 0
+                            ? 'Even'
+                            : currencyUtils.formatAmount(Math.abs(person.balance), user?.default_currency)}
                         </span>
                         {person.balance !== 0 && (
                           <p className="text-xs text-slate-500 dark:text-slate-400">

@@ -1,17 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Textarea } from '@/components/ui/textarea';
 import TabsLayout from '@/layouts/tabs';
 import { Save, Trash2 } from 'lucide-react';
 import { accounts, type Account } from '@/data/dummy-data';
-import { IconRenderer } from '@/components/icon-renderer';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { type IconName } from '@/components/ui/icon-picker';
-import IconColorsFields from '@/components/categories/icon-colors-fields';
+import { AccountFormFields, AccountIconSelector, AccountPreview } from '@/components/accounts-settings';
 
 const EditAccount = () => {
   const { accountId } = useParams();
@@ -26,7 +21,6 @@ const EditAccount = () => {
     avatar: '',
   });
 
-  const [useAvatar, setUseAvatar] = useState(false);
   const [account, setAccount] = useState<Account | null>(null);
 
   useEffect(() => {
@@ -43,8 +37,6 @@ const EditAccount = () => {
           color: foundAccount.color,
           avatar: foundAccount.avatar || '',
         });
-        // Set useAvatar based on whether account has an avatar
-        setUseAvatar(!!foundAccount.avatar);
       }
     }
   }, [accountId]);
@@ -61,17 +53,6 @@ const EditAccount = () => {
       // TODO: Implement account deletion logic
       console.log('Deleting account:', accountId);
       navigate('/settings/accounts');
-    }
-  };
-
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setFormData((prev) => ({ ...prev, avatar: event.target?.result as string }));
-      };
-      reader.readAsDataURL(file);
     }
   };
 
@@ -106,131 +87,35 @@ const EditAccount = () => {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Name */}
-              <div className="space-y-2">
-                <Label htmlFor="name">Account Name *</Label>
-                <Input
-                  id="name"
-                  value={formData.name}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
-                  placeholder="Enter account name"
-                  required
-                />
-              </div>
+              <AccountFormFields
+                name={formData.name}
+                description={formData.description}
+                onNameChange={(name) => setFormData((prev) => ({ ...prev, name }))}
+                onDescriptionChange={(description) => setFormData((prev) => ({ ...prev, description }))}
+              />
 
-              {/* Description */}
-              <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  value={formData.description}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
-                  placeholder="Enter account description (e.g., bank name, account type, etc.)"
-                  rows={3}
-                />
-              </div>
+              <AccountIconSelector
+                name={formData.name}
+                icon={formData.icon}
+                bgColor={formData.bgColor}
+                color={formData.color}
+                avatar={formData.avatar}
+                onIconChange={(icon) => setFormData((prev) => ({ ...prev, icon }))}
+                onBgColorChange={(bgColor) => setFormData((prev) => ({ ...prev, bgColor }))}
+                onColorChange={(color) => setFormData((prev) => ({ ...prev, color }))}
+                onAvatarChange={(avatar) => setFormData((prev) => ({ ...prev, avatar }))}
+              />
 
-              {/* Avatar/Icon Selection */}
-              <div className="space-y-4">
-                <Label>Account Icon</Label>
-
-                {/* Toggle between Avatar and Icon */}
-                <div className="flex space-x-2">
-                  <Button
-                    type="button"
-                    variant={!useAvatar ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => setUseAvatar(false)}
-                  >
-                    Icon
-                  </Button>
-                  <Button
-                    type="button"
-                    variant={useAvatar ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => setUseAvatar(true)}
-                  >
-                    Image
-                  </Button>
-                </div>
-
-                {useAvatar ? (
-                  /* Avatar Upload */
-                  <div className="space-y-4">
-                    <div className="flex items-center space-x-4">
-                      <Avatar className="h-16 w-16">
-                        <AvatarImage src={formData.avatar} alt="Account avatar" />
-                        <AvatarFallback className="text-lg">{formData.name.charAt(0).toUpperCase()}</AvatarFallback>
-                      </Avatar>
-                      <div className="flex flex-col space-y-2">
-                        <Label htmlFor="avatar-upload" className="cursor-pointer">
-                          <Button variant="outline" size="sm" asChild>
-                            <span>Upload Image</span>
-                          </Button>
-                        </Label>
-                        <Input
-                          id="avatar-upload"
-                          type="file"
-                          accept="image/*"
-                          onChange={handleAvatarChange}
-                          className="hidden"
-                        />
-                        {formData.avatar && (
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setFormData((prev) => ({ ...prev, avatar: '' }))}
-                          >
-                            Remove
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  /* Icon Selection */
-                  <IconColorsFields
-                    icon={formData.icon}
-                    bgColor={formData.bgColor}
-                    color={formData.color}
-                    setIcon={(icon) => setFormData((prev) => ({ ...prev, icon: icon as IconName }))}
-                    setBgColor={(bgColor) => setFormData((prev) => ({ ...prev, bgColor: bgColor }))}
-                    setColor={(color) => setFormData((prev) => ({ ...prev, color: color }))}
-                  />
-                )}
-              </div>
-
-              {/* Preview */}
-              <div className="space-y-2">
-                <Label>Preview</Label>
-                <div className="rounded-md border border-slate-200 p-4 dark:border-slate-700">
-                  <div className="flex items-center space-x-3">
-                    {useAvatar && formData.avatar ? (
-                      <Avatar className="h-10 w-10">
-                        <AvatarImage src={formData.avatar} alt="Account avatar" />
-                        <AvatarFallback>{formData.name.charAt(0).toUpperCase()}</AvatarFallback>
-                      </Avatar>
-                    ) : (
-                      <IconRenderer
-                        iconName={formData.icon}
-                        size="md"
-                        color={formData.color}
-                        bgColor={formData.bgColor}
-                      />
-                    )}
-                    <div>
-                      <p className="font-medium">{formData.name || 'Account Name'}</p>
-                      <p className="text-sm text-slate-500 dark:text-slate-400">
-                        {formData.description || 'Account description'}
-                      </p>
-                      <p className="text-sm font-medium text-slate-900 dark:text-white">
-                        ${account.balance.toLocaleString('en-US', { minimumFractionDigits: 2 })}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <AccountPreview
+                name={formData.name}
+                description={formData.description}
+                icon={formData.icon}
+                bgColor={formData.bgColor}
+                color={formData.color}
+                avatar={formData.avatar}
+                balance={account.balance}
+                useAvatar={!!formData.avatar}
+              />
             </form>
           </CardContent>
         </Card>

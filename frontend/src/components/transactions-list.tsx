@@ -10,6 +10,9 @@ import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
 import { CategoryTransactionIcon } from './category-transaction-icon';
 import AccountAvatar from './account-avatar';
 import { TagChip } from './tag-chip';
+import transactionUtils from '@/lib/transaction-utils';
+import { currencyUtils } from '@/lib/currency-utils';
+import { useAuth } from '@/hooks/use-auth';
 
 interface TransactionsListProps {
   transactions: Transaction[];
@@ -27,6 +30,7 @@ export function TransactionsList({
   sort,
 }: TransactionsListProps) {
   const navigate = useNavigate();
+  const { user } = useAuth();
   // Filter transactions
   const filteredTransactions = transactions.filter((transaction) => {
     // Search filter
@@ -152,12 +156,6 @@ export function TransactionsList({
     }
   });
 
-  const getAmountColor = (type: string) => {
-    if (type === 'income') return 'text-emerald-600 dark:text-emerald-400';
-    if (type === 'expense') return 'text-red-500 dark:text-red-400';
-    return 'text-blue-600 dark:text-blue-400';
-  };
-
   const getActiveFiltersCount = () => {
     return (
       filters.types.length +
@@ -182,16 +180,6 @@ export function TransactionsList({
   const handleSelect = (id: string) => {
     alert(`Open functionality for transaction with id: ${id}`);
     navigate(`/transactions/${id}`);
-  };
-
-  const formatDateTime = (date: string) => {
-    return new Date(date).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
   };
 
   return (
@@ -223,8 +211,8 @@ export function TransactionsList({
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between">
                         <h4 className="truncate font-medium text-slate-900 dark:text-white">{transaction.title}</h4>
-                        <span className={`font-semibold ${getAmountColor(transaction.type)}`}>
-                          {Math.abs(transaction.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                        <span className={`font-semibold ${transactionUtils.getAmountColor(transaction.type)}`}>
+                          {currencyUtils.formatAmount(transaction.amount, user?.default_currency)}
                         </span>
                       </div>
 
@@ -232,7 +220,7 @@ export function TransactionsList({
                         <div className="flex grow flex-col gap-2">
                           <div className="mt-1 flex items-center space-x-2">
                             <span className="text-sm text-slate-500 dark:text-slate-400">
-                              {formatDateTime(transaction.date)}
+                              {transactionUtils.formatDateTime(transaction.date)}
                             </span>
                           </div>
 

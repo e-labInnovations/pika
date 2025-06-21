@@ -7,11 +7,14 @@ import { Plus, DollarSign, Mail, Phone } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import DetailedPersonActions from '@/components/people-tab/detailed-person-actions';
 import { CategoryTransactionIcon } from '@/components/category-transaction-icon';
-import TransactionUtils from '@/lib/transaction-utils';
+import transactionUtils from '@/lib/transaction-utils';
+import { currencyUtils } from '@/lib/currency-utils';
+import { useAuth } from '@/hooks/use-auth';
 
 const DetailedPerson = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const person = people.find((person) => person.id === id);
   const personTransactions = transactions.filter((t) => t.person?.id === id);
@@ -60,8 +63,10 @@ const DetailedPerson = () => {
                   <h1 className="text-2xl font-bold text-slate-900 dark:text-white">{person.name}</h1>
                   <p className="text-slate-600 dark:text-slate-400">{person.description}</p>
                   <div className="mt-2">
-                    <span className={`text-lg font-semibold ${TransactionUtils.getBalanceColor(person.balance)}`}>
-                      {person.balance === 0 ? 'All settled up' : `$${Math.abs(person.balance).toFixed(2)}`}
+                    <span className={`text-lg font-semibold ${transactionUtils.getBalanceColor(person.balance)}`}>
+                      {person.balance === 0
+                        ? 'All settled up'
+                        : currencyUtils.formatAmount(Math.abs(person.balance), user?.default_currency)}
                     </span>
                     {person.balance !== 0 && (
                       <p className="text-sm text-slate-500 dark:text-slate-400">
@@ -124,13 +129,13 @@ const DetailedPerson = () => {
                   </div>
                   <div>
                     <p className="text-2xl font-bold text-red-500 dark:text-red-400">
-                      ${person.totalSpent?.toFixed(2) || 0}
+                      {currencyUtils.formatAmount(person.totalSpent || 0, user?.default_currency)}
                     </p>
                     <p className="text-xs text-slate-500 dark:text-slate-400">Total Spent</p>
                   </div>
                   <div>
                     <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
-                      ${person.totalReceived?.toFixed(2) || 0}
+                      {currencyUtils.formatAmount(person.totalReceived || 0, user?.default_currency)}
                     </p>
                     <p className="text-xs text-slate-500 dark:text-slate-400">Total Received</p>
                   </div>
@@ -165,12 +170,12 @@ const DetailedPerson = () => {
                       <div>
                         <p className="font-medium text-slate-900 dark:text-white">{transaction.title}</p>
                         <p className="text-xs text-slate-500 dark:text-slate-400">
-                          {TransactionUtils.formatDateAndTime(transaction.date)}
+                          {transactionUtils.formatDateTime(transaction.date)}
                         </p>
                       </div>
                     </div>
-                    <span className={`font-semibold ${TransactionUtils.getAmountColor(transaction.type)}`}>
-                      ${transaction.amount}
+                    <span className={`font-semibold ${transactionUtils.getAmountColor(transaction.type)}`}>
+                      {currencyUtils.formatAmount(transaction.amount, user?.default_currency)}
                     </span>
                   </div>
                 ))}

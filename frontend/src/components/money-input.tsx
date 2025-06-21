@@ -2,6 +2,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/hooks/use-auth';
+import { currencyUtils } from '@/lib/currency-utils';
 
 interface MoneyInputProps {
   value: number | string;
@@ -13,23 +15,16 @@ interface MoneyInputProps {
   className?: string;
 }
 
-const MoneyInput = ({
-  value,
-  onChange,
-  id,
-  labelText,
-  placeholder,
-  currency = '',
-  className,
-  ...props
-}: MoneyInputProps) => {
+const MoneyInput = ({ value, onChange, id, labelText, placeholder, className, ...props }: MoneyInputProps) => {
+  const { user } = useAuth();
   const [inputString, setInputString] = useState(value === 0 ? '' : value.toString());
   const [inputFocused, setInputFocused] = useState(false);
+  const decimalPlaces = currencyUtils.getCurrencyByCode(user?.default_currency || 'INR').decimal_digits;
 
-  const hasMoreThanTwoDecimalPlaces = (numberInputString: string) => {
+  const hasMoreThanDecimalPlaces = (numberInputString: string) => {
     const length = numberInputString.length;
     const decimalIndex = numberInputString.indexOf('.');
-    if (decimalIndex !== -1 && decimalIndex === length - 4) {
+    if (decimalIndex !== -1 && decimalIndex === length - (decimalPlaces + 2)) {
       return true;
     }
     return false;
@@ -47,21 +42,13 @@ const MoneyInput = ({
 
   const removeLeadingZeroChars = (numberString: string) => {
     if (numberString !== '') {
-      return parseFloat(numberString).toFixed(2).toString();
+      return parseFloat(numberString).toFixed(decimalPlaces).toString();
     }
-  };
-
-  const formatNumberString = (numberString: string) => {
-    // Removes leading 0's and returns string with 2 decimal places
-    let formattedNumStr = parseFloat(numberString).toFixed(2).toString();
-    // Adds commas for 1,000's etc
-    formattedNumStr = formattedNumStr.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    return `${currency} ${formattedNumStr}`;
   };
 
   const updateInputString = (numberInputString: string) => {
     // Don't update state if more than 2 decimal places specified.
-    if (hasMoreThanTwoDecimalPlaces(numberInputString)) {
+    if (hasMoreThanDecimalPlaces(numberInputString)) {
       return;
     }
     // Restrict number input to positive values only
@@ -97,7 +84,7 @@ const MoneyInput = ({
     // Else return the formatted number string to display in the text input
     // that will be rendered when the number input loses focus.
     if (inputString !== '') {
-      const formatteNumStr = formatNumberString(inputString);
+      const formatteNumStr = currencyUtils.formatAmount(Number(inputString), user?.default_currency);
       return formatteNumStr;
     }
     return inputString;
@@ -113,7 +100,7 @@ const MoneyInput = ({
         id={id}
         min="0"
         step="any"
-        placeholder={`${currency} ${placeholder}`}
+        placeholder={placeholder ?? currencyUtils.formatAmount(0, user?.default_currency)}
         value={getValueToDisplay()}
         onFocus={() => {
           displayNumberInput();

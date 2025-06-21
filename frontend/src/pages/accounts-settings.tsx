@@ -7,9 +7,12 @@ import AccountAvatar from '@/components/account-avatar';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import transactionUtils from '@/lib/transaction-utils';
+import { currencyUtils } from '@/lib/currency-utils';
+import { useAuth } from '@/hooks/use-auth';
 
-const Accounts = () => {
+const AccountsSettings = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   return (
     <TabsLayout
@@ -40,7 +43,7 @@ const Accounts = () => {
                     <span className="font-medium text-slate-900 dark:text-white">{account.name}</span>
                     <p className="text-muted-foreground text-sm">{account.description}</p>
                     <p className={cn('text-xs', transactionUtils.getBalanceColor(account.balance))}>
-                      ${account.balance.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                      {currencyUtils.formatAmount(account.balance, user?.default_currency)}
                     </p>
                   </div>
                 </div>
@@ -69,4 +72,4 @@ const Accounts = () => {
   );
 };
 
-export default Accounts;
+export default AccountsSettings;

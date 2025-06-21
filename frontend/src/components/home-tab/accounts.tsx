@@ -4,11 +4,14 @@ import { EyeIcon, EyeOff, Wallet } from 'lucide-react';
 import type { Account } from '@/data/dummy-data';
 import { useState } from 'react';
 import AccountAvatar from '../account-avatar';
+import { currencyUtils } from '@/lib/currency-utils';
+import { useAuth } from '@/hooks/use-auth';
 
 interface AccountsProps {
   accounts: Account[];
 }
 const Accounts = ({ accounts }: AccountsProps) => {
+  const { user } = useAuth();
   const [showMoney, setShowMoney] = useState(false);
 
   const totalBalance = accounts.reduce((sum, account) => sum + account.balance, 0);
@@ -34,12 +37,9 @@ const Accounts = ({ accounts }: AccountsProps) => {
                     account.balance >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500 dark:text-red-400'
                   }`}
                 >
-                  $
                   {showMoney
-                    ? Math.abs(account.balance).toLocaleString('en-US', {
-                        minimumFractionDigits: 2,
-                      })
-                    : '----'}
+                    ? currencyUtils.formatAmount(account.balance, user?.default_currency)
+                    : `${currencyUtils.getCurrencySymbol(user?.default_currency)}----`}
                 </span>
               </div>
             </CardContent>
@@ -55,12 +55,9 @@ const Accounts = ({ accounts }: AccountsProps) => {
               <span className="text-sm font-medium">Total Balance</span>
             </div>
             <span className="text-lg font-bold tracking-tight">
-              $
               {showMoney
-                ? totalBalance.toLocaleString('en-US', {
-                    minimumFractionDigits: 2,
-                  })
-                : '----'}
+                ? currencyUtils.formatAmount(totalBalance, user?.default_currency)
+                : `${currencyUtils.getCurrencySymbol(user?.default_currency)}----`}
             </span>
           </div>
         </CardContent>

@@ -1,38 +1,31 @@
-import { useState } from "react";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-  CardFooter,
-  CardDescription,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { z } from "zod";
-import { useAuth } from "@/hooks/use-auth";
-import { authService } from "@/services/api/auth";
-import { useLocation, useNavigate } from "react-router-dom";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
+import { useState } from 'react';
+import { Card, CardHeader, CardTitle, CardContent, CardFooter, CardDescription } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { z } from 'zod';
+import { useAuth } from '@/hooks/use-auth';
+import { authService } from '@/services/api/auth';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { AlertCircle } from 'lucide-react';
 
 const loginSchema = z.object({
-  username: z.string().min(3, "Username is required"),
+  username: z.string().min(3, 'Username is required'),
   appPassword: z
     .string()
     .regex(
       /^[a-zA-Z0-9]{4} [a-zA-Z0-9]{4} [a-zA-Z0-9]{4} [a-zA-Z0-9]{4} [a-zA-Z0-9]{4} [a-zA-Z0-9]{4}$/,
-      "Invalid application password format"
+      'Invalid application password format',
     ),
 });
 
 export default function Login() {
-  const [form, setForm] = useState({ username: "", appPassword: "" });
+  const [form, setForm] = useState({ username: '', appPassword: '' });
   const [touched, setTouched] = useState<{ [k: string]: boolean }>({});
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -52,7 +45,7 @@ export default function Login() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setTouched({ username: true, appPassword: true });
-    setError("");
+    setError('');
     setSuccess(false);
     if (!loginSchema.safeParse(form).success) return;
     setLoading(true);
@@ -64,26 +57,24 @@ export default function Login() {
       setSuccess(true);
 
       // Redirect to the page they tried to visit or home
-      const from = location.state?.from?.pathname || "/";
+      const from = location.state?.from?.pathname || '/';
       navigate(from, { replace: true });
     } catch {
-      setError("Invalid username or password");
+      setError('Invalid username or password');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 via-white to-emerald-100 dark:from-slate-900 dark:via-slate-950 dark:to-emerald-900 px-4">
-      <Card className="w-full max-w-md mx-auto shadow-xl border-emerald-100 dark:border-emerald-900/40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-emerald-50 via-white to-emerald-100 px-4 dark:from-slate-900 dark:via-slate-950 dark:to-emerald-900">
+      <Card className="mx-auto w-full max-w-md border-emerald-100 bg-white/80 shadow-xl backdrop-blur-md dark:border-emerald-900/40 dark:bg-slate-900/80">
         <CardHeader className="flex flex-col items-center gap-2 pb-2">
-          <div className="w-16 h-16 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center mb-2 shadow-lg">
-            <span className="text-white text-3xl">🏔️</span>
+          <div className="mb-2 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-lg">
+            <span className="text-3xl text-white">🏔️</span>
           </div>
-          <CardTitle className="text-center text-2xl font-bold tracking-tight">
-            Sign in to Pika
-          </CardTitle>
-          <CardDescription className="text-center text-muted-foreground text-sm">
+          <CardTitle className="text-center text-2xl font-bold tracking-tight">Sign in to Pika</CardTitle>
+          <CardDescription className="text-muted-foreground text-center text-sm">
             Enter your credentials to continue
           </CardDescription>
         </CardHeader>
@@ -104,9 +95,7 @@ export default function Login() {
                 required
               />
               {touched.username && errors.username && (
-                <div className="text-red-500 text-xs mt-1">
-                  {errors.username}
-                </div>
+                <div className="mt-1 text-xs text-red-500">{errors.username}</div>
               )}
             </div>
             <div className="space-y-2">
@@ -134,9 +123,7 @@ export default function Login() {
                 required
               />
               {touched.appPassword && errors.appPassword && (
-                <div className="text-red-500 text-xs mt-1">
-                  {errors.appPassword}
-                </div>
+                <div className="mt-1 text-xs text-red-500">{errors.appPassword}</div>
               )}
             </div>
             {error && (
@@ -147,10 +134,7 @@ export default function Login() {
               </Alert>
             )}
             {success && (
-              <Badge
-                variant="default"
-                className="w-full justify-center py-2 text-base bg-emerald-500 text-white"
-              >
+              <Badge variant="default" className="w-full justify-center bg-emerald-500 py-2 text-base text-white">
                 Login successful!
               </Badge>
             )}
@@ -158,15 +142,11 @@ export default function Login() {
           <CardFooter className="flex flex-col gap-2 pt-8">
             <Button
               type="submit"
-              className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold text-base shadow-md"
+              className="w-full bg-emerald-500 text-base font-semibold text-white shadow-md hover:bg-emerald-600"
               disabled={loading}
               size="lg"
             >
-              {loading ? (
-                <span className="animate-pulse">Signing in...</span>
-              ) : (
-                "Sign in"
-              )}
+              {loading ? <span className="animate-pulse">Signing in...</span> : 'Sign in'}
             </Button>
           </CardFooter>
         </form>

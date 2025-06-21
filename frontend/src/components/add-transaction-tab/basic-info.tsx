@@ -36,8 +36,6 @@ const BasicInfo = ({ formData, setFormData }: BasicInfoProps) => {
           onChange={(amount) => setFormData((prev) => ({ ...prev, amount }))}
           id="amount"
           labelText="Amount *"
-          placeholder="0.00"
-          currency="₹"
           className="text-xl font-bold"
         />
 

@@ -13,7 +13,6 @@ import TransactionDetails from '@/pages/transaction-details';
 import DetailedPerson from '@/pages/detailed-person';
 import Categories from '@/pages/categories';
 import Tags from '@/pages/tags';
-import Accounts from '@/pages/accounts';
 import GeneralSettings from '@/pages/general-settings';
 import NotificationsSettings from '@/pages/notifications-settings';
 import SecuritySettings from '@/pages/security-settings';
@@ -30,6 +29,8 @@ import AddAccount from '@/pages/add-account';
 import EditAccount from '@/pages/edit-account';
 import AddPerson from './pages/add-person';
 import EditPerson from './pages/edit-person';
+import CurrencySettings from '@/pages/currency-settings';
+import AccountsSettings from './pages/accounts-settings';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -67,13 +68,14 @@ const router = createBrowserRouter(
         <Route path="/settings/tags" element={<Tags />} />
         <Route path="/settings/tags/add" element={<AddTag />} />
         <Route path="/settings/tags/:tagId/edit" element={<EditTag />} />
-        <Route path="/settings/accounts" element={<Accounts />} />
+        <Route path="/settings/accounts" element={<AccountsSettings />} />
         <Route path="/settings/accounts/add" element={<AddAccount />} />
         <Route path="/settings/accounts/:accountId/edit" element={<EditAccount />} />
         <Route path="/settings/general" element={<GeneralSettings />} />
         <Route path="/settings/notifications" element={<NotificationsSettings />} />
         <Route path="/settings/security" element={<SecuritySettings />} />
         <Route path="/settings/profile" element={<ProfileSettings />} />
+        <Route path="/settings/currency" element={<CurrencySettings />} />
 
         {/* Other Routes */}
         <Route path="/about" element={<div>About Page</div>} />

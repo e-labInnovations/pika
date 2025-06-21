@@ -67,7 +67,7 @@ class TransactionUtils {
     return format(new Date(date), 'h:mm a');
   };
 
-  formatDateAndTime = (date: string) => {
+  formatDateTime = (date: string) => {
     return `${this.formatDate(date)} • ${this.formatTime(date)}`;
   };
 
