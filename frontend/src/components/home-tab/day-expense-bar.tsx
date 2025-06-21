@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { cn } from "@/lib/utils";
+import { useEffect, useState } from 'react';
+import { cn } from '@/lib/utils';
 
 interface DayExpenseBarProps {
   percentage: number;
@@ -9,13 +9,7 @@ interface DayExpenseBarProps {
   progressColor?: string;
 }
 
-const DayExpenseBar = ({
-  percentage,
-  day,
-  amount,
-  className,
-  progressColor,
-}: DayExpenseBarProps) => {
+const DayExpenseBar = ({ percentage, day, amount, className, progressColor }: DayExpenseBarProps) => {
   const [animatedPercentage, setAnimatedPercentage] = useState(0);
 
   useEffect(() => {
@@ -29,19 +23,12 @@ const DayExpenseBar = ({
   }, [percentage]);
 
   return (
-    <div
-      className={cn("flex flex-col items-center", className)}
-      role="group"
-      aria-label={`Expenses for ${day}`}
-    >
-      <div
-        className="text-xs font-medium text-muted-foreground mb-1"
-        aria-hidden="true"
-      >
-        {day}
+    <div className={cn('flex flex-col items-center', className)} role="group" aria-label={`Expenses for ${day}`}>
+      <div className="text-muted-foreground mb-1 text-xs font-medium" aria-hidden="true">
+        {amount}
       </div>
       <div
-        className="relative h-40 w-4 bg-muted rounded-full overflow-hidden"
+        className="bg-muted relative h-40 w-4 overflow-hidden rounded-full"
         role="progressbar"
         aria-valuemin={0}
         aria-valuemax={100}
@@ -50,17 +37,14 @@ const DayExpenseBar = ({
       >
         <div
           className={cn(
-            "absolute bottom-0 w-full rounded-b-full transition-all duration-1000 ease-out",
-            progressColor || "bg-primary"
+            'absolute bottom-0 w-full rounded-b-full transition-all duration-1000 ease-out',
+            progressColor || 'bg-primary',
           )}
           style={{ height: `${animatedPercentage}%` }}
         />
       </div>
-      <div
-        className="text-xs font-medium text-muted-foreground mt-1"
-        aria-hidden="true"
-      >
-        {amount}
+      <div className="text-muted-foreground mt-1 text-xs font-medium" aria-hidden="true">
+        {day}
       </div>
     </div>
   );

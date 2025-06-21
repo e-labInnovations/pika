@@ -1,127 +1,162 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import type { Transaction } from "@/data/dummy-data";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { DollarSign, TrendingDown, TrendingUp, Calendar, BarChart3 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { monthlySummaryData, type MonthlyData } from '@/data/monthly-summary-data';
+import { currencyUtils } from '@/lib/currency-utils';
+import { useAuth } from '@/hooks/use-auth';
+import SummaryCard from './summary-card';
 import {
-  ChevronLeft,
-  ChevronRight,
-  DollarSign,
-  TrendingDown,
-  TrendingUp,
-} from "lucide-react";
-import { useState } from "react";
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+  type CarouselApi,
+} from '@/components/ui/carousel';
 
-interface MonthlySummaryProps {
-  transactions: Transaction[];
-}
-const MonthlySummary = ({ transactions }: MonthlySummaryProps) => {
-  const [currentMonth, setCurrentMonth] = useState("November 2024");
+const MonthlySummary = () => {
+  const { user } = useAuth();
+  const [api, setApi] = useState<CarouselApi>();
+  const [current, setCurrent] = useState(0);
+  const [monthlyData, setMonthlyData] = useState<MonthlyData[]>([]);
 
-  const currentMonthTransactions = transactions.filter((t) => {
-    const transactionDate = new Date(t.date);
-    const currentDate = new Date();
-    return (
-      transactionDate.getMonth() === currentDate.getMonth() &&
-      transactionDate.getFullYear() === currentDate.getFullYear()
-    );
-  });
+  useEffect(() => {
+    // Use the pre-generated data for consistency
+    setMonthlyData(monthlySummaryData);
+  }, []);
 
-  const monthlyIncome = currentMonthTransactions
-    .filter((t) => t.type === "income")
-    .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+  useEffect(() => {
+    if (!api) {
+      return;
+    }
 
-  const monthlyExpenses = currentMonthTransactions
-    .filter((t) => t.type === "expense")
-    .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+    setCurrent(api.selectedScrollSnap() + 1);
 
-  const monthlyData = {
-    income: monthlyIncome,
-    expenses: monthlyExpenses,
-    balance: monthlyIncome - monthlyExpenses,
+    api.on('select', () => {
+      setCurrent(api.selectedScrollSnap() + 1);
+    });
+  }, [api]);
+
+  const currentMonthData = monthlyData[current - 1] || monthlyData[monthlyData.length - 1];
+
+  const formatCurrency = (amount: number) => {
+    return currencyUtils.formatAmount(amount, user?.default_currency);
   };
 
+  const getBalanceColor = (balance: number) => {
+    if (balance > 0) return 'text-emerald-600 dark:text-emerald-400';
+    if (balance < 0) return 'text-red-500 dark:text-red-400';
+    return 'text-slate-600 dark:text-slate-400';
+  };
+
+  const getBalanceIcon = (balance: number) => {
+    if (balance > 0) return TrendingUp;
+    if (balance < 0) return TrendingDown;
+    return DollarSign;
+  };
+
+  const getBalanceBgColor = (balance: number) => {
+    if (balance > 0) return 'bg-emerald-500';
+    if (balance < 0) return 'bg-red-500';
+    return 'bg-blue-500';
+  };
+
+  if (!currentMonthData) {
+    return (
+      <div className="flex h-32 items-center justify-center">
+        <p className="text-slate-500 dark:text-slate-400">No data available</p>
+      </div>
+    );
+  }
+
   return (
-    <div>
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
-          Monthly Summary
-        </h3>
-        <div className="flex items-center space-x-2">
-          <Button variant="ghost" size="sm">
-            <ChevronLeft className="w-4 h-4" />
-          </Button>
-          <span className="text-sm font-medium text-slate-600 dark:text-slate-400 min-w-[120px] text-center">
-            {currentMonth}
-          </span>
-          <Button variant="ghost" size="sm">
-            <ChevronRight className="w-4 h-4" />
-          </Button>
+    <div className="flex flex-col gap-4">
+      <Carousel setApi={setApi} className="w-full">
+        {/* Header inside Carousel but outside CarouselContent */}
+        <div className="mb-4 flex items-center justify-between">
+          <h3 className="text-md font-semibold text-slate-900 dark:text-white">Monthly Summary</h3>
+          <div className="flex items-center space-x-2">
+            <CarouselPrevious className="relative top-0 left-0 translate-x-0 translate-y-0" />
+            <div className="flex min-w-[140px] items-center justify-center space-x-2">
+              <Calendar className="h-4 w-4 text-slate-500" />
+              <span className="grow text-center text-sm font-medium text-slate-600 dark:text-slate-400">
+                {currentMonthData.month} {currentMonthData.year}
+              </span>
+            </div>
+            <CarouselNext className="relative top-0 right-0 translate-x-0 translate-y-0" />
+          </div>
         </div>
-      </div>
 
-      <div className="grid grid-cols-1 gap-3">
-        <Card className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm border-slate-200 dark:border-slate-700">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center">
-                  <TrendingUp className="w-5 h-5 text-white" />
-                </div>
-                <span className="font-medium text-slate-900 dark:text-white">
-                  Income
-                </span>
-              </div>
-              <span className="text-lg font-semibold text-emerald-600 dark:text-emerald-400">
-                $
-                {monthlyData.income.toLocaleString("en-US", {
-                  minimumFractionDigits: 2,
-                })}
-              </span>
-            </div>
-          </CardContent>
-        </Card>
+        <CarouselContent>
+          {monthlyData.map((monthData, index) => (
+            <CarouselItem key={index}>
+              <div className="space-y-4">
+                {/* Summary Cards Grid */}
+                <div className="grid grid-cols-3 gap-3">
+                  <SummaryCard
+                    title="Income"
+                    subtitle={`${monthData.transactionCount} txns`}
+                    amount={monthData.income}
+                    icon={TrendingUp}
+                    iconBgColor="bg-emerald-500"
+                    amountColor="text-emerald-600 dark:text-emerald-400"
+                  />
 
-        <Card className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm border-slate-200 dark:border-slate-700">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center">
-                  <TrendingDown className="w-5 h-5 text-white" />
-                </div>
-                <span className="font-medium text-slate-900 dark:text-white">
-                  Expenses
-                </span>
-              </div>
-              <span className="text-lg font-semibold text-red-500 dark:text-red-400">
-                $
-                {monthlyData.expenses.toLocaleString("en-US", {
-                  minimumFractionDigits: 2,
-                })}
-              </span>
-            </div>
-          </CardContent>
-        </Card>
+                  <SummaryCard
+                    title="Expenses"
+                    subtitle={`${monthData.transactionCount} txns`}
+                    amount={monthData.expenses}
+                    icon={TrendingDown}
+                    iconBgColor="bg-red-500"
+                    amountColor="text-red-500 dark:text-red-400"
+                  />
 
-        <Card className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm border-slate-200 dark:border-slate-700">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
-                  <DollarSign className="w-5 h-5 text-white" />
+                  <SummaryCard
+                    title="Balance"
+                    subtitle={monthData.balance > 0 ? 'Surplus' : monthData.balance < 0 ? 'Deficit' : 'Even'}
+                    amount={monthData.balance}
+                    icon={getBalanceIcon(monthData.balance)}
+                    iconBgColor={getBalanceBgColor(monthData.balance)}
+                    amountColor={getBalanceColor(monthData.balance)}
+                  />
                 </div>
-                <span className="font-medium text-slate-900 dark:text-white">
-                  Net Balance
-                </span>
+
+                {/* Summary Stats - Full Width Row */}
+                <Card className="gap-2 border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50 py-3 dark:border-blue-800 dark:from-blue-950/20 dark:to-indigo-950/20">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <BarChart3 className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                      <span className="text-sm font-medium text-blue-900 dark:text-blue-100">Monthly Overview</span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="px-4">
+                    <div className="flex items-center text-center">
+                      <div className="flex grow flex-col items-center">
+                        <p className="text-xs text-blue-700 dark:text-blue-300">Savings Rate</p>
+                        <p className="text-sm font-semibold text-blue-900 dark:text-blue-100">
+                          {monthData.income > 0 ? Math.round((monthData.balance / monthData.income) * 100) : 0}%
+                        </p>
+                      </div>
+                      <div className="flex grow flex-col items-center">
+                        <p className="text-xs text-blue-700 dark:text-blue-300">Avg. Daily</p>
+                        <p className="text-sm font-semibold text-blue-900 dark:text-blue-100">
+                          {formatCurrency(monthData.expenses / 30)}
+                        </p>
+                      </div>
+                      <div className="flex grow flex-col items-center">
+                        <p className="text-xs text-blue-700 dark:text-blue-300">Total Txns</p>
+                        <p className="text-sm font-semibold text-blue-900 dark:text-blue-100">
+                          {monthData.transactionCount}
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
-              <span className="text-lg font-semibold text-blue-600 dark:text-blue-400">
-                $
-                {monthlyData.balance.toLocaleString("en-US", {
-                  minimumFractionDigits: 2,
-                })}
-              </span>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+      </Carousel>
     </div>
   );
 };
