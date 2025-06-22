@@ -1,5 +1,4 @@
 import { createBrowserRouter, createRoutesFromElements, Route } from 'react-router-dom';
-import Home from '@/pages/home-old';
 import HomeTab from '@/pages/home-tab';
 import Login from '@/pages/login';
 import ProtectedRoute from '@/layouts/protected';
@@ -27,10 +26,10 @@ import AddTag from '@/pages/add-tag';
 import EditTag from '@/pages/edit-tag';
 import AddAccount from '@/pages/add-account';
 import EditAccount from '@/pages/edit-account';
-import AddPerson from './pages/add-person';
-import EditPerson from './pages/edit-person';
+import AddPerson from '@/pages/add-person';
+import EditPerson from '@/pages/edit-person';
 import CurrencySettings from '@/pages/currency-settings';
-import AccountsSettings from './pages/accounts-settings';
+import AccountsSettings from '@/pages/accounts-settings';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -48,7 +47,6 @@ const router = createBrowserRouter(
       >
         {/* Main Routes */}
         <Route path="/" element={<HomeTab />} />
-        <Route path="/old-home" element={<Home />} />
         <Route path="/transactions" element={<TransactionsTab />} />
         <Route path="/transactions/:id" element={<TransactionDetails />} />
         <Route path="/add" element={<AddTransactionTab />} />
