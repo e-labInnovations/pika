@@ -1,0 +1,14 @@
+# Variables (replace with your own values)
+@base_url = http://localhost:8000
+@username = testuser
+@password = mBqU EeIw 2aY6 Nxtm sTWu kOSc
+@admin_username = admin
+@admin_password = ufEK id77 GTpK fGdZ G1Zq 42E8
+
+###
+
+# get me; pika profile
+GET {{base_url}}/wp-json/pika/v1/auth/me
+Authorization: Basic {{username}}:{{password}}
+
+###

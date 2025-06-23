@@ -1,0 +1,400 @@
+# Pika WordPress Plugin .gitignore
+
+# ===========================================
+# WordPress Plugin Specific
+# ===========================================
+
+# WordPress core files (if accidentally included)
+wp-config.php
+wp-content/uploads/
+wp-content/cache/
+wp-content/backup-db/
+wp-content/backups/
+wp-content/blogs.dir/
+wp-content/upgrade/
+wp-content/uploads/
+wp-content/mu-plugins/
+wp-content/wp-cache-config.php
+wp-content/plugins/hello.php
+
+# WordPress database
+*.sql
+*.sqlite
+
+# WordPress logs
+debug.log
+error_log
+access.log
+
+# ===========================================
+# Frontend Build Files
+# ===========================================
+
+# React build output
+frontend-build/
+frontend/dist/
+frontend/build/
+
+# Frontend dependencies
+frontend/node_modules/
+frontend/.npm
+frontend/.env
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+
+# Frontend cache
+frontend/.cache/
+frontend/.parcel-cache/
+frontend/.next/
+frontend/.nuxt/
+frontend/.output/
+
+# Frontend logs
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/lerna-debug.log*
+frontend/.pnpm-debug.log*
+
+# Frontend coverage
+frontend/coverage/
+frontend/.nyc_output/
+
+# ===========================================
+# Development & IDE Files
+# ===========================================
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.vim
+.vimrc
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# ===========================================
+# PHP Development
+# ===========================================
+
+# Composer
+composer.phar
+composer.lock
+vendor/
+
+# PHPUnit
+.phpunit.result.cache
+phpunit.xml
+tests/coverage/
+
+# PHP CS Fixer
+.php-cs-fixer.cache
+.php-cs-fixer.dist.php
+
+# PHPStan
+.phpstan.result.cache
+phpstan.neon
+
+# PHP CodeSniffer
+.phpcs.cache
+
+# ===========================================
+# Environment & Configuration
+# ===========================================
+
+# Environment files
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+.env.staging
+
+# Configuration files with sensitive data
+config.php
+database.php
+settings.php
+
+# API keys and secrets
+*.key
+*.pem
+*.p12
+*.pfx
+secrets.json
+credentials.json
+
+# ===========================================
+# Temporary & Cache Files
+# ===========================================
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+*.old
+*.orig
+*.rej
+
+# Cache directories
+cache/
+tmp/
+temp/
+.tmp/
+.temp/
+
+# Session files
+sessions/
+*.sess
+
+# ===========================================
+# Upload & Media Files
+# ===========================================
+
+# Uploaded files (should be in .gitignore by default)
+uploads/pika/avatars/
+uploads/pika/attachments/
+
+# Large media files
+*.mp4
+*.avi
+*.mov
+*.wmv
+*.flv
+*.webm
+*.mkv
+
+# Audio files
+*.mp3
+*.wav
+*.flac
+*.aac
+*.ogg
+
+# ===========================================
+# Testing & Quality Assurance
+# ===========================================
+
+# Test files
+tests/coverage/
+tests/reports/
+tests/results/
+.phpunit.cache/
+
+# Code quality tools
+.phan/
+.phpstan/
+.phpcs/
+.phpmd/
+
+# ===========================================
+# Documentation Build
+# ===========================================
+
+# Generated documentation
+docs/build/
+docs/_build/
+docs/site/
+
+# API documentation
+docs/api/
+
+# ===========================================
+# Package Managers
+# ===========================================
+
+# npm
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Yarn
+.yarn-integrity
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
+# ===========================================
+# OS Generated Files
+# ===========================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.tmp
+*.temp
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ===========================================
+# Backup & Archive Files
+# ===========================================
+
+# Backup files
+*.bak
+*.backup
+*.old
+*.orig
+*.rej
+*.save
+*.swp
+*.swo
+*~
+
+# Archive files
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+*.zipx
+
+# ===========================================
+# Logs & Debug Files
+# ===========================================
+
+# Log files
+*.log
+logs/
+debug.log
+error.log
+access.log
+php_errors.log
+
+# Debug files
+debug/
+*.debug
+
+# ===========================================
+# Security & Sensitive Files
+# ===========================================
+
+# Security files
+.htaccess
+.htpasswd
+robots.txt
+sitemap.xml
+
+# SSL certificates
+*.crt
+*.csr
+*.key
+*.pem
+*.p12
+*.pfx
+
+# Database dumps
+*.sql
+*.sqlite
+*.db
+
+# ===========================================
+# Plugin Specific Exclusions
+# ===========================================
+
+# Plugin build artifacts
+build/
+dist/
+release/
+
+# Plugin cache
+cache/
+temp/
+
+# Plugin uploads (user-generated content)
+uploads/pika/
+
+# Plugin settings (may contain sensitive data)
+settings.json
+config.json
+
+# ===========================================
+# Keep Important Files
+# ===========================================
+
+# Keep empty directories
+!.gitkeep
+
+# Keep example files
+!example.env
+!sample.config.php
+
+# Keep documentation
+!README.md
+!CHANGELOG.md
+!LICENSE
+!docs/
+
+# Keep plugin structure
+!pika.php
+!uninstall.php
+!backend/
+!frontend/package.json
+!frontend/package-lock.json 

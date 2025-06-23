@@ -1,0 +1,33 @@
+{
+  "name": "pika",
+  "version": "1.0.0",
+  "description": "A comprehensive financial management solution for WordPress that helps users track income, expenses, transfers, and manage their financial data with a modern PWA interface.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "start": "npx @wp-now/wp-now start --blueprint=./blueprint.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/e-labInnovations/pika.git"
+  },
+  "author": "Mohammed Ashad",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/e-labInnovations/pika/issues"
+  },
+  "homepage": "https://github.com/e-labInnovations/pika#readme",
+  "keywords": [
+    "wordpress",
+    "plugin",
+    "financial",
+    "management",
+    "pwa",
+    "react",
+    "budget",
+    "expenses",
+    "income"
+  ]
+}
