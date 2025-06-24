@@ -10,6 +10,7 @@ import { authService } from '@/services/api/auth';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
+import Logo from '@/components/logo';
 
 const loginSchema = z.object({
   username: z.string().min(3, 'Username is required'),
@@ -70,9 +71,7 @@ export default function Login() {
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-emerald-50 via-white to-emerald-100 px-4 dark:from-slate-900 dark:via-slate-950 dark:to-emerald-900">
       <Card className="mx-auto w-full max-w-md border-emerald-100 bg-white/80 shadow-xl backdrop-blur-md dark:border-emerald-900/40 dark:bg-slate-900/80">
         <CardHeader className="flex flex-col items-center gap-2 pb-2">
-          <div className="mb-2 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-lg">
-            <span className="text-3xl text-white">🏔️</span>
-          </div>
+          <Logo size={96} />
           <CardTitle className="text-center text-2xl font-bold tracking-tight">Sign in to Pika</CardTitle>
           <CardDescription className="text-muted-foreground text-center text-sm">
             Enter your credentials to continue
