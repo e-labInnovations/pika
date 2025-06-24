@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Plugin Name: Pika Financial Management
  * Plugin URI: https://pika.elabins.com
@@ -27,6 +28,9 @@ define('PIKA_PLUGIN_BASENAME', plugin_basename(__FILE__));
 // Include the main plugin class
 require_once PIKA_PLUGIN_PATH . 'backend/class-pika-loader.php';
 
+// Include manager classes
+require_once PIKA_PLUGIN_PATH . 'backend/managers/manager-loader.php';
+
 // Initialize the plugin
 function pika_init() {
     $plugin = new Pika_Loader();
@@ -46,4 +50,4 @@ register_deactivation_hook(__FILE__, 'pika_deactivate');
 function pika_deactivate() {
     require_once PIKA_PLUGIN_PATH . 'backend/deactivator.php';
     Pika_Deactivator::deactivate();
-} 
+}

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Accounts controller for Pika plugin
  * 
@@ -10,7 +11,7 @@ if (!defined('ABSPATH')) {
 }
 
 class Pika_Accounts_Controller extends Pika_Base_Controller {
-    
+
     /**
      * Register routes
      */
@@ -23,7 +24,15 @@ class Pika_Accounts_Controller extends Pika_Base_Controller {
     }
 
     public function get_accounts($request) {
-        // TODO: Implement get accounts logic
-        return [];
+        $user_id = $this->get_current_user_id();
+        $accounts_manager = pika_get_manager('accounts');
+
+        if (!$accounts_manager) {
+            return $this->get_error('manager_not_found');
+        }
+
+        $accounts = $accounts_manager->get_user_accounts($user_id);
+
+        return $this->prepare_collection_for_response($accounts, $request);
     }
-} 
+}
