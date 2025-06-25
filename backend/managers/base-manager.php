@@ -43,6 +43,7 @@ abstract class Pika_Base_Manager {
     'unauthorized' => ['message' => 'Unauthorized access.', 'status' => 401],
     'invalid_request' => ['message' => 'Invalid request.', 'status' => 400],
     'not_found' => ['message' => 'Resource not found.', 'status' => 404],
+    'db_error' => ['message' => 'Database error.', 'status' => 500],
   ];
 
   /**

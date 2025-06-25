@@ -1,4 +1,4 @@
-ur# Variables (replace with your own values)
+# Variables (replace with your own values)
 # @base_url = http://localhost:8000
 # @username = testuser
 # @password = mBqU EeIw 2aY6 Nxtm sTWu kOSc
@@ -7,7 +7,7 @@ ur# Variables (replace with your own values)
 
 @base_url = http://localhost:8881
 @username = testuser
-@password = 7NXc 5tZJ LJxT QxeH ohBh RJhA
+@password = tljJ S27Y x1lD s65F w49d 7iQR
 @admin_username = admin
 @admin_password = QeX4 LrOs 50wB qjZD 1AyX tEwa
 
@@ -21,4 +21,10 @@ Authorization: Basic {{username}}:{{password}}
 
 # get users
 GET {{base_url}}/wp-json/wp/v2/users/me
+Authorization: Basic {{username}}:{{password}}
+
+###
+
+# get pages
+GET {{base_url}}/wp-json/wp/v2/pages
 Authorization: Basic {{username}}:{{password}}

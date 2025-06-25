@@ -22,7 +22,6 @@ class Pika_Auth_Controller extends Pika_Base_Controller {
      * Register routes
      */
     public function register_routes() {
-
         register_rest_route($this->namespace, '/auth/me', [
             [
                 'methods' => WP_REST_Server::READABLE,
