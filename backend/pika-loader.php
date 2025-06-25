@@ -30,9 +30,6 @@ class Pika_Loader {
         // Load utility functions
         require_once PIKA_PLUGIN_PATH . 'backend/utils.php';
 
-        // Load base manager
-        require_once PIKA_PLUGIN_PATH . 'backend/managers/manager-loader.php';
-
         // Load API loader
         require_once PIKA_PLUGIN_PATH . 'backend/api-loader.php';
 

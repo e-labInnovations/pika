@@ -6,18 +6,9 @@
  * @package Pika
  */
 
-if (!defined('ABSPATH')) {
-  exit;
-}
+Pika_Utils::reject_abs_path();
 
 class Pika_Auth_Manager extends Pika_Base_Manager {
-
-  /**
-   * Get table suffix
-   */
-  protected function get_table_suffix() {
-    return 'auth';
-  }
 
   /**
    * Get current user data
@@ -37,18 +28,5 @@ class Pika_Auth_Manager extends Pika_Base_Manager {
       'roles' => $user->roles,
       'capabilities' => $user->allcaps
     ];
-  }
-
-  /**
-   * Validate user credentials
-   */
-  public function validate_credentials($username, $password) {
-    $user = wp_authenticate($username, $password);
-
-    if (is_wp_error($user)) {
-      return false;
-    }
-
-    return $user->ID;
   }
 }

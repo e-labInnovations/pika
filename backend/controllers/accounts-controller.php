@@ -6,11 +6,16 @@
  * @package Pika
  */
 
-if (!defined('ABSPATH')) {
-    exit;
-}
+Pika_Utils::reject_abs_path();
 
 class Pika_Accounts_Controller extends Pika_Base_Controller {
+
+    public $accounts_manager;
+
+    public function __construct() {
+        parent::__construct();
+        $this->accounts_manager = new Pika_Accounts_Manager();
+    }
 
     /**
      * Register routes
@@ -24,15 +29,6 @@ class Pika_Accounts_Controller extends Pika_Base_Controller {
     }
 
     public function get_accounts($request) {
-        $user_id = $this->get_current_user_id();
-        $accounts_manager = pika_get_manager('accounts');
-
-        if (!$accounts_manager) {
-            return $this->get_error('manager_not_found');
-        }
-
-        $accounts = $accounts_manager->get_user_accounts($user_id);
-
-        return $this->prepare_collection_for_response($accounts, $request);
+        return [];
     }
 }

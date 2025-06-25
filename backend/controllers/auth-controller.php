@@ -6,11 +6,17 @@
  * @package Pika
  */
 
-if (!defined('ABSPATH')) {
-    exit;
-}
+Pika_Utils::reject_abs_path();
 
 class Pika_Auth_Controller extends Pika_Base_Controller {
+
+    private $auth_manager;
+
+    public function __construct() {
+        parent::__construct();
+
+        $this->auth_manager = new Pika_Auth_Manager();
+    }
 
     /**
      * Register routes
@@ -30,17 +36,12 @@ class Pika_Auth_Controller extends Pika_Base_Controller {
      * Get current user
      */
     public function get_current_user($request) {
-        $user_id = $this->get_current_user_id();
-        $auth_manager = pika_get_manager('auth');
+        $user_id = $this->utils->get_current_user_id();
 
-        if (!$auth_manager) {
-            return $this->get_error('manager_not_found');
-        }
-
-        $user_data = $auth_manager->get_current_user_data($user_id);
+        $user_data = $this->auth_manager->get_current_user_data($user_id);
 
         if (!$user_data) {
-            return $this->get_error('user_not_found');
+            return $this->auth_manager->get_error('user_not_found');
         }
 
         return $user_data;

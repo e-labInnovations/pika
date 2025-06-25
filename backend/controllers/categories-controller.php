@@ -6,12 +6,20 @@
  * @package Pika
  */
 
-if (!defined('ABSPATH')) {
-    exit;
-}
+Pika_Utils::reject_abs_path();
 
 class Pika_Categories_Controller extends Pika_Base_Controller {
 
+    public $categories_manager;
+
+    public function __construct() {
+        parent::__construct();
+        $this->categories_manager = new Pika_Categories_Manager();
+    }
+
+    /**
+     * Register routes
+     */
     public function register_routes() {
         register_rest_route($this->namespace, '/categories', [
             'methods' => 'GET',
@@ -20,16 +28,10 @@ class Pika_Categories_Controller extends Pika_Base_Controller {
         ]);
     }
 
+    /**
+     * Get categories
+     */
     public function get_categories($request) {
-        $user_id = $this->get_current_user_id();
-        $categories_manager = pika_get_manager('categories');
-
-        if (!$categories_manager) {
-            return $this->get_error('manager_not_found');
-        }
-
-        $categories = $categories_manager->get_user_categories($user_id);
-
-        return $this->prepare_collection_for_response($categories, $request);
+        return [];
     }
 }

@@ -6,82 +6,34 @@
  * @package Pika
  */
 
-if (!defined('ABSPATH')) {
-  exit;
-}
-
-use WP_Error;
+Pika_Utils::reject_abs_path();
 
 abstract class Pika_Base_Manager {
   /**
    * Database table name
    */
-  protected $table_name;
+  protected $table_name = '';
 
-  /**
-   * Primary key field
-   */
-  protected $primary_key = 'id';
+  public $utils;
 
   /**
    * Constructor
    */
   public function __construct() {
-    global $wpdb;
-    $this->table_name = $wpdb->prefix . 'pika_' . $this->get_table_suffix();
-  }
-
-  /**
-   * Get table suffix - should be overridden in child classes
-   */
-  abstract protected function get_table_suffix();
-
-  /**
-   * Get all records
-   */
-  public function get_all($args = []) {
-    // Template method - override in child classes
-    return [];
-  }
-
-  /**
-   * Get single record by ID
-   */
-  public function get_by_id($id) {
-    // Template method - override in child classes
-    return null;
-  }
-
-  /**
-   * Create new record
-   */
-  public function create($data) {
-    // Template method - override in child classes
-    return false;
-  }
-
-  /**
-   * Update existing record
-   */
-  public function update($id, $data) {
-    // Template method - override in child classes
-    return false;
-  }
-
-  /**
-   * Delete record
-   */
-  public function delete($id) {
-    // Template method - override in child classes
-    return false;
+    $this->utils = new Pika_Utils();
   }
 
   /**
    * Get database instance
    */
-  protected function get_db() {
+  protected function db() {
     global $wpdb;
     return $wpdb;
+  }
+
+  public function get_table_name() {
+    global $wpdb;
+    return $wpdb->prefix . 'pika_' . $this->table_name;
   }
 
   /**

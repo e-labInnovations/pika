@@ -1,16 +1,22 @@
 <?php
+
 /**
  * People controller for Pika plugin
  * 
  * @package Pika
  */
 
-if (!defined('ABSPATH')) {
-    exit;
-}
+Pika_Utils::reject_abs_path();
 
 class Pika_People_Controller extends Pika_Base_Controller {
-    
+
+    public $people_manager;
+
+    public function __construct() {
+        parent::__construct();
+        $this->people_manager = new Pika_People_Manager();
+    }
+
     /**
      * Register routes
      */
@@ -20,32 +26,32 @@ class Pika_People_Controller extends Pika_Base_Controller {
             'callback' => [$this, 'get_people'],
             'permission_callback' => [$this, 'check_auth']
         ]);
-        
+
         register_rest_route($this->namespace, '/people', [
             'methods' => 'POST',
             'callback' => [$this, 'create_person'],
             'permission_callback' => [$this, 'check_auth']
         ]);
-        
+
         register_rest_route($this->namespace, '/people/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [$this, 'get_person'],
             'permission_callback' => [$this, 'check_auth']
         ]);
-        
+
         register_rest_route($this->namespace, '/people/(?P<id>\d+)', [
             'methods' => 'PUT',
             'callback' => [$this, 'update_person'],
             'permission_callback' => [$this, 'check_auth']
         ]);
-        
+
         register_rest_route($this->namespace, '/people/(?P<id>\d+)', [
             'methods' => 'DELETE',
             'callback' => [$this, 'delete_person'],
             'permission_callback' => [$this, 'check_auth']
         ]);
     }
-    
+
     /**
      * Get all people
      */
@@ -53,7 +59,7 @@ class Pika_People_Controller extends Pika_Base_Controller {
         // TODO: Implement get people logic
         return [];
     }
-    
+
     /**
      * Create new person
      */
@@ -61,7 +67,7 @@ class Pika_People_Controller extends Pika_Base_Controller {
         // TODO: Implement create person logic
         return [];
     }
-    
+
     /**
      * Get single person
      */
@@ -69,7 +75,7 @@ class Pika_People_Controller extends Pika_Base_Controller {
         // TODO: Implement get person logic
         return [];
     }
-    
+
     /**
      * Update person
      */
@@ -77,7 +83,7 @@ class Pika_People_Controller extends Pika_Base_Controller {
         // TODO: Implement update person logic
         return [];
     }
-    
+
     /**
      * Delete person
      */
@@ -85,4 +91,4 @@ class Pika_People_Controller extends Pika_Base_Controller {
         // TODO: Implement delete person logic
         return [];
     }
-} 
+}

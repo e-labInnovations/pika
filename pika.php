@@ -26,10 +26,7 @@ define('PIKA_PLUGIN_VERSION', '1.0.0');
 define('PIKA_PLUGIN_BASENAME', plugin_basename(__FILE__));
 
 // Include the main plugin class
-require_once PIKA_PLUGIN_PATH . 'backend/class-pika-loader.php';
-
-// Include manager classes
-require_once PIKA_PLUGIN_PATH . 'backend/managers/manager-loader.php';
+require_once PIKA_PLUGIN_PATH . 'backend/pika-loader.php';
 
 // Initialize the plugin
 function pika_init() {

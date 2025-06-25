@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Plugin activation handler
  * 
@@ -10,25 +11,28 @@ if (!defined('ABSPATH')) {
 }
 
 class Pika_Activator {
-    
+
     /**
      * Activate the plugin
      */
     public static function activate() {
+        // Include default data
+        require_once PIKA_PLUGIN_PATH . 'backend/data/default-data.php';
+
         self::create_database_tables();
         self::insert_default_data();
         self::create_upload_directories();
         self::flush_rewrite_rules();
     }
-    
+
     /**
      * Create database tables
      */
     private static function create_database_tables() {
         global $wpdb;
-        
+
         $charset_collate = $wpdb->get_charset_collate();
-        
+
         // Accounts table
         $accounts_table = $wpdb->prefix . 'pika_accounts';
         $sql_accounts = "CREATE TABLE $accounts_table (
@@ -47,7 +51,7 @@ class Pika_Activator {
             KEY user_id (user_id),
             KEY is_active (is_active)
         ) $charset_collate;";
-        
+
         // People table
         $people_table = $wpdb->prefix . 'pika_people';
         $sql_people = "CREATE TABLE $people_table (
@@ -66,7 +70,7 @@ class Pika_Activator {
             KEY email (email),
             KEY is_active (is_active)
         ) $charset_collate;";
-        
+
         // Categories table
         $categories_table = $wpdb->prefix . 'pika_categories';
         $sql_categories = "CREATE TABLE $categories_table (
@@ -90,7 +94,7 @@ class Pika_Activator {
             KEY is_system (is_system),
             KEY is_active (is_active)
         ) $charset_collate;";
-        
+
         // Tags table
         $tags_table = $wpdb->prefix . 'pika_tags';
         $sql_tags = "CREATE TABLE $tags_table (
@@ -110,7 +114,7 @@ class Pika_Activator {
             KEY is_system (is_system),
             KEY is_active (is_active)
         ) $charset_collate;";
-        
+
         // Transactions table
         $transactions_table = $wpdb->prefix . 'pika_transactions';
         $sql_transactions = "CREATE TABLE $transactions_table (
@@ -139,7 +143,7 @@ class Pika_Activator {
             KEY type (type),
             KEY is_active (is_active)
         ) $charset_collate;";
-        
+
         // Transaction tags table
         $transaction_tags_table = $wpdb->prefix . 'pika_transaction_tags';
         $sql_transaction_tags = "CREATE TABLE $transaction_tags_table (
@@ -152,7 +156,7 @@ class Pika_Activator {
             KEY transaction_id (transaction_id),
             KEY tag_id (tag_id)
         ) $charset_collate;";
-        
+
         // Transaction attachments table
         $transaction_attachments_table = $wpdb->prefix . 'pika_transaction_attachments';
         $sql_transaction_attachments = "CREATE TABLE $transaction_attachments_table (
@@ -168,7 +172,7 @@ class Pika_Activator {
             KEY transaction_id (transaction_id),
             KEY type (type)
         ) $charset_collate;";
-        
+
         // User settings table
         $user_settings_table = $wpdb->prefix . 'pika_user_settings';
         $sql_user_settings = "CREATE TABLE $user_settings_table (
@@ -182,10 +186,10 @@ class Pika_Activator {
             UNIQUE KEY user_setting_unique (user_id,setting_key),
             KEY user_id (user_id)
         ) $charset_collate;";
-        
+
         // Execute all SQL statements
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-        
+
         dbDelta($sql_accounts);
         dbDelta($sql_people);
         dbDelta($sql_categories);
@@ -195,7 +199,7 @@ class Pika_Activator {
         dbDelta($sql_transaction_attachments);
         dbDelta($sql_user_settings);
     }
-    
+
     /**
      * Insert default data
      */
@@ -203,143 +207,96 @@ class Pika_Activator {
         self::insert_system_categories();
         self::insert_system_tags();
     }
-    
+
     /**
      * Insert system categories
      */
     private static function insert_system_categories() {
         global $wpdb;
-        
+
         $categories_table = $wpdb->prefix . 'pika_categories';
-        
-        $system_categories = [
-            // Expense categories
-            [
-                'name' => 'Food & Dining',
-                'icon' => 'shopping-cart',
-                'bg_color' => '#f97316',
-                'color' => '#ffffff',
-                'type' => 'expense',
-                'description' => 'Food and dining expenses',
-                'is_system' => 1
-            ],
-            [
-                'name' => 'Transportation',
-                'icon' => 'car',
-                'bg_color' => '#3b82f6',
-                'color' => '#ffffff',
-                'type' => 'expense',
-                'description' => 'Transportation expenses',
-                'is_system' => 1
-            ],
-            [
-                'name' => 'Entertainment',
-                'icon' => 'tv',
-                'bg_color' => '#8b5cf6',
-                'color' => '#ffffff',
-                'type' => 'expense',
-                'description' => 'Entertainment expenses',
-                'is_system' => 1
-            ],
-            [
-                'name' => 'Shopping',
-                'icon' => 'shopping-bag',
-                'bg_color' => '#ec4899',
-                'color' => '#ffffff',
-                'type' => 'expense',
-                'description' => 'Shopping expenses',
-                'is_system' => 1
-            ],
-            [
-                'name' => 'Healthcare',
-                'icon' => 'heart',
-                'bg_color' => '#ef4444',
-                'color' => '#ffffff',
-                'type' => 'expense',
-                'description' => 'Healthcare expenses',
-                'is_system' => 1
-            ],
-            // Income categories
-            [
-                'name' => 'Salary',
-                'icon' => 'briefcase',
-                'bg_color' => '#10b981',
-                'color' => '#ffffff',
-                'type' => 'income',
-                'description' => 'Salary income',
-                'is_system' => 1
-            ],
-            [
-                'name' => 'Freelance',
-                'icon' => 'laptop',
-                'bg_color' => '#f59e0b',
-                'color' => '#ffffff',
-                'type' => 'income',
-                'description' => 'Freelance income',
-                'is_system' => 1
-            ],
-            [
-                'name' => 'Investment',
-                'icon' => 'trending-up',
-                'bg_color' => '#06b6d4',
-                'color' => '#ffffff',
-                'type' => 'income',
-                'description' => 'Investment income',
-                'is_system' => 1
-            ]
-        ];
-        
-        foreach ($system_categories as $category) {
-            $wpdb->insert(
-                $categories_table,
-                array_merge($category, ['user_id' => 0]) // 0 for system categories
-            );
+
+        // Insert expense categories
+        self::insert_categories_with_children(Pika_Default_Data::DEFAULT_EXPENSE_CATEGORIES, 0);
+
+        // Insert income categories
+        self::insert_categories_with_children(Pika_Default_Data::DEFAULT_INCOME_CATEGORIES, 0);
+
+        // Insert transfer categories
+        self::insert_categories_with_children(Pika_Default_Data::DEFAULT_TRANSFER_CATEGORIES, 0);
+    }
+
+    /**
+     * Insert categories with their children
+     */
+    private static function insert_categories_with_children($categories, $user_id) {
+        global $wpdb;
+
+        $categories_table = $wpdb->prefix . 'pika_categories';
+
+        foreach ($categories as $category) {
+            // Insert parent category
+            $parent_data = [
+                'user_id' => $user_id,
+                'name' => $category['name'],
+                'icon' => $category['icon'],
+                'color' => $category['color'],
+                'bg_color' => $category['bg_color'],
+                'type' => $category['type'],
+                'description' => $category['description'],
+                'is_system' => $category['is_system'],
+                'is_active' => 1
+            ];
+
+            $wpdb->insert($categories_table, $parent_data);
+            $parent_id = $wpdb->insert_id;
+
+            // Insert children if they exist
+            if (!empty($category['children'])) {
+                foreach ($category['children'] as $child) {
+                    $child_data = [
+                        'user_id' => $user_id,
+                        'parent_id' => $parent_id,
+                        'name' => $child['name'],
+                        'icon' => $child['icon'],
+                        'color' => $child['color'],
+                        'bg_color' => $child['bg_color'],
+                        'type' => $child['type'],
+                        'description' => $child['description'],
+                        'is_system' => $child['is_system'],
+                        'is_active' => 1
+                    ];
+
+                    $wpdb->insert($categories_table, $child_data);
+                }
+            }
         }
     }
-    
+
     /**
      * Insert system tags
      */
     private static function insert_system_tags() {
         global $wpdb;
-        
+
         $tags_table = $wpdb->prefix . 'pika_tags';
-        
-        $system_tags = [
-            [
-                'name' => 'Coffee',
-                'icon' => 'coffee',
-                'color' => '#ffffff',
-                'bg_color' => '#f59e0b',
-                'description' => 'Coffee expenses',
-                'is_system' => 1
-            ],
-            [
-                'name' => 'Birthday',
-                'icon' => 'cake',
-                'color' => '#ffffff',
-                'bg_color' => '#ec4899',
-                'description' => 'Birthday celebrations',
-                'is_system' => 1
-            ],
-            [
-                'name' => 'Business',
-                'icon' => 'briefcase',
-                'color' => '#ffffff',
-                'bg_color' => '#3b82f6',
-                'description' => 'Business expenses',
-                'is_system' => 1
-            ]
-        ];
-        
-        foreach ($system_tags as $tag) {
-            $wpdb->insert(
-                $tags_table,
-                array_merge($tag, ['user_id' => 0]) // 0 for system tags
-            );
+
+        foreach (Pika_Default_Data::DEFAULT_TAGS as $tag) {
+            $tag_data = [
+                'user_id' => 0, // 0 for system tags
+                'name' => $tag['name'],
+                'icon' => $tag['icon'],
+                'color' => $tag['color'],
+                'bg_color' => $tag['bg_color'],
+                'description' => $tag['description'],
+                'is_system' => $tag['is_system'],
+                'is_active' => 1
+            ];
+
+            $wpdb->insert($tags_table, $tag_data);
         }
     }
-    
+
     /**
      * Create upload directories
      */
@@ -348,7 +305,7 @@ class Pika_Activator {
         $pika_dir = $upload_dir['basedir'] . '/pika';
         $avatars_dir = $pika_dir . '/avatars';
         $attachments_dir = $pika_dir . '/attachments';
-        
+
         // Create directories if they don't exist
         if (!file_exists($pika_dir)) {
             wp_mkdir_p($pika_dir);
@@ -359,16 +316,16 @@ class Pika_Activator {
         if (!file_exists($attachments_dir)) {
             wp_mkdir_p($attachments_dir);
         }
-        
+
         // Create .htaccess to protect uploads
         $htaccess_content = "Options -Indexes\n";
         file_put_contents($pika_dir . '/.htaccess', $htaccess_content);
     }
-    
+
     /**
      * Flush rewrite rules
      */
     private static function flush_rewrite_rules() {
         flush_rewrite_rules();
     }
-} 
+}
