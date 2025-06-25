@@ -54,7 +54,7 @@ abstract class Pika_Base_Manager {
    * Get error
    */
   public function get_error($code) {
-    $all_errors = $this->get_all_errors();
+    $all_errors = array_merge($this->_errors, $this->errors);
 
     if (isset($all_errors[$code])) {
       $error = $all_errors[$code];

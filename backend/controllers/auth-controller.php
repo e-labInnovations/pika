@@ -36,13 +36,7 @@ class Pika_Auth_Controller extends Pika_Base_Controller {
      * Get current user
      */
     public function get_current_user($request) {
-        $user_id = $this->utils->get_current_user_id();
-
-        $user_data = $this->auth_manager->get_current_user_data($user_id);
-
-        if (!$user_data) {
-            return $this->auth_manager->get_error('user_not_found');
-        }
+        $user_data = $this->auth_manager->get_current_user_data();
 
         return $user_data;
     }

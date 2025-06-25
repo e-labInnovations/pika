@@ -1,9 +1,15 @@
-# Variables (replace with your own values)
-@base_url = http://localhost:8000
+ur# Variables (replace with your own values)
+# @base_url = http://localhost:8000
+# @username = testuser
+# @password = mBqU EeIw 2aY6 Nxtm sTWu kOSc
+# @admin_username = admin
+# @admin_password = ufEK id77 GTpK fGdZ G1Zq 42E8
+
+@base_url = http://localhost:8881
 @username = testuser
-@password = mBqU EeIw 2aY6 Nxtm sTWu kOSc
+@password = 7NXc 5tZJ LJxT QxeH ohBh RJhA
 @admin_username = admin
-@admin_password = ufEK id77 GTpK fGdZ G1Zq 42E8
+@admin_password = QeX4 LrOs 50wB qjZD 1AyX tEwa
 
 ###
 
@@ -12,3 +18,7 @@ GET {{base_url}}/wp-json/pika/v1/auth/me
 Authorization: Basic {{username}}:{{password}}
 
 ###
+
+# get users
+GET {{base_url}}/wp-json/wp/v2/users/me
+Authorization: Basic {{username}}:{{password}}

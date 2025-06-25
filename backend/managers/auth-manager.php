@@ -13,11 +13,12 @@ class Pika_Auth_Manager extends Pika_Base_Manager {
   /**
    * Get current user data
    */
-  public function get_current_user_data($user_id) {
+  public function get_current_user_data() {
+    $user_id = $this->utils->get_current_user_id();
     $user = get_user_by('id', $user_id);
 
     if (!$user) {
-      return null;
+      return $this->get_error('unauthorized');
     }
 
     return [
