@@ -38,15 +38,59 @@ class Pika_Settings_Controller extends Pika_Base_Controller {
      * Get settings
      */
     public function get_settings($request) {
-        // TODO: Implement get settings logic
-        return [];
+        $user_id = $this->utils->get_current_user_id();
+
+        if (!$user_id) {
+            return $this->settings_manager->get_error('unauthorized');
+        }
+
+        $settings = $this->settings_manager->get_all_settings($user_id);
+
+        if (is_wp_error($settings)) {
+            return $settings;
+        }
+
+        return $settings;
     }
 
     /**
      * Update settings
      */
     public function update_settings($request) {
-        // TODO: Implement update settings logic
-        return [];
+        $user_id = $this->utils->get_current_user_id();
+
+        if (!$user_id) {
+            return $this->settings_manager->get_error('unauthorized');
+        }
+
+        $body = $request->get_json_params();
+
+        if (!$body || !is_array($body)) {
+            return $this->settings_manager->get_error('invalid_request');
+        }
+
+        // Validate that all keys are allowed
+        foreach ($body as $key => $value) {
+            if (!is_string($key) || empty($key)) {
+                return $this->settings_manager->get_error('invalid_key');
+            }
+
+            // Check if the key is allowed
+            if (!$this->settings_manager->is_allowed_setting($key)) {
+                return $this->settings_manager->get_error('invalid_key');
+            }
+        }
+
+        if (empty($body)) {
+            return $this->settings_manager->get_error('invalid_request');
+        }
+
+        $results = $this->settings_manager->update_settings($user_id, $body);
+
+        if (is_wp_error($results)) {
+            return $results;
+        }
+
+        return $results;
     }
 }

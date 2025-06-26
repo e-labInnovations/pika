@@ -26,7 +26,7 @@ class Pika_Auth_Controller extends Pika_Base_Controller {
             [
                 'methods' => WP_REST_Server::READABLE,
                 'callback' => [$this, 'get_current_user'],
-                'permission_callback' => [$this, 'permission_callback'],
+                'permission_callback' => [$this, 'check_auth'],
             ],
         ]);
     }
@@ -38,12 +38,5 @@ class Pika_Auth_Controller extends Pika_Base_Controller {
         $user_data = $this->auth_manager->get_current_user_data();
 
         return $user_data;
-    }
-
-    /**
-     * Public permission callback for REST API
-     */
-    public function permission_callback($request) {
-        return $this->check_auth();
     }
 }

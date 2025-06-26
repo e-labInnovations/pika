@@ -34,7 +34,7 @@ class Pika_Auth_Manager extends Pika_Base_Manager {
       'email' => $user->user_email,
       'display_name' => $user->display_name,
       'avatar_url' => get_avatar_url($user->ID, array('size' => 96)),
-      'settings' => $this->settings_manager->get_settings($user->ID, ['default_currency'], ['INR'])
+      'settings' => $this->settings_manager->get_all_settings($user->ID)
     ];
   }
 }
