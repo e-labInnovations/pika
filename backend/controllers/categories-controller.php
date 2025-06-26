@@ -32,6 +32,6 @@ class Pika_Categories_Controller extends Pika_Base_Controller {
      * Get categories
      */
     public function get_categories($request) {
-        return [];
+        return $this->categories_manager->get_all_categories();
     }
 }

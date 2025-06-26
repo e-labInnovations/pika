@@ -14,9 +14,6 @@ class Pika_Tags_Manager extends Pika_Base_Manager {
   protected $table_transaction_tags = 'transaction_tags';
 
   protected $errors = [
-    'invalid_name' => ['message' => 'Invalid name.', 'status' => 400],
-    'invalid_color' => ['message' => 'Invalid color.', 'status' => 400],
-    'invalid_icon' => ['message' => 'Invalid icon.', 'status' => 400],
     'tag_name_not_unique' => ['message' => 'Tag name is not unique.', 'status' => 400],
     'tag_not_found' => ['message' => 'Tag not found.', 'status' => 404]
   ];

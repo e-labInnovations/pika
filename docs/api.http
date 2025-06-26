@@ -109,3 +109,9 @@ DELETE {{base_url}}/wp-json/pika/v1/tags/7
 Authorization: Basic {{username}}:{{password}}
 
 ###
+
+# Get all categories
+GET {{base_url}}/wp-json/pika/v1/categories
+Authorization: Basic {{username}}:{{password}}
+
+###

@@ -51,6 +51,7 @@ abstract class Pika_Base_Manager {
     'invalid_icon' => ['message' => 'Invalid icon.', 'status' => 400],
     'invalid_color' => ['message' => 'Invalid color. Use hex format like #000000.', 'status' => 400],
     'no_update' => ['message' => 'Nothing to update.', 'status' => 400],
+    'invalid_name' => ['message' => 'Invalid name.', 'status' => 400],
   ];
 
   /**

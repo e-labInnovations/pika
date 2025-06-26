@@ -20,32 +20,32 @@ class Pika_Default_Data {
     [
       'name' => 'Food & Dining',
       'icon' => 'utensils-crossed',
-      'color' => '#ffffff',
-      'bg_color' => '#FF6B6B',
+      'color' => '#FFFFFF',
+      'bg_color' => '#E53E3E', // Red - appetite stimulating
       'type' => 'expense',
       'description' => 'Food and dining expenses',
       'children' => [
         [
           'name' => 'Dining Out',
           'icon' => 'utensils',
-          'color' => '#ffffff',
-          'bg_color' => '#FFB347',
+          'color' => '#FFFFFF',
+          'bg_color' => '#DD6B20', // Orange - warm dining
           'type' => 'expense',
           'description' => 'Restaurant and dining out expenses',
         ],
         [
           'name' => 'Groceries',
           'icon' => 'shopping-basket',
-          'color' => '#ffffff',
-          'bg_color' => '#FFD700',
+          'color' => '#FFFFFF',
+          'bg_color' => '#38A169', // Green - healthy food
           'type' => 'expense',
           'description' => 'Grocery shopping expenses',
         ],
         [
           'name' => 'Coffee & Snacks',
           'icon' => 'coffee',
-          'color' => '#ffffff',
-          'bg_color' => '#A3E635',
+          'color' => '#FFFFFF',
+          'bg_color' => '#975A16', // Brown - coffee color
           'type' => 'expense',
           'description' => 'Coffee and snack expenses',
         ]
@@ -55,32 +55,32 @@ class Pika_Default_Data {
     [
       'name' => 'Shopping',
       'icon' => 'shopping-cart',
-      'color' => '#ffffff',
-      'bg_color' => '#4ECDC4',
+      'color' => '#FFFFFF',
+      'bg_color' => '#D53F8C', // Pink - retail/shopping
       'type' => 'expense',
       'description' => 'Shopping expenses',
       'children' => [
         [
           'name' => 'Clothing',
           'icon' => 'shirt',
-          'color' => '#ffffff',
-          'bg_color' => '#7C3AED',
+          'color' => '#FFFFFF',
+          'bg_color' => '#805AD5', // Purple - fashion
           'type' => 'expense',
           'description' => 'Clothing and apparel expenses',
         ],
         [
           'name' => 'Electronics',
           'icon' => 'monitor-speaker',
-          'color' => '#ffffff',
-          'bg_color' => '#38BDF8',
+          'color' => '#FFFFFF',
+          'bg_color' => '#2B6CB0', // Blue - technology
           'type' => 'expense',
           'description' => 'Electronics and gadgets',
         ],
         [
           'name' => 'Home Goods',
           'icon' => 'sofa',
-          'color' => '#ffffff',
-          'bg_color' => '#F472B6',
+          'color' => '#FFFFFF',
+          'bg_color' => '#B83280', // Magenta - home decor
           'type' => 'expense',
           'description' => 'Home and furniture expenses',
         ]
@@ -90,32 +90,32 @@ class Pika_Default_Data {
     [
       'name' => 'Transportation',
       'icon' => 'car',
-      'color' => '#ffffff',
-      'bg_color' => '#45B7D1',
+      'color' => '#FFFFFF',
+      'bg_color' => '#3182CE', // Blue - movement/travel
       'type' => 'expense',
       'description' => 'Transportation expenses',
       'children' => [
         [
           'name' => 'Fuel',
           'icon' => 'fuel',
-          'color' => '#ffffff',
-          'bg_color' => '#F59E42',
+          'color' => '#FFFFFF',
+          'bg_color' => '#C53030', // Red - energy/fuel
           'type' => 'expense',
           'description' => 'Fuel and gas expenses',
         ],
         [
           'name' => 'Public Transit',
           'icon' => 'bus',
-          'color' => '#ffffff',
-          'bg_color' => '#6366F1',
+          'color' => '#FFFFFF',
+          'bg_color' => '#2C5282', // Navy - public service
           'type' => 'expense',
           'description' => 'Public transportation expenses',  
         ],
         [
           'name' => 'Maintenance',
           'icon' => 'wrench',
-          'color' => '#ffffff',
-          'bg_color' => '#F87171',
+          'color' => '#FFFFFF',
+          'bg_color' => '#744210', // Dark orange - maintenance
           'type' => 'expense',
           'description' => 'Vehicle maintenance expenses',
         ]
@@ -125,32 +125,32 @@ class Pika_Default_Data {
     [
       'name' => 'Housing',
       'icon' => 'home',
-      'color' => '#ffffff',
-      'bg_color' => '#96CEB4',
+      'color' => '#FFFFFF',
+      'bg_color' => '#319795', // Teal - stability/home
       'type' => 'expense',
       'description' => 'Housing expenses',
       'children' => [
         [
           'name' => 'Rent',
           'icon' => 'key',
-          'color' => '#ffffff',
-          'bg_color' => '#FBBF24',
+          'color' => '#FFFFFF',
+          'bg_color' => '#2D3748', // Dark gray - fixed cost
           'type' => 'expense',
           'description' => 'Rent payments',
         ],
         [
           'name' => 'Mortgage',
           'icon' => 'building-2',
-          'color' => '#ffffff',
-          'bg_color' => '#60A5FA',
+          'color' => '#FFFFFF',
+          'bg_color' => '#2A4365', // Dark blue - long-term
           'type' => 'expense',
           'description' => 'Mortgage payments',
         ],
         [
           'name' => 'Maintenance',
           'icon' => 'hammer',
-          'color' => '#ffffff',
-          'bg_color' => '#F472B6',
+          'color' => '#FFFFFF',
+          'bg_color' => '#B7791F', // Gold - home improvement
           'type' => 'expense',
           'description' => 'Home maintenance expenses',
         ]
@@ -160,32 +160,32 @@ class Pika_Default_Data {
     [
       'name' => 'Utilities',
       'icon' => 'zap',
-      'color' => '#333333',
-      'bg_color' => '#FFEEAD',
+      'color' => '#000000',
+      'bg_color' => '#F6E05E', // Yellow - electricity/energy
       'type' => 'expense',
       'description' => 'Utility bills',
       'children' => [
         [
           'name' => 'Electricity',
           'icon' => 'plug-zap',
-          'color' => '#333333',
-          'bg_color' => '#FDE68A',
+          'color' => '#000000',
+          'bg_color' => '#ECC94B', // Gold - electrical
           'type' => 'expense',
           'description' => 'Electricity bills',
         ],
         [
           'name' => 'Water',
           'icon' => 'droplet',
-          'color' => '#333333',
-          'bg_color' => '#38BDF8',
+          'color' => '#FFFFFF',
+          'bg_color' => '#0987A0', // Cyan - water
           'type' => 'expense',
           'description' => 'Water bills',
         ],
         [
           'name' => 'Internet',
           'icon' => 'wifi',
-          'color' => '#333333',
-          'bg_color' => '#A3E635',
+          'color' => '#FFFFFF',
+          'bg_color' => '#553C9A', // Indigo - connectivity
           'type' => 'expense',
           'description' => 'Internet and phone bills',
         ]
@@ -195,40 +195,40 @@ class Pika_Default_Data {
     [
       'name' => 'Entertainment',
       'icon' => 'film',
-      'color' => '#ffffff',
-      'bg_color' => '#D4A5A5',
+      'color' => '#FFFFFF',
+      'bg_color' => '#ED64A6', // Pink - fun/entertainment
       'type' => 'expense',
       'description' => 'Entertainment expenses',
       'children' => [
         [
           'name' => 'Movies',
           'icon' => 'clapperboard',
-          'color' => '#ffffff',
-          'bg_color' => '#F59E42',
+          'color' => '#FFFFFF',
+          'bg_color' => '#702459', // Dark pink - cinema
           'type' => 'expense',
           'description' => 'Movie and theater expenses',  
         ],
         [
           'name' => 'Games',
           'icon' => 'gamepad-2',
-          'color' => '#ffffff',
-          'bg_color' => '#6366F1',
+          'color' => '#FFFFFF',
+          'bg_color' => '#4C51BF', // Purple - gaming
           'type' => 'expense',
           'description' => 'Gaming expenses',
         ],
         [
           'name' => 'Music',
           'icon' => 'music',
-          'color' => '#ffffff',
-          'bg_color' => '#A3E635',
+          'color' => '#FFFFFF',
+          'bg_color' => '#9F7AEA', // Lavender - music/arts
           'type' => 'expense',
           'description' => 'Music and concerts',
         ],
         [
           'name' => 'Sports',
           'icon' => 'volleyball',
-          'color' => '#ffffff',
-          'bg_color' => '#F87171',
+          'color' => '#FFFFFF',
+          'bg_color' => '#F56500', // Orange - sports/activity
           'type' => 'expense',
           'description' => 'Sports and fitness expenses',
         ]
@@ -238,24 +238,24 @@ class Pika_Default_Data {
     [
       'name' => 'Healthcare',
       'icon' => 'heart-pulse',
-      'color' => '#ffffff',
-      'bg_color' => '#9B59B6',
+      'color' => '#FFFFFF',
+      'bg_color' => '#E53E3E', // Red - medical/health
       'type' => 'expense',
       'description' => 'Healthcare expenses',
       'children' => [
         [
           'name' => 'Medical',
           'icon' => 'stethoscope',
-          'color' => '#ffffff',
-          'bg_color' => '#38BDF8',
+          'color' => '#FFFFFF',
+          'bg_color' => '#C53030', // Dark red - medical
           'type' => 'expense',
           'description' => 'Medical expenses',
         ],
         [
           'name' => 'Pharmacy',
           'icon' => 'pill',
-          'color' => '#ffffff',
-          'bg_color' => '#FBBF24',
+          'color' => '#FFFFFF',
+          'bg_color' => '#2B6CB0', // Blue - pharmaceutical
           'type' => 'expense',
           'description' => 'Pharmacy expenses',
         ]
@@ -265,32 +265,32 @@ class Pika_Default_Data {
     [
       'name' => 'Education',
       'icon' => 'graduation-cap',
-      'color' => '#ffffff',
-      'bg_color' => '#3498DB',
+      'color' => '#FFFFFF',
+      'bg_color' => '#4299E1', // Blue - knowledge/education
       'type' => 'expense',
       'description' => 'Education expenses',
       'children' => [
         [
           'name' => 'Tuition',
           'icon' => 'school',
-          'color' => '#ffffff',
-          'bg_color' => '#A3E635',
+          'color' => '#FFFFFF',
+          'bg_color' => '#3182CE', // Blue - academic
           'type' => 'expense',
           'description' => 'Tuition fees',
         ],
         [
           'name' => 'Books',
           'icon' => 'book',
-          'color' => '#ffffff',
-          'bg_color' => '#6366F1',
+          'color' => '#FFFFFF',
+          'bg_color' => '#2C5282', // Navy - books/knowledge
           'type' => 'expense',
           'description' => 'Books and supplies',
         ],
         [
           'name' => 'Courses',
           'icon' => 'notebook-pen',
-          'color' => '#ffffff',
-          'bg_color' => '#F472B6',
+          'color' => '#FFFFFF',
+          'bg_color' => '#2A4365', // Dark blue - learning
           'type' => 'expense',
           'description' => 'Online courses and training',
         ]
@@ -299,33 +299,33 @@ class Pika_Default_Data {
     // Personal Care
     [
       'name' => 'Personal Care',
-      'icon' => 'shield-user',
-      'color' => '#ffffff',
-      'bg_color' => '#E67E22',
+      'icon' => 'smile',
+      'color' => '#FFFFFF',
+      'bg_color' => '#48BB78', // Green - wellness/health
       'type' => 'expense',
       'description' => 'Personal care expenses',  
       'children' => [
         [
           'name' => 'Hair Care',
           'icon' => 'scissors',
-          'color' => '#ffffff',
-          'bg_color' => '#60A5FA',
+          'color' => '#FFFFFF',
+          'bg_color' => '#38A169', // Green - beauty/care
           'type' => 'expense',
           'description' => 'Hair care and styling',
         ],
         [
           'name' => 'Skincare',
           'icon' => 'sparkles',
-          'color' => '#ffffff',
-          'bg_color' => '#A3E635',
+          'color' => '#FFFFFF',
+          'bg_color' => '#68D391', // Light green - beauty
           'type' => 'expense',
           'description' => 'Skincare and beauty',
         ],
         [
           'name' => 'Fitness',
           'icon' => 'dumbbell',
-          'color' => '#ffffff',
-          'bg_color' => '#6366F1',
+          'color' => '#FFFFFF',
+          'bg_color' => '#2F855A', // Dark green - fitness
           'type' => 'expense',
           'description' => 'Fitness and gym expenses',
         ]
@@ -335,32 +335,32 @@ class Pika_Default_Data {
     [
       'name' => 'Gifts',
       'icon' => 'gift',
-      'color' => '#ffffff',
-      'bg_color' => '#E74C3C',
+      'color' => '#FFFFFF',
+      'bg_color' => '#E53E3E', // Red - celebration/gifts
       'type' => 'expense',
       'description' => 'Gift expenses',
       'children' => [
         [
           'name' => 'Birthday',
           'icon' => 'cake',
-          'color' => '#ffffff',
-          'bg_color' => '#FFD700',
+          'color' => '#FFFFFF',
+          'bg_color' => '#ED8936', // Orange - celebration
           'type' => 'expense',
           'description' => 'Birthday gifts',
         ],
         [
           'name' => 'Holiday',
           'icon' => 'tent-tree',
-          'color' => '#ffffff',
-          'bg_color' => '#7C3AED',
+          'color' => '#FFFFFF',
+          'bg_color' => '#38A169', // Green - holidays
           'type' => 'expense',
           'description' => 'Holiday gifts',
         ],
         [
           'name' => 'Special Occasion',
           'icon' => 'party-popper',
-          'color' => '#ffffff',
-          'bg_color' => '#38BDF8',
+          'color' => '#FFFFFF',
+          'bg_color' => '#D69E2E', // Gold - special events
           'type' => 'expense',
           'description' => 'Special occasion gifts',
         ]
@@ -370,46 +370,56 @@ class Pika_Default_Data {
     [
       'name' => 'Travel',
       'icon' => 'plane',
-      'color' => '#ffffff',
-      'bg_color' => '#2ECC71',
+      'color' => '#FFFFFF',
+      'bg_color' => '#3182CE', // Blue - travel/sky
       'type' => 'expense',
       'description' => 'Travel expenses',
       'children' => [
         [
           'name' => 'Flights',
           'icon' => 'plane-takeoff',
-          'color' => '#ffffff',
-          'bg_color' => '#60A5FA',
+          'color' => '#FFFFFF',
+          'bg_color' => '#2B6CB0', // Blue - aviation
           'type' => 'expense',
           'description' => 'Flight expenses',
         ],
         [
           'name' => 'Hotels',
           'icon' => 'hotel',
-          'color' => '#ffffff',
-          'bg_color' => '#FFD700',
+          'color' => '#FFFFFF',
+          'bg_color' => '#B7791F', // Gold - luxury/accommodation
           'type' => 'expense',
           'description' => 'Hotel and accommodation',
         ],
         [
           'name' => 'Activities',
           'icon' => 'umbrella',
-          'color' => '#ffffff',
-          'bg_color' => '#A3E635',
+          'color' => '#FFFFFF',
+          'bg_color' => '#319795', // Teal - leisure/vacation
           'type' => 'expense',
           'description' => 'Travel activities and tours',
         ]
       ]
     ],
-    // Other
+    // Uncategorized
     [
-      'name' => 'Other',
+      'name' => 'Uncategorized',
       'icon' => 'receipt-text',
-      'color' => '#ffffff',
-      'bg_color' => '#A1A1AA',
+      'color' => '#FFFFFF',
+      'bg_color' => '#718096', // Gray - neutral/unknown
       'type' => 'expense',
-      'description' => 'Other expenses',
-      'children' => []
+      'description' => 'Uncategorized expenses',
+      'children' => [
+        [
+          'name' => 'Other',
+          'icon' => 'receipt-text',
+          'color' => '#FFFFFF',
+          'bg_color' => '#4A5568', // Dark gray - miscellaneous
+          'type' => 'expense',
+          'description' => 'Other expenses',
+          'children' => []
+        ]
+      ]
     ]
   ];
 
@@ -420,53 +430,64 @@ class Pika_Default_Data {
     [
       'name' => 'Work',
       'icon' => 'briefcase',
-      'color' => '#ffffff',
-      'bg_color' => '#2ECC71',
+      'color' => '#FFFFFF',
+      'bg_color' => '#38A169', // Green - income/money
       'type' => 'income',
       'description' => 'Work-related income',
       'children' => [
         [
           'name' => 'Salary',
           'icon' => 'dollar-sign',
-          'color' => '#ffffff',
-          'bg_color' => '#FFD700',
+          'color' => '#FFFFFF',
+          'bg_color' => '#48BB78', // Light green - steady income
           'type' => 'income',
           'description' => 'Regular salary income',
         ],
         [
           'name' => 'Bonus',
           'icon' => 'gem',
-          'color' => '#ffffff',
-          'bg_color' => '#7C3AED',
+          'color' => '#FFFFFF',
+          'bg_color' => '#ECC94B', // Gold - bonus/reward
           'type' => 'income',
           'description' => 'Bonus and incentives',
         ],
         [
           'name' => 'Freelance',
           'icon' => 'laptop',
-          'color' => '#ffffff',
-          'bg_color' => '#38BDF8',
+          'color' => '#FFFFFF',
+          'bg_color' => '#4299E1', // Blue - freelance work
           'type' => 'income',
           'description' => 'Freelance income',
         ],
         [
           'name' => 'Investment',
           'icon' => 'trending-up',
-          'color' => '#ffffff',
-          'bg_color' => '#F59E42',
+          'color' => '#FFFFFF',
+          'bg_color' => '#2F855A', // Dark green - growth/investment
           'type' => 'income',
           'description' => 'Investment returns',
         ]
       ]
     ],
+    // Uncategorized
     [
-      'name' => 'Other',
+      'name' => 'Uncategorized',
       'icon' => 'receipt-text',
-      'color' => '#ffffff',
-      'bg_color' => '#A1A1AA',
+      'color' => '#FFFFFF',
+      'bg_color' => '#718096', // Gray - neutral/unknown
       'type' => 'income',
-      'description' => 'Other income sources',
-      'children' => []
+      'description' => 'Uncategorized income',
+      'children' => [
+        [
+          'name' => 'Other',
+          'icon' => 'receipt-text',
+          'color' => '#FFFFFF',
+          'bg_color' => '#4A5568', // Dark gray - miscellaneous
+          'type' => 'income',
+          'description' => 'Other income sources',
+          'children' => []
+        ]
+      ]
     ]
   ];
 
@@ -477,43 +498,54 @@ class Pika_Default_Data {
     [
       'name' => 'Transfer',
       'icon' => 'piggy-bank',
-      'color' => '#ffffff',
-      'bg_color' => '#14B8A6',
+      'color' => '#FFFFFF',
+      'bg_color' => '#319795', // Teal - movement/transfer
       'type' => 'transfer',
       'description' => 'Transfer expenses',
       'children' => [
         [
           'name' => 'Bank Transfer',
           'icon' => 'landmark',
-          'color' => '#ffffff',
-          'bg_color' => '#60A5FA',
+          'color' => '#FFFFFF',
+          'bg_color' => '#2C5282', // Navy - banking
           'type' => 'transfer',
           'description' => 'Bank transfers',
           'children' => []
         ],
         [
           'name' => 'ATM',
-          'icon' => 'banknote-arrow-down',
-          'color' => '#ffffff',
-          'bg_color' => '#FFD700',
+          'icon' => 'hand-coins',
+          'color' => '#FFFFFF',
+          'bg_color' => '#B7791F', // Gold - cash/ATM
           'type' => 'transfer',
           'description' => 'ATM withdrawals',
           'children' => []
         ],
         [
           'name' => 'CDM',
-          'icon' => 'banknote-arrow-up',
-          'color' => '#ffffff',
-          'bg_color' => '#A3E635',
+          'icon' => 'badge-dollar-sign',
+          'color' => '#FFFFFF',
+          'bg_color' => '#D69E2E', // Gold - cash deposit
           'type' => 'transfer',
           'description' => 'Cash deposit machine',
           'children' => []
-        ],
+        ]
+      ],
+    ],
+    // Uncategorized
+    [
+      'name' => 'Uncategorized',
+      'icon' => 'receipt-text',
+      'color' => '#FFFFFF',
+      'bg_color' => '#718096', // Gray - neutral/unknown
+      'type' => 'transfer',
+      'description' => 'Uncategorized transfer',
+      'children' => [
         [
           'name' => 'Other',
           'icon' => 'receipt-text',
-          'color' => '#ffffff',
-          'bg_color' => '#A1A1AA',
+          'color' => '#FFFFFF',
+          'bg_color' => '#4A5568', // Dark gray - miscellaneous
           'type' => 'transfer',
           'description' => 'Other transfers',
           'children' => []
@@ -529,43 +561,43 @@ class Pika_Default_Data {
     [
       'name' => 'Initial Balance',
       'icon' => 'plus-circle',
-      'color' => '#ffffff',
-      'bg_color' => '#10B981',
+      'color' => '#FFFFFF',
+      'bg_color' => '#38A169', // Green - positive/initial
       'description' => 'Initial account balance transaction',
     ],
     [
       'name' => 'Recurring',
       'icon' => 'repeat',
-      'color' => '#ffffff',
-      'bg_color' => '#3498DB',
+      'color' => '#FFFFFF',
+      'bg_color' => '#3182CE', // Blue - repetition/cycle
       'description' => 'Recurring transactions',
     ],
     [
       'name' => 'Urgent',
       'icon' => 'alert-circle',
-      'color' => '#ffffff',
-      'bg_color' => '#E74C3C',
+      'color' => '#FFFFFF',
+      'bg_color' => '#E53E3E', // Red - urgent/alert
       'description' => 'Urgent transactions',
     ],
     [
       'name' => 'Shared',
       'icon' => 'users',
-      'color' => '#ffffff',
-      'bg_color' => '#2ECC71',
+      'color' => '#FFFFFF',
+      'bg_color' => '#805AD5', // Purple - shared/collaborative
       'description' => 'Shared expenses',
     ],
     [
       'name' => 'Personal',
       'icon' => 'user',
-      'color' => '#333333',
-      'bg_color' => '#F1C40F',
+      'color' => '#FFFFFF',
+      'bg_color' => '#DD6B20', // Orange - personal/individual
       'description' => 'Personal transactions',
     ],
     [
       'name' => 'Business',
       'icon' => 'briefcase-business',
-      'color' => '#ffffff',
-      'bg_color' => '#9B59B6',
+      'color' => '#FFFFFF',
+      'bg_color' => '#2D3748', // Dark gray - professional/business
       'description' => 'Business transactions',
     ]
   ];
