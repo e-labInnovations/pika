@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Animated Logo</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 40px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        font-family: Arial, sans-serif;
+      }
+
+      .logo-container {
+        background: white;
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .animated-logo {
+        position: relative;
+        width: 80px;
+        height: 80px;
+      }
+
+      /* Money icon rotation animation */
+      .money-icon {
+        transform-origin: 40px 44px;
+        animation: rotateAroundFace 3s ease-in-out infinite;
+      }
+
+      /* Eye tracking animation */
+      .left-pupil {
+        transform-origin: 35px 38.5px;
+        animation: trackMoney 3s ease-in-out infinite;
+      }
+
+      .right-pupil {
+        transform-origin: 45px 38.5px;
+        animation: trackMoney 3s ease-in-out infinite;
+      }
+
+      @keyframes rotateAroundFace {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes trackMoney {
+        0% {
+          transform: translate(0px, -1px);
+        }
+        25% {
+          transform: translate(1px, 0px);
+        }
+        50% {
+          transform: translate(0px, 1px);
+        }
+        75% {
+          transform: translate(-1px, 0px);
+        }
+        100% {
+          transform: translate(0px, -1px);
+        }
+      }
+
+      .loading-text {
+        color: #4a90e2;
+        font-weight: bold;
+        font-size: 18px;
+        animation: pulse 2s ease-in-out infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 0.7;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+
+      .demo-controls {
+        margin-top: 20px;
+        text-align: center;
+      }
+
+      .restart-btn {
+        background: #4a90e2;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background 0.3s ease;
+      }
+
+      .restart-btn:hover {
+        background: #357abd;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="logo-container">
+      <div class="animated-logo">
+        <svg width="80" height="80" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+          <!-- Head -->
+          <ellipse cx="40" cy="42" rx="18" ry="16" fill="#4A90E2"></ellipse>
+
+          <!-- Hair -->
+          <ellipse cx="31" cy="26" rx="5" ry="11" fill="#357ABD" transform="rotate(-15 31 26)"></ellipse>
+          <ellipse cx="49" cy="26" rx="5" ry="11" fill="#357ABD" transform="rotate(15 49 26)"></ellipse>
+          <ellipse cx="31" cy="27" rx="2.5" ry="6" fill="#4A90E2" transform="rotate(-15 31 27)"></ellipse>
+          <ellipse cx="49" cy="27" rx="2.5" ry="6" fill="#4A90E2" transform="rotate(15 49 27)"></ellipse>
+
+          <!-- Eyes (whites) -->
+          <ellipse cx="35" cy="38" rx="3.5" ry="4" fill="white"></ellipse>
+          <ellipse cx="45" cy="38" rx="3.5" ry="4" fill="white"></ellipse>
+
+          <!-- Pupils (animated) -->
+          <ellipse class="left-pupil" cx="35" cy="38.5" rx="2.5" ry="3" fill="#2d3748"></ellipse>
+          <ellipse class="right-pupil" cx="45" cy="38.5" rx="2.5" ry="3" fill="#2d3748"></ellipse>
+
+          <!-- Eye highlights -->
+          <ellipse cx="34" cy="37" rx="1" ry="1.5" fill="white"></ellipse>
+          <ellipse cx="44" cy="37" rx="1" ry="1.5" fill="white"></ellipse>
+
+          <!-- Nose -->
+          <ellipse cx="40" cy="44" rx="1.5" ry="1" fill="#357ABD"></ellipse>
+
+          <!-- Mouth -->
+          <path d="M 38 46 Q 40 47.5 42 46" stroke="#357ABD" stroke-width="1" fill="none"></path>
+
+          <!-- Money icon (animated) -->
+          <g class="money-icon">
+            <circle cx="58" cy="22" r="10" fill="#10B981" opacity="0.9"></circle>
+            <text
+              x="58"
+              y="27"
+              text-anchor="middle"
+              fill="white"
+              font-family="Arial, sans-serif"
+              font-size="12"
+              font-weight="bold"
+            >
+              $
+            </text>
+          </g>
+        </svg>
+      </div>
+
+      <div class="loading-text">Loading...</div>
+
+      <div class="demo-controls">
+        <button class="restart-btn" onclick="restartAnimation()">Restart Animation</button>
+      </div>
+    </div>
+
+    <script>
+      function restartAnimation() {
+        const moneyIcon = document.querySelector('.money-icon');
+        const pupils = document.querySelectorAll('.left-pupil, .right-pupil');
+
+        // Remove and re-add animation class to restart
+        moneyIcon.style.animation = 'none';
+        pupils.forEach((pupil) => (pupil.style.animation = 'none'));
+
+        setTimeout(() => {
+          moneyIcon.style.animation = 'rotateAroundFace 3s ease-in-out infinite';
+          pupils.forEach((pupil) => {
+            if (pupil.classList.contains('left-pupil')) {
+              pupil.style.animation = 'trackMoney 3s ease-in-out infinite';
+            } else {
+              pupil.style.animation = 'trackMoney 3s ease-in-out infinite';
+            }
+          });
+        }, 10);
+      }
+    </script>
+  </body>
+</html>
