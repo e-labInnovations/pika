@@ -13,14 +13,15 @@ abstract class Pika_Base_Manager {
    * Database table name
    */
   protected $table_name = '';
-
   public $utils;
+  protected $icons = [];
 
   /**
    * Constructor
    */
   public function __construct() {
     $this->utils = new Pika_Utils();
+    $this->load_icons();
   }
 
   /**
@@ -44,6 +45,11 @@ abstract class Pika_Base_Manager {
     'invalid_request' => ['message' => 'Invalid request.', 'status' => 400],
     'not_found' => ['message' => 'Resource not found.', 'status' => 404],
     'db_error' => ['message' => 'Database error.', 'status' => 500],
+    'db_update_error' => ['message' => 'Database update error.', 'status' => 500],
+    'db_delete_error' => ['message' => 'Database delete error.', 'status' => 500],
+    'db_insert_error' => ['message' => 'Database insert error.', 'status' => 500],
+    'invalid_icon' => ['message' => 'Invalid icon.', 'status' => 400],
+    'no_update' => ['message' => 'Nothing to update.', 'status' => 400],
   ];
 
   /**
@@ -64,5 +70,27 @@ abstract class Pika_Base_Manager {
 
     // Fallback generic error
     return new WP_Error('unknown_error', 'An unknown error occurred.', ['status' => 500]);
+  }
+
+  public function sanitize_color($color) {
+    if (preg_match('/^#([0-9a-fA-F]{6})$/', $color, $matches)) {
+      return $matches[1];
+    }
+    return null;
+  }
+
+  public function sanitize_icon($icon) {
+    if (isset($this->icons[$icon])) {
+      return $icon;
+    }
+    return null;
+  }
+
+  private function load_icons() {
+    $icons_file = PIKA_PLUGIN_PATH . 'backend/data/icons.php';
+    if (file_exists($icons_file)) {
+      include $icons_file;
+      $this->icons = $pika_icons;
+    }
   }
 }

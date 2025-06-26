@@ -281,7 +281,9 @@ class Pika_Settings_Manager extends Pika_Base_Manager {
     }
 
     // Start with all default values
-    $settings = $this->allowed_settings;
+    $settings = array_map(function($setting) {
+      return $setting['default'];
+    }, $this->allowed_settings);
 
     // Override with user's saved settings
     foreach ($items as $item) {
@@ -298,19 +300,26 @@ class Pika_Settings_Manager extends Pika_Base_Manager {
    * 
    * @param int $user_id
    * @param array $keys
-   * @param array $default_values
    * @return array
    */
-  public function get_settings($user_id, $keys = [], $default_values = []) {
-    $settings = $this->get_all_settings($user_id);
+  public function get_settings($user_id, $keys = []) {
+    // Check if keys are allowed
+    foreach ($keys as $key) {
+      if (!$this->is_allowed_setting($key)) {
+        return $this->get_error('invalid_key');
+      }
+    }
 
-    if (is_wp_error($settings)) {
-      return $settings;
+    $all_settings = $this->get_all_settings($user_id);
+
+    // If no keys provided, return all allowed settings
+    if (empty($keys)) {
+      return $all_settings;
     }
 
     $result = [];
-    for ($i = 0; $i < count($keys); $i++) {
-      $result[$keys[$i]] = $settings[$keys[$i]] ?? $default_values[$i] ?? null;
+    foreach ($keys as $key) {
+      $result[$key] = $all_settings[$key] ?? $this->get_default_value($key);
     }
 
     return $result;

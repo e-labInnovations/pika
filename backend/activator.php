@@ -83,7 +83,6 @@ class Pika_Activator {
             bg_color varchar(7) NOT NULL DEFAULT '#ffffff',
             type enum('income','expense','transfer') NOT NULL,
             description text,
-            is_system tinyint(1) NOT NULL DEFAULT 0,
             is_active tinyint(1) NOT NULL DEFAULT 1,
             created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -91,7 +90,6 @@ class Pika_Activator {
             KEY user_id (user_id),
             KEY parent_id (parent_id),
             KEY type (type),
-            KEY is_system (is_system),
             KEY is_active (is_active)
         ) $charset_collate;";
 
@@ -105,13 +103,11 @@ class Pika_Activator {
             color varchar(7) NOT NULL DEFAULT '#3B82F6',
             bg_color varchar(7) NOT NULL DEFAULT '#ffffff',
             description text,
-            is_system tinyint(1) NOT NULL DEFAULT 0,
             is_active tinyint(1) NOT NULL DEFAULT 1,
             created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
             KEY user_id (user_id),
-            KEY is_system (is_system),
             KEY is_active (is_active)
         ) $charset_collate;";
 
@@ -244,7 +240,6 @@ class Pika_Activator {
                 'bg_color' => $category['bg_color'],
                 'type' => $category['type'],
                 'description' => $category['description'],
-                'is_system' => $category['is_system'],
                 'is_active' => 1
             ];
 
@@ -263,7 +258,6 @@ class Pika_Activator {
                         'bg_color' => $child['bg_color'],
                         'type' => $child['type'],
                         'description' => $child['description'],
-                        'is_system' => $child['is_system'],
                         'is_active' => 1
                     ];
 
@@ -289,7 +283,6 @@ class Pika_Activator {
                 'color' => $tag['color'],
                 'bg_color' => $tag['bg_color'],
                 'description' => $tag['description'],
-                'is_system' => $tag['is_system'],
                 'is_active' => 1
             ];
 

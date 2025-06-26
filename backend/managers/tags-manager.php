@@ -11,4 +11,155 @@ Pika_Utils::reject_abs_path();
 class Pika_Tags_Manager extends Pika_Base_Manager {
 
   protected $table_name = 'tags';
+  protected $table_transaction_tags = 'transaction_tags';
+
+  protected $errors = [
+    'invalid_name' => ['message' => 'Invalid name.', 'status' => 400],
+    'invalid_color' => ['message' => 'Invalid color.', 'status' => 400],
+    'invalid_icon' => ['message' => 'Invalid icon.', 'status' => 400],
+    'tag_name_not_unique' => ['message' => 'Tag name is not unique.', 'status' => 400],
+    'tag_not_found' => ['message' => 'Tag not found.', 'status' => 404]
+  ];
+
+  /**
+   * Get the transaction tags table name
+   * 
+   * @return string
+   */
+  public function get_transaction_tags_table_name() {
+    global $wpdb;
+    return $wpdb->prefix . 'pika_' . $this->table_transaction_tags;
+  }
+
+  /**
+   * Format a tag
+   * 
+   * @param object $tag
+   * @return array
+   */
+  private function format_tag($tag) {
+    return [
+      'id' => $tag->id,
+      'name' => $tag->name,
+      'color' => $tag->color,
+      'bg_color' => $tag->bg_color,
+      'icon' => $tag->icon,
+      'description' => $tag->description,
+      'is_system' => $tag->user_id === "0",
+    ];
+  }
+
+  /**
+   * Get all tags
+   * 
+   * @param int $user_id
+   * @return array|WP_Error
+   */
+  public function get_all_tags($user_id) {
+    $table_name = $this->get_table_name();
+    $sql = $this->db()->prepare("SELECT * FROM $table_name WHERE user_id = %d OR user_id = 0", $user_id);
+    $tags = $this->db()->get_results($sql);
+
+    if (is_wp_error($tags)) {
+      return $this->get_error('db_error');
+    }
+
+    $result = array_map([$this, 'format_tag'], $tags);
+
+    return $result;
+  }
+
+  /**
+   * Get a tag by id
+   * 
+   * @param int $id
+   * @return array|WP_Error
+   */
+  public function get_tag_by_id($id) {
+    $table_name = $this->get_table_name();
+    $sql = $this->db()->prepare("SELECT * FROM $table_name WHERE id = %d", $id);
+    $tag = $this->db()->get_row($sql);
+
+    if (is_wp_error($tag)) {
+      return $this->get_error('db_error');
+    }
+
+    return $tag;
+  }
+
+  /**
+   * Check if a tag name is unique
+   * 
+   * @param string $name
+   * @return bool
+   */
+  public function is_tag_name_unique($name, $filter_id = null) {
+    $table_name = $this->get_table_name();
+    $user_id = get_current_user_id();
+    $sql = $this->db()->prepare("SELECT COUNT(*) FROM $table_name WHERE name = %s AND (user_id = %d OR user_id = 0) AND id != %d", $name, $user_id, $filter_id);
+    $count = $this->db()->get_var($sql);
+    return $count == 0;
+  }
+
+  /**
+   * Create a new tag
+   * 
+   * @param string $name
+   * @param string $color
+   * @param string $bg_color
+   * @param string $icon
+   * @param string $description
+   * @return array|WP_Error
+   */
+  public function create_tag($name, $color, $bg_color, $icon, $description) {
+    $table_name = $this->get_table_name();
+    $user_id = get_current_user_id();
+    $format = ['%s', '%s', '%s', '%s', '%s', '%d'];
+    $data = [
+      'name' => $name,
+      'color' => $color,
+      'bg_color' => $bg_color,
+      'icon' => $icon,
+      'description' => $description,
+      'user_id' => $user_id
+    ];
+
+    $this->db()->insert($table_name, $data, $format);
+    $tag_id = $this->db()->insert_id;
+
+    if ($tag_id === 0) {
+      return $this->get_error('db_error');
+    }
+
+    $tag = $this->get_tag_by_id($tag_id);
+    if (is_wp_error($tag)) {
+      return $this->get_error('db_error');
+    }
+
+    return $this->format_tag($tag);
+  }
+
+  /**
+   * Update a tag
+   * 
+   * @param int $tag_id
+   * @param array $data
+   * @param array $format
+   * @return array|WP_Error
+   */
+  public function update_tag($tag_id, $data, $format) {
+    $table_name = $this->get_table_name();
+    $result = $this->db()->update($table_name, $data, ['id' => $tag_id], $format);
+    if ($result === false) {
+      return $this->get_error('db_update_error');
+    }
+
+    $tag = $this->get_tag_by_id($tag_id);
+    if (is_wp_error($tag)) {
+      return $this->get_error('db_error');
+    }
+
+    return $tag;
+  }
+
 }

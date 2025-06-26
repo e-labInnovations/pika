@@ -1,7 +1,8 @@
 # Variables (replace with your own values)
 @base_url = http://localhost:8000
 @username = testuser
-@password = mBqU EeIw 2aY6 Nxtm sTWu kOSc
+# @password = mBqU EeIw 2aY6 Nxtm sTWu kOSc
+@password = F623 uYkb EXEI SBXl rNd1 6OMU
 @admin_username = admin
 @admin_password = ufEK id77 GTpK fGdZ G1Zq 42E8
 
@@ -13,19 +14,19 @@
 
 ###
 
-# get me; pika profile
+# Get me; pika profile
 GET {{base_url}}/wp-json/pika/v1/auth/me
 Authorization: Basic {{username}}:{{password}}
 
 ###
 
-# get settings
+# Get settings
 GET {{base_url}}/wp-json/pika/v1/settings
 Authorization: Basic {{username}}:{{password}}
 
 ###
 
-# update settings - valid USD currency
+# Update settings - valid USD currency
 PUT {{base_url}}/wp-json/pika/v1/settings
 Authorization: Basic {{username}}:{{password}}
 Content-Type: application/json
@@ -36,7 +37,7 @@ Content-Type: application/json
 
 ###
 
-# update settings - invalid currency
+# Update settings - invalid currency
 PUT {{base_url}}/wp-json/pika/v1/settings
 Authorization: Basic {{username}}:{{password}}
 Content-Type: application/json
@@ -47,7 +48,7 @@ Content-Type: application/json
 
 ###
 
-# update settings - valid EUR currency
+# Update settings - valid EUR currency
 PUT {{base_url}}/wp-json/pika/v1/settings
 Authorization: Basic {{username}}:{{password}}
 Content-Type: application/json
@@ -58,7 +59,7 @@ Content-Type: application/json
 
 ###
 
-# update settings - invalid key
+# Update settings - invalid key
 PUT {{base_url}}/wp-json/pika/v1/settings
 Authorization: Basic {{username}}:{{password}}
 Content-Type: application/json
@@ -69,12 +70,34 @@ Content-Type: application/json
 
 ###
 
-# get users
-GET {{base_url}}/wp-json/wp/v2/users/me
+# Get all tags
+GET {{base_url}}/wp-json/pika/v1/tags
 Authorization: Basic {{username}}:{{password}}
 
 ###
 
-# get pages
-GET {{base_url}}/wp-json/wp/v2/pages
+# Add a new tag
+POST {{base_url}}/wp-json/pika/v1/tags
 Authorization: Basic {{username}}:{{password}}
+Content-Type: application/json
+
+{
+  "name": "Test Tag 2",
+  "color": "#000000",
+  "bg_color": "#ffffff",
+  "icon": "tag",
+  "description": "Test description"
+}
+
+###
+
+# Update a tag
+PUT {{base_url}}/wp-json/pika/v1/tags/6
+Authorization: Basic {{username}}:{{password}}
+Content-Type: application/json
+
+{
+  "name": "Test Tag 2 Updated",
+  "color": "#000000",
+  "bg_color": "#ffffff"
+}

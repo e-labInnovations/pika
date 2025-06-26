@@ -25,10 +25,7 @@ class Pika_Utils {
      * Get current user ID with validation
      */
     public static function get_current_user_id() {
-        if (!is_user_logged_in()) {
-            return false;
-        }
-        return get_current_user_id();
+        return get_current_user_id(); // The current user’s ID, or 0 if no user is logged in.
     }
 
     /**
