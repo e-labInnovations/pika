@@ -42,10 +42,10 @@ class Pika_Tags_Manager extends Pika_Base_Manager {
       'id' => $tag->id,
       'name' => $tag->name,
       'color' => $tag->color,
-      'bg_color' => $tag->bg_color,
+      'bgColor' => $tag->bg_color,
       'icon' => $tag->icon,
-      'description' => $tag->description,
-      'is_system' => $tag->user_id === "0",
+      'description' => $tag->description ?? "",
+      'isSystem' => $tag->user_id === "0",
     ];
   }
 
@@ -162,4 +162,19 @@ class Pika_Tags_Manager extends Pika_Base_Manager {
     return $tag;
   }
 
+  /**
+   * Delete a tag
+   * 
+   * @param int $tag_id
+   * @return bool|WP_Error
+   */
+  public function delete_tag($tag_id) {
+    $table_name = $this->get_table_name();
+    $result = $this->db()->delete($table_name, ['id' => $tag_id]);
+    if ($result === false) {
+      return $this->get_error('db_delete_error');
+    }
+
+    return true;
+  }
 }

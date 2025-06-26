@@ -493,7 +493,7 @@ class Pika_Default_Data {
         ],
         [
           'name' => 'ATM',
-          'icon' => 'hand-coins',
+          'icon' => 'banknote-arrow-down',
           'color' => '#ffffff',
           'bg_color' => '#FFD700',
           'type' => 'transfer',
@@ -502,7 +502,7 @@ class Pika_Default_Data {
         ],
         [
           'name' => 'CDM',
-          'icon' => 'coins',
+          'icon' => 'banknote-arrow-up',
           'color' => '#ffffff',
           'bg_color' => '#A3E635',
           'type' => 'transfer',
@@ -526,6 +526,13 @@ class Pika_Default_Data {
    * Default tags
    */
   const DEFAULT_TAGS = [
+    [
+      'name' => 'Initial Balance',
+      'icon' => 'plus-circle',
+      'color' => '#ffffff',
+      'bg_color' => '#10B981',
+      'description' => 'Initial account balance transaction',
+    ],
     [
       'name' => 'Recurring',
       'icon' => 'repeat',

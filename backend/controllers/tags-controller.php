@@ -38,26 +38,28 @@ class Pika_Tags_Controller extends Pika_Base_Controller {
             'callback' => [$this, 'update_tag'],
             'permission_callback' => [$this, 'can_edit_tag']
         ]);
+
+        register_rest_route($this->namespace, '/tags/(?P<id>\d+)', [
+            'methods' => 'DELETE',
+            'callback' => [$this, 'delete_tag'],
+            'permission_callback' => [$this, 'can_edit_tag']
+        ]);
     }
 
     /**
      * Check if the user can edit the tag
      */
     public function can_edit_tag($request) {
-        error_log('can_edit_tag');
-        error_log("check_auth: " . $this->check_auth());
         if (!$this->check_auth()) {
             return $this->tags_manager->get_error('unauthorized');
         }
 
         $tag_id = $request->get_param('id');
         $existing = $this->tags_manager->get_tag_by_id($tag_id);    
-        error_log("existing: " . print_r($existing, true));
         if (!$existing) {
             return $this->tags_manager->get_error('tag_not_found');
         }
 
-        error_log("existing->user_id: " . $existing->user_id);
         if ($existing->user_id !== strval(get_current_user_id())) {
             return $this->tags_manager->get_error('unauthorized');
         }
@@ -129,21 +131,30 @@ class Pika_Tags_Controller extends Pika_Base_Controller {
 
         if(isset($params['color'])) {
             $data['color'] = $this->tags_manager->sanitize_color($params['color']);
+            if (is_null($data['color'])) {
+                return $this->tags_manager->get_error('invalid_color');
+            }
             $format['color'] = '%s';
         }
 
         if(isset($params['bg_color'])) {
             $data['bg_color'] = $this->tags_manager->sanitize_color($params['bg_color']);
+            if (is_null($data['bg_color'])) {
+                return $this->tags_manager->get_error('invalid_color');
+            }
             $format['bg_color'] = '%s';
         }
 
         if(isset($params['icon'])) {
             $data['icon'] = $this->tags_manager->sanitize_icon($params['icon']);
+            if (is_null($data['icon'])) {
+                return $this->tags_manager->get_error('invalid_icon');
+            }
             $format['icon'] = '%s';
         }
 
         if(isset($params['description'])) {
-            $data['description'] = sanitize_text_field($params['description']);
+            $data['description'] = sanitize_text_field($params['description']) ?? "";
             $format['description'] = '%s';
         }
 
@@ -153,5 +164,17 @@ class Pika_Tags_Controller extends Pika_Base_Controller {
 
         $tag = $this->tags_manager->update_tag($tag_id, $data, $format);
         return $tag;
+    }
+
+    /**
+     * Delete a tag
+     */
+    public function delete_tag($request) {
+        $tag_id = $request->get_param('id');
+        $result = $this->tags_manager->delete_tag($tag_id);
+        if (is_wp_error($result)) {
+            return $result;
+        }
+        return ['message' => 'Tag deleted successfully'];
     }
 }

@@ -97,7 +97,15 @@ Authorization: Basic {{username}}:{{password}}
 Content-Type: application/json
 
 {
-  "name": "Test Tag 2 Updated",
+  "name": "Test Tag 2 Updated 1",
   "color": "#000000",
   "bg_color": "#ffffff"
 }
+
+###
+
+# Delete a tag
+DELETE {{base_url}}/wp-json/pika/v1/tags/7
+Authorization: Basic {{username}}:{{password}}
+
+###

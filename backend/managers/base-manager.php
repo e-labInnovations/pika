@@ -49,6 +49,7 @@ abstract class Pika_Base_Manager {
     'db_delete_error' => ['message' => 'Database delete error.', 'status' => 500],
     'db_insert_error' => ['message' => 'Database insert error.', 'status' => 500],
     'invalid_icon' => ['message' => 'Invalid icon.', 'status' => 400],
+    'invalid_color' => ['message' => 'Invalid color. Use hex format like #000000.', 'status' => 400],
     'no_update' => ['message' => 'Nothing to update.', 'status' => 400],
   ];
 
@@ -80,7 +81,7 @@ abstract class Pika_Base_Manager {
   }
 
   public function sanitize_icon($icon) {
-    if (isset($this->icons[$icon])) {
+    if (in_array($icon, $this->icons)) {
       return $icon;
     }
     return null;
