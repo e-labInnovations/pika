@@ -150,3 +150,49 @@ DELETE {{base_url}}/wp-json/pika/v1/categories/61
 Authorization: Basic {{username}}:{{password}}
 
 ###
+
+# Upload a file - person avatar
+POST {{base_url}}/wp-json/pika/v1/upload/avatar
+Authorization: Basic {{username}}:{{password}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
+
+------WebKitFormBoundary
+Content-Disposition: form-data; name="type"
+
+avatar
+------WebKitFormBoundary
+Content-Disposition: form-data; name="entity_type"
+
+person
+------WebKitFormBoundary
+Content-Disposition: form-data; name="file"; filename="avatar01.png"
+Content-Type: image/png
+
+< docs/images/avatar01.png
+------WebKitFormBoundary--
+
+###
+
+# Upload a file - transaction attachment
+POST {{base_url}}/wp-json/pika/v1/upload/attachment
+Authorization: Basic {{username}}:{{password}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
+
+------WebKitFormBoundary
+Content-Disposition: form-data; name="type"
+
+attachment
+------WebKitFormBoundary
+Content-Disposition: form-data; name="entity_type"
+
+transaction
+------WebKitFormBoundary
+Content-Disposition: form-data; name="attachment_type"
+
+document
+------WebKitFormBoundary
+Content-Disposition: form-data; name="file"; filename="document01.pdf"
+Content-Type: application/pdf
+
+< /Users/mohammed.ashad/Downloads/EAadhaar_2003702210041020250609180022_1806202514229.pdf
+------WebKitFormBoundary--

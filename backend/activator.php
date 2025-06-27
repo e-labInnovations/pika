@@ -42,7 +42,7 @@ class Pika_Activator {
             icon varchar(100) NOT NULL DEFAULT 'wallet',
             bg_color varchar(7) NOT NULL DEFAULT '#3B82F6',
             color varchar(7) NOT NULL DEFAULT '#ffffff',
-            avatar text,
+            avatar_id bigint(20) unsigned DEFAULT NULL,
             description text,
             is_active tinyint(1) NOT NULL DEFAULT 1,
             created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -60,7 +60,7 @@ class Pika_Activator {
             name varchar(255) NOT NULL,
             email varchar(255),
             phone varchar(50),
-            avatar text,
+            avatar_id bigint(20) unsigned DEFAULT NULL,
             description text,
             is_active tinyint(1) NOT NULL DEFAULT 1,
             created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -117,7 +117,7 @@ class Pika_Activator {
             id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
             user_id bigint(20) unsigned NOT NULL,
             title varchar(255) NOT NULL,
-            amount decimal(15,2) NOT NULL,
+            amount decimal(15,4) NOT NULL,
             date datetime NOT NULL,
             type enum('income','expense','transfer') NOT NULL,
             category_id bigint(20) unsigned NOT NULL,
@@ -125,7 +125,6 @@ class Pika_Activator {
             to_account_id bigint(20) unsigned DEFAULT NULL,
             person_id bigint(20) unsigned DEFAULT NULL,
             note text,
-            currency varchar(3) NOT NULL DEFAULT 'USD',
             is_active tinyint(1) NOT NULL DEFAULT 1,
             created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -153,20 +152,37 @@ class Pika_Activator {
             KEY tag_id (tag_id)
         ) $charset_collate;";
 
+        // Uploads table
+        $uploads_table = $wpdb->prefix . 'pika_uploads';
+        $sql_uploads = "CREATE TABLE $uploads_table (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            user_id bigint(20) unsigned NOT NULL,
+            type enum('avatar','attachment','other') NOT NULL,
+            file_name varchar(255) NOT NULL,
+            file_url text NOT NULL,
+            file_size bigint(20) unsigned DEFAULT NULL,
+            mime_type varchar(100) DEFAULT NULL,
+            attachment_type enum('image','document') NOT NULL,
+            entity_type enum('person','account','transaction','other') NOT NULL,
+            uploaded_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            description text DEFAULT NULL,
+            PRIMARY KEY (id),
+            KEY user_id (user_id),
+            KEY type (type),
+            KEY attachment_type (attachment_type),
+            KEY entity_type (entity_type)
+        ) $charset_collate;";
+
         // Transaction attachments table
         $transaction_attachments_table = $wpdb->prefix . 'pika_transaction_attachments';
         $sql_transaction_attachments = "CREATE TABLE $transaction_attachments_table (
             id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
             transaction_id bigint(20) unsigned NOT NULL,
-            name varchar(255) NOT NULL,
-            url text NOT NULL,
-            type enum('image','pdf') NOT NULL DEFAULT 'image',
-            file_size bigint(20) unsigned DEFAULT NULL,
-            mime_type varchar(100) DEFAULT NULL,
+            upload_id bigint(20) unsigned NOT NULL,
             created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
             KEY transaction_id (transaction_id),
-            KEY type (type)
+            KEY upload_id (upload_id)
         ) $charset_collate;";
 
         // User settings table
@@ -192,6 +208,7 @@ class Pika_Activator {
         dbDelta($sql_tags);
         dbDelta($sql_transactions);
         dbDelta($sql_transaction_tags);
+        dbDelta($sql_uploads);
         dbDelta($sql_transaction_attachments);
         dbDelta($sql_user_settings);
     }
