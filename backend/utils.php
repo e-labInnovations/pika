@@ -240,9 +240,13 @@ class Pika_Utils {
     /**
      * Log error for debugging
      */
-    public static function log_error($message, $data = []) {
+    public static function log_error($message, $data = [], $log_mode = 'json') {
         if (defined('WP_DEBUG') && WP_DEBUG) {
-            error_log('Pika Error: ' . $message . ' - ' . json_encode($data));
+            if ($log_mode === 'json') {
+                error_log('Pika Error: ' . $message . ' - ' . json_encode($data));
+            } else {
+                error_log('Pika Error: ' . $message . ' - ' . print_r($data, true));
+            }
         }
     }
 }

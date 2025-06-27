@@ -115,3 +115,38 @@ GET {{base_url}}/wp-json/pika/v1/categories
 Authorization: Basic {{username}}:{{password}}
 
 ###
+
+# Add a new category
+POST {{base_url}}/wp-json/pika/v1/categories
+Authorization: Basic {{username}}:{{password}}
+Content-Type: application/json
+
+{
+  "name": "Test child Category 12",
+  "icon": "tag",
+  "color": "#000000",
+  "bg_color": "#ffffff",
+  "type": "expense",
+  "description": "Test child category description",
+  "parent_id": 61
+}
+
+###
+
+# Update a category
+PUT {{base_url}}/wp-json/pika/v1/categories/65
+Authorization: Basic {{username}}:{{password}}
+Content-Type: application/json
+
+{
+  "name": "Test Category 12 Updated 1",
+  "icon": "tag"
+}
+
+###
+
+# Delete a category
+DELETE {{base_url}}/wp-json/pika/v1/categories/61
+Authorization: Basic {{username}}:{{password}}
+
+###

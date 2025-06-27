@@ -15,7 +15,8 @@ class Pika_Tags_Manager extends Pika_Base_Manager {
 
   protected $errors = [
     'tag_name_not_unique' => ['message' => 'Tag name is not unique.', 'status' => 400],
-    'tag_not_found' => ['message' => 'Tag not found.', 'status' => 404]
+    'tag_not_found' => ['message' => 'Tag not found.', 'status' => 404],
+    'invalid_name' => ['message' => 'Invalid tag name.', 'status' => 400],
   ];
 
   /**
