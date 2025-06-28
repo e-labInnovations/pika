@@ -196,3 +196,49 @@ Content-Type: application/pdf
 
 < /Users/mohammed.ashad/Downloads/EAadhaar_2003702210041020250609180022_1806202514229.pdf
 ------WebKitFormBoundary--
+
+###
+
+# Get all people
+GET {{base_url}}/wp-json/pika/v1/people
+Authorization: Basic {{username}}:{{password}}
+
+###
+
+# Create a new person
+POST {{base_url}}/wp-json/pika/v1/people
+Authorization: Basic {{username}}:{{password}}
+Content-Type: application/json
+
+{
+  "name": "Test Person 1",
+  "email": "testperson1@example.com",
+  "phone": "1234567890",
+  "avatar_id": 1
+}
+
+###
+
+# Get a person
+GET {{base_url}}/wp-json/pika/v1/people/1
+Authorization: Basic {{username}}:{{password}}
+
+###
+
+# Update a person
+PUT {{base_url}}/wp-json/pika/v1/people/1
+Authorization: Basic {{username}}:{{password}}
+Content-Type: application/json
+
+{
+  "name": "Test Person 1 Updated 1",
+  "email": "testperson1@example.com"
+}
+
+###
+
+# Delete a person
+DELETE {{base_url}}/wp-json/pika/v1/people/7
+Authorization: Basic {{username}}:{{password}}
+
+###

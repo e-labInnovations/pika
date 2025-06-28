@@ -241,11 +241,15 @@ class Pika_Upload_Manager extends Pika_Base_Manager {
    * Get file by ID
    * 
    */
-  public function get_file_by_id($id) {
+  public function get_file_by_id($id, $format = false) {
     $table_name = $this->get_table_name();
     $file = $this->db()->get_row($this->db()->prepare("SELECT * FROM {$table_name} WHERE id = %d", $id));
     if (!$file) {
       return $this->get_error('upload_not_found');
+    }
+
+    if ($format) {
+      return $this->format_file($file);
     }
 
     return $file;
