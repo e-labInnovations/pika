@@ -163,7 +163,7 @@ avatar
 ------WebKitFormBoundary
 Content-Disposition: form-data; name="entity_type"
 
-person
+account
 ------WebKitFormBoundary
 Content-Disposition: form-data; name="file"; filename="avatar01.png"
 Content-Type: image/png
@@ -239,6 +239,66 @@ Content-Type: application/json
 
 # Delete a person
 DELETE {{base_url}}/wp-json/pika/v1/people/7
+Authorization: Basic {{username}}:{{password}}
+
+###
+
+# Get all accounts
+GET {{base_url}}/wp-json/pika/v1/accounts
+Authorization: Basic {{username}}:{{password}}
+
+###
+
+# Create a new account
+POST {{base_url}}/wp-json/pika/v1/accounts
+Authorization: Basic {{username}}:{{password}}
+Content-Type: application/json
+
+{
+  "name": "Test Account 1",
+  "description": "Test account description",
+  "avatar_id": 14
+}
+
+###
+
+# Create a new account
+POST {{base_url}}/wp-json/pika/v1/accounts
+Authorization: Basic {{username}}:{{password}}
+Content-Type: application/json
+
+{
+  "name": "Test Account",
+  "description": "Test account description",
+  "bg_color": "#000000",
+  "color": "#ffffff",
+  "icon": "wallet"
+}
+
+###
+
+# Get an account
+GET {{base_url}}/wp-json/pika/v1/accounts/1
+Authorization: Basic {{username}}:{{password}}
+
+###
+
+# Update an account
+PUT {{base_url}}/wp-json/pika/v1/accounts/3
+Authorization: Basic {{username}}:{{password}}
+Content-Type: application/json
+
+{
+  "name": "Test Account 3 Updated 1",
+  "description": "Test account description updated",
+  "icon": "wallet",
+  "avatar_id": 14
+}
+
+###
+
+# Delete an account
+DELETE {{base_url}}/wp-json/pika/v1/accounts/2
 Authorization: Basic {{username}}:{{password}}
 
 ###

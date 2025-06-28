@@ -33,4 +33,17 @@ class Pika_Transactions_Manager extends Pika_Base_Manager {
     $count = $this->db()->get_var($sql);
     return $count > 0;
   }
+
+  /**
+   * Is account has transactions
+   * 
+   * @param int $id
+   * @return bool
+   */
+  public function account_has_transactions($id) {
+    $table_name = $this->get_table_name();
+    $sql = $this->db()->prepare("SELECT COUNT(*) FROM {$table_name} WHERE account_id = %d OR to_account_id = %d", $id, $id);
+    $count = $this->db()->get_var($sql);
+    return $count > 0;
+  }
 }
