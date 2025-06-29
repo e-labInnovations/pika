@@ -12,7 +12,6 @@ class Pika_Accounts_Manager extends Pika_Base_Manager {
 
   protected $table_name = 'accounts';
   protected $upload_manager;
-  protected $transactions_manager;
 
   public $errors = [
     'invalid_account_id' => ['message' => 'Invalid account id', 'status' => 400],
@@ -25,7 +24,6 @@ class Pika_Accounts_Manager extends Pika_Base_Manager {
   public function __construct() {
     parent::__construct();
     $this->upload_manager = new Pika_Upload_Manager();
-    $this->transactions_manager = new Pika_Transactions_Manager();
   }
 
   /**
@@ -65,7 +63,10 @@ class Pika_Accounts_Manager extends Pika_Base_Manager {
    * @return bool
    */
   public function account_has_transactions($id) {
-    return $this->transactions_manager->account_has_transactions($id);
+    $table_name = $this->get_table_name('transactions');
+    $sql = $this->db()->prepare("SELECT COUNT(*) FROM {$table_name} WHERE account_id = %d OR to_account_id = %d", $id, $id);
+    $count = $this->db()->get_var($sql);
+    return $count > 0;
   }
 
   /**

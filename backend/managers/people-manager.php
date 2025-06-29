@@ -13,7 +13,6 @@ class Pika_People_Manager extends Pika_Base_Manager {
   protected $table_name = 'people';
   protected $upload_type = 'avatar';
   protected $upload_manager;
-  protected $transactions_manager;
 
   public $errors = [
     'person_not_found' => ['message' => 'Person not found', 'status' => 404],
@@ -27,7 +26,6 @@ class Pika_People_Manager extends Pika_Base_Manager {
   public function __construct() {
     parent::__construct();
     $this->upload_manager = new Pika_Upload_Manager();
-    $this->transactions_manager = new Pika_Transactions_Manager();
   }
 
   /**
@@ -88,13 +86,17 @@ class Pika_People_Manager extends Pika_Base_Manager {
    * @return bool True if person has transactions, false otherwise
    */
   public function person_has_transactions($person_id) {
-    return $this->transactions_manager->person_has_transactions($person_id);
+    $table_name = $this->get_table_name('transactions');
+    $sql = $this->db()->prepare("SELECT COUNT(*) FROM {$table_name} WHERE person_id = %d", $person_id);
+    $count = $this->db()->get_var($sql);
+    return $count > 0;
   }
 
   /**
    * Get person
    * 
    * @param int $id Person ID
+   * @param bool $format
    * @return array|WP_Error Person data on success, WP_Error on failure
    */
   public function get_person($id, $format = false) {

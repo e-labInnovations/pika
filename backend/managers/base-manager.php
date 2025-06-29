@@ -32,9 +32,9 @@ abstract class Pika_Base_Manager {
     return $wpdb;
   }
 
-  public function get_table_name() {
+  public function get_table_name($name = null) {
     global $wpdb;
-    return $wpdb->prefix . 'pika_' . $this->table_name;
+    return $wpdb->prefix . 'pika_' . ($name ? $name : $this->table_name);
   }
 
   /**
@@ -75,6 +75,9 @@ abstract class Pika_Base_Manager {
     return new WP_Error('unknown_error', 'An unknown error occurred.', ['status' => 500]);
   }
 
+  /**
+   * Sanitize color
+   */
   public function sanitize_color($color) {
     if (preg_match('/^#([0-9a-fA-F]{6})$/', $color, $matches)) {
       return $matches[1];
@@ -82,6 +85,9 @@ abstract class Pika_Base_Manager {
     return null;
   }
 
+  /**
+   * Sanitize icon
+   */
   public function sanitize_icon($icon) {
     if (is_null($icon) || empty($icon)) {
       return null;
@@ -93,6 +99,25 @@ abstract class Pika_Base_Manager {
     return null;
   }
 
+  /**
+   * Sanitize ISO datetime
+   */
+  public function sanitize_iso_datetime( $datetime_string ) {
+    $datetime_string = trim( $datetime_string );
+
+    $timestamp = strtotime( $datetime_string );
+
+    if ( $timestamp === false ) {
+        return null;
+    }
+
+    // Convert to MySQL datetime format in UTC
+    return gmdate( 'Y-m-d H:i:s', $timestamp );
+}
+
+  /**
+   * Load icons
+   */
   private function load_icons() {
     $icons_file = PIKA_PLUGIN_PATH . 'backend/data/icons.php';
     if (file_exists($icons_file)) {

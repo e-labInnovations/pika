@@ -302,3 +302,56 @@ DELETE {{base_url}}/wp-json/pika/v1/accounts/2
 Authorization: Basic {{username}}:{{password}}
 
 ###
+
+# Get all transactions
+GET {{base_url}}/wp-json/pika/v1/transactions
+Authorization: Basic {{username}}:{{password}}
+
+###
+
+# Create a new transaction
+POST {{base_url}}/wp-json/pika/v1/transactions
+Authorization: Basic {{username}}:{{password}}
+Content-Type: application/json
+
+{
+  "title": "Test Transaction 1",
+  "amount": 101,
+  "date": "2025-01-01",
+  "type": "income",
+  "category_id": 50,
+  "account_id": 1,
+  "person_id": 1,
+  "tags": [2],
+  "attachments": [13]
+}
+
+###
+
+# Get a transaction
+GET {{base_url}}/wp-json/pika/v1/transactions/3
+Authorization: Basic {{username}}:{{password}}
+
+###
+
+# Update a transaction
+PUT {{base_url}}/wp-json/pika/v1/transactions/3
+Authorization: Basic {{username}}:{{password}}
+Content-Type: application/json
+
+{
+  "title": "Test Transaction 1 Updated 1",
+  "amount": 102,
+  "date": "2025-01-01",
+  "note": "Test transaction note updated",
+  "attachments": [13],
+  "tags": [1, 3]
+}
+
+###
+
+# Delete a transaction
+DELETE {{base_url}}/wp-json/pika/v1/transactions/4
+Authorization: Basic {{username}}:{{password}}
+
+###

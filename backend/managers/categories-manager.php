@@ -104,9 +104,10 @@ class Pika_Categories_Manager extends Pika_Base_Manager {
    * Get a category by id
    * 
    * @param int $id
+   * @param bool $format
    * @return object|null
    */
-  public function get_category_by_id($id) {
+  public function get_category_by_id($id, $format = false) {
     $table_name = $this->get_table_name();
     $user_id = get_current_user_id();
     $sql = $this->db()->prepare("SELECT * FROM {$table_name} WHERE id = %d AND (user_id = %d OR user_id = 0)", $id, $user_id);
@@ -115,7 +116,7 @@ class Pika_Categories_Manager extends Pika_Base_Manager {
       return $this->get_error('db_error');
     }
 
-    return $category;
+    return $format ? $this->format_category($category) : $category;
   }
 
   /**

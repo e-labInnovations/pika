@@ -20,16 +20,6 @@ class Pika_Tags_Manager extends Pika_Base_Manager {
   ];
 
   /**
-   * Get the transaction tags table name
-   * 
-   * @return string
-   */
-  public function get_transaction_tags_table_name() {
-    global $wpdb;
-    return $wpdb->prefix . 'pika_' . $this->table_transaction_tags;
-  }
-
-  /**
    * Format a tag
    * 
    * @param object $tag
@@ -174,5 +164,24 @@ class Pika_Tags_Manager extends Pika_Base_Manager {
     }
 
     return true;
+  }
+
+  /**
+   * Get all tags by transaction id
+   * 
+   * @param int $transaction_id
+   * @return array|WP_Error
+   */
+  public function get_all_transaction_tags($transaction_id) {
+    $tags_table = $this->get_table_name();
+    $transaction_tags_table = $this->get_table_name($this->table_transaction_tags);
+    $sql = $this->db()->prepare("SELECT t.* FROM {$tags_table} AS t INNER JOIN {$transaction_tags_table} AS tt ON t.id = tt.tag_id WHERE tt.transaction_id = %d", $transaction_id);
+    $tags = $this->db()->get_results($sql);
+
+    if (is_wp_error($tags)) {
+      return $this->get_error('db_error');
+    }
+
+    return array_map([$this, 'format_tag'], $tags);
   }
 }

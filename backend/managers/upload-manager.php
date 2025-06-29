@@ -11,6 +11,7 @@ Pika_Utils::reject_abs_path();
 class Pika_Upload_Manager extends Pika_Base_Manager {
 
   protected $table_name = 'uploads';
+  protected $table_transaction_attachments = 'transaction_attachments';
   public $types = ['avatar', 'attachment', 'other'];
   public $entity_types = ['person', 'account', 'transaction', 'other'];
   private $allowed_types = [
@@ -301,5 +302,24 @@ class Pika_Upload_Manager extends Pika_Base_Manager {
     }
 
     return $this->format_file($file);
+  }
+
+  /**
+   * Get all transaction attachments by transaction id
+   * 
+   * @param int $transaction_id
+   * @return array|WP_Error
+   */
+  public function get_all_transaction_attachments($transaction_id) {
+    $uploads_table = $this->get_table_name();
+    $transaction_attachments_table = $this->get_table_name($this->table_transaction_attachments);
+    $sql = $this->db()->prepare("SELECT u.* FROM {$uploads_table} AS u INNER JOIN {$transaction_attachments_table} AS ta ON u.id = ta.upload_id WHERE ta.transaction_id = %d", $transaction_id);
+    $attachments = $this->db()->get_results($sql);
+
+    if (is_wp_error($attachments)) {
+      return $this->get_error('db_error');
+    }
+
+    return array_map([$this, 'format_file'], $attachments);
   }
 }
