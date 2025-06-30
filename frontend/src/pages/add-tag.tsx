@@ -10,6 +10,8 @@ import { IconRenderer } from '@/components/icon-renderer';
 import { TagChip } from '@/components/tag-chip';
 import { type IconName } from '@/components/ui/icon-picker';
 import IconColorsFields from '@/components/categories/icon-colors-fields';
+import { tagService } from '@/services/api/tags.service';
+import { toast } from 'sonner';
 
 const AddTag = () => {
   const navigate = useNavigate();
@@ -24,9 +26,15 @@ const AddTag = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement tag creation logic
-    console.log('Creating tag:', formData);
-    navigate('/settings/tags');
+    tagService
+      .create(formData)
+      .then(() => {
+        toast.success('Tag created successfully');
+        navigate('/settings/tags');
+      })
+      .catch((error) => {
+        toast.error(error.response.data.message);
+      });
   };
 
   return (

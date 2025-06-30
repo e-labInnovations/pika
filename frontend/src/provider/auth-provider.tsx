@@ -1,5 +1,5 @@
 import { createContext, useEffect, useMemo, useReducer, type PropsWithChildren } from 'react';
-import { type User, authService } from '@/services/api/auth';
+import { type User, authService } from '@/services/api/auth.service';
 
 interface AuthContextType {
   user: User | null;
@@ -63,10 +63,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     if (token) {
       const fetchUserData = async () => {
         try {
-          const userData = await authService.getMe();
+          const response = await authService.getMe();
           dispatch({
             type: 'SIGN_IN',
-            payload: { user: userData as User, token: token },
+            payload: { user: response.data as User, token: token },
           });
         } catch {
           dispatch({ type: 'SIGN_OUT' });

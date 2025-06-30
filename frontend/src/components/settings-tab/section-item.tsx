@@ -1,6 +1,6 @@
 import { Card, CardContent } from '../ui/card';
 import { ChevronRight } from 'lucide-react';
-import type { SettingSection } from '@/data/types';
+import type { SettingSection } from '@/data/settings';
 import { useNavigate } from 'react-router-dom';
 import { IconRenderer } from '../icon-renderer';
 

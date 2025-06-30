@@ -1,17 +1,32 @@
-import { tags } from '@/data/dummy-data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import TabsLayout from '@/layouts/tabs';
 import { Plus, Trash2, Edit2 } from 'lucide-react';
 import { IconRenderer } from '@/components/icon-renderer';
 import { useNavigate } from 'react-router-dom';
+import { tagService, type Tag } from '@/services/api/tags.service';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 const Tags = () => {
   const navigate = useNavigate();
+  const [tags, setTags] = useState<Tag[]>([]);
+
+  useEffect(() => {
+    tagService.list().then((response) => {
+      setTags(response.data);
+    });
+  }, []);
 
   const onDeleteTag = (id: string) => {
-    // Handle delete
-    console.log('Delete tag:', id);
+    tagService
+      .delete(id)
+      .then(() => {
+        setTags(tags.filter((tag) => tag.id !== id));
+      })
+      .catch((error) => {
+        toast.error(error.response.data.message);
+      });
   };
 
   const onEditTag = (id: string) => {

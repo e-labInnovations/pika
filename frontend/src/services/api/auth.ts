@@ -1,36 +1,37 @@
 import type { CurrencyCode } from '@/lib/currency-utils';
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8000/wp-json/wp/v2';
+const API_URL = 'http://localhost:8000/wp-json/pika/v1';
 
 export const authService = {
   login: async (token: string) => {
-    // const response = await axios.get(`${API_URL}/users/me`, {
-    //   headers: {
-    //     Authorization: `Basic ${token}`,
-    //   },
-    //   params: {
-    //     context: "edit",
-    //   },
-    // });
-    // return response.data;
-    const user: User = {
-      id: 1,
-      name: 'John Doe',
-      first_name: 'John',
-      last_name: 'Doe',
-      email: 'john.doe@example.com',
-      default_currency: 'INR',
-      avatar_urls: {
-        24: 'https://via.placeholder.com/24',
-        48: 'https://via.placeholder.com/48',
-        96: 'https://via.placeholder.com/96',
+    console.log('login', token);
+    const response = await axios.get(`${API_URL}/auth/me`, {
+      headers: {
+        Authorization: `Basic ${token}`,
       },
-      meta: [],
-      description: '',
-      slug: '',
-    };
-    return user;
+      params: {
+        context: 'edit',
+      },
+    });
+    return response.data;
+    // const user: User = {
+    //   id: 1,
+    //   name: 'John Doe',
+    //   first_name: 'John',
+    //   last_name: 'Doe',
+    //   email: 'john.doe@example.com',
+    //   default_currency: 'INR',
+    //   avatar_urls: {
+    //     24: 'https://via.placeholder.com/24',
+    //     48: 'https://via.placeholder.com/48',
+    //     96: 'https://via.placeholder.com/96',
+    //   },
+    //   meta: [],
+    //   description: '',
+    //   slug: '',
+    // };
+    // return user;
   },
 
   getMe: async () => {
@@ -39,33 +40,33 @@ export const authService = {
       throw new Error('No token found');
     }
 
-    // const response = await axios.get(`${API_URL}/users/me`, {
-    //   headers: {
-    //     Authorization: `Basic ${token}`,
-    //   },
-    //   params: {
-    //     context: "edit",
-    //   },
-    // });
-    // return response.data;
-
-    const user: User = {
-      id: 1,
-      name: 'John Doe',
-      first_name: 'John',
-      last_name: 'Doe',
-      email: 'john.doe@example.com',
-      default_currency: 'INR',
-      avatar_urls: {
-        24: 'https://via.placeholder.com/24',
-        48: 'https://via.placeholder.com/48',
-        96: 'https://via.placeholder.com/96',
+    const response = await axios.get(`${API_URL}/auth/me`, {
+      headers: {
+        Authorization: `Basic ${token}`,
       },
-      meta: [],
-      description: '',
-      slug: '',
-    };
-    return user;
+      params: {
+        context: 'edit',
+      },
+    });
+    return response.data;
+
+    // const user: User = {
+    //   id: 1,
+    //   name: 'John Doe',
+    //   first_name: 'John',
+    //   last_name: 'Doe',
+    //   email: 'john.doe@example.com',
+    //   default_currency: 'INR',
+    //   avatar_urls: {
+    //     24: 'https://via.placeholder.com/24',
+    //     48: 'https://via.placeholder.com/48',
+    //     96: 'https://via.placeholder.com/96',
+    //   },
+    //   meta: [],
+    //   description: '',
+    //   slug: '',
+    // };
+    // return user;
   },
 };
 

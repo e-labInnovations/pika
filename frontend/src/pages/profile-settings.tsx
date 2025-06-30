@@ -1,8 +1,16 @@
 import TabsLayout from '@/layouts/tabs';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
 
 const ProfileSettings = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/login');
+  };
+
   return (
     <TabsLayout
       header={{
@@ -26,6 +34,9 @@ const ProfileSettings = () => {
       </Card>
       <Button variant="outline" className="w-full">
         Edit Profile
+      </Button>
+      <Button variant="outline" className="w-full" onClick={handleLogout}>
+        Logout
       </Button>
     </TabsLayout>
   );

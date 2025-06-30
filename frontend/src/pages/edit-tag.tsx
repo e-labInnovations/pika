@@ -6,11 +6,12 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import TabsLayout from '@/layouts/tabs';
 import { Save, Trash2 } from 'lucide-react';
-import { tags, type Tag } from '@/data/dummy-data';
 import { IconRenderer } from '@/components/icon-renderer';
 import { TagChip } from '@/components/tag-chip';
 import { type IconName } from '@/components/ui/icon-picker';
 import IconColorsFields from '@/components/categories/icon-colors-fields';
+import { tagService, type Tag } from '@/services/api/tags.service';
+import { toast } from 'sonner';
 
 const EditTag = () => {
   const { tagId } = useParams();
@@ -28,33 +29,43 @@ const EditTag = () => {
 
   useEffect(() => {
     if (tagId) {
-      // Find the tag in the tags array
-      const foundTag = tags.find((tag) => tag.id === tagId);
-      if (foundTag) {
-        setTag(foundTag);
+      tagService.get(tagId).then((response) => {
+        setTag(response.data);
         setFormData({
-          name: foundTag.name,
-          description: foundTag.description,
-          icon: foundTag.icon as IconName,
-          bgColor: foundTag.bgColor,
-          color: foundTag.color,
+          name: response.data.name,
+          description: response.data.description,
+          icon: response.data.icon as IconName,
+          bgColor: response.data.bgColor,
+          color: response.data.color,
         });
-      }
+      });
     }
   }, [tagId]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement tag update logic
-    console.log('Updating tag:', { ...formData, id: tagId });
-    navigate('/settings/tags');
+    tagService
+      .update(tagId!, formData)
+      .then(() => {
+        toast.success('Tag updated successfully');
+        navigate('/settings/tags');
+      })
+      .catch((error) => {
+        toast.error(error.response.data.message);
+      });
   };
 
   const handleDelete = () => {
     if (confirm(`Are you sure you want to delete "${formData.name}"?`)) {
-      // TODO: Implement tag deletion logic
-      console.log('Deleting tag:', tagId);
-      navigate('/settings/tags');
+      tagService
+        .delete(tagId!)
+        .then(() => {
+          toast.success('Tag deleted successfully');
+          navigate('/settings/tags');
+        })
+        .catch((error) => {
+          toast.error(error.response.data.message);
+        });
     }
   };
 

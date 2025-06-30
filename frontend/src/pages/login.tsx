@@ -6,11 +6,13 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { z } from 'zod';
 import { useAuth } from '@/hooks/use-auth';
-import { authService } from '@/services/api/auth';
+import { authService, type User } from '@/services/api/auth.service';
+// import { authService } from '@/services/api/auth';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 import Logo from '@/components/logo';
+import type { AxiosResponse } from 'axios';
 
 const loginSchema = z.object({
   username: z.string().min(3, 'Username is required'),
@@ -51,20 +53,39 @@ export default function Login() {
     if (!loginSchema.safeParse(form).success) return;
     setLoading(true);
     const token = btoa(`${form.username}:${form.appPassword}`);
-    try {
-      const userData = await authService.login(token);
-      await signIn(token, userData);
+    localStorage.setItem('token', token);
 
-      setSuccess(true);
+    authService
+      .getMe()
+      .then((response: AxiosResponse<User>) => {
+        const user = response.data;
+        console.log(user);
+        signIn(token, user);
+        setSuccess(true);
+        navigate(location.state?.from?.pathname || '/', { replace: true });
+      })
+      .catch((error) => {
+        console.error(error);
+        setError('Invalid username or password');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
 
-      // Redirect to the page they tried to visit or home
-      const from = location.state?.from?.pathname || '/';
-      navigate(from, { replace: true });
-    } catch {
-      setError('Invalid username or password');
-    } finally {
-      setLoading(false);
-    }
+    // try {
+    //   const userData = await authService.login(token);
+    //   await signIn(token, userData);
+
+    //   setSuccess(true);
+
+    //   // Redirect to the page they tried to visit or home
+    //   const from = location.state?.from?.pathname || '/';
+    //   navigate(from, { replace: true });
+    // } catch {
+    //   setError('Invalid username or password');
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
   return (
