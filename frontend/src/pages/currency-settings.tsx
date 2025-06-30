@@ -1,25 +1,29 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import TabsLayout from '@/layouts/tabs';
 import { CircleCheck, Globe } from 'lucide-react';
 import { currencyUtils, type Currency, type CurrencyCode } from '@/lib/currency-utils';
-import { useAuth } from '@/hooks/use-auth';
 import * as RadioGroup from '@radix-ui/react-radio-group';
 import { cn } from '@/lib/utils';
 import SearchBar from '@/components/search-bar';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { settingsService } from '@/services/api/settings.service';
+import { toast } from 'sonner';
 
 const CurrencySettings = () => {
-  const navigate = useNavigate();
-  const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredCurrencies, setFilteredCurrencies] = useState<Currency[]>(currencyUtils.getCurrencies());
-  const [selectedCurrency, setSelectedCurrency] = useState<Currency>(
-    currencyUtils.getCurrencyByCode(user?.default_currency as CurrencyCode),
-  );
+  const [currentCurrency, setCurrentCurrency] = useState<Currency>();
+  const [selectedCurrency, setSelectedCurrency] = useState<Currency>();
+
+  useEffect(() => {
+    settingsService.getSettings().then((response) => {
+      setCurrentCurrency(currencyUtils.getCurrencyByCode(response.data.currency as CurrencyCode));
+      setSelectedCurrency(currencyUtils.getCurrencyByCode(response.data.currency as CurrencyCode));
+    });
+  }, []);
 
   // Filter currencies based on search term
   useEffect(() => {
@@ -42,9 +46,25 @@ const CurrencySettings = () => {
   };
 
   const handleSave = () => {
-    // setDefaultCurrency(selectedCurrency);
-    navigate('/settings');
+    if (selectedCurrency) {
+      settingsService
+        .updateSettings({ currency: selectedCurrency.code })
+        .then((response) => {
+          toast.success('Updated successfully', {
+            description: `Default currency updated to ${selectedCurrency.name} (${selectedCurrency.code})`,
+          });
+          setCurrentCurrency(currencyUtils.getCurrencyByCode(response.data.currency as CurrencyCode));
+          setSelectedCurrency(currencyUtils.getCurrencyByCode(response.data.currency as CurrencyCode));
+        })
+        .catch((error) => {
+          toast.error(error.response.data.message);
+        });
+    }
   };
+
+  if (!selectedCurrency || !currentCurrency) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <TabsLayout
@@ -132,15 +152,15 @@ const CurrencySettings = () => {
         <Button
           variant="outline"
           className="w-1/2"
-          onClick={() => setSelectedCurrency(currencyUtils.getCurrencyByCode(user?.default_currency as CurrencyCode))}
-          disabled={selectedCurrency.code === user?.default_currency}
+          onClick={() => setSelectedCurrency(currentCurrency)}
+          disabled={selectedCurrency.code === currentCurrency.code}
         >
           Reset
         </Button>
 
         {/* Save Button */}
-        <Button onClick={handleSave} className="w-1/2" disabled={selectedCurrency.code === user?.default_currency}>
-          {selectedCurrency.code === user?.default_currency ? 'No Changes' : 'Save'}
+        <Button onClick={handleSave} className="w-1/2" disabled={selectedCurrency.code === currentCurrency.code}>
+          {selectedCurrency.code === currentCurrency.code ? 'No Changes' : 'Save'}
         </Button>
       </div>
     </TabsLayout>
