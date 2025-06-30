@@ -91,6 +91,15 @@ class TransactionUtils {
       note: `Initial balance for ${account.name}`,
     };
   };
+
+  formatFileSize = (bytes: string) => {
+    const bytesNumber = Number(bytes);
+    if (bytesNumber === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytesNumber) / Math.log(k));
+    return Number.parseFloat((bytesNumber / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
 }
 
 export default new TransactionUtils();

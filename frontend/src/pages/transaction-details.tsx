@@ -7,11 +7,12 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import HeaderDropdownMenu from '@/components/transactions-tab/header-dropdown-menu';
 import { CategoryTransactionIcon } from '@/components/category-transaction-icon';
 import { Button } from '@/components/ui/button';
-import TransactionUtils from '@/lib/transaction-utils';
 import { TagChip } from '@/components/tag-chip';
 import AccountAvatar from '@/components/account-avatar';
 import { transactionService, type Transaction } from '@/services/api/transaction.service';
 import { useEffect, useState } from 'react';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import transactionUtils from '@/lib/transaction-utils';
 
 const TransactionDetails = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -34,7 +35,7 @@ const TransactionDetails = () => {
   }, [id]);
 
   const getTransactionType = (type: string) => {
-    const transactionType = TransactionUtils.types.find((transactionType) => transactionType.id === type);
+    const transactionType = transactionUtils.types.find((transactionType) => transactionType.id === type);
     return transactionType;
   };
 
@@ -60,7 +61,7 @@ const TransactionDetails = () => {
               />
             </div>
             <h1 className="text-2xl font-bold text-slate-900 dark:text-white">{transaction.title}</h1>
-            <p className={`text-3xl font-bold ${TransactionUtils.getAmountColor(transaction.type)}`}>
+            <p className={`text-3xl font-bold ${transactionUtils.getAmountColor(transaction.type)}`}>
               {Math.abs(transaction.amount).toLocaleString('en-US', {
                 minimumFractionDigits: 2,
               })}
@@ -86,7 +87,7 @@ const TransactionDetails = () => {
                     <span>Date</span>
                   </div>
                   <p className="font-medium text-slate-900 dark:text-white">
-                    {TransactionUtils.formatDate(transaction.date)}
+                    {transactionUtils.formatDate(transaction.date)}
                   </p>
                 </div>
 
@@ -96,7 +97,7 @@ const TransactionDetails = () => {
                     <span>Time</span>
                   </div>
                   <p className="font-medium text-slate-900 dark:text-white">
-                    {TransactionUtils.formatTime(transaction.date)}
+                    {transactionUtils.formatTime(transaction.date)}
                   </p>
                 </div>
               </div>
@@ -253,14 +254,42 @@ const TransactionDetails = () => {
                             alt={attachment.name}
                             className="h-20 w-full rounded object-cover"
                           />
-                          <p className="truncate text-xs text-slate-600 dark:text-slate-400">{attachment.name}</p>
+                          <div className="flex max-w-full flex-col items-center gap-1 overflow-hidden">
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <p className="max-w-full truncate text-xs font-medium text-slate-900 dark:text-white">
+                                  {attachment.name}
+                                </p>
+                              </TooltipTrigger>
+                              <TooltipContent>{attachment.name}</TooltipContent>
+                            </Tooltip>
+                            {Number(attachment.size) > 0 && (
+                              <p className="text-xs text-slate-500 dark:text-slate-400">
+                                {transactionUtils.formatFileSize(attachment.size)}
+                              </p>
+                            )}
+                          </div>
                         </div>
                       ) : (
                         <div className="flex h-full flex-col items-center justify-center gap-2">
                           <div className="flex h-20 w-20 items-center justify-center rounded bg-red-100 dark:bg-red-900">
                             <FileText className="h-4 w-4 text-red-600 dark:text-red-400" />
                           </div>
-                          <p className="truncate text-xs text-slate-600 dark:text-slate-400">{attachment.name}</p>
+                          <div className="flex max-w-full flex-col items-center gap-1 overflow-hidden">
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <p className="max-w-full truncate text-xs font-medium text-slate-900 dark:text-white">
+                                  {attachment.name}
+                                </p>
+                              </TooltipTrigger>
+                              <TooltipContent>{attachment.name}</TooltipContent>
+                            </Tooltip>
+                            {Number(attachment.size) > 0 && (
+                              <p className="text-xs text-slate-500 dark:text-slate-400">
+                                {transactionUtils.formatFileSize(attachment.size)}
+                              </p>
+                            )}
+                          </div>
                         </div>
                       )}
                     </div>
