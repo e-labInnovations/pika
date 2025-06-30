@@ -36,7 +36,7 @@ class Pika_People_Manager extends Pika_Base_Manager {
    */
   public function format_person($person) {
     $avatar = $this->upload_manager->get_file_by_id($person->avatar_id, true);
-    $last_transaction_at = null;
+    $last_transaction_at = date('Y-m-d H:i:s');
     $total_transactions = 0;
     $balance = 0;
     
@@ -46,9 +46,9 @@ class Pika_People_Manager extends Pika_Base_Manager {
       'description' => $person->description,
       'email' => $person->email,
       'phone' => $person->phone,
-      'avatar' => $avatar['url'],
-      'last_transaction_at' => $last_transaction_at,
-      'total_transactions' => $total_transactions,
+      'avatar' => $avatar,
+      'lastTransactionAt' => $last_transaction_at,
+      'totalTransactions' => $total_transactions,
       'balance' => $balance,
     ];
   }

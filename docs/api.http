@@ -171,7 +171,7 @@ Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
 ------WebKitFormBoundary
 Content-Disposition: form-data; name="entityType"
 
-account
+person
 ------WebKitFormBoundary
 Content-Disposition: form-data; name="file"; filename="avatar01.png"
 Content-Type: image/png
@@ -240,7 +240,7 @@ Content-Type: application/json
   "name": "Test Person 1",
   "email": "testperson1@example.com",
   "phone": "1234567890",
-  "avatarId": "4"
+  "avatarId": "17"
 }
 
 ###
