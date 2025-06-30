@@ -2,22 +2,29 @@ import { User, X } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import type { TransactionFormData } from './types';
-import { useState } from 'react';
-import { people } from '@/data/dummy-data';
+import { useEffect, useState } from 'react';
 import PeoplePicker from '../people-picker';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { personService, type Person } from '@/services/api/people.service';
 
 interface PersonProps {
   formData: TransactionFormData;
   setFormData: (data: TransactionFormData | ((prev: TransactionFormData) => TransactionFormData)) => void;
 }
 
-const Person = ({ formData, setFormData }: PersonProps) => {
+const PersonView = ({ formData, setFormData }: PersonProps) => {
   const [showPeoplePicker, setShowPeoplePicker] = useState(false);
+  const [person, setPerson] = useState<Person | null>(null);
 
-  const getPerson = (id: string) => {
-    return people.find((person) => person.id === id);
-  };
+  useEffect(() => {
+    if (formData.person) {
+      personService.get(formData.person).then((response) => {
+        setPerson(response.data);
+      });
+    } else {
+      setPerson(null);
+    }
+  }, [formData.person]);
 
   return (
     <>
@@ -33,17 +40,17 @@ const Person = ({ formData, setFormData }: PersonProps) => {
             <div className="flex items-center justify-between rounded-lg border border-purple-200 bg-purple-50 p-3 dark:border-purple-800 dark:bg-purple-900/20">
               <div className="flex items-center space-x-3">
                 <Avatar className="h-10 w-10">
-                  <AvatarImage src={getPerson(formData.person)?.avatar} alt={getPerson(formData.person)?.name} />
+                  <AvatarImage src={person?.avatar.url} alt={person?.name} />
                   <AvatarFallback className="bg-purple-500 font-semibold text-white">
-                    {getPerson(formData.person)
-                      ?.name.split(' ')
+                    {person?.name
+                      .split(' ')
                       .map((n) => n[0])
                       .join('')}
                   </AvatarFallback>
                 </Avatar>
                 <div>
-                  <span className="font-medium text-slate-900 dark:text-white">{getPerson(formData.person)?.name}</span>
-                  <p className="line-clamp-1 text-sm text-slate-500">{getPerson(formData.person)?.description}</p>
+                  <span className="font-medium text-slate-900 dark:text-white">{person?.name}</span>
+                  <p className="line-clamp-1 text-sm text-slate-500">{person?.description}</p>
                 </div>
               </div>
               <Button variant="ghost" size="sm" onClick={() => setFormData((prev) => ({ ...prev, person: null }))}>
@@ -73,4 +80,4 @@ const Person = ({ formData, setFormData }: PersonProps) => {
   );
 };
 
-export default Person;
+export default PersonView;

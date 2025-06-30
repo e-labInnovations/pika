@@ -1,12 +1,12 @@
 // src/api/upload.service.ts
 import api from './axios';
 
-export type UploadType = 'avatar' | 'attachment';
+export type AttachmentType = 'document' | 'image';
 
 export interface UploadResponse {
   id: string;
   url: string;
-  type: UploadType;
+  type: AttachmentType;
   name: string;
   size: string;
 }

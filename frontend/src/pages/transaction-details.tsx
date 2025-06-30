@@ -1,7 +1,6 @@
-import { transactions } from '@/data/dummy-data';
 import TabsLayout from '@/layouts/tabs';
 import { Card, CardContent } from '@/components/ui/card';
-import { Calendar, Clock, Tag, Wallet, User, FileText, Paperclip, Eye } from 'lucide-react';
+import { Calendar, Clock, Tag, Wallet, User, FileText, Paperclip, Eye, Loader2 } from 'lucide-react';
 import { IconRenderer } from '@/components/icon-renderer';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -11,11 +10,28 @@ import { Button } from '@/components/ui/button';
 import TransactionUtils from '@/lib/transaction-utils';
 import { TagChip } from '@/components/tag-chip';
 import AccountAvatar from '@/components/account-avatar';
+import { transactionService, type Transaction } from '@/services/api/transaction.service';
+import { useEffect, useState } from 'react';
 
 const TransactionDetails = () => {
+  const [isLoading, setIsLoading] = useState(true);
   const { id } = useParams();
   const navigate = useNavigate();
-  const transaction = transactions.find((transaction) => transaction.id === id);
+  const [transaction, setTransaction] = useState<Transaction | null>(null);
+
+  useEffect(() => {
+    if (id) {
+      transactionService
+        .get(id)
+        .then((response) => {
+          setTransaction(response.data);
+          setIsLoading(false);
+        })
+        .catch(() => {
+          setIsLoading(false);
+        });
+    }
+  }, [id]);
 
   const getTransactionType = (type: string) => {
     const transactionType = TransactionUtils.types.find((transactionType) => transactionType.id === type);
@@ -159,7 +175,7 @@ const TransactionDetails = () => {
                   </div>
                   <div className="flex items-center justify-start gap-3">
                     <Avatar className="h-8 w-8">
-                      <AvatarImage src={transaction.person?.avatar} alt={transaction.person?.name} />
+                      <AvatarImage src={transaction.person?.avatar?.url} alt={transaction.person?.name} />
                       <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
                     <div className="flex flex-1 flex-col">
@@ -256,7 +272,13 @@ const TransactionDetails = () => {
         </div>
       )}
 
-      {!transaction && (
+      {isLoading && (
+        <div className="flex h-full items-center justify-center">
+          <Loader2 className="h-4 w-4 animate-spin" />
+        </div>
+      )}
+
+      {!transaction && !isLoading && (
         <div className="flex h-full items-center justify-center">
           <p className="text-slate-500 dark:text-slate-400">Transaction not found</p>
         </div>

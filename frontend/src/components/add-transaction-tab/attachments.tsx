@@ -1,12 +1,13 @@
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Paperclip, Upload, X, File } from 'lucide-react';
-import type { Attachment } from './types';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
+import { uploadService, type UploadResponse } from '@/services/api/upload.service';
+import { toast } from 'sonner';
 
 interface AttachmentsProps {
-  attachments: Attachment[];
-  setAttachments: (attachments: Attachment[] | ((prev: Attachment[]) => Attachment[])) => void;
+  attachments: UploadResponse[];
+  setAttachments: (attachments: UploadResponse[] | ((prev: UploadResponse[]) => UploadResponse[])) => void;
 }
 
 const Attachments = ({ attachments, setAttachments }: AttachmentsProps) => {
@@ -14,21 +15,20 @@ const Attachments = ({ attachments, setAttachments }: AttachmentsProps) => {
     const files = event.target.files;
     if (!files) return;
 
-    Array.from(files).forEach((file) => {
+    for (const file of files) {
       const reader = new FileReader();
-      reader.onload = (e) => {
-        const result = e.target?.result as string;
-        const newAttachment = {
-          id: Math.random().toString(36).substr(2, 9),
-          name: file.name,
-          type: file.type.startsWith('image/') ? ('image' as const) : ('pdf' as const),
-          url: result,
-          size: file.size,
-        };
-        setAttachments((prev) => [...prev, newAttachment]);
+      reader.onload = async () => {
+        const attachmentType = file.type.startsWith('image/') ? 'image' : 'document';
+        try {
+          const newAttachment = await uploadService.uploadAttachment(file, attachmentType);
+          setAttachments((prev) => [...prev, newAttachment.data as UploadResponse]);
+        } catch (error) {
+          console.error('Error uploading attachment:', error);
+          toast.error('Error uploading attachment');
+        }
       };
       reader.readAsDataURL(file);
-    });
+    }
 
     // Reset the input
     event.target.value = '';
@@ -38,12 +38,13 @@ const Attachments = ({ attachments, setAttachments }: AttachmentsProps) => {
     setAttachments((prev) => prev.filter((att) => att.id !== id));
   };
 
-  const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return '0 Bytes';
+  const formatFileSize = (bytes: string) => {
+    const bytesNumber = Number(bytes);
+    if (bytesNumber === 0) return '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    const i = Math.floor(Math.log(bytesNumber) / Math.log(k));
+    return Number.parseFloat((bytesNumber / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
   return (
@@ -117,7 +118,7 @@ const Attachments = ({ attachments, setAttachments }: AttachmentsProps) => {
                           </TooltipTrigger>
                           <TooltipContent>{attachment.name}</TooltipContent>
                         </Tooltip>
-                        {attachment.size > 0 && (
+                        {Number(attachment.size) > 0 && (
                           <p className="text-xs text-slate-500 dark:text-slate-400">
                             {formatFileSize(attachment.size)}
                           </p>
@@ -138,7 +139,7 @@ const Attachments = ({ attachments, setAttachments }: AttachmentsProps) => {
                           </TooltipTrigger>
                           <TooltipContent>{attachment.name}</TooltipContent>
                         </Tooltip>
-                        {attachment.size > 0 && (
+                        {Number(attachment.size) > 0 && (
                           <p className="text-xs text-slate-500 dark:text-slate-400">
                             {formatFileSize(attachment.size)}
                           </p>

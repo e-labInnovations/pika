@@ -2,10 +2,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Tag as TagIcon } from 'lucide-react';
 import type { TransactionFormData } from './types';
-import { useState } from 'react';
-import { tags } from '@/data/dummy-data';
+import { useEffect, useState } from 'react';
 import { TagChip } from '../tag-chip';
 import { IconRenderer } from '../icon-renderer';
+import { tagService, type Tag } from '@/services/api/tags.service';
+import { toast } from 'sonner';
 
 interface TagsProps {
   formData: TransactionFormData;
@@ -15,6 +16,18 @@ interface TagsProps {
 const Tags = ({ formData, setFormData }: TagsProps) => {
   const [tagInput, setTagInput] = useState('');
   const [showTagSuggestions, setShowTagSuggestions] = useState(false);
+  const [tags, setTags] = useState<Tag[]>([]);
+
+  useEffect(() => {
+    tagService
+      .list()
+      .then((response) => {
+        setTags(response.data);
+      })
+      .catch(() => {
+        toast.error('Error fetching tags');
+      });
+  }, []);
 
   const filteredTagSuggestions = tags.filter(
     (tag) => tag.name.toLowerCase().includes(tagInput.toLowerCase()) && !formData.tags.includes(tag.id),

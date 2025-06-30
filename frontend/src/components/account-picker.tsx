@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Check } from 'lucide-react';
-import { accounts, type Account } from '@/data/dummy-data';
 import SearchBar from './search-bar';
 import AccountAvatar from './account-avatar';
+import { accountService, type Account } from '@/services/api/accounts.service';
 
 interface AccountPickerProps {
   isOpen: boolean;
@@ -15,6 +15,13 @@ interface AccountPickerProps {
 
 const AccountPicker = ({ isOpen, onClose, onSelect, selectedAccountId }: AccountPickerProps) => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [accounts, setAccounts] = useState<Account[]>([]);
+
+  useEffect(() => {
+    accountService.list().then((response) => {
+      setAccounts(response.data);
+    });
+  }, []);
 
   const filteredAccounts = accounts.filter(
     (account) =>

@@ -2,21 +2,22 @@ import HeaderRightActions from '@/components/add-transaction-tab/header-right-ac
 import ScanReceipt from '@/components/add-transaction-tab/scan-receipt';
 import TransactionTypeSelector from '@/components/add-transaction-tab/transaction-type-selector';
 import type { TransactionFormData } from '@/components/add-transaction-tab/types';
-import { type AnalysisOutput, transactions, type Transaction } from '@/data/dummy-data';
 import TabsLayout from '@/layouts/tabs';
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import BasicInfo from '@/components/add-transaction-tab/basic-info';
 import CategoryAccount from '@/components/add-transaction-tab/category-account';
-import Person from '@/components/add-transaction-tab/person';
-import type { Attachment } from '@/components/add-transaction-tab/types';
+import PersonView from '@/components/add-transaction-tab/person';
 import Attachments from '@/components/add-transaction-tab/attachments';
 import Tags from '@/components/add-transaction-tab/tags';
 import Note from '@/components/add-transaction-tab/note';
 import { Button } from '@/components/ui/button';
 import { type TransactionType } from '@/lib/transaction-utils';
 import { validateTransactionForm } from '@/components/add-transaction-tab/schema';
+import { transactionService, type Transaction, type TransactionInput } from '@/services/api/transaction.service';
 import { toast } from 'sonner';
+import type { UploadResponse } from '@/services/api/upload.service';
+import type { AnalysisOutput } from '@/data/dummy-data';
 
 const EditTransactionTab = () => {
   const { id } = useParams();
@@ -40,45 +41,33 @@ const EditTransactionTab = () => {
     note: '',
   });
 
-  const [attachments, setAttachments] = useState<Attachment[]>([]);
+  const [attachments, setAttachments] = useState<UploadResponse[]>([]);
 
   // Load transaction data on component mount
   useEffect(() => {
     if (id) {
-      const foundTransaction = transactions.find((t) => t.id === id);
-      if (foundTransaction) {
-        setTransaction(foundTransaction);
-
-        // Convert transaction data to form data
-        setFormData({
-          title: foundTransaction.title,
-          amount: Math.abs(foundTransaction.amount),
-          date: foundTransaction.date,
-          type: foundTransaction.type,
-          category: foundTransaction.category.id,
-          account: foundTransaction.account.id,
-          toAccount: foundTransaction.toAccount?.id || null,
-          person: foundTransaction.person?.id || null,
-          tags: foundTransaction.tags.map((tag) => tag.id),
-          note: foundTransaction.note,
+      transactionService
+        .get(id)
+        .then((response) => {
+          setTransaction(response.data);
+          setFormData({
+            title: response.data.title,
+            amount: response.data.amount,
+            date: response.data.date,
+            type: response.data.type,
+            category: response.data.category.id,
+            account: response.data.account.id,
+            toAccount: response.data.toAccount?.id || null,
+            person: response.data.person?.id || null,
+            tags: response.data.tags.map((tag) => tag.id),
+            note: response.data.note,
+          });
+          setAttachments(response.data.attachments);
+        })
+        .catch(() => {
+          toast.error('Transaction not found');
+          navigate('/transactions');
         });
-
-        // Convert attachments
-        if (foundTransaction.attachments) {
-          setAttachments(
-            foundTransaction.attachments.map((att) => ({
-              id: att.id,
-              name: att.name,
-              url: att.url,
-              type: att.type,
-              size: 0, // Default size for existing attachments
-            })),
-          );
-        }
-      } else {
-        toast.error('Transaction not found');
-        navigate('/transactions');
-      }
     }
   }, [id, navigate]);
 
@@ -119,32 +108,43 @@ const EditTransactionTab = () => {
     setIsSubmitting(true);
     setFormErrors({});
 
-    try {
-      // Validate form data
-      const validation = validateTransactionForm(formData);
+    // Validate form data
+    const validation = validateTransactionForm(formData);
 
-      if (!validation.success) {
-        setFormErrors(validation.errors || {});
-        toast.error('Please fix the form errors');
-        return;
-      }
-
-      // TODO: Submit to API
-      console.log('Validated form data:', validation.data);
-
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      toast.success('Transaction updated successfully!');
-
-      // Navigate back to transaction details
-      navigate(`/transactions/${id}`);
-    } catch (error) {
-      console.error('Error updating transaction:', error);
-      toast.error('Failed to update transaction');
-    } finally {
+    if (!validation.success) {
+      setFormErrors(validation.errors || {});
+      toast.error('Please fix the form errors');
       setIsSubmitting(false);
+      return;
     }
+
+    // Prepare transaction input
+    const transactionInput: TransactionInput = {
+      title: formData.title,
+      amount: formData.amount,
+      date: formData.date,
+      type: formData.type,
+      categoryId: formData.category,
+      accountId: formData.account,
+      personId: formData.person || null,
+      toAccountId: formData.toAccount || null,
+      note: formData.note,
+      tags: formData.tags,
+      attachments: attachments.map((attachment) => attachment.id),
+    };
+
+    transactionService
+      .update(id || '', transactionInput)
+      .then(() => {
+        toast.success('Transaction updated successfully!');
+        navigate(`/transactions/${id}`);
+      })
+      .catch(() => {
+        toast.error('Failed to update transaction');
+      })
+      .finally(() => {
+        setIsSubmitting(false);
+      });
   };
 
   if (!transaction) {
@@ -175,7 +175,7 @@ const EditTransactionTab = () => {
       <TransactionTypeSelector value={formData.type} onChange={handleTypeChange} />
       <BasicInfo formData={formData} setFormData={setFormData} />
       <CategoryAccount formData={formData} setFormData={setFormData} />
-      {formData.type !== 'transfer' && <Person formData={formData} setFormData={setFormData} />}
+      {formData.type !== 'transfer' && <PersonView formData={formData} setFormData={setFormData} />}
       <Attachments attachments={attachments} setAttachments={setAttachments} />
       <Tags formData={formData} setFormData={setFormData} />
       <Note formData={formData} setFormData={setFormData} />

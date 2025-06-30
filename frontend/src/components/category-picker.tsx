@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Check } from 'lucide-react';
-import { categories, type Category } from '@/data/dummy-data';
 import SearchBar from './search-bar';
 import type { TransactionType } from '@/lib/transaction-utils';
 import { IconRenderer } from './icon-renderer';
+import { categoryService, type Category } from '@/services/api/categories.service';
 
 interface CategoryPickerProps {
   isOpen: boolean;
@@ -17,7 +17,13 @@ interface CategoryPickerProps {
 
 const CategoryPicker = ({ isOpen, onClose, onSelect, transactionType, selectedCategoryId }: CategoryPickerProps) => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [categories, setCategories] = useState<Category[]>([]);
 
+  useEffect(() => {
+    categoryService.list().then((response) => {
+      setCategories(response.data);
+    });
+  }, []);
   const filteredCategories = categories.filter((category) => category.type === transactionType);
 
   const searchFilteredCategories = filteredCategories.filter((category) => {

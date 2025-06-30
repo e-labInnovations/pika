@@ -3,11 +3,12 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Pen, Wallet, X } from 'lucide-react';
 import type { TransactionFormData } from './types';
-import { useState } from 'react';
-import { accounts, categories } from '@/data/dummy-data';
+import { useEffect, useState } from 'react';
 import AccountPicker from '../account-picker';
 import CategoryPicker from '../category-picker';
 import { IconRenderer } from '../icon-renderer';
+import { accountService, type Account } from '@/services/api/accounts.service';
+import { categoryService, type Category } from '@/services/api/categories.service';
 
 interface CategoryAccountProps {
   formData: TransactionFormData;
@@ -18,20 +19,35 @@ const CategoryAccount = ({ formData, setFormData }: CategoryAccountProps) => {
   const [showCategoryPicker, setShowCategoryPicker] = useState(false);
   const [showAccountPicker, setShowAccountPicker] = useState(false);
   const [showToAccountPicker, setShowToAccountPicker] = useState(false);
+  const [category, setCategory] = useState<Category | null>(null);
+  const [account, setAccount] = useState<Account | null>(null);
+  const [toAccount, setToAccount] = useState<Account | null>(null);
 
-  const getCategory = (id: string) => {
-    for (const category of categories) {
-      if (category.children) {
-        const childCategory = category.children.find((child) => child.id === id);
-        if (childCategory) return childCategory;
-      }
+  useEffect(() => {
+    if (formData.category) {
+      categoryService.get(formData.category).then((response) => {
+        setCategory(response.data);
+      });
+    } else {
+      setCategory(null);
     }
-    return categories.find((category) => category.id === id);
-  };
 
-  const getAccount = (id: string) => {
-    return accounts.find((account) => account.id === id);
-  };
+    if (formData.account) {
+      accountService.get(formData.account).then((response) => {
+        setAccount(response.data);
+      });
+    } else {
+      setAccount(null);
+    }
+
+    if (formData.toAccount) {
+      accountService.get(formData.toAccount).then((response) => {
+        setToAccount(response.data);
+      });
+    } else {
+      setToAccount(null);
+    }
+  }, [formData.category, formData.account, formData.toAccount]);
 
   return (
     <>
@@ -47,16 +63,10 @@ const CategoryAccount = ({ formData, setFormData }: CategoryAccountProps) => {
             <Label>Category *</Label>
             <div className="flex items-center justify-between rounded-lg border border-emerald-200 bg-emerald-50 p-3 dark:border-emerald-800 dark:bg-emerald-900/20">
               <div className="flex items-center space-x-3">
-                <IconRenderer
-                  iconName={getCategory(formData.category)?.icon}
-                  bgColor={getCategory(formData.category)?.bgColor}
-                  color={getCategory(formData.category)?.color}
-                />
+                <IconRenderer iconName={category?.icon} bgColor={category?.bgColor} color={category?.color} />
                 <div>
-                  <span className="font-medium text-slate-900 dark:text-white">
-                    {getCategory(formData.category)?.name}
-                  </span>
-                  <p className="text-sm text-slate-500">{getCategory(formData.category)?.description}</p>
+                  <span className="font-medium text-slate-900 dark:text-white">{category?.name}</span>
+                  <p className="text-sm text-slate-500">{category?.description}</p>
                 </div>
               </div>
               <Button variant="ghost" size="sm" onClick={() => setShowCategoryPicker(true)}>
@@ -67,19 +77,13 @@ const CategoryAccount = ({ formData, setFormData }: CategoryAccountProps) => {
 
           <div className="flex flex-col gap-2">
             <Label>Account</Label>
-            {formData.account ? (
+            {account ? (
               <div className="flex items-center justify-between rounded-lg border border-blue-200 bg-blue-50 p-3 dark:border-blue-800 dark:bg-blue-900/20">
                 <div className="flex items-center space-x-3">
-                  <IconRenderer
-                    iconName={getAccount(formData.account)?.icon}
-                    bgColor={getAccount(formData.account)?.bgColor}
-                    color={getAccount(formData.account)?.color}
-                  />
+                  <IconRenderer iconName={account?.icon} bgColor={account?.bgColor} color={account?.color} />
                   <div>
-                    <span className="font-medium text-slate-900 dark:text-white">
-                      {getAccount(formData.account)?.name}
-                    </span>
-                    <p className="text-sm text-slate-500">${getAccount(formData.account)?.balance?.toLocaleString()}</p>
+                    <span className="font-medium text-slate-900 dark:text-white">{account?.name}</span>
+                    <p className="text-sm text-slate-500">${account?.balance?.toLocaleString()}</p>
                   </div>
                 </div>
                 <Button variant="ghost" size="sm" onClick={() => setFormData((prev) => ({ ...prev, account: '' }))}>
@@ -103,18 +107,10 @@ const CategoryAccount = ({ formData, setFormData }: CategoryAccountProps) => {
               {formData.toAccount ? (
                 <div className="flex items-center justify-between rounded-lg border border-purple-200 bg-purple-50 p-3 dark:border-purple-800 dark:bg-purple-900/20">
                   <div className="flex items-center space-x-3">
-                    <IconRenderer
-                      iconName={getAccount(formData.toAccount)?.icon}
-                      bgColor={getAccount(formData.toAccount)?.bgColor}
-                      color={getAccount(formData.toAccount)?.color}
-                    />
+                    <IconRenderer iconName={toAccount?.icon} bgColor={toAccount?.bgColor} color={toAccount?.color} />
                     <div>
-                      <span className="font-medium text-slate-900 dark:text-white">
-                        {getAccount(formData.toAccount)?.name}
-                      </span>
-                      <p className="text-sm text-slate-500">
-                        ${getAccount(formData.toAccount)?.balance?.toLocaleString()}
-                      </p>
+                      <span className="font-medium text-slate-900 dark:text-white">{toAccount?.name}</span>
+                      <p className="text-sm text-slate-500">${toAccount?.balance?.toLocaleString()}</p>
                     </div>
                   </div>
                   <Button

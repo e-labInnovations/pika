@@ -1,24 +1,14 @@
-import { TransactionsList } from "@/components/transactions-list";
-import TabsLayout from "@/layouts/tabs";
-import { useEffect, useState } from "react";
-import {
-  transactions as transactionsData,
-  type Transaction,
-} from "@/data/dummy-data";
-import TransactionsFilter from "@/components/transactions-tab/filter";
-import {
-  defaultFilterValues,
-  type Filter,
-  type FilterTab,
-} from "@/components/transactions-tab/filter/types";
-import TransactionsSort from "@/components/transactions-tab/sort";
-import {
-  defaultSort,
-  type Sort,
-} from "@/components/transactions-tab/sort/types";
-import FilterSortBar from "@/components/transactions-tab/filter-sort-bar";
-import SearchBar from "@/components/search-bar";
-import HeaderRightActions from "@/components/transactions-tab/header-right-actions";
+import { TransactionsList } from '@/components/transactions-list';
+import TabsLayout from '@/layouts/tabs';
+import { useEffect, useState } from 'react';
+import TransactionsFilter from '@/components/transactions-tab/filter';
+import { defaultFilterValues, type Filter, type FilterTab } from '@/components/transactions-tab/filter/types';
+import TransactionsSort from '@/components/transactions-tab/sort';
+import { defaultSort, type Sort } from '@/components/transactions-tab/sort/types';
+import FilterSortBar from '@/components/transactions-tab/filter-sort-bar';
+import SearchBar from '@/components/search-bar';
+import HeaderRightActions from '@/components/transactions-tab/header-right-actions';
+import { transactionService, type Transaction } from '@/services/api/transaction.service';
 
 const TransactionsTab = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -27,21 +17,21 @@ const TransactionsTab = () => {
   const [showSortModal, setShowSortModal] = useState(false);
   const [filters, setFilters] = useState<Filter>(defaultFilterValues);
   const [sort, setSort] = useState<Sort>(defaultSort);
-  const [activeFilterTab, setActiveFilterTab] = useState<FilterTab | undefined>(
-    undefined
-  );
-  const [searchTerm, setSearchTerm] = useState("");
+  const [activeFilterTab, setActiveFilterTab] = useState<FilterTab | undefined>(undefined);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    return () => setTransactions(transactionsData);
+    transactionService.list().then((response) => {
+      setTransactions(response.data);
+    });
   }, []);
 
   useEffect(() => {
-    console.log("🚀 ~ useEffect ~ filters:", filters);
+    console.log('🚀 ~ useEffect ~ filters:', filters);
   }, [filters]);
 
   useEffect(() => {
-    console.log("🚀 ~ useEffect ~ sort:", sort);
+    console.log('🚀 ~ useEffect ~ sort:', sort);
   }, [sort]);
 
   const getFilterCount = () => {
@@ -52,27 +42,23 @@ const TransactionsTab = () => {
   };
 
   const clearSearchAndFilters = () => {
-    setSearchTerm("");
+    setSearchTerm('');
     setFilters(defaultFilterValues);
     setSort(defaultSort);
     setShowTransactionSearch(false);
   };
 
-  const handleFilterClick = (
-    action: "open" | "remove",
-    filterType: FilterTab,
-    value: string
-  ) => {
-    if (action === "open") {
+  const handleFilterClick = (action: 'open' | 'remove', filterType: FilterTab, value: string) => {
+    if (action === 'open') {
       setActiveFilterTab(filterType);
       setShowFilterModal(true);
-    } else if (action === "remove") {
+    } else if (action === 'remove') {
       if (
-        filterType === "types" ||
-        filterType === "categories" ||
-        filterType === "tags" ||
-        filterType === "people" ||
-        filterType === "accounts"
+        filterType === 'types' ||
+        filterType === 'categories' ||
+        filterType === 'tags' ||
+        filterType === 'people' ||
+        filterType === 'accounts'
       ) {
         setFilters((prev) => ({
           ...prev,
@@ -85,14 +71,14 @@ const TransactionsTab = () => {
   return (
     <TabsLayout
       header={{
-        title: "Transactions",
-        description: "Your financial transactions",
+        title: 'Transactions',
+        description: 'Your financial transactions',
         rightActions: (
           <HeaderRightActions
             showTransactionSearch={showTransactionSearch}
             setShowTransactionSearch={setShowTransactionSearch}
             showFilterModal={showFilterModal}
-            handleFilterOpen={() => handleFilterClick("open", "types", "")}
+            handleFilterOpen={() => handleFilterClick('open', 'types', '')}
             showSortModal={showSortModal}
             setShowSortModal={setShowSortModal}
             filterCount={getFilterCount()}
@@ -133,12 +119,7 @@ const TransactionsTab = () => {
         defaultTab={activeFilterTab}
       />
 
-      <TransactionsSort
-        open={showSortModal}
-        setOpen={setShowSortModal}
-        sort={sort}
-        setSort={setSort}
-      />
+      <TransactionsSort open={showSortModal} setOpen={setShowSortModal} sort={sort} setSort={setSort} />
     </TabsLayout>
   );
 };

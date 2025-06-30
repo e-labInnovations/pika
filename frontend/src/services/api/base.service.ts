@@ -22,11 +22,11 @@ export class BaseService<T> {
     return api.get<T>(`${this.endpoint}/${id}`);
   }
 
-  create(data: Partial<T>): Promise<AxiosResponse<T>> {
+  create(data: unknown): Promise<AxiosResponse<T>> {
     return api.post<T>(this.endpoint, data);
   }
 
-  update(id: number | string, data: Partial<T>): Promise<AxiosResponse<T>> {
+  update(id: number | string, data: unknown): Promise<AxiosResponse<T>> {
     return api.put<T>(`${this.endpoint}/${id}`, data);
   }
 

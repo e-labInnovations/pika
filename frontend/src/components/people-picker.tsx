@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Check } from 'lucide-react';
-import { people, type Person } from '@/data/dummy-data';
 import SearchBar from './search-bar';
+import { personService, type Person } from '@/services/api/people.service';
 
 interface PeoplePickerProps {
   isOpen: boolean;
@@ -15,7 +15,13 @@ interface PeoplePickerProps {
 
 const PeoplePicker = ({ isOpen, onClose, onSelect, selectedPersonId }: PeoplePickerProps) => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [people, setPeople] = useState<Person[]>([]);
 
+  useEffect(() => {
+    personService.list().then((response) => {
+      setPeople(response.data);
+    });
+  }, []);
   const filteredPeople = people.filter(
     (person) =>
       person.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -57,7 +63,7 @@ const PeoplePicker = ({ isOpen, onClose, onSelect, selectedPersonId }: PeoplePic
                 onClick={() => handleSelect(person)}
               >
                 <Avatar className="h-10 w-10">
-                  <AvatarImage src={person.avatar || '/placeholder.svg'} alt={person.name} />
+                  <AvatarImage src={person.avatar.url} alt={person.name} />
                   <AvatarFallback className="bg-emerald-500 font-semibold text-white">
                     {person.name
                       .split(' ')
