@@ -7,9 +7,14 @@ import { Save } from 'lucide-react';
 import AvatarUpload from '@/components/people-tab/avatar-upload';
 import PersonFormFields from '@/components/people-tab/person-form-fields';
 import PersonPreview from '@/components/people-tab/person-preview';
+import { personService, type PersonInput } from '@/services/api/people.service';
+import { uploadService } from '@/services/api/upload.service';
+import { toast } from 'sonner';
 
 const AddPerson = () => {
   const navigate = useNavigate();
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -19,11 +24,35 @@ const AddPerson = () => {
     avatar: '',
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement person creation logic
-    console.log('Creating person:', formData);
-    navigate('/people');
+    const personInput: PersonInput = {
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      avatarId: '',
+      description: formData.description,
+    };
+
+    if (avatarFile) {
+      const uploadResponse = await uploadService.uploadAvatar(avatarFile, 'person');
+      personInput.avatarId = uploadResponse.data.id;
+    }
+
+    personService
+      .create(personInput)
+      .then(() => {
+        toast.success('Person created successfully');
+        navigate('/people');
+      })
+      .catch((error) => {
+        toast.error(error.response.data.message);
+      });
+  };
+
+  const handleAvatarChange = (avatarFile: File | null, avatarUrl: string | null) => {
+    setAvatarFile(avatarFile);
+    setAvatarUrl(avatarUrl);
   };
 
   return (
@@ -41,11 +70,7 @@ const AddPerson = () => {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
-              <AvatarUpload
-                avatar={formData.avatar}
-                name={formData.name}
-                onAvatarChange={(avatar) => setFormData((prev) => ({ ...prev, avatar }))}
-              />
+              <AvatarUpload avatar={avatarUrl || ''} name={formData.name} onAvatarChange={handleAvatarChange} />
 
               <PersonFormFields
                 name={formData.name}
@@ -63,7 +88,7 @@ const AddPerson = () => {
                 email={formData.email}
                 phone={formData.phone}
                 description={formData.description}
-                avatar={formData.avatar}
+                avatar={avatarUrl || ''}
               />
             </form>
           </CardContent>

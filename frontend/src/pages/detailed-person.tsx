@@ -1,4 +1,3 @@
-import { people, transactions } from '@/data/dummy-data';
 import TabsLayout from '@/layouts/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
@@ -6,18 +5,39 @@ import { Button } from '@/components/ui/button';
 import { Plus, DollarSign, Mail, Phone } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import DetailedPersonActions from '@/components/people-tab/detailed-person-actions';
-import { CategoryTransactionIcon } from '@/components/category-transaction-icon';
+// import { CategoryTransactionIcon } from '@/components/category-transaction-icon';
 import transactionUtils from '@/lib/transaction-utils';
 import { currencyUtils } from '@/lib/currency-utils';
 import { useAuth } from '@/hooks/use-auth';
+import { useState, useEffect } from 'react';
+import { toast } from 'sonner';
+import { personService, type Person } from '@/services/api/people.service';
 
 const DetailedPerson = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [person, setPerson] = useState<Person | null>(null);
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  const person = people.find((person) => person.id === id);
-  const personTransactions = transactions.filter((t) => t.person?.id === id);
+  useEffect(() => {
+    setIsLoading(true);
+    personService
+      .get(id as string)
+      .then((response) => {
+        setPerson(response.data);
+      })
+      .catch((error) => {
+        toast.error(error.response.data.message);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, [id]);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   const handleEdit = () => {
     navigate(`/people/${id}/edit`);
@@ -29,7 +49,15 @@ const DetailedPerson = () => {
 
   const handleDelete = () => {
     if (person && confirm(`Are you sure you want to delete "${person.name}"?`)) {
-      // onDelete(person.id)
+      personService
+        .delete(id as string)
+        .then(() => {
+          toast.success(`${person.name} deleted successfully`);
+          navigate('/people');
+        })
+        .catch((error) => {
+          toast.error(error.response.data.message);
+        });
     }
   };
 
@@ -51,7 +79,7 @@ const DetailedPerson = () => {
             <CardContent>
               <div className="flex items-center gap-4">
                 <Avatar className="h-20 w-20">
-                  <AvatarImage src={person?.avatar} alt={person?.name || 'Person'} />
+                  <AvatarImage src={person?.avatar.url || undefined} alt={person?.name || 'Person'} />
                   <AvatarFallback className="bg-emerald-500 text-xl font-semibold text-white">
                     {person.name
                       .split(' ')
@@ -66,7 +94,7 @@ const DetailedPerson = () => {
                     <span className={`text-lg font-semibold ${transactionUtils.getBalanceColor(person.balance)}`}>
                       {person.balance === 0
                         ? 'All settled up'
-                        : currencyUtils.formatAmount(Math.abs(person.balance), user?.default_currency)}
+                        : currencyUtils.formatAmount(Math.abs(person.balance), user?.settings?.currency)}
                     </span>
                     {person.balance !== 0 && (
                       <p className="text-sm text-slate-500 dark:text-slate-400">
@@ -124,18 +152,18 @@ const DetailedPerson = () => {
               <CardContent className="gap-4">
                 <div className="grid grid-cols-3 gap-4 text-center">
                   <div>
-                    <p className="text-2xl font-bold text-slate-900 dark:text-white">{person.transactionCount}</p>
+                    <p className="text-2xl font-bold text-slate-900 dark:text-white">{person.totalTransactions}</p>
                     <p className="text-xs text-slate-500 dark:text-slate-400">Transactions</p>
                   </div>
                   <div>
                     <p className="text-2xl font-bold text-red-500 dark:text-red-400">
-                      {currencyUtils.formatAmount(person.totalSpent || 0, user?.default_currency)}
+                      {currencyUtils.formatAmount(person.balance || 0, user?.settings?.currency)}
                     </p>
                     <p className="text-xs text-slate-500 dark:text-slate-400">Total Spent</p>
                   </div>
                   <div>
                     <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
-                      {currencyUtils.formatAmount(person.totalReceived || 0, user?.default_currency)}
+                      {currencyUtils.formatAmount(person.balance || 0, user?.settings?.currency)}
                     </p>
                     <p className="text-xs text-slate-500 dark:text-slate-400">Total Received</p>
                   </div>
@@ -154,7 +182,7 @@ const DetailedPerson = () => {
             </CardHeader>
             <CardContent className="gap-4">
               <div className="space-y-3">
-                {personTransactions.slice(0, 5).map((transaction) => (
+                {/* {personTransactions.slice(0, 5).map((transaction) => (
                   <div
                     onClick={() => navigate(`/transactions/${transaction.id}`)}
                     key={transaction.id}
@@ -175,10 +203,10 @@ const DetailedPerson = () => {
                       </div>
                     </div>
                     <span className={`font-semibold ${transactionUtils.getAmountColor(transaction.type)}`}>
-                      {currencyUtils.formatAmount(transaction.amount, user?.default_currency)}
+                      {currencyUtils.formatAmount(transaction.amount, user?.settings?.currency)}
                     </span>
                   </div>
-                ))}
+                ))} */}
               </div>
             </CardContent>
           </Card>

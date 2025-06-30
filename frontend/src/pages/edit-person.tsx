@@ -4,10 +4,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import TabsLayout from '@/layouts/tabs';
 import { Save, Trash2 } from 'lucide-react';
-import { people, type Person } from '@/data/dummy-data';
 import AvatarUpload from '@/components/people-tab/avatar-upload';
 import PersonFormFields from '@/components/people-tab/person-form-fields';
 import PersonPreview from '@/components/people-tab/person-preview';
+import { personService, type Person, type PersonInput } from '@/services/api/people.service';
+import { uploadService } from '@/services/api/upload.service';
+import { toast } from 'sonner';
 
 const EditPerson = () => {
   const { id } = useParams();
@@ -22,38 +24,73 @@ const EditPerson = () => {
   });
 
   const [person, setPerson] = useState<Person | null>(null);
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   useEffect(() => {
     if (id) {
-      // Find the person in the people array
-      const foundPerson = people.find((person) => person.id === id);
-      if (foundPerson) {
-        setPerson(foundPerson);
-        setFormData({
-          name: foundPerson.name,
-          email: foundPerson.email,
-          phone: foundPerson.phone,
-          description: foundPerson.description,
-          avatar: foundPerson.avatar || '',
+      personService
+        .get(id)
+        .then((response) => {
+          setPerson(response.data);
+          setFormData({
+            name: response.data.name,
+            email: response.data.email,
+            phone: response.data.phone,
+            description: response.data.description,
+            avatar: '',
+          });
+          setAvatarUrl(response.data.avatar.url);
+          setAvatarFile(null);
+        })
+        .catch((error) => {
+          toast.error(error.response.data.message);
         });
-      } else {
-        navigate('/people');
-      }
     }
   }, [id, navigate]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleAvatarChange = (avatarFile: File | null, avatarUrl: string | null) => {
+    setAvatarFile(avatarFile);
+    setAvatarUrl(avatarUrl);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement person update logic
-    console.log('Updating person:', { ...formData, id });
-    navigate('/people');
+    const personInput: PersonInput = {
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      avatarId: person?.avatar.id || '',
+      description: formData.description,
+    };
+
+    if (avatarFile) {
+      const uploadResponse = await uploadService.uploadAvatar(avatarFile, 'person');
+      personInput.avatarId = uploadResponse.data.id;
+    }
+
+    personService
+      .update(id as string, personInput)
+      .then(() => {
+        toast.success('Person updated successfully');
+        navigate('/people');
+      })
+      .catch((error) => {
+        toast.error(error.response.data.message);
+      });
   };
 
   const handleDelete = () => {
     if (confirm(`Are you sure you want to delete "${formData.name}"?`)) {
-      // TODO: Implement person deletion logic
-      console.log('Deleting person:', id);
-      navigate('/people');
+      personService
+        .delete(id as string)
+        .then(() => {
+          toast.success('Person deleted successfully');
+          navigate('/people');
+        })
+        .catch((error) => {
+          toast.error(error.response.data.message);
+        });
     }
   };
 
@@ -88,11 +125,7 @@ const EditPerson = () => {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
-              <AvatarUpload
-                avatar={formData.avatar}
-                name={formData.name}
-                onAvatarChange={(avatar) => setFormData((prev) => ({ ...prev, avatar }))}
-              />
+              <AvatarUpload avatar={avatarUrl || ''} name={formData.name} onAvatarChange={handleAvatarChange} />
 
               <PersonFormFields
                 name={formData.name}
@@ -110,7 +143,7 @@ const EditPerson = () => {
                 email={formData.email}
                 phone={formData.phone}
                 description={formData.description}
-                avatar={formData.avatar}
+                avatar={avatarUrl || ''}
               />
             </form>
           </CardContent>

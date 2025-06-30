@@ -1,10 +1,11 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Calendar } from 'lucide-react';
-import type { Person } from '@/data/dummy-data';
+import type { Person } from '@/services/api/people.service';
 import { useNavigate } from 'react-router-dom';
 import { currencyUtils } from '@/lib/currency-utils';
 import { useAuth } from '@/hooks/use-auth';
+import transactionUtils from '@/lib/transaction-utils';
 
 interface PeopleListProps {
   people: Person[];
@@ -45,7 +46,7 @@ export function PeopleList({ people, searchTerm }: PeopleListProps) {
               <div className="flex items-center justify-between">
                 <div className="flex flex-1 items-center space-x-3">
                   <Avatar className="h-12 w-12">
-                    <AvatarImage src={person.avatar || '/placeholder.svg'} alt={person.name} />
+                    <AvatarImage src={person.avatar.url || '/placeholder.svg'} alt={person.name} />
                     <AvatarFallback className="bg-emerald-500 font-semibold text-white">
                       {person.name
                         .split(' ')
@@ -60,7 +61,7 @@ export function PeopleList({ people, searchTerm }: PeopleListProps) {
                         <span className={`font-semibold ${getBalanceColor(person.balance)}`}>
                           {person.balance === 0
                             ? 'Even'
-                            : currencyUtils.formatAmount(Math.abs(person.balance), user?.default_currency)}
+                            : currencyUtils.formatAmount(Math.abs(person.balance), user?.settings?.currency)}
                         </span>
                         {person.balance !== 0 && (
                           <p className="text-xs text-slate-500 dark:text-slate-400">
@@ -73,10 +74,11 @@ export function PeopleList({ people, searchTerm }: PeopleListProps) {
                     <div className="mt-1 flex items-center space-x-4">
                       <span className="flex items-center text-xs text-slate-500 dark:text-slate-400">
                         <Calendar className="mr-1 h-3 w-3" />
-                        Last: {person.lastTransaction}
+                        Last:{' '}
+                        {person.lastTransactionAt ? transactionUtils.formatDateTime(person.lastTransactionAt) : 'N/A'}
                       </span>
                       <span className="text-xs text-slate-500 dark:text-slate-400">
-                        {person.transactionCount} transactions
+                        {person.totalTransactions} transactions
                       </span>
                     </div>
                   </div>

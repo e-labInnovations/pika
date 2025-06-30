@@ -1,13 +1,35 @@
 import { PeopleList } from '@/components/people-list';
 import HeaderRightActions from '@/components/people-tab/header-right-actions';
 import SearchBar from '@/components/search-bar';
-import { people as peopleData } from '@/data/dummy-data';
 import TabsLayout from '@/layouts/tabs';
-import { useState } from 'react';
+import { personService, type Person } from '@/services/api/people.service';
+import { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 
 const PeopleTab = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [people, setPeople] = useState<Person[]>([]);
   const [showPeopleSearch, setShowPeopleSearch] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+
+  useEffect(() => {
+    setIsLoading(true);
+    personService
+      .list()
+      .then((response) => {
+        setPeople(response.data);
+      })
+      .catch((error) => {
+        toast.error(error.response.data.message);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, []);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <TabsLayout
@@ -28,7 +50,7 @@ const PeopleTab = () => {
         />
       )}
 
-      <PeopleList people={peopleData} searchTerm={searchTerm} />
+      <PeopleList people={people} searchTerm={searchTerm} />
     </TabsLayout>
   );
 };

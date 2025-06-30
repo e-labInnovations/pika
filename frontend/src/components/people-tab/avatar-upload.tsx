@@ -7,7 +7,7 @@ import { Camera, X } from 'lucide-react';
 interface AvatarUploadProps {
   avatar: string;
   name: string;
-  onAvatarChange: (avatar: string) => void;
+  onAvatarChange: (avatarFile: File | null, avatarUrl: string | null) => void;
 }
 
 const AvatarUpload = ({ avatar, name, onAvatarChange }: AvatarUploadProps) => {
@@ -16,14 +16,14 @@ const AvatarUpload = ({ avatar, name, onAvatarChange }: AvatarUploadProps) => {
     if (file) {
       const reader = new FileReader();
       reader.onload = (event) => {
-        onAvatarChange(event.target?.result as string);
+        onAvatarChange(file, event.target?.result as string);
       };
       reader.readAsDataURL(file);
     }
   };
 
   const handleRemoveAvatar = () => {
-    onAvatarChange('');
+    onAvatarChange(null, null);
   };
 
   return (
