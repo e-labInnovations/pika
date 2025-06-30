@@ -59,6 +59,7 @@ class Pika_Categories_Manager extends Pika_Base_Manager {
       'isSystem' => $category->user_id === "0",
       'isParent' => $category->parent_id === null,
       'type' => $category->type,
+      'parentId' => $category->parent_id,
       'children' => [],
     ];
   }

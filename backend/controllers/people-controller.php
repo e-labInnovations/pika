@@ -85,7 +85,7 @@ class Pika_People_Controller extends Pika_Base_Controller {
         $name = sanitize_text_field($params['name'] ?? "");
         $email = sanitize_email($params['email'] ?? "");
         $phone = sanitize_text_field($params['phone'] ?? "");
-        $avatar_id = $params['avatar_id'] ?? null;
+        $avatar_id = $params['avatarId'] ?? null;
         $description = sanitize_text_field($params['description'] ?? "");
         
         if (is_null($name) || empty($name)) {
@@ -144,8 +144,8 @@ class Pika_People_Controller extends Pika_Base_Controller {
             $format['phone'] = '%s';
         }
 
-        if(isset($params['avatar_id'])) {
-            $data['avatar_id'] = $params['avatar_id'];
+        if(isset($params['avatarId'])) {
+            $data['avatar_id'] = $params['avatarId'];
             $format['avatar_id'] = '%d';
 
             if (!$this->people_manager->is_valid_avatar_id($data['avatar_id'])) {

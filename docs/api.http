@@ -84,7 +84,7 @@ Content-Type: application/json
 {
   "name": "Test Tag 2",
   "color": "#000000",
-  "bg_color": "#ffffff",
+  "bgColor": "#ffffff",
   "icon": "tag",
   "description": "Test description"
 }
@@ -105,7 +105,7 @@ Content-Type: application/json
 {
   "name": "Test Tag 2 Updated 1",
   "color": "#000000",
-  "bg_color": "#ffffff"
+  "bgColor": "#ffffff"
 }
 
 ###
@@ -131,11 +131,17 @@ Content-Type: application/json
   "name": "Test child Category 12",
   "icon": "tag",
   "color": "#000000",
-  "bg_color": "#ffffff",
+  "bgColor": "#ffffff",
   "type": "expense",
   "description": "Test child category description",
-  "parent_id": 61
+  "parentId": 61
 }
+
+###
+
+# Get a category by id
+GET {{base_url}}/wp-json/pika/v1/categories/1
+Authorization: Basic {{username}}:{{password}}
 
 ###
 
@@ -157,17 +163,13 @@ Authorization: Basic {{username}}:{{password}}
 
 ###
 
-# Upload a file - person avatar
+# Upload a file - account avatar
 POST {{base_url}}/wp-json/pika/v1/upload/avatar
 Authorization: Basic {{username}}:{{password}}
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
 
 ------WebKitFormBoundary
-Content-Disposition: form-data; name="type"
-
-avatar
-------WebKitFormBoundary
-Content-Disposition: form-data; name="entity_type"
+Content-Disposition: form-data; name="entityType"
 
 account
 ------WebKitFormBoundary
@@ -179,21 +181,39 @@ Content-Type: image/png
 
 ###
 
-# Upload a file - transaction attachment
+# Upload a file - transaction attachment - image
 POST {{base_url}}/wp-json/pika/v1/upload/attachment
 Authorization: Basic {{username}}:{{password}}
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
 
 ------WebKitFormBoundary
-Content-Disposition: form-data; name="type"
-
-attachment
-------WebKitFormBoundary
-Content-Disposition: form-data; name="entity_type"
+Content-Disposition: form-data; name="entityType"
 
 transaction
 ------WebKitFormBoundary
-Content-Disposition: form-data; name="attachment_type"
+Content-Disposition: form-data; name="attachmentType"
+
+image
+------WebKitFormBoundary
+Content-Disposition: form-data; name="file"; filename="image01.png"
+Content-Type: image/png
+
+< docs/images/avatar01.png
+------WebKitFormBoundary--
+
+###
+
+# Upload a file - transaction attachment - pdf
+POST {{base_url}}/wp-json/pika/v1/upload/attachment
+Authorization: Basic {{username}}:{{password}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
+
+------WebKitFormBoundary
+Content-Disposition: form-data; name="entityType"
+
+transaction
+------WebKitFormBoundary
+Content-Disposition: form-data; name="attachmentType"
 
 document
 ------WebKitFormBoundary
@@ -220,7 +240,7 @@ Content-Type: application/json
   "name": "Test Person 1",
   "email": "testperson1@example.com",
   "phone": "1234567890",
-  "avatar_id": 1
+  "avatarId": "4"
 }
 
 ###
@@ -263,7 +283,7 @@ Content-Type: application/json
 {
   "name": "Test Account 1",
   "description": "Test account description",
-  "avatar_id": 14
+  "avatarId": 10
 }
 
 ###
@@ -276,7 +296,7 @@ Content-Type: application/json
 {
   "name": "Test Account",
   "description": "Test account description",
-  "bg_color": "#000000",
+  "bgColor": "#000000",
   "color": "#ffffff",
   "icon": "wallet"
 }
@@ -298,7 +318,7 @@ Content-Type: application/json
   "name": "Test Account 3 Updated 1",
   "description": "Test account description updated",
   "icon": "wallet",
-  "avatar_id": 14
+  "avatarId": 14
 }
 
 ###
@@ -325,9 +345,9 @@ Content-Type: application/json
   "amount": 101,
   "date": "2025-01-01",
   "type": "income",
-  "category_id": 50,
-  "account_id": 1,
-  "person_id": 1,
+  "categoryId": 50,
+  "accountId": 1,
+  "personId": 1,
   "tags": [2],
   "attachments": [13]
 }

@@ -95,10 +95,10 @@ class Pika_Transactions_Controller extends Pika_Base_Controller {
         $amount = sanitize_text_field((float)$params['amount']??0);
         $date = $this->transactions_manager->sanitize_iso_datetime($params['date']??'');
         $type = $this->transactions_manager->sanitize_type($params['type']??'');
-        $category_id = sanitize_text_field($params['category_id']??'');
-        $account_id = sanitize_text_field($params['account_id']??'');
-        $person_id = sanitize_text_field($params['person_id']??'');
-        $to_account_id = sanitize_text_field($params['to_account_id']??'');
+        $category_id = sanitize_text_field($params['categoryId']??'');
+        $account_id = sanitize_text_field($params['accountId']??'');
+        $person_id = sanitize_text_field($params['personId']??'');
+        $to_account_id = sanitize_text_field($params['toAccountId']??'');
         $note = sanitize_text_field($params['note']??'');
         $attachments = $params['attachments']??[];
         $tags = $params['tags']??[];
@@ -203,8 +203,8 @@ class Pika_Transactions_Controller extends Pika_Base_Controller {
             }
         }
 
-        if (isset($params['category_id'])) {
-            $data['category_id'] = sanitize_text_field($params['category_id']);
+        if (isset($params['categoryId'])) {
+            $data['category_id'] = sanitize_text_field($params['categoryId']);
             $format['category_id'] = '%d';
 
             if (is_null($data['category_id']) || empty($data['category_id']) || !$this->transactions_manager->is_valid_category_id($data['category_id'], $data['type'])) {
@@ -212,8 +212,8 @@ class Pika_Transactions_Controller extends Pika_Base_Controller {
             }
         }
 
-        if (isset($params['account_id'])) {
-            $data['account_id'] = sanitize_text_field($params['account_id']);
+        if (isset($params['accountId'])) {
+            $data['account_id'] = sanitize_text_field($params['accountId']);
             $format['account_id'] = '%d';
 
             if (is_null($data['account_id']) || empty($data['account_id']) || !$this->transactions_manager->is_valid_account_id($data['account_id'])) {
@@ -221,8 +221,8 @@ class Pika_Transactions_Controller extends Pika_Base_Controller {
             }
         }
 
-        if (isset($params['person_id'])) {
-            $data['person_id'] = sanitize_text_field($params['person_id']);
+        if (isset($params['personId'])) {
+            $data['person_id'] = sanitize_text_field($params['personId']);
             $format['person_id'] = '%d';
 
             if (is_null($data['person_id']) || empty($data['person_id']) || !$this->transactions_manager->is_valid_person_id($data['person_id'])) {

@@ -34,8 +34,8 @@ class Pika_Upload_Controller extends Pika_Base_Controller {
     public function upload_file($request) {
         $params = $request->get_params();
         $type = $this->upload_manager->sanitize_file_type($params['type'] ?? null);
-        $attachment_type = $this->upload_manager->sanitize_attachment_type($params['attachment_type'] ?? null);
-        $entity_type = $this->upload_manager->sanitize_entity_type($params['entity_type'] ?? null);
+        $attachment_type = $this->upload_manager->sanitize_attachment_type($params['attachmentType'] ?? null);
+        $entity_type = $this->upload_manager->sanitize_entity_type($params['entityType'] ?? null);
 
         if (is_null($type)) {
             return $this->upload_manager->get_error('invalid_type');

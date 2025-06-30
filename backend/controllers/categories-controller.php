@@ -34,6 +34,12 @@ class Pika_Categories_Controller extends Pika_Base_Controller {
         ]);
 
         register_rest_route($this->namespace, '/categories/(?P<id>\d+)', [
+            'methods' => 'GET',
+            'callback' => [$this, 'get_category'],
+            'permission_callback' => [$this, 'check_auth']
+        ]);
+
+        register_rest_route($this->namespace, '/categories/(?P<id>\d+)', [
             'methods' => 'PUT',
             'callback' => [$this, 'update_category'],
             'permission_callback' => [$this, 'can_edit_category']
@@ -77,6 +83,18 @@ class Pika_Categories_Controller extends Pika_Base_Controller {
     }
 
     /**
+     * Get a category
+     */
+    public function get_category($request) {
+        $params = $request->get_params();
+        $id = $params['id'];
+
+        $category = $this->categories_manager->get_category_by_id($id, true);
+
+        return $category;
+    }
+
+    /**
      * Add a category
      */
     public function add_category($request) {
@@ -84,10 +102,10 @@ class Pika_Categories_Controller extends Pika_Base_Controller {
         $name = sanitize_text_field($params['name'] ?? "");
         $icon = $this->categories_manager->sanitize_icon($params['icon'] ?? "");
         $color = $this->categories_manager->sanitize_color($params['color'] ?? "");
-        $bg_color = $this->categories_manager->sanitize_color($params['bg_color'] ?? "");
+        $bg_color = $this->categories_manager->sanitize_color($params['bgColor'] ?? "");
         $type = $this->categories_manager->sanitize_type($params['type'] ?? "");
         $description = sanitize_text_field($params['description'] ?? "") ?? "";
-        $parent_id = $this->categories_manager->sanitize_parent_id($params['parent_id'] ?? null);
+        $parent_id = $this->categories_manager->sanitize_parent_id($params['parentId'] ?? null);
 
         if (is_null($name) || empty($name)) {
             return $this->categories_manager->get_error('invalid_name');
@@ -161,8 +179,8 @@ class Pika_Categories_Controller extends Pika_Base_Controller {
             }
         }
 
-        if(isset($params['bg_color'])) {
-            $data['bg_color'] = $this->categories_manager->sanitize_color($params['bg_color']);
+        if(isset($params['bgColor'])) {
+            $data['bg_color'] = $this->categories_manager->sanitize_color($params['bgColor']);
             $format['bg_color'] = '%s';
             
             if (is_null($data['bg_color'])) {

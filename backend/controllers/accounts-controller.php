@@ -84,9 +84,9 @@ class Pika_Accounts_Controller extends Pika_Base_Controller {
     public function create_account($request) {
         $name = sanitize_text_field($request->get_param('name') ?? '');
         $description = sanitize_text_field($request->get_param('description') ?? '');
-        $avatar_id = $request->get_param('avatar_id') ?? null;
+        $avatar_id = $request->get_param('avatarId') ?? null;
         $icon = $this->accounts_manager->sanitize_icon($request->get_param('icon') ?? 'wallet');
-        $bg_color = $this->accounts_manager->sanitize_color($request->get_param('bg_color') ?? '#3B82F6');
+        $bg_color = $this->accounts_manager->sanitize_color($request->get_param('bgColor') ?? '#3B82F6');
         $color = $this->accounts_manager->sanitize_color($request->get_param('color') ?? '#ffffff');
 
         if (is_null($name) || empty($name)) {
@@ -145,13 +145,16 @@ class Pika_Accounts_Controller extends Pika_Base_Controller {
             $format['description'] = '%s';
         }
 
-        if(isset($params['avatar_id'])) {
-            $data['avatar_id'] = $params['avatar_id'];
+        if(isset($params['avatarId'])) {
+            $data['avatar_id'] = $params['avatarId'];
             $format['avatar_id'] = '%d';
 
-            if (!$this->accounts_manager->is_valid_avatar_id($params['avatar_id'])) {
+            if (!$this->accounts_manager->is_valid_avatar_id($params['avatarId'])) {
                 return $this->accounts_manager->get_error('invalid_avatar_id');
             }
+        } else if(is_null($params['avatarId'])) {
+            $data['avatar_id'] = null;
+            $format['avatar_id'] = '%d';
         }
 
         if(isset($params['icon'])) {
@@ -163,11 +166,11 @@ class Pika_Accounts_Controller extends Pika_Base_Controller {
             }
         }
 
-        if(isset($params['bg_color'])) {
-            $data['bg_color'] = $this->accounts_manager->sanitize_color($params['bg_color']);
+        if(isset($params['bgColor'])) {
+            $data['bg_color'] = $this->accounts_manager->sanitize_color($params['bgColor']);
             $format['bg_color'] = '%s';
 
-            if (is_null($params['bg_color'])) {
+            if (is_null($params['bgColor'])) {
                 return $this->accounts_manager->get_error('invalid_bg_color');
             }
         }

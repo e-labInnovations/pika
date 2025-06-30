@@ -76,7 +76,7 @@ class Pika_Accounts_Manager extends Pika_Base_Manager {
    * @return array
    */
   public function format_account($account) {
-    $avatar_url = $account->avatar_id ? $this->upload_manager->get_file_by_id($account->avatar_id, true)['url'] : null;
+    $avatar = $account->avatar_id ? $this->upload_manager->get_file_by_id($account->avatar_id, true) : null;
     $last_transaction_at = null;
     $total_transactions = 0;
     $balance = 0;
@@ -85,12 +85,12 @@ class Pika_Accounts_Manager extends Pika_Base_Manager {
       'id' => $account->id,
       'name' => $account->name,
       'description' => $account->description,
-      'avatar' => $avatar_url,
-      'last_transaction_at' => $last_transaction_at,
-      'total_transactions' => $total_transactions,
+      'avatar' => $avatar,
+      'lastTransactionAt' => $last_transaction_at,
+      'totalTransactions' => $total_transactions,
       'balance' => $balance,
       'icon' => $account->icon,
-      'bg_color' => $account->bg_color,
+      'bgColor' => $account->bg_color,
       'color' => $account->color,
     ];
   }
