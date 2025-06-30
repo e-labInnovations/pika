@@ -1,12 +1,13 @@
 import { CircleCheck } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import SearchItem from './search-item';
 import FilterTabHeader from './filter-tab-header';
-import { tags } from '@/data/dummy-data';
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import { cn } from '@/lib/utils';
 import type { Filter } from './types';
 import { IconRenderer } from '@/components/icon-renderer';
+import { tagService, type Tag } from '@/services/api/tags.service';
+import { toast } from 'sonner';
 
 interface TagsTabContentProps {
   filters: Filter;
@@ -15,6 +16,18 @@ interface TagsTabContentProps {
 
 const TagsTabContent = ({ filters, setFilters }: TagsTabContentProps) => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [tags, setTags] = useState<Tag[]>([]);
+
+  useEffect(() => {
+    tagService
+      .list()
+      .then((response) => {
+        setTags(response.data);
+      })
+      .catch(() => {
+        toast.error('Failed to fetch tags');
+      });
+  }, []);
 
   const getFilteredTags = () => {
     return tags.filter((tag) => tag.name.toLowerCase().includes(searchTerm.toLowerCase()));

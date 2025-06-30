@@ -3,10 +3,14 @@ import FilterChip from './filter/filter-chip';
 import { Badge } from '../ui/badge';
 import { ArrowDown, ArrowUp } from 'lucide-react';
 import { Button } from '../ui/button';
-import { accounts, categories, people, tags } from '@/data/dummy-data';
 import { useEffect, useState } from 'react';
 import { defaultSort, type Sort, sortOptions } from './sort/types';
 import TransactionUtils from '@/lib/transaction-utils';
+import { accountService, type Account } from '@/services/api/accounts.service';
+import { categoryService, type Category } from '@/services/api/categories.service';
+import { tagService, type Tag } from '@/services/api/tags.service';
+import { personService, type Person } from '@/services/api/people.service';
+import { toast } from 'sonner';
 
 interface FilterSortBarProps {
   filters: Filter;
@@ -18,6 +22,45 @@ interface FilterSortBarProps {
 
 const FilterSortBar = ({ filters, setFilters, sort, onSortClick, onFilterClick }: FilterSortBarProps) => {
   const [activeFilterCount, setActiveFilterCount] = useState(0);
+  const [accounts, setAccounts] = useState<Account[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [tags, setTags] = useState<Tag[]>([]);
+  const [people, setPeople] = useState<Person[]>([]);
+
+  useEffect(() => {
+    accountService
+      .list()
+      .then((response) => {
+        setAccounts(response.data);
+      })
+      .catch(() => {
+        toast.error('Failed to fetch accounts');
+      });
+    categoryService
+      .list()
+      .then((response) => {
+        setCategories(response.data);
+      })
+      .catch(() => {
+        toast.error('Failed to fetch categories');
+      });
+    tagService
+      .list()
+      .then((response) => {
+        setTags(response.data);
+      })
+      .catch(() => {
+        toast.error('Failed to fetch tags');
+      });
+    personService
+      .list()
+      .then((response) => {
+        setPeople(response.data);
+      })
+      .catch(() => {
+        toast.error('Failed to fetch people');
+      });
+  }, []);
 
   useEffect(() => {
     setActiveFilterCount(

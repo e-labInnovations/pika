@@ -1,12 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import FilterTabHeader from './filter-tab-header';
 import type { Filter } from './types';
 import SearchItem from './search-item';
-import { accounts } from '@/data/dummy-data';
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import { cn } from '@/lib/utils';
 import { CircleCheck } from 'lucide-react';
 import AccountAvatar from '@/components/account-avatar';
+import { accountService, type Account } from '@/services/api/accounts.service';
+import { toast } from 'sonner';
 
 interface AccountTabContentProps {
   filters: Filter;
@@ -15,6 +16,18 @@ interface AccountTabContentProps {
 
 const AccountTabContent = ({ filters, setFilters }: AccountTabContentProps) => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [accounts, setAccounts] = useState<Account[]>([]);
+
+  useEffect(() => {
+    accountService
+      .list()
+      .then((response) => {
+        setAccounts(response.data);
+      })
+      .catch(() => {
+        toast.error('Failed to fetch accounts');
+      });
+  }, []);
 
   const getFilteredAccounts = () => {
     return accounts.filter((account) => account.name.toLowerCase().includes(searchTerm));

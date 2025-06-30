@@ -1,12 +1,13 @@
-import { CircleCheck } from "lucide-react";
-import { people } from "@/data/dummy-data";
-import { useState } from "react";
-import SearchItem from "./search-item";
-import FilterTabHeader from "./filter-tab-header";
-import { cn } from "@/lib/utils";
-import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
-import type { Filter } from "./types";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { CircleCheck } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import SearchItem from './search-item';
+import FilterTabHeader from './filter-tab-header';
+import { cn } from '@/lib/utils';
+import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
+import type { Filter } from './types';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { personService, type Person } from '@/services/api/people.service';
+import { toast } from 'sonner';
 
 interface PeopleTabContentProps {
   filters: Filter;
@@ -14,18 +15,26 @@ interface PeopleTabContentProps {
 }
 
 const PeopleTabContent = ({ filters, setFilters }: PeopleTabContentProps) => {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
+  const [people, setPeople] = useState<Person[]>([]);
+
+  useEffect(() => {
+    personService
+      .list()
+      .then((response) => {
+        setPeople(response.data);
+      })
+      .catch(() => {
+        toast.error('Failed to fetch people');
+      });
+  }, []);
 
   const getFilteredPeople = () => {
-    return people.filter((person) =>
-      person.name.toLowerCase().includes(searchTerm)
-    );
+    return people.filter((person) => person.name.toLowerCase().includes(searchTerm));
   };
 
   const handleSelectAllPeople = () => {
-    const allPeopleIds = getFilteredPeople().map(
-      (person) => person.id?.toString() || person.name
-    );
+    const allPeopleIds = getFilteredPeople().map((person) => person.id?.toString() || person.name);
     const allSelected = allPeopleIds.length === filters.people.length;
     setFilters((prev) => ({
       ...prev,
@@ -36,9 +45,7 @@ const PeopleTabContent = ({ filters, setFilters }: PeopleTabContentProps) => {
   const handlePersonToggle = (personId: string) => {
     setFilters((prev) => ({
       ...prev,
-      people: prev.people.includes(personId)
-        ? prev.people.filter((id) => id !== personId)
-        : [...prev.people, personId],
+      people: prev.people.includes(personId) ? prev.people.filter((id) => id !== personId) : [...prev.people, personId],
     }));
   };
 
@@ -51,15 +58,11 @@ const PeopleTabContent = ({ filters, setFilters }: PeopleTabContentProps) => {
           filters.people.length === getFilteredPeople().length
             ? true
             : filters.people.length > 0
-            ? "indeterminate"
-            : false
+              ? 'indeterminate'
+              : false
         }
       />
-      <SearchItem
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        placeholder="Search person..."
-      />
+      <SearchItem searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="Search person..." />
 
       <div className="grid grid-cols-1 gap-2">
         {getFilteredPeople().map((person) => {
@@ -70,23 +73,19 @@ const PeopleTabContent = ({ filters, setFilters }: PeopleTabContentProps) => {
               checked={filters.people.includes(personId)}
               onCheckedChange={() => handlePersonToggle(personId)}
               className={cn(
-                "relative ring-[0.25px] ring-border rounded-lg px-4 py-3 text-start text-muted-foreground",
-                "data-[state=checked]:ring-[1.5px] data-[state=checked]:ring-primary data-[state=checked]:text-primary",
-                "hover:bg-accent/50"
+                'ring-border text-muted-foreground relative rounded-lg px-4 py-3 text-start ring-[0.25px]',
+                'data-[state=checked]:ring-primary data-[state=checked]:text-primary data-[state=checked]:ring-[1.5px]',
+                'hover:bg-accent/50',
               )}
             >
               <div className="flex items-center space-x-3">
                 <Avatar>
-                  <AvatarImage src={person.avatar} />
-                  <AvatarFallback>
-                    {person.name.split(" ")[0].charAt(0)}
-                  </AvatarFallback>
+                  <AvatarImage src={person.avatar?.url} alt={person.name} />
+                  <AvatarFallback>{person.name.split(' ')[0].charAt(0)}</AvatarFallback>
                 </Avatar>
                 <div className="flex-1">
                   <p className="font-medium">{person.name}</p>
-                  <p className="text-sm text-muted-foreground line-clamp-1">
-                    {person.description}
-                  </p>
+                  <p className="text-muted-foreground line-clamp-1 text-sm">{person.description}</p>
                 </div>
               </div>
               <CheckboxPrimitive.Indicator className="absolute top-2 right-2">

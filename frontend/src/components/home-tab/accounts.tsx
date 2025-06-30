@@ -1,11 +1,11 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { EyeIcon, EyeOff, Wallet } from 'lucide-react';
-import type { Account } from '@/data/dummy-data';
 import { useState } from 'react';
 import AccountAvatar from '../account-avatar';
 import { currencyUtils } from '@/lib/currency-utils';
 import { useAuth } from '@/hooks/use-auth';
+import type { Account } from '@/services/api/accounts.service';
 
 interface AccountsProps {
   accounts: Account[];
@@ -38,8 +38,8 @@ const Accounts = ({ accounts }: AccountsProps) => {
                   }`}
                 >
                   {showMoney
-                    ? currencyUtils.formatAmount(account.balance, user?.default_currency)
-                    : `${currencyUtils.getCurrencySymbol(user?.default_currency)}----`}
+                    ? currencyUtils.formatAmount(account.balance, user?.settings?.currency)
+                    : `${currencyUtils.getCurrencySymbol(user?.settings?.currency)}----`}
                 </span>
               </div>
             </CardContent>
@@ -56,8 +56,8 @@ const Accounts = ({ accounts }: AccountsProps) => {
             </div>
             <span className="text-lg font-bold tracking-tight">
               {showMoney
-                ? currencyUtils.formatAmount(totalBalance, user?.default_currency)
-                : `${currencyUtils.getCurrencySymbol(user?.default_currency)}----`}
+                ? currencyUtils.formatAmount(totalBalance, user?.settings?.currency)
+                : `${currencyUtils.getCurrencySymbol(user?.settings?.currency)}----`}
             </span>
           </div>
         </CardContent>
