@@ -61,15 +61,20 @@ class Pika_Tags_Manager extends Pika_Base_Manager {
    * Get a tag by id
    * 
    * @param int $id
+   * @param bool $format
    * @return array|WP_Error
    */
-  public function get_tag_by_id($id) {
+  public function get_tag_by_id($id, $format = false) {
     $table_name = $this->get_table_name();
     $sql = $this->db()->prepare("SELECT * FROM $table_name WHERE id = %d", $id);
     $tag = $this->db()->get_row($sql);
 
     if (is_wp_error($tag)) {
       return $this->get_error('db_error');
+    }
+
+    if ($format) {
+      return $this->format_tag($tag);
     }
 
     return $tag;

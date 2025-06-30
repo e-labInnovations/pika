@@ -34,6 +34,12 @@ class Pika_Tags_Controller extends Pika_Base_Controller {
         ]);
 
         register_rest_route($this->namespace, '/tags/(?P<id>\d+)', [
+            'methods' => 'GET',
+            'callback' => [$this, 'get_tag_by_id'],
+            'permission_callback' => [$this, 'check_auth']
+        ]);
+
+        register_rest_route($this->namespace, '/tags/(?P<id>\d+)', [
             'methods' => 'PUT',
             'callback' => [$this, 'update_tag'],
             'permission_callback' => [$this, 'can_edit_tag']
@@ -81,11 +87,11 @@ class Pika_Tags_Controller extends Pika_Base_Controller {
      */
     public function add_tag($request) {
         $params = $request->get_params();
-        $name = sanitize_text_field($params['name']);
-        $color = $this->tags_manager->sanitize_color($params['color']);
-        $bg_color = $this->tags_manager->sanitize_color($params['bg_color']);
-        $icon = sanitize_text_field($params['icon']);
-        $description = sanitize_text_field($params['description']) ?? "";
+        $name = sanitize_text_field($params['name']??'');
+        $color = $this->tags_manager->sanitize_color($params['color']??'');
+        $bg_color = $this->tags_manager->sanitize_color($params['bgColor']??'');
+        $icon = $this->tags_manager->sanitize_icon($params['icon']??'');
+        $description = sanitize_text_field($params['description']??'');
         
         if (is_null($name) || empty($name)) {
             return $this->tags_manager->get_error('invalid_name');
@@ -108,6 +114,12 @@ class Pika_Tags_Controller extends Pika_Base_Controller {
         }
 
         $tag = $this->tags_manager->create_tag($name, $color, $bg_color, $icon, $description);
+        return $tag;
+    }
+
+    public function get_tag_by_id($request) {
+        $tag_id = $request->get_param('id');
+        $tag = $this->tags_manager->get_tag_by_id($tag_id, true);
         return $tag;
     }
 
@@ -137,8 +149,8 @@ class Pika_Tags_Controller extends Pika_Base_Controller {
             $format['color'] = '%s';
         }
 
-        if(isset($params['bg_color'])) {
-            $data['bg_color'] = $this->tags_manager->sanitize_color($params['bg_color']);
+        if(isset($params['bgColor'])) {
+            $data['bg_color'] = $this->tags_manager->sanitize_color($params['bgColor']);
             if (is_null($data['bg_color'])) {
                 return $this->tags_manager->get_error('invalid_color');
             }

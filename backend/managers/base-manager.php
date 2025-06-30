@@ -80,7 +80,7 @@ abstract class Pika_Base_Manager {
    */
   public function sanitize_color($color) {
     if (preg_match('/^#([0-9a-fA-F]{6})$/', $color, $matches)) {
-      return $matches[1];
+      return '#' . $matches[1];
     }
     return null;
   }

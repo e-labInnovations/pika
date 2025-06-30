@@ -91,6 +91,12 @@ Content-Type: application/json
 
 ###
 
+# Get a tag by id
+GET {{base_url}}/wp-json/pika/v1/tags/6
+Authorization: Basic {{username}}:{{password}}
+
+###
+
 # Update a tag
 PUT {{base_url}}/wp-json/pika/v1/tags/6
 Authorization: Basic {{username}}:{{password}}
