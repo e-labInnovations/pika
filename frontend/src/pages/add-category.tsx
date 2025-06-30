@@ -11,25 +11,36 @@ import { IconRenderer } from '@/components/icon-renderer';
 import { type IconName } from '@/components/ui/icon-picker';
 import TransactionTypeView from '@/components/transaction-type-view';
 import IconColorsFields from '@/components/categories/icon-colors-fields';
+import { categoryService, type CategoryInput } from '@/services/api/categories.service';
+import { toast } from 'sonner';
 
 const AddCategory = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const transactionType = (searchParams.get('type') as TransactionType) || 'expense';
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<CategoryInput>({
     name: '',
     description: '',
     icon: 'wallet',
     bgColor: '#3B82F6',
     color: '#ffffff',
+    type: transactionType,
+    parentId: null,
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // TODO: Implement category creation logic
-    console.log('Creating category:', { ...formData, type: transactionType });
-    navigate('/settings/categories');
+    categoryService
+      .create(formData)
+      .then(() => {
+        toast.success('Category created successfully');
+        navigate('/settings/categories');
+      })
+      .catch((error) => {
+        toast.error(error.response.data.message);
+      });
   };
 
   const getTransactionTypeLabel = (type: TransactionType) => {

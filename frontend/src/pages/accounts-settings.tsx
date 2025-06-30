@@ -1,7 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import TabsLayout from '@/layouts/tabs';
-import { accounts } from '@/data/dummy-data';
 import { Edit2, Plus, Trash2 } from 'lucide-react';
 import AccountAvatar from '@/components/account-avatar';
 import { useNavigate } from 'react-router-dom';
@@ -9,10 +8,25 @@ import { cn } from '@/lib/utils';
 import transactionUtils from '@/lib/transaction-utils';
 import { currencyUtils } from '@/lib/currency-utils';
 import { useAuth } from '@/hooks/use-auth';
+import { accountService, type Account } from '@/services/api/accounts.service';
+import { useEffect, useState } from 'react';
 
 const AccountsSettings = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [accounts, setAccounts] = useState<Account[]>([]);
+
+  useEffect(() => {
+    accountService.list().then((response) => {
+      setAccounts(response.data);
+    });
+  }, []);
+
+  const handleDeleteAccount = (id: string) => {
+    accountService.delete(id).then(() => {
+      setAccounts(accounts.filter((account) => account.id !== id));
+    });
+  };
 
   return (
     <TabsLayout
@@ -43,7 +57,7 @@ const AccountsSettings = () => {
                     <span className="font-medium text-slate-900 dark:text-white">{account.name}</span>
                     <p className="text-muted-foreground text-sm">{account.description}</p>
                     <p className={cn('text-xs', transactionUtils.getBalanceColor(account.balance))}>
-                      {currencyUtils.formatAmount(account.balance, user?.default_currency)}
+                      {currencyUtils.formatAmount(account.balance, user?.settings.currency)}
                     </p>
                   </div>
                 </div>
@@ -56,7 +70,7 @@ const AccountsSettings = () => {
                     size="sm"
                     onClick={() => {
                       if (confirm(`Are you sure you want to delete "${account.name}"?`)) {
-                        // onDeleteAccount(account.id)
+                        handleDeleteAccount(account.id);
                       }
                     }}
                   >

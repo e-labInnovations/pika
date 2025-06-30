@@ -4,56 +4,90 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import TabsLayout from '@/layouts/tabs';
 import { Save, Trash2 } from 'lucide-react';
-import { accounts, type Account } from '@/data/dummy-data';
 import { type IconName } from '@/components/ui/icon-picker';
 import { AccountFormFields, AccountIconSelector, AccountPreview } from '@/components/accounts-settings';
+import { accountService, type Account, type AccountInput } from '@/services/api/accounts.service';
+import { uploadService } from '@/services/api/upload.service';
+import { toast } from 'sonner';
 
 const EditAccount = () => {
   const { accountId } = useParams();
   const navigate = useNavigate();
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<AccountInput>({
     name: '',
     description: '',
     icon: 'wallet' as IconName,
     bgColor: '#3B82F6',
     color: '#ffffff',
-    avatar: '',
+    avatarId: null,
   });
 
   const [account, setAccount] = useState<Account | null>(null);
 
   useEffect(() => {
     if (accountId) {
-      // Find the account in the accounts array
-      const foundAccount = accounts.find((account) => account.id === accountId);
-      if (foundAccount) {
-        setAccount(foundAccount);
+      accountService.get(accountId).then((response) => {
+        setAccount(response.data);
         setFormData({
-          name: foundAccount.name,
-          description: foundAccount.description || '',
-          icon: foundAccount.icon as IconName,
-          bgColor: foundAccount.bgColor,
-          color: foundAccount.color,
-          avatar: foundAccount.avatar || '',
+          name: response.data.name,
+          description: response.data.description || '',
+          icon: response.data.icon as IconName,
+          bgColor: response.data.bgColor,
+          color: response.data.color,
+          avatarId: response.data.avatar?.id || null,
         });
-      }
+        setAvatarUrl(response.data.avatar?.url || null);
+      });
     }
   }, [accountId]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement account update logic
-    console.log('Updating account:', { ...formData, id: accountId });
-    navigate('/settings/accounts');
+
+    const newFormData = { ...formData };
+
+    if (avatarFile) {
+      try {
+        const response = await uploadService.uploadAvatar(avatarFile, 'account');
+        newFormData.avatarId = response.data.id;
+      } catch (error) {
+        toast.error(`Failed to upload avatar - ${JSON.stringify(error)}`);
+      }
+    } else if (avatarUrl === null) {
+      newFormData.avatarId = null;
+    }
+
+    accountService
+      .update(accountId!, newFormData)
+      .then(() => {
+        toast.success('Account updated successfully');
+        navigate('/settings/accounts');
+      })
+      .catch((error) => {
+        toast.error(error.response.data.message);
+      });
   };
 
   const handleDelete = () => {
     if (confirm(`Are you sure you want to delete "${formData.name}"?`)) {
-      // TODO: Implement account deletion logic
-      console.log('Deleting account:', accountId);
-      navigate('/settings/accounts');
+      accountService
+        .delete(accountId!)
+        .then(() => {
+          toast.success('Account deleted successfully');
+          navigate('/settings/accounts');
+        })
+        .catch((error) => {
+          toast.error(error.response.data.message);
+        });
     }
+  };
+
+  const handleAvatarChange = (avatar: File | null, url: string | null) => {
+    setAvatarFile(avatar);
+    setAvatarUrl(url);
   };
 
   if (!account) {
@@ -96,25 +130,25 @@ const EditAccount = () => {
 
               <AccountIconSelector
                 name={formData.name}
-                icon={formData.icon}
+                icon={formData.icon as IconName}
                 bgColor={formData.bgColor}
                 color={formData.color}
-                avatar={formData.avatar}
+                avatar={avatarUrl}
                 onIconChange={(icon) => setFormData((prev) => ({ ...prev, icon }))}
                 onBgColorChange={(bgColor) => setFormData((prev) => ({ ...prev, bgColor }))}
                 onColorChange={(color) => setFormData((prev) => ({ ...prev, color }))}
-                onAvatarChange={(avatar) => setFormData((prev) => ({ ...prev, avatar }))}
+                onAvatarChange={handleAvatarChange}
               />
 
               <AccountPreview
                 name={formData.name}
                 description={formData.description}
-                icon={formData.icon}
+                icon={formData.icon as IconName}
                 bgColor={formData.bgColor}
                 color={formData.color}
-                avatar={formData.avatar}
+                avatar={avatarUrl}
                 balance={account.balance}
-                useAvatar={!!formData.avatar}
+                useAvatar={!!avatarUrl}
               />
             </form>
           </CardContent>

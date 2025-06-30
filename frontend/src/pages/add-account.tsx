@@ -5,65 +5,83 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import TabsLayout from '@/layouts/tabs';
 import { Save } from 'lucide-react';
 import { type IconName } from '@/components/ui/icon-picker';
-import { categories, tags } from '@/data/dummy-data';
 import {
   AccountFormFields,
   AccountIconSelector,
   AccountPreview,
   InitialBalanceSection,
 } from '@/components/accounts-settings';
+import { accountService, type AccountInput } from '@/services/api/accounts.service';
+import { toast } from 'sonner';
+import { uploadService } from '@/services/api/upload.service';
 
 const AddAccount = () => {
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<AccountInput>({
     name: '',
     description: '',
     icon: 'wallet' as IconName,
     bgColor: '#3B82F6',
     color: '#ffffff',
-    avatar: '',
+    avatarId: null,
   });
 
   const [includeInitialBalance, setIncludeInitialBalance] = useState(false);
   const [initialBalance, setInitialBalance] = useState(0);
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   // Get system category and tag for initial balance
-  const initialBalanceCategory = categories.find((cat) => cat.name === 'Initial Balance');
-  const initialBalanceTag = tags.find((tag) => tag.name === 'Initial Balance');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // TODO: Implement account creation logic
-    const accountData = {
-      ...formData,
-      balance: includeInitialBalance ? initialBalance : 0,
-    };
+    const newFormData = { ...formData };
 
-    console.log('Creating account:', accountData);
-
-    // If initial balance is included, create a transaction
-    if (includeInitialBalance && initialBalance !== 0 && initialBalanceCategory && initialBalanceTag) {
-      const transactionData = {
-        title: `Initial Balance - ${formData.name}`,
-        amount: Math.abs(initialBalance),
-        type: initialBalance >= 0 ? 'income' : 'expense',
-        category: initialBalanceCategory,
-        account: {
-          id: 'temp-id', // Will be replaced with actual account ID
-          name: formData.name,
-          icon: formData.icon,
-          bgColor: formData.bgColor,
-          color: formData.color,
-        },
-        tags: [initialBalanceTag],
-        note: `Initial balance for ${formData.name}`,
-      };
-      console.log('Creating initial balance transaction:', transactionData);
+    if (avatarFile) {
+      try {
+        const response = await uploadService.uploadAvatar(avatarFile, 'account');
+        newFormData.avatarId = response.data.id;
+      } catch (error) {
+        toast.error(`Failed to upload avatar - ${JSON.stringify(error)}`);
+      }
     }
 
-    navigate('/settings/accounts');
+    accountService
+      .create(newFormData)
+      .then(() => {
+        toast.success('Account created successfully');
+        navigate('/settings/accounts');
+      })
+      .catch((error) => {
+        toast.error(error.response.data.message);
+      });
+
+    // ToDo: If initial balance is included, create a transaction
+    // if (includeInitialBalance && initialBalance !== 0 && initialBalanceCategory && initialBalanceTag) {
+    //   const transactionData = {
+    //     title: `Initial Balance - ${formData.name}`,
+    //     amount: Math.abs(initialBalance),
+    //     type: initialBalance >= 0 ? 'income' : 'expense',
+    //     category: initialBalanceCategory,
+    //     account: {
+    //       id: 'temp-id', // Will be replaced with actual account ID
+    //       name: formData.name,
+    //       icon: formData.icon,
+    //       bgColor: formData.bgColor,
+    //       color: formData.color,
+    //     },
+    //     tags: [initialBalanceTag],
+    //     note: `Initial balance for ${formData.name}`,
+    //   };
+    //   console.log('Creating initial balance transaction:', transactionData);
+    // }
+  };
+
+  const handleAvatarChange = (avatar: File | null, url: string | null) => {
+    setAvatarFile(avatar);
+    setAvatarUrl(url);
   };
 
   return (
@@ -97,25 +115,25 @@ const AddAccount = () => {
 
               <AccountIconSelector
                 name={formData.name}
-                icon={formData.icon}
+                icon={formData.icon as IconName}
                 bgColor={formData.bgColor}
                 color={formData.color}
-                avatar={formData.avatar}
+                avatar={avatarUrl}
                 onIconChange={(icon) => setFormData((prev) => ({ ...prev, icon }))}
                 onBgColorChange={(bgColor) => setFormData((prev) => ({ ...prev, bgColor }))}
                 onColorChange={(color) => setFormData((prev) => ({ ...prev, color }))}
-                onAvatarChange={(avatar) => setFormData((prev) => ({ ...prev, avatar }))}
+                onAvatarChange={handleAvatarChange}
               />
 
               <AccountPreview
                 name={formData.name}
                 description={formData.description}
-                icon={formData.icon}
+                icon={formData.icon as IconName}
                 bgColor={formData.bgColor}
                 color={formData.color}
-                avatar={formData.avatar}
+                avatar={avatarUrl}
                 balance={includeInitialBalance ? initialBalance : 0}
-                useAvatar={!!formData.avatar}
+                useAvatar={!!avatarUrl}
               />
             </form>
           </CardContent>

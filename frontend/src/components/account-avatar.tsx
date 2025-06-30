@@ -1,6 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { IconRenderer } from './icon-renderer';
-import type { Account, TransactionAccount } from '@/data/dummy-data';
+import type { TransactionAccount } from '@/data/dummy-data';
+import type { Account } from '@/services/api/accounts.service';
 
 interface AccountAvatarProps {
   account: Account | TransactionAccount;
@@ -24,7 +25,7 @@ const AccountAvatar = ({ account, size = 'default', className = '' }: AccountAva
   if (hasAvatar) {
     return (
       <Avatar className={`${sizeClasses[size]} ${className}`}>
-        <AvatarImage src={account.avatar} alt={account.name} />
+        <AvatarImage src={account.avatar?.url} alt={account.name} />
         <AvatarFallback className={`${sizeClasses[size]} bg-slate-100 dark:bg-slate-800`}>
           <IconRenderer iconName={account.icon} size={size} bgColor={account.bgColor} color={account.color} />
         </AvatarFallback>

@@ -6,23 +6,26 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import TabsLayout from '@/layouts/tabs';
 import { Save, Trash2 } from 'lucide-react';
-import { categories, type Category } from '@/data/dummy-data';
 import { type TransactionType } from '@/lib/transaction-utils';
 import { IconRenderer } from '@/components/icon-renderer';
 import { type IconName } from '@/components/ui/icon-picker';
 import TransactionTypeView from '@/components/transaction-type-view';
 import IconColorsFields from '@/components/categories/icon-colors-fields';
+import { categoryService, type Category, type CategoryInput } from '@/services/api/categories.service';
+import { toast } from 'sonner';
 
 const EditCategory = () => {
   const { categoryId } = useParams();
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<CategoryInput>({
     name: '',
     description: '',
     icon: 'wallet',
     bgColor: '#3B82F6',
     color: '#ffffff',
+    type: 'expense',
+    parentId: null,
   });
 
   const [category, setCategory] = useState<Category | null>(null);
@@ -30,32 +33,52 @@ const EditCategory = () => {
   useEffect(() => {
     if (categoryId) {
       // Find the category in the categories array
-      const foundCategory = categories.find((cat) => cat.id === categoryId);
-      if (foundCategory) {
-        setCategory(foundCategory);
-        setFormData({
-          name: foundCategory.name,
-          description: foundCategory.description,
-          icon: foundCategory.icon,
-          bgColor: foundCategory.bgColor,
-          color: foundCategory.color,
+      categoryService
+        .get(categoryId)
+        .then((response) => {
+          setCategory(response.data);
+          setFormData((prev) => ({
+            ...prev,
+            name: response.data.name,
+            description: response.data.description,
+            icon: response.data.icon,
+            bgColor: response.data.bgColor,
+            color: response.data.color,
+            type: response.data.type,
+            parentId: response.data.parentId,
+          }));
+        })
+        .catch((error) => {
+          toast.error(error.response.data.message);
         });
-      }
     }
   }, [categoryId]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement category update logic
-    console.log('Updating category:', { ...formData, id: categoryId });
-    navigate('/settings/categories');
+
+    categoryService
+      .update(categoryId || '', formData)
+      .then(() => {
+        toast.success('Category updated successfully');
+        navigate('/settings/categories');
+      })
+      .catch((error) => {
+        toast.error(error.response.data.message);
+      });
   };
 
   const handleDelete = () => {
     if (confirm(`Are you sure you want to delete "${formData.name}"?`)) {
-      // TODO: Implement category deletion logic
-      console.log('Deleting category:', categoryId);
-      navigate('/settings/categories');
+      categoryService
+        .delete(categoryId || '')
+        .then(() => {
+          toast.success('Category deleted successfully');
+          navigate('/settings/categories');
+        })
+        .catch((error) => {
+          toast.error(error.response.data.message);
+        });
     }
   };
 

@@ -1,4 +1,3 @@
-import { categories } from '@/data/dummy-data';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import TabsLayout from '@/layouts/tabs';
@@ -6,20 +5,37 @@ import CategoryItem from '@/components/categories/category-item';
 import CategoriesTabs from '@/components/categories/categories-tabs';
 import TransactionUtils, { type TransactionType } from '@/lib/transaction-utils';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useEffect } from 'react';
+import { categoryService, type Category } from '@/services/api/categories.service';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 const Categories = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const transactionType = (searchParams.get('type') as TransactionType) || 'expense';
 
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    categoryService.list().then((response) => {
+      setCategories(response.data);
+    });
+  }, []);
+
   useEffect(() => {
     navigate(`/settings/categories?type=${transactionType}`);
   }, [transactionType, navigate]);
 
   const onDeleteCategory = (id: string) => {
-    // Handle delete
-    console.log('Delete category:', id);
+    categoryService
+      .delete(id)
+      .then(() => {
+        toast.success('Category deleted successfully');
+        setCategories(categories.filter((category) => category.id !== id));
+      })
+      .catch((error) => {
+        toast.error(error.response.data.message);
+      });
   };
 
   const onEditCategory = (id: string) => {

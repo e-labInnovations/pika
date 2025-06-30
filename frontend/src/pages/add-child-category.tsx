@@ -6,22 +6,25 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import TabsLayout from '@/layouts/tabs';
 import { Save } from 'lucide-react';
-import { categories, type Category } from '@/data/dummy-data';
 import TransactionTypeView from '@/components/transaction-type-view';
 import CategoryItemView from '@/components/category-item-view';
 import IconColorsFields from '@/components/categories/icon-colors-fields';
 import type { IconName } from '@/components/ui/icon-picker';
+import { categoryService, type Category, type CategoryInput } from '@/services/api/categories.service';
+import { toast } from 'sonner';
 
 const AddChildCategory = () => {
   const { parentCategoryId } = useParams();
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<CategoryInput>({
     name: '',
     description: '',
     icon: 'wallet',
     bgColor: '#3B82F6',
     color: '#ffffff',
+    type: 'expense',
+    parentId: parentCategoryId || null,
   });
 
   const [parentCategory, setParentCategory] = useState<Category | null>(null);
@@ -29,28 +32,33 @@ const AddChildCategory = () => {
   useEffect(() => {
     if (parentCategoryId) {
       // Find the parent category in the categories array
-      const foundCategory = categories.find((cat) => cat.id === parentCategoryId);
-      if (foundCategory) {
-        setParentCategory(foundCategory);
-        // Set default colors based on parent category
-        setFormData((prev) => ({
-          ...prev,
-          bgColor: foundCategory.bgColor,
-          color: foundCategory.color,
-        }));
-      }
+      categoryService
+        .get(parentCategoryId)
+        .then((response) => {
+          setParentCategory(response.data);
+          setFormData((prev) => ({
+            ...prev,
+            type: response.data.type,
+            parentId: response.data.id,
+          }));
+        })
+        .catch((error) => {
+          toast.error(error.response.data.message);
+        });
     }
   }, [parentCategoryId]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement child category creation logic
-    console.log('Creating child category:', {
-      ...formData,
-      parentId: parentCategoryId,
-      type: parentCategory?.type,
-    });
-    navigate('/settings/categories');
+    categoryService
+      .create(formData)
+      .then(() => {
+        toast.success('Child category created successfully');
+        navigate('/settings/categories');
+      })
+      .catch((error) => {
+        toast.error(error.response.data.message);
+      });
   };
 
   if (!parentCategory) {

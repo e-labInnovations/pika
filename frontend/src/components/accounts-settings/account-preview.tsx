@@ -11,7 +11,7 @@ interface AccountPreviewProps {
   icon: IconName;
   bgColor: string;
   color: string;
-  avatar: string;
+  avatar: string | null;
   balance: number;
   useAvatar: boolean;
 }
@@ -45,7 +45,7 @@ const AccountPreview = ({
             <p className="font-medium">{name || 'Account Name'}</p>
             <p className="text-sm text-slate-500 dark:text-slate-400">{description || 'Account description'}</p>
             <p className="text-sm font-medium text-slate-900 dark:text-white">
-              {currencyUtils.formatAmount(balance, user?.default_currency)}
+              {currencyUtils.formatAmount(balance, user?.settings?.currency)}
             </p>
           </div>
         </div>

@@ -6,22 +6,25 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import TabsLayout from '@/layouts/tabs';
 import { Save, Trash2 } from 'lucide-react';
-import { categories, type Category } from '@/data/dummy-data';
 import TransactionTypeView from '@/components/transaction-type-view';
 import CategoryItemView from '@/components/category-item-view';
 import IconColorsFields from '@/components/categories/icon-colors-fields';
 import type { IconName } from '@/components/ui/icon-picker';
+import { categoryService, type Category, type CategoryInput } from '@/services/api/categories.service';
+import { toast } from 'sonner';
 
 const EditChildCategory = () => {
   const { parentCategoryId, childCategoryId } = useParams();
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<CategoryInput>({
     name: '',
     description: '',
     icon: 'wallet',
     bgColor: '#3B82F6',
     color: '#ffffff',
+    type: 'expense',
+    parentId: null,
   });
 
   const [parentCategory, setParentCategory] = useState<Category | null>(null);
@@ -30,42 +33,59 @@ const EditChildCategory = () => {
   useEffect(() => {
     if (parentCategoryId && childCategoryId) {
       // Find the parent category
-      const foundParentCategory = categories.find((cat) => cat.id === parentCategoryId);
-      if (foundParentCategory) {
-        setParentCategory(foundParentCategory);
-      }
-
-      // Find the child category by checking inside parent category's children
-      const foundChildCategory = foundParentCategory?.children?.find((child) => child.id === childCategoryId);
-      if (foundChildCategory) {
-        setChildCategory(foundChildCategory);
-        setFormData({
-          name: foundChildCategory.name,
-          description: foundChildCategory.description,
-          icon: foundChildCategory.icon,
-          bgColor: foundChildCategory.bgColor,
-          color: foundChildCategory.color,
+      categoryService
+        .get(parentCategoryId)
+        .then((response) => {
+          setParentCategory(response.data);
+          categoryService
+            .get(childCategoryId)
+            .then((response) => {
+              setChildCategory(response.data);
+              setFormData((prev) => ({
+                ...prev,
+                name: response.data.name,
+                description: response.data.description,
+                icon: response.data.icon,
+                bgColor: response.data.bgColor,
+                color: response.data.color,
+                type: response.data.type,
+                parentId: response.data.parentId,
+              }));
+            })
+            .catch((error) => {
+              toast.error(error.response.data.message);
+            });
+        })
+        .catch((error) => {
+          toast.error(error.response.data.message);
         });
-      }
     }
   }, [parentCategoryId, childCategoryId]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement child category update logic
-    console.log('Updating child category:', {
-      ...formData,
-      id: childCategoryId,
-      parentId: parentCategoryId,
-    });
-    navigate('/settings/categories');
+    categoryService
+      .update(childCategoryId || '', formData)
+      .then(() => {
+        toast.success('Child category updated successfully');
+        navigate('/settings/categories');
+      })
+      .catch((error) => {
+        toast.error(error.response.data.message);
+      });
   };
 
   const handleDelete = () => {
     if (confirm(`Are you sure you want to delete "${formData.name}"?`)) {
-      // TODO: Implement child category deletion logic
-      console.log('Deleting child category:', childCategoryId);
-      navigate('/settings/categories');
+      categoryService
+        .delete(childCategoryId || '')
+        .then(() => {
+          toast.success('Child category deleted successfully');
+          navigate('/settings/categories');
+        })
+        .catch((error) => {
+          toast.error(error.response.data.message);
+        });
     }
   };
 

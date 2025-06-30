@@ -212,7 +212,7 @@ export function TransactionsList({
                       <div className="flex items-center justify-between">
                         <h4 className="truncate font-medium text-slate-900 dark:text-white">{transaction.title}</h4>
                         <span className={`font-semibold ${transactionUtils.getAmountColor(transaction.type)}`}>
-                          {currencyUtils.formatAmount(transaction.amount, user?.default_currency)}
+                          {currencyUtils.formatAmount(transaction.amount, user?.settings?.currency)}
                         </span>
                       </div>
 

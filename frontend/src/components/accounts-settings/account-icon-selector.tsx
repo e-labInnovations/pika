@@ -11,11 +11,11 @@ interface AccountIconSelectorProps {
   icon: IconName;
   bgColor: string;
   color: string;
-  avatar: string;
+  avatar: string | null;
   onIconChange: (icon: IconName) => void;
   onBgColorChange: (bgColor: string) => void;
   onColorChange: (color: string) => void;
-  onAvatarChange: (avatar: string) => void;
+  onAvatarChange: (avatar: File | null, url: string | null) => void;
 }
 
 const AccountIconSelector = ({
@@ -36,7 +36,7 @@ const AccountIconSelector = ({
     if (file) {
       const reader = new FileReader();
       reader.onload = (event) => {
-        onAvatarChange(event.target?.result as string);
+        onAvatarChange(file, event.target?.result as string);
       };
       reader.readAsDataURL(file);
     }
@@ -66,18 +66,18 @@ const AccountIconSelector = ({
         <div className="space-y-4">
           <div className="flex items-center space-x-4">
             <Avatar className="h-16 w-16">
-              <AvatarImage src={avatar} alt="Account avatar" />
+              <AvatarImage src={avatar || undefined} alt="Account avatar" />
               <AvatarFallback className="text-lg">{name.charAt(0).toUpperCase()}</AvatarFallback>
             </Avatar>
             <div className="flex flex-col space-y-2">
               <Label htmlFor="avatar-upload" className="cursor-pointer">
                 <Button variant="outline" size="sm" asChild>
-                  <span>Upload Image</span>
+                  <span>{avatar ? 'Change Image' : 'Select Image'}</span>
                 </Button>
               </Label>
               <Input id="avatar-upload" type="file" accept="image/*" onChange={handleAvatarChange} className="hidden" />
               {avatar && (
-                <Button type="button" variant="outline" size="sm" onClick={() => onAvatarChange('')}>
+                <Button type="button" variant="outline" size="sm" onClick={() => onAvatarChange(null, null)}>
                   Remove
                 </Button>
               )}
