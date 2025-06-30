@@ -347,9 +347,9 @@ Content-Type: application/json
   "type": "income",
   "categoryId": 50,
   "accountId": 1,
-  "personId": 1,
+  "personId": 3,
   "tags": [2],
-  "attachments": [13]
+  "attachments": [23]
 }
 
 ###

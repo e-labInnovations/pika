@@ -144,7 +144,7 @@ class Pika_Transactions_Manager extends Pika_Base_Manager {
   public function format_transaction($transaction) {
     $category = $this->categories_manager->get_category_by_id($transaction->category_id, true);
     $account = $this->accounts_manager->get_account_by_id($transaction->account_id, true  );
-    $person = $this->people_manager->get_person($transaction->person_id, true);
+    $person = $transaction->person_id ? $this->people_manager->get_person($transaction->person_id, true) : null;
     $to_account = $transaction->to_account_id ? $this->accounts_manager->get_account_by_id($transaction->to_account_id, true) : null;
     $attachments = $this->upload_manager->get_all_transaction_attachments($transaction->id);
     $tags = $this->tags_manager->get_all_transaction_tags($transaction->id);
@@ -158,7 +158,7 @@ class Pika_Transactions_Manager extends Pika_Base_Manager {
       'category' => $category,
       'account' => $account,
       'person' => $person,
-      'to_account' => $to_account,
+      'toAccount' => $to_account,
       'note' => $transaction->note,
       'attachments' => $attachments,
       'tags' => $tags,

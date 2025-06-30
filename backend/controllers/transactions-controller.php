@@ -97,7 +97,7 @@ class Pika_Transactions_Controller extends Pika_Base_Controller {
         $type = $this->transactions_manager->sanitize_type($params['type']??'');
         $category_id = sanitize_text_field($params['categoryId']??'');
         $account_id = sanitize_text_field($params['accountId']??'');
-        $person_id = sanitize_text_field($params['personId']??'');
+        $person_id = $params['personId'] ? sanitize_text_field($params['personId']) : null;
         $to_account_id = sanitize_text_field($params['toAccountId']??'');
         $note = sanitize_text_field($params['note']??'');
         $attachments = $params['attachments']??[];
@@ -127,7 +127,7 @@ class Pika_Transactions_Controller extends Pika_Base_Controller {
             return $this->transactions_manager->get_error('invalid_account_id');
         }
 
-        if (is_null($person_id) || empty($person_id) || !$this->transactions_manager->is_valid_person_id($person_id)) {
+        if (!is_null($person_id) && empty($person_id) && !$this->transactions_manager->is_valid_person_id($person_id)) {
             return $this->transactions_manager->get_error('invalid_person_id');
         }
 
