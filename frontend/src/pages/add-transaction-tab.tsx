@@ -17,6 +17,7 @@ import { transactionService, type TransactionInput } from '@/services/api/transa
 import { toast } from 'sonner';
 import type { AnalysisOutput } from '@/data/dummy-data';
 import type { UploadResponse } from '@/services/api/upload.service';
+import { useLookupStore } from '@/store/useLookupStore';
 
 const AddTransactionTab = () => {
   const [openAiReceiptScanner, setOpenAiReceiptScanner] = useState(false);
@@ -119,6 +120,7 @@ const AddTransactionTab = () => {
           note: '',
         });
         setAttachments([]);
+        useLookupStore.getState().fetchAll(); // TODO: implement loading state
       })
       .catch((error) => {
         console.error('Error saving transaction:', error);

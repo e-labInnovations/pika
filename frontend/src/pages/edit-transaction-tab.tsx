@@ -18,6 +18,7 @@ import { transactionService, type Transaction, type TransactionInput } from '@/s
 import { toast } from 'sonner';
 import type { UploadResponse } from '@/services/api/upload.service';
 import type { AnalysisOutput } from '@/data/dummy-data';
+import { useLookupStore } from '@/store/useLookupStore';
 
 const EditTransactionTab = () => {
   const { id } = useParams();
@@ -138,6 +139,7 @@ const EditTransactionTab = () => {
       .then(() => {
         toast.success('Transaction updated successfully!');
         navigate(`/transactions/${id}`, { replace: true });
+        useLookupStore.getState().fetchAll(); // TODO: implement loading state
       })
       .catch(() => {
         toast.error('Failed to update transaction');

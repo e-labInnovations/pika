@@ -12,10 +12,10 @@ class CurrencyUtils {
     return this.currencies[code];
   }
 
-  formatAmount(amount: number, currencyCode: CurrencyCode | undefined) {
+  formatAmount(amount: string | number, currencyCode: CurrencyCode | undefined) {
     if (!currencyCode) return `${amount}`;
     const currency = this.getCurrencyByCode(currencyCode);
-    return `${currency.symbol}${amount.toLocaleString('en-US', {
+    return `${currency.symbol}${Number(amount).toLocaleString('en-US', {
       minimumFractionDigits: currency.decimal_digits,
       maximumFractionDigits: currency.decimal_digits,
     })}`;

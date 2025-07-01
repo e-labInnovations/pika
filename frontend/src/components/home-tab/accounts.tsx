@@ -14,7 +14,7 @@ const Accounts = ({ accounts }: AccountsProps) => {
   const { user } = useAuth();
   const [showMoney, setShowMoney] = useState(false);
 
-  const totalBalance = accounts.reduce((sum, account) => sum + account.balance, 0);
+  const totalBalance = accounts.reduce((sum, account) => sum + Number(account.balance), 0);
 
   return (
     <div>
