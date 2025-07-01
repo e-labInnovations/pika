@@ -18,6 +18,7 @@ import { toast } from 'sonner';
 const EditCategory = () => {
   const { categoryId } = useParams();
   const navigate = useNavigate();
+  const [transactionType, setTransactionType] = useState<TransactionType>('expense');
 
   const [formData, setFormData] = useState<CategoryInput>({
     name: '',
@@ -38,6 +39,7 @@ const EditCategory = () => {
         .get(categoryId)
         .then((response) => {
           setCategory(response.data);
+          setTransactionType(response.data.type);
           setFormData((prev) => ({
             ...prev,
             name: response.data.name,
@@ -63,7 +65,7 @@ const EditCategory = () => {
       .then(() => {
         toast.success('Category updated successfully');
         useLookupStore.getState().fetchCategories(); // TODO: implement loading state
-        navigate('/settings/categories', { replace: true });
+        navigate(`/settings/categories?type=${transactionType}`, { replace: true });
       })
       .catch((error) => {
         toast.error(error.response.data.message);
@@ -77,7 +79,7 @@ const EditCategory = () => {
         .then(() => {
           toast.success('Category deleted successfully');
           useLookupStore.getState().fetchCategories(); // TODO: implement loading state
-          navigate('/settings/categories', { replace: true });
+          navigate(`/settings/categories?type=${transactionType}`, { replace: true });
         })
         .catch((error) => {
           toast.error(error.response.data.message);
@@ -119,7 +121,7 @@ const EditCategory = () => {
       header={{
         title: `Edit ${getTransactionTypeLabel(category.type)} Category`,
         description: 'Update category information',
-        linkBackward: '/settings/categories',
+        linkBackward: `/settings/categories?type=${transactionType}`,
       }}
     >
       <div className="mx-auto flex max-w-2xl flex-col gap-6">

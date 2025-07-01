@@ -10,7 +10,7 @@ import { authService, type User } from '@/services/api/auth.service';
 // import { authService } from '@/services/api/auth';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, Clipboard } from 'lucide-react';
 import Logo from '@/components/logo';
 import type { AxiosResponse } from 'axios';
 import { useTitle } from '@/hooks/use-title';
@@ -45,6 +45,12 @@ export default function Login() {
 
   const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     setTouched((prev) => ({ ...prev, [e.target.name]: true }));
+  };
+
+  const handlePaste = () => {
+    navigator.clipboard.readText().then((text) => {
+      setForm((prev) => ({ ...prev, appPassword: text }));
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -132,18 +138,28 @@ export default function Login() {
                   What is this?
                 </a>
               </div>
-              <Input
-                id="appPassword"
-                name="appPassword"
-                type="password"
-                autoComplete="current-password"
-                value={form.appPassword}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                placeholder="Enter your application password"
-                aria-invalid={!!errors.appPassword && touched.appPassword}
-                required
-              />
+              <div className="relative">
+                <Input
+                  id="appPassword"
+                  name="appPassword"
+                  type="password"
+                  autoComplete="current-password"
+                  value={form.appPassword}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  placeholder="Enter your application password"
+                  aria-invalid={!!errors.appPassword && touched.appPassword}
+                  required
+                />
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="absolute top-1/2 right-1 h-7 w-7 -translate-y-1/2 p-0 duration-200"
+                  onClick={handlePaste}
+                >
+                  <Clipboard className="h-4 w-4" />
+                </Button>
+              </div>
               {touched.appPassword && errors.appPassword && (
                 <div className="mt-1 text-xs text-red-500">{errors.appPassword}</div>
               )}

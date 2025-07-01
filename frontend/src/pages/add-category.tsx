@@ -38,7 +38,7 @@ const AddCategory = () => {
       .then(() => {
         toast.success('Category created successfully');
         useLookupStore.getState().fetchCategories(); // TODO: implement loading state
-        navigate('/settings/categories', { replace: true });
+        navigate(`/settings/categories?type=${transactionType}`, { replace: true });
       })
       .catch((error) => {
         toast.error(error.response.data.message);
@@ -63,7 +63,7 @@ const AddCategory = () => {
       header={{
         title: `Add ${getTransactionTypeLabel(transactionType)} Category`,
         description: 'Create a new category for your transactions',
-        linkBackward: '/settings/categories',
+        linkBackward: `/settings/categories?type=${transactionType}`,
       }}
     >
       <div className="mx-auto flex max-w-2xl flex-col gap-6">

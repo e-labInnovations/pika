@@ -13,11 +13,12 @@ import type { IconName } from '@/components/ui/icon-picker';
 import { categoryService, type Category, type CategoryInput } from '@/services/api/categories.service';
 import { useLookupStore } from '@/store/useLookupStore';
 import { toast } from 'sonner';
+import type { TransactionType } from '@/lib/transaction-utils';
 
 const EditChildCategory = () => {
   const { parentCategoryId, childCategoryId } = useParams();
   const navigate = useNavigate();
-
+  const [transactionType, setTransactionType] = useState<TransactionType>('expense');
   const [formData, setFormData] = useState<CategoryInput>({
     name: '',
     description: '',
@@ -38,6 +39,7 @@ const EditChildCategory = () => {
         .get(parentCategoryId)
         .then((response) => {
           setParentCategory(response.data);
+          setTransactionType(response.data.type);
           categoryService
             .get(childCategoryId)
             .then((response) => {
@@ -70,7 +72,7 @@ const EditChildCategory = () => {
       .then(() => {
         toast.success('Child category updated successfully');
         useLookupStore.getState().fetchCategories(); // TODO: implement loading state
-        navigate('/settings/categories', { replace: true });
+        navigate(`/settings/categories?type=${transactionType}`, { replace: true });
       })
       .catch((error) => {
         toast.error(error.response.data.message);
@@ -84,7 +86,7 @@ const EditChildCategory = () => {
         .then(() => {
           toast.success('Child category deleted successfully');
           useLookupStore.getState().fetchCategories(); // TODO: implement loading state
-          navigate('/settings/categories', { replace: true });
+          navigate(`/settings/categories?type=${transactionType}`, { replace: true });
         })
         .catch((error) => {
           toast.error(error.response.data.message);
@@ -113,7 +115,7 @@ const EditChildCategory = () => {
       header={{
         title: `Edit Child Category`,
         description: `Update subcategory under ${parentCategory.name}`,
-        linkBackward: '/settings/categories',
+        linkBackward: `/settings/categories?type=${transactionType}`,
       }}
     >
       <div className="mx-auto max-w-2xl space-y-6">

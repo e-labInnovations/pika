@@ -84,6 +84,9 @@ const router = createBrowserRouter(
       </Route>
     </>,
   ),
+  {
+    basename: '/pika',
+  },
 );
 
 export default router;

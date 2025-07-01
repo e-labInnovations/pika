@@ -13,10 +13,12 @@ import type { IconName } from '@/components/ui/icon-picker';
 import { categoryService, type Category, type CategoryInput } from '@/services/api/categories.service';
 import { useLookupStore } from '@/store/useLookupStore';
 import { toast } from 'sonner';
+import type { TransactionType } from '@/lib/transaction-utils';
 
 const AddChildCategory = () => {
   const { parentCategoryId } = useParams();
   const navigate = useNavigate();
+  const [transactionType, setTransactionType] = useState<TransactionType>('expense');
 
   const [formData, setFormData] = useState<CategoryInput>({
     name: '',
@@ -37,6 +39,7 @@ const AddChildCategory = () => {
         .get(parentCategoryId)
         .then((response) => {
           setParentCategory(response.data);
+          setTransactionType(response.data.type);
           setFormData((prev) => ({
             ...prev,
             type: response.data.type,
@@ -56,7 +59,7 @@ const AddChildCategory = () => {
       .then(() => {
         toast.success('Child category created successfully');
         useLookupStore.getState().fetchCategories(); // TODO: implement loading state
-        navigate('/settings/categories', { replace: true });
+        navigate(`/settings/categories?type=${transactionType}`, { replace: true });
       })
       .catch((error) => {
         toast.error(error.response.data.message);
@@ -84,7 +87,7 @@ const AddChildCategory = () => {
       header={{
         title: `Add Child Category`,
         description: `Create a subcategory under ${parentCategory.name}`,
-        linkBackward: '/settings/categories',
+        linkBackward: `/settings/categories?type=${transactionType}`,
       }}
     >
       <div className="mx-auto max-w-2xl space-y-6">
