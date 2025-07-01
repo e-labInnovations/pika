@@ -10,7 +10,7 @@ import { IconRenderer } from '@/components/icon-renderer';
 import { TagChip } from '@/components/tag-chip';
 import { type IconName } from '@/components/ui/icon-picker';
 import IconColorsFields from '@/components/categories/icon-colors-fields';
-import { tagService, type Tag } from '@/services/api/tags.service';
+import { tagsService, type Tag } from '@/services/api/tags.service';
 import { useLookupStore } from '@/store/useLookupStore';
 import { toast } from 'sonner';
 
@@ -30,7 +30,7 @@ const EditTag = () => {
 
   useEffect(() => {
     if (tagId) {
-      tagService.get(tagId).then((response) => {
+      tagsService.get(tagId).then((response) => {
         setTag(response.data);
         setFormData({
           name: response.data.name,
@@ -45,12 +45,12 @@ const EditTag = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    tagService
+    tagsService
       .update(tagId!, formData)
       .then(() => {
         toast.success('Tag updated successfully');
         useLookupStore.getState().fetchTags(); // TODO: implement loading state
-        navigate('/settings/tags');
+        navigate('/settings/tags', { replace: true });
       })
       .catch((error) => {
         toast.error(error.response.data.message);
@@ -59,12 +59,12 @@ const EditTag = () => {
 
   const handleDelete = () => {
     if (confirm(`Are you sure you want to delete "${formData.name}"?`)) {
-      tagService
+      tagsService
         .delete(tagId!)
         .then(() => {
           toast.success('Tag deleted successfully');
           useLookupStore.getState().fetchTags(); // TODO: implement loading state
-          navigate('/settings/tags');
+          navigate('/settings/tags', { replace: true });
         })
         .catch((error) => {
           toast.error(error.response.data.message);

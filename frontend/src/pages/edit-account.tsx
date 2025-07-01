@@ -66,7 +66,7 @@ const EditAccount = () => {
       .then(() => {
         toast.success('Account updated successfully');
         useLookupStore.getState().fetchAccounts(); // TODO: implement loading state
-        navigate('/settings/accounts');
+        navigate(`/settings/accounts/${accountId}`, { replace: true });
       })
       .catch((error) => {
         toast.error(error.response.data.message);
@@ -80,7 +80,7 @@ const EditAccount = () => {
         .then(() => {
           toast.success('Account deleted successfully');
           useLookupStore.getState().fetchAccounts(); // TODO: implement loading state
-          navigate('/settings/accounts');
+          navigate('/settings/accounts', { replace: true });
         })
         .catch((error) => {
           toast.error(error.response.data.message);

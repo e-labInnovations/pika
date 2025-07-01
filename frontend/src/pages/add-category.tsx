@@ -38,7 +38,7 @@ const AddCategory = () => {
       .then(() => {
         toast.success('Category created successfully');
         useLookupStore.getState().fetchCategories(); // TODO: implement loading state
-        navigate('/settings/categories');
+        navigate('/settings/categories', { replace: true });
       })
       .catch((error) => {
         toast.error(error.response.data.message);

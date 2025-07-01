@@ -65,7 +65,7 @@ const Categories = () => {
   };
 
   const onTabChange = (transactionType: TransactionType) => {
-    navigate(`/settings/categories?type=${transactionType}`);
+    navigate(`/settings/categories?type=${transactionType}`, { replace: true });
   };
 
   const tabContents = TransactionUtils.types.map((type) => ({

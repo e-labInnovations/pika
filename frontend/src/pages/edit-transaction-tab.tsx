@@ -66,7 +66,7 @@ const EditTransactionTab = () => {
         })
         .catch(() => {
           toast.error('Transaction not found');
-          navigate('/transactions');
+          navigate('/transactions', { replace: true });
         });
     }
   }, [id, navigate]);
@@ -137,7 +137,7 @@ const EditTransactionTab = () => {
       .update(id || '', transactionInput)
       .then(() => {
         toast.success('Transaction updated successfully!');
-        navigate(`/transactions/${id}`);
+        navigate(`/transactions/${id}`, { replace: true });
       })
       .catch(() => {
         toast.error('Failed to update transaction');

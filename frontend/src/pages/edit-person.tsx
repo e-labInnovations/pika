@@ -73,7 +73,7 @@ const EditPerson = () => {
       .update(id as string, personInput)
       .then(() => {
         toast.success('Person updated successfully');
-        navigate('/people');
+        navigate(`/people/${id}`, { replace: true });
       })
       .catch((error) => {
         toast.error(error.response.data.message);
@@ -86,7 +86,7 @@ const EditPerson = () => {
         .delete(id as string)
         .then(() => {
           toast.success('Person deleted successfully');
-          navigate('/people');
+          navigate('/people', { replace: true });
         })
         .catch((error) => {
           toast.error(error.response.data.message);

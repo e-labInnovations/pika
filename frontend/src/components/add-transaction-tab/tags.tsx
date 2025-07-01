@@ -5,7 +5,7 @@ import type { TransactionFormData } from './types';
 import { useEffect, useState } from 'react';
 import { TagChip } from '../tag-chip';
 import { IconRenderer } from '../icon-renderer';
-import { tagService, type Tag } from '@/services/api/tags.service';
+import { tagsService, type Tag } from '@/services/api/tags.service';
 import { toast } from 'sonner';
 
 interface TagsProps {
@@ -19,7 +19,7 @@ const Tags = ({ formData, setFormData }: TagsProps) => {
   const [tags, setTags] = useState<Tag[]>([]);
 
   useEffect(() => {
-    tagService
+    tagsService
       .list()
       .then((response) => {
         setTags(response.data);

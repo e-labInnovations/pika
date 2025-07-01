@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { tagService, type Tag } from '@/services/api/tags.service';
+import { tagsService, type Tag } from '@/services/api/tags.service';
 import { categoryService, type Category } from '@/services/api/categories.service';
 import { accountService, type Account } from '@/services/api/accounts.service';
 import { peopleService, type Person } from '@/services/api/people.service';
@@ -26,7 +26,7 @@ export const useLookupStore = create<LookupState>((set) => ({
   loading: true,
 
   async fetchTags() {
-    const res = await tagService.list();
+    const res = await tagsService.list();
     set({ tags: res.data });
   },
 
@@ -48,7 +48,7 @@ export const useLookupStore = create<LookupState>((set) => ({
   async fetchAll() {
     set({ loading: true });
     const [tagsRes, catRes, accRes, peopleRes] = await Promise.all([
-      tagService.list(),
+      tagsService.list(),
       categoryService.list(),
       accountService.list(),
       peopleService.list(),

@@ -54,7 +54,7 @@ const AddAccount = () => {
       .then(() => {
         toast.success('Account created successfully');
         useLookupStore.getState().fetchAccounts(); // TODO: implement loading state
-        navigate('/settings/accounts');
+        navigate('/settings/accounts', { replace: true });
       })
       .catch((error) => {
         toast.error(error.response.data.message);

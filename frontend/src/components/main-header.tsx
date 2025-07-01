@@ -21,7 +21,7 @@ const MainHeader = ({ linkBackward, title, description, rightActions }: MainHead
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => navigate(linkBackward)}
+                onClick={() => navigate(linkBackward, { replace: true })}
                 className="text-muted-foreground mr-2"
               >
                 <ChevronLeft className="size-8" />

@@ -10,10 +10,10 @@ export interface Tag {
   isSystem: boolean;
 }
 
-class TagService extends BaseService<Tag> {
+class TagsService extends BaseService<Tag> {
   constructor() {
     super('/tags');
   }
 }
 
-export const tagService = new TagService();
+export const tagsService = new TagsService();

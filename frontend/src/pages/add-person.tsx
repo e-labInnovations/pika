@@ -43,7 +43,7 @@ const AddPerson = () => {
       .create(personInput)
       .then(() => {
         toast.success('Person created successfully');
-        navigate('/people');
+        navigate('/people', { replace: true });
       })
       .catch((error) => {
         toast.error(error.response.data.message);

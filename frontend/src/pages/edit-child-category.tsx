@@ -70,7 +70,7 @@ const EditChildCategory = () => {
       .then(() => {
         toast.success('Child category updated successfully');
         useLookupStore.getState().fetchCategories(); // TODO: implement loading state
-        navigate('/settings/categories');
+        navigate('/settings/categories', { replace: true });
       })
       .catch((error) => {
         toast.error(error.response.data.message);
@@ -84,7 +84,7 @@ const EditChildCategory = () => {
         .then(() => {
           toast.success('Child category deleted successfully');
           useLookupStore.getState().fetchCategories(); // TODO: implement loading state
-          navigate('/settings/categories');
+          navigate('/settings/categories', { replace: true });
         })
         .catch((error) => {
           toast.error(error.response.data.message);

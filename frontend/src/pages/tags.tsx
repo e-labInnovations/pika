@@ -4,7 +4,7 @@ import TabsLayout from '@/layouts/tabs';
 import { Plus, Trash2, Edit2 } from 'lucide-react';
 import { IconRenderer } from '@/components/icon-renderer';
 import { useNavigate } from 'react-router-dom';
-import { tagService } from '@/services/api/tags.service';
+import { tagsService } from '@/services/api/tags.service';
 import { useLookupStore } from '@/store/useLookupStore';
 import { toast } from 'sonner';
 
@@ -13,7 +13,7 @@ const Tags = () => {
   const tags = useLookupStore((state) => state.tags);
 
   const onDeleteTag = (id: string) => {
-    tagService
+    tagsService
       .delete(id)
       .then(() => {
         useLookupStore.getState().fetchTags(); // TODO: implement loading state

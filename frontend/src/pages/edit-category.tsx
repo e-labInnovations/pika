@@ -63,7 +63,7 @@ const EditCategory = () => {
       .then(() => {
         toast.success('Category updated successfully');
         useLookupStore.getState().fetchCategories(); // TODO: implement loading state
-        navigate('/settings/categories');
+        navigate('/settings/categories', { replace: true });
       })
       .catch((error) => {
         toast.error(error.response.data.message);
@@ -77,7 +77,7 @@ const EditCategory = () => {
         .then(() => {
           toast.success('Category deleted successfully');
           useLookupStore.getState().fetchCategories(); // TODO: implement loading state
-          navigate('/settings/categories');
+          navigate('/settings/categories', { replace: true });
         })
         .catch((error) => {
           toast.error(error.response.data.message);

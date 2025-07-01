@@ -10,7 +10,7 @@ import { IconRenderer } from '@/components/icon-renderer';
 import { TagChip } from '@/components/tag-chip';
 import { type IconName } from '@/components/ui/icon-picker';
 import IconColorsFields from '@/components/categories/icon-colors-fields';
-import { tagService } from '@/services/api/tags.service';
+import { tagsService } from '@/services/api/tags.service';
 import { useLookupStore } from '@/store/useLookupStore';
 import { toast } from 'sonner';
 
@@ -27,12 +27,12 @@ const AddTag = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    tagService
+    tagsService
       .create(formData)
       .then(() => {
         toast.success('Tag created successfully');
         useLookupStore.getState().fetchTags(); // TODO: implement loading state
-        navigate('/settings/tags');
+        navigate('/settings/tags', { replace: true });
       })
       .catch((error) => {
         toast.error(error.response.data.message);
