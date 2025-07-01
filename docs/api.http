@@ -381,3 +381,9 @@ DELETE {{base_url}}/wp-json/pika/v1/transactions/4
 Authorization: Basic {{username}}:{{password}}
 
 ###
+
+# Get weekly expenses
+GET {{base_url}}/wp-json/pika/v1/analytics/weekly-expenses
+Authorization: Basic {{username}}:{{password}}
+
+###

@@ -98,4 +98,47 @@ ORDER BY
         }
         return $person;
     }
+
+    /**
+     * Get the weekly expenses
+     * 
+     * @return array|WP_Error
+     */
+    public function get_weekly_expenses() {
+        $transactions_table = $this->get_table_name($this->transaction_table_name);
+        $user_id = get_current_user_id();
+
+        $sql = $this->db()->prepare("
+SELECT
+    COALESCE(SUM(CASE WHEN DAYOFWEEK(date) = 2 THEN amount END), 0) AS mon,
+    COALESCE(SUM(CASE WHEN DAYOFWEEK(date) = 3 THEN amount END), 0) AS tue,
+    COALESCE(SUM(CASE WHEN DAYOFWEEK(date) = 4 THEN amount END), 0) AS wed,
+    COALESCE(SUM(CASE WHEN DAYOFWEEK(date) = 5 THEN amount END), 0) AS thu,
+    COALESCE(SUM(CASE WHEN DAYOFWEEK(date) = 6 THEN amount END), 0) AS fri,
+    COALESCE(SUM(CASE WHEN DAYOFWEEK(date) = 7 THEN amount END), 0) AS sat,
+    COALESCE(SUM(CASE WHEN DAYOFWEEK(date) = 1 THEN amount END), 0) AS sun
+FROM 
+    {$transactions_table}
+WHERE 
+    user_id = %d
+    AND is_active = 1
+    AND type = 'expense'
+    AND DATE(date) BETWEEN CURDATE() - INTERVAL (WEEKDAY(CURDATE()) + 6) DAY
+                         AND CURDATE() + INTERVAL (6 - WEEKDAY(CURDATE())) DAY;", $user_id);
+        $weekly_expenses_data = $this->db()->get_row($sql);
+        if (is_wp_error($weekly_expenses_data)) {
+            return $this->get_error('db_error');
+        }
+
+        $weekly_expenses = [
+            'mon' => $weekly_expenses_data->mon,
+            'tue' => $weekly_expenses_data->tue,
+            'wed' => $weekly_expenses_data->wed,
+            'thu' => $weekly_expenses_data->thu,
+            'fri' => $weekly_expenses_data->fri,
+            'sat' => $weekly_expenses_data->sat,
+            'sun' => $weekly_expenses_data->sun,
+        ];
+        return $weekly_expenses;
+    }
 }
