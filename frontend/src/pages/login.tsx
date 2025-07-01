@@ -13,6 +13,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 import Logo from '@/components/logo';
 import type { AxiosResponse } from 'axios';
+import { useTitle } from '@/hooks/use-title';
 
 const loginSchema = z.object({
   username: z.string().min(3, 'Username is required'),
@@ -33,6 +34,7 @@ export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const { signIn } = useAuth();
+  useTitle('Login');
 
   const result = loginSchema.safeParse(form);
   const errors = !result.success ? result.error.formErrors.fieldErrors : {};

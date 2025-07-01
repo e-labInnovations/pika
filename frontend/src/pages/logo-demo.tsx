@@ -1,5 +1,6 @@
 import Logo from '@/components/logo';
 import PikaIcon from '@/components/pika-icon';
+import { useTitle } from '@/hooks/use-title';
 
 // 2. Usage in different contexts with Tailwind classes
 export const LogoExamples = () => {
@@ -101,6 +102,8 @@ export const PikaCard = ({ title, children }: { title: string; children: React.R
 
 // 6. Usage Examples
 export default function LogoDemo() {
+  useTitle('Logo Demo');
+
   return (
     <div className="min-h-screen bg-gray-50 p-4">
       <div className="mx-auto max-w-4xl space-y-8">

@@ -1,9 +1,11 @@
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Home } from 'lucide-react';
+import { useTitle } from '@/hooks/use-title';
 
 const NotFound = () => {
   const navigate = useNavigate();
+  useTitle('404');
 
   return (
     <div className="flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center px-4">

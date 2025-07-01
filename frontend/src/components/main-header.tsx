@@ -2,15 +2,18 @@ import { ChevronLeft } from 'lucide-react';
 import { Button } from './ui/button';
 import { useNavigate } from 'react-router-dom';
 import PikaIcon from './pika-icon';
+import { useTitle } from '@/hooks/use-title';
 
 interface MainHeaderProps {
   linkBackward?: string;
   title: string;
+  pageTitle?: string;
   description?: string;
   rightActions?: React.ReactNode;
 }
-const MainHeader = ({ linkBackward, title, description, rightActions }: MainHeaderProps) => {
+const MainHeader = ({ linkBackward, title, pageTitle, description, rightActions }: MainHeaderProps) => {
   const navigate = useNavigate();
+  useTitle(pageTitle || title);
 
   return (
     <div className="bg-card/80 border-border sticky top-0 z-30 border-b backdrop-blur-sm">
