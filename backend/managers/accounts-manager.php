@@ -12,6 +12,7 @@ class Pika_Accounts_Manager extends Pika_Base_Manager {
 
   protected $table_name = 'accounts';
   protected $upload_manager;
+  protected $analytics_manager;
 
   public $errors = [
     'invalid_account_id' => ['message' => 'Invalid account id', 'status' => 400],
@@ -24,6 +25,7 @@ class Pika_Accounts_Manager extends Pika_Base_Manager {
   public function __construct() {
     parent::__construct();
     $this->upload_manager = new Pika_Upload_Manager();
+    $this->analytics_manager = new Pika_Analytics_Manager();
   }
 
   /**
@@ -79,7 +81,11 @@ class Pika_Accounts_Manager extends Pika_Base_Manager {
     $avatar = $account->avatar_id ? $this->upload_manager->get_file_by_id($account->avatar_id, true) : null;
     $last_transaction_at = null;
     $total_transactions = 0;
-    $balance = 0;
+    $balance = 'error';
+    $account_summary = $this->analytics_manager->get_account_summary($account->id);
+    if (!is_wp_error($account_summary)) {
+      $balance = $account_summary->balance;
+    }
 
     return [
       'id' => $account->id,

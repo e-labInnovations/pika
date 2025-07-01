@@ -13,7 +13,7 @@ class Pika_People_Manager extends Pika_Base_Manager {
   protected $table_name = 'people';
   protected $upload_type = 'avatar';
   protected $upload_manager;
-
+  protected $analytics_manager;
   public $errors = [
     'person_not_found' => ['message' => 'Person not found', 'status' => 404],
     'invalid_name' => ['message' => 'Invalid person name', 'status' => 400],
@@ -26,6 +26,7 @@ class Pika_People_Manager extends Pika_Base_Manager {
   public function __construct() {
     parent::__construct();
     $this->upload_manager = new Pika_Upload_Manager();
+    $this->analytics_manager = new Pika_Analytics_Manager();
   }
 
   /**
@@ -38,7 +39,13 @@ class Pika_People_Manager extends Pika_Base_Manager {
     $avatar = $this->upload_manager->get_file_by_id($person->avatar_id, true);
     $last_transaction_at = date('Y-m-d H:i:s');
     $total_transactions = 0;
-    $balance = 0;
+    $balance = 'error';
+    $person_summary = $this->analytics_manager->get_person_summary($person->id);
+    if (!is_wp_error($person_summary)) {
+      $balance = $person_summary->balance;
+      $last_transaction_at = $person_summary->last_transaction_at;
+      $total_transactions = $person_summary->total_transactions;
+    }
     
     return [
       'id' => $person->id,
