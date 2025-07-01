@@ -11,6 +11,7 @@ import CategoryItemView from '@/components/category-item-view';
 import IconColorsFields from '@/components/categories/icon-colors-fields';
 import type { IconName } from '@/components/ui/icon-picker';
 import { categoryService, type Category, type CategoryInput } from '@/services/api/categories.service';
+import { useLookupStore } from '@/store/useLookupStore';
 import { toast } from 'sonner';
 
 const EditChildCategory = () => {
@@ -68,6 +69,7 @@ const EditChildCategory = () => {
       .update(childCategoryId || '', formData)
       .then(() => {
         toast.success('Child category updated successfully');
+        useLookupStore.getState().fetchCategories(); // TODO: implement loading state
         navigate('/settings/categories');
       })
       .catch((error) => {
@@ -81,6 +83,7 @@ const EditChildCategory = () => {
         .delete(childCategoryId || '')
         .then(() => {
           toast.success('Child category deleted successfully');
+          useLookupStore.getState().fetchCategories(); // TODO: implement loading state
           navigate('/settings/categories');
         })
         .catch((error) => {

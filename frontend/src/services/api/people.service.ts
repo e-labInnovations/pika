@@ -26,10 +26,10 @@ export interface PersonInput {
   description: string;
 }
 
-class PersonService extends BaseService<Person> {
+class PeopleService extends BaseService<Person> {
   constructor() {
     super('/people');
   }
 }
 
-export const personService = new PersonService();
+export const peopleService = new PeopleService();

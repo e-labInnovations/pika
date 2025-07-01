@@ -5,7 +5,7 @@ import type { TransactionFormData } from './types';
 import { useEffect, useState } from 'react';
 import PeoplePicker from '../people-picker';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-import { personService, type Person } from '@/services/api/people.service';
+import { peopleService, type Person } from '@/services/api/people.service';
 
 interface PersonProps {
   formData: TransactionFormData;
@@ -18,7 +18,7 @@ const PersonView = ({ formData, setFormData }: PersonProps) => {
 
   useEffect(() => {
     if (formData.person) {
-      personService.get(formData.person).then((response) => {
+      peopleService.get(formData.person).then((response) => {
         setPerson(response.data);
       });
     } else {

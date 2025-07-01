@@ -11,7 +11,7 @@ import { currencyUtils } from '@/lib/currency-utils';
 import { useAuth } from '@/hooks/use-auth';
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
-import { personService, type Person } from '@/services/api/people.service';
+import { peopleService, type Person } from '@/services/api/people.service';
 
 const DetailedPerson = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -22,7 +22,7 @@ const DetailedPerson = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    personService
+    peopleService
       .get(id as string)
       .then((response) => {
         setPerson(response.data);
@@ -49,7 +49,7 @@ const DetailedPerson = () => {
 
   const handleDelete = () => {
     if (person && confirm(`Are you sure you want to delete "${person.name}"?`)) {
-      personService
+      peopleService
         .delete(id as string)
         .then(() => {
           toast.success(`${person.name} deleted successfully`);

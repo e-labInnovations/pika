@@ -36,6 +36,7 @@ const router = createBrowserRouter(
     <>
       {/* Public Routes */}
       <Route path="/login" element={<Login />} />
+      <Route path="/logo-demo" element={<LogoDemo />} />
 
       {/* Protected Routes */}
       <Route
@@ -77,7 +78,6 @@ const router = createBrowserRouter(
 
         {/* Other Routes */}
         <Route path="/about" element={<div>About Page</div>} />
-        <Route path="/logo-demo" element={<LogoDemo />} />
 
         {/* 404 Route - Must be last */}
         <Route path="*" element={<NotFound />} />

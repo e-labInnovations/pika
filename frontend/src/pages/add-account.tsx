@@ -12,8 +12,9 @@ import {
   InitialBalanceSection,
 } from '@/components/accounts-settings';
 import { accountService, type AccountInput } from '@/services/api/accounts.service';
-import { toast } from 'sonner';
 import { uploadService } from '@/services/api/upload.service';
+import { useLookupStore } from '@/store/useLookupStore';
+import { toast } from 'sonner';
 
 const AddAccount = () => {
   const navigate = useNavigate();
@@ -52,6 +53,7 @@ const AddAccount = () => {
       .create(newFormData)
       .then(() => {
         toast.success('Account created successfully');
+        useLookupStore.getState().fetchAccounts(); // TODO: implement loading state
         navigate('/settings/accounts');
       })
       .catch((error) => {

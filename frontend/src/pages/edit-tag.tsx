@@ -11,6 +11,7 @@ import { TagChip } from '@/components/tag-chip';
 import { type IconName } from '@/components/ui/icon-picker';
 import IconColorsFields from '@/components/categories/icon-colors-fields';
 import { tagService, type Tag } from '@/services/api/tags.service';
+import { useLookupStore } from '@/store/useLookupStore';
 import { toast } from 'sonner';
 
 const EditTag = () => {
@@ -48,6 +49,7 @@ const EditTag = () => {
       .update(tagId!, formData)
       .then(() => {
         toast.success('Tag updated successfully');
+        useLookupStore.getState().fetchTags(); // TODO: implement loading state
         navigate('/settings/tags');
       })
       .catch((error) => {
@@ -61,6 +63,7 @@ const EditTag = () => {
         .delete(tagId!)
         .then(() => {
           toast.success('Tag deleted successfully');
+          useLookupStore.getState().fetchTags(); // TODO: implement loading state
           navigate('/settings/tags');
         })
         .catch((error) => {

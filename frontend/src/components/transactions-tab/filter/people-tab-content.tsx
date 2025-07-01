@@ -1,13 +1,12 @@
+import { useState } from 'react';
 import { CircleCheck } from 'lucide-react';
-import { useEffect, useState } from 'react';
 import SearchItem from './search-item';
 import FilterTabHeader from './filter-tab-header';
 import { cn } from '@/lib/utils';
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import type { Filter } from './types';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { personService, type Person } from '@/services/api/people.service';
-import { toast } from 'sonner';
+import { useLookupStore } from '@/store/useLookupStore';
 
 interface PeopleTabContentProps {
   filters: Filter;
@@ -16,18 +15,7 @@ interface PeopleTabContentProps {
 
 const PeopleTabContent = ({ filters, setFilters }: PeopleTabContentProps) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [people, setPeople] = useState<Person[]>([]);
-
-  useEffect(() => {
-    personService
-      .list()
-      .then((response) => {
-        setPeople(response.data);
-      })
-      .catch(() => {
-        toast.error('Failed to fetch people');
-      });
-  }, []);
+  const people = useLookupStore((state) => state.people);
 
   const getFilteredPeople = () => {
     return people.filter((person) => person.name.toLowerCase().includes(searchTerm));

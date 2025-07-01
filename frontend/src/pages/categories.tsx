@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import TabsLayout from '@/layouts/tabs';
@@ -5,22 +6,15 @@ import CategoryItem from '@/components/categories/category-item';
 import CategoriesTabs from '@/components/categories/categories-tabs';
 import TransactionUtils, { type TransactionType } from '@/lib/transaction-utils';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { categoryService, type Category } from '@/services/api/categories.service';
-import { useEffect, useState } from 'react';
+import { categoryService } from '@/services/api/categories.service';
+import { useLookupStore } from '@/store/useLookupStore';
 import { toast } from 'sonner';
 
 const Categories = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const transactionType = (searchParams.get('type') as TransactionType) || 'expense';
-
-  const [categories, setCategories] = useState<Category[]>([]);
-
-  useEffect(() => {
-    categoryService.list().then((response) => {
-      setCategories(response.data);
-    });
-  }, []);
+  const categories = useLookupStore((state) => state.categories);
 
   useEffect(() => {
     navigate(`/settings/categories?type=${transactionType}`);
@@ -31,7 +25,7 @@ const Categories = () => {
       .delete(id)
       .then(() => {
         toast.success('Category deleted successfully');
-        setCategories(categories.filter((category) => category.id !== id));
+        useLookupStore.getState().fetchCategories(); // TODO: implement loading state
       })
       .catch((error) => {
         toast.error(error.response.data.message);
@@ -51,7 +45,15 @@ const Categories = () => {
   };
 
   const onDeleteChildCategory = (id: string) => {
-    console.log('Delete child category:', id);
+    categoryService
+      .delete(id)
+      .then(() => {
+        toast.success('Child category deleted successfully');
+        useLookupStore.getState().fetchCategories(); // TODO: implement loading state
+      })
+      .catch((error) => {
+        toast.error(error.response.data.message);
+      });
   };
 
   const onAddCategory = (type: TransactionType | undefined) => {

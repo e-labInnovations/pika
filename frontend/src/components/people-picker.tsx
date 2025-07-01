@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Check } from 'lucide-react';
 import SearchBar from './search-bar';
-import { personService, type Person } from '@/services/api/people.service';
+import { type Person } from '@/services/api/people.service';
+import { useLookupStore } from '@/store/useLookupStore';
 
 interface PeoplePickerProps {
   isOpen: boolean;
@@ -15,13 +16,8 @@ interface PeoplePickerProps {
 
 const PeoplePicker = ({ isOpen, onClose, onSelect, selectedPersonId }: PeoplePickerProps) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [people, setPeople] = useState<Person[]>([]);
+  const people = useLookupStore((state) => state.people);
 
-  useEffect(() => {
-    personService.list().then((response) => {
-      setPeople(response.data);
-    });
-  }, []);
   const filteredPeople = people.filter(
     (person) =>
       person.name.toLowerCase().includes(searchTerm.toLowerCase()) ||

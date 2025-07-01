@@ -11,6 +11,7 @@ import { TagChip } from '@/components/tag-chip';
 import { type IconName } from '@/components/ui/icon-picker';
 import IconColorsFields from '@/components/categories/icon-colors-fields';
 import { tagService } from '@/services/api/tags.service';
+import { useLookupStore } from '@/store/useLookupStore';
 import { toast } from 'sonner';
 
 const AddTag = () => {
@@ -30,6 +31,7 @@ const AddTag = () => {
       .create(formData)
       .then(() => {
         toast.success('Tag created successfully');
+        useLookupStore.getState().fetchTags(); // TODO: implement loading state
         navigate('/settings/tags');
       })
       .catch((error) => {

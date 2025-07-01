@@ -8,24 +8,24 @@ import { cn } from '@/lib/utils';
 import transactionUtils from '@/lib/transaction-utils';
 import { currencyUtils } from '@/lib/currency-utils';
 import { useAuth } from '@/hooks/use-auth';
-import { accountService, type Account } from '@/services/api/accounts.service';
-import { useEffect, useState } from 'react';
+import { accountService } from '@/services/api/accounts.service';
+import { useLookupStore } from '@/store/useLookupStore';
+import { toast } from 'sonner';
 
 const AccountsSettings = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [accounts, setAccounts] = useState<Account[]>([]);
-
-  useEffect(() => {
-    accountService.list().then((response) => {
-      setAccounts(response.data);
-    });
-  }, []);
+  const accounts = useLookupStore((state) => state.accounts);
 
   const handleDeleteAccount = (id: string) => {
-    accountService.delete(id).then(() => {
-      setAccounts(accounts.filter((account) => account.id !== id));
-    });
+    accountService
+      .delete(id)
+      .then(() => {
+        useLookupStore.getState().fetchAccounts(); // TODO: implement loading state
+      })
+      .catch((error) => {
+        toast.error(error.response.data.message);
+      });
   };
 
   return (

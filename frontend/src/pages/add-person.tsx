@@ -7,7 +7,7 @@ import { Save } from 'lucide-react';
 import AvatarUpload from '@/components/people-tab/avatar-upload';
 import PersonFormFields from '@/components/people-tab/person-form-fields';
 import PersonPreview from '@/components/people-tab/person-preview';
-import { personService, type PersonInput } from '@/services/api/people.service';
+import { peopleService, type PersonInput } from '@/services/api/people.service';
 import { uploadService } from '@/services/api/upload.service';
 import { toast } from 'sonner';
 
@@ -39,7 +39,7 @@ const AddPerson = () => {
       personInput.avatarId = uploadResponse.data.id;
     }
 
-    personService
+    peopleService
       .create(personInput)
       .then(() => {
         toast.success('Person created successfully');

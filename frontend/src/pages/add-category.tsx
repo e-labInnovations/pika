@@ -12,6 +12,7 @@ import { type IconName } from '@/components/ui/icon-picker';
 import TransactionTypeView from '@/components/transaction-type-view';
 import IconColorsFields from '@/components/categories/icon-colors-fields';
 import { categoryService, type CategoryInput } from '@/services/api/categories.service';
+import { useLookupStore } from '@/store/useLookupStore';
 import { toast } from 'sonner';
 
 const AddCategory = () => {
@@ -36,6 +37,7 @@ const AddCategory = () => {
       .create(formData)
       .then(() => {
         toast.success('Category created successfully');
+        useLookupStore.getState().fetchCategories(); // TODO: implement loading state
         navigate('/settings/categories');
       })
       .catch((error) => {

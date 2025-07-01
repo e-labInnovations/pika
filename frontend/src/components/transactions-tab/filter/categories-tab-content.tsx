@@ -1,10 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import FilterTabHeader from './filter-tab-header';
 import SearchItem from './search-item';
 import type { Filter } from './types';
 import { IconRenderer } from '@/components/icon-renderer';
-import { categoryService, type Category } from '@/services/api/categories.service';
-import { toast } from 'sonner';
+import { useLookupStore } from '@/store/useLookupStore';
 
 interface CategoriesTabContentProps {
   filters: Filter;
@@ -13,18 +12,7 @@ interface CategoriesTabContentProps {
 
 const CategoriesTabContent = ({ filters, setFilters }: CategoriesTabContentProps) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [categories, setCategories] = useState<Category[]>([]);
-
-  useEffect(() => {
-    categoryService
-      .list()
-      .then((response) => {
-        setCategories(response.data);
-      })
-      .catch(() => {
-        toast.error('Failed to fetch categories');
-      });
-  }, []);
+  const categories = useLookupStore((state) => state.categories);
 
   const handleSelectAllCategories = () => {
     const allCategoryIds = [

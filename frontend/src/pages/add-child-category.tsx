@@ -11,6 +11,7 @@ import CategoryItemView from '@/components/category-item-view';
 import IconColorsFields from '@/components/categories/icon-colors-fields';
 import type { IconName } from '@/components/ui/icon-picker';
 import { categoryService, type Category, type CategoryInput } from '@/services/api/categories.service';
+import { useLookupStore } from '@/store/useLookupStore';
 import { toast } from 'sonner';
 
 const AddChildCategory = () => {
@@ -54,6 +55,7 @@ const AddChildCategory = () => {
       .create(formData)
       .then(() => {
         toast.success('Child category created successfully');
+        useLookupStore.getState().fetchCategories(); // TODO: implement loading state
         navigate('/settings/categories');
       })
       .catch((error) => {

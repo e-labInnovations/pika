@@ -7,7 +7,7 @@ import { Save, Trash2 } from 'lucide-react';
 import AvatarUpload from '@/components/people-tab/avatar-upload';
 import PersonFormFields from '@/components/people-tab/person-form-fields';
 import PersonPreview from '@/components/people-tab/person-preview';
-import { personService, type Person, type PersonInput } from '@/services/api/people.service';
+import { peopleService, type Person, type PersonInput } from '@/services/api/people.service';
 import { uploadService } from '@/services/api/upload.service';
 import { toast } from 'sonner';
 
@@ -29,7 +29,7 @@ const EditPerson = () => {
 
   useEffect(() => {
     if (id) {
-      personService
+      peopleService
         .get(id)
         .then((response) => {
           setPerson(response.data);
@@ -69,7 +69,7 @@ const EditPerson = () => {
       personInput.avatarId = uploadResponse.data.id;
     }
 
-    personService
+    peopleService
       .update(id as string, personInput)
       .then(() => {
         toast.success('Person updated successfully');
@@ -82,7 +82,7 @@ const EditPerson = () => {
 
   const handleDelete = () => {
     if (confirm(`Are you sure you want to delete "${formData.name}"?`)) {
-      personService
+      peopleService
         .delete(id as string)
         .then(() => {
           toast.success('Person deleted successfully');

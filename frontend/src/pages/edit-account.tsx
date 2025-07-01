@@ -8,6 +8,7 @@ import { type IconName } from '@/components/ui/icon-picker';
 import { AccountFormFields, AccountIconSelector, AccountPreview } from '@/components/accounts-settings';
 import { accountService, type Account, type AccountInput } from '@/services/api/accounts.service';
 import { uploadService } from '@/services/api/upload.service';
+import { useLookupStore } from '@/store/useLookupStore';
 import { toast } from 'sonner';
 
 const EditAccount = () => {
@@ -64,6 +65,7 @@ const EditAccount = () => {
       .update(accountId!, newFormData)
       .then(() => {
         toast.success('Account updated successfully');
+        useLookupStore.getState().fetchAccounts(); // TODO: implement loading state
         navigate('/settings/accounts');
       })
       .catch((error) => {
@@ -77,6 +79,7 @@ const EditAccount = () => {
         .delete(accountId!)
         .then(() => {
           toast.success('Account deleted successfully');
+          useLookupStore.getState().fetchAccounts(); // TODO: implement loading state
           navigate('/settings/accounts');
         })
         .catch((error) => {

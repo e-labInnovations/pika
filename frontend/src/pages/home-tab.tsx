@@ -1,25 +1,12 @@
-import { useEffect, useState } from 'react';
 import TabsLayout from '@/layouts/tabs';
 import { weeklyExpenses } from '@/data/dummy-data';
 import Accounts from '@/components/home-tab/accounts';
 import ExpensesThisWeek from '@/components/home-tab/expenses-this-week';
 import MonthlySummary from '@/components/home-tab/monthly-summary';
-import { accountService, type Account } from '@/services/api/accounts.service';
-import { toast } from 'sonner';
+import { useLookupStore } from '@/store/useLookupStore';
 
 const HomeTab = () => {
-  const [accounts, setAccounts] = useState<Account[]>([]);
-
-  useEffect(() => {
-    accountService
-      .list()
-      .then((response) => {
-        setAccounts(response.data);
-      })
-      .catch(() => {
-        toast.error('Failed to fetch accounts');
-      });
-  }, []);
+  const accounts = useLookupStore((state) => state.accounts);
 
   return (
     <TabsLayout
