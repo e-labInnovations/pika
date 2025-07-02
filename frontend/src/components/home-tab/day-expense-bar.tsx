@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
+import { currencyUtils } from '@/lib/currency-utils';
+import { useAuth } from '@/hooks/use-auth';
 
 interface DayExpenseBarProps {
   percentage: number;
@@ -11,6 +13,7 @@ interface DayExpenseBarProps {
 
 const DayExpenseBar = ({ percentage, day, amount, className, progressColor }: DayExpenseBarProps) => {
   const [animatedPercentage, setAnimatedPercentage] = useState(0);
+  const { user } = useAuth();
 
   useEffect(() => {
     setAnimatedPercentage(0);
@@ -25,7 +28,7 @@ const DayExpenseBar = ({ percentage, day, amount, className, progressColor }: Da
   return (
     <div className={cn('flex flex-col items-center', className)} role="group" aria-label={`Expenses for ${day}`}>
       <div className="text-muted-foreground mb-1 text-xs font-medium" aria-hidden="true">
-        {amount}
+        {currencyUtils.formatAmountWithoutSymbol(amount, user?.settings?.currency)}
       </div>
       <div
         className="bg-muted relative h-40 w-4 overflow-hidden rounded-full"

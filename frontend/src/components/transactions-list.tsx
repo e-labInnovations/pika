@@ -2,7 +2,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowBigRightDash } from 'lucide-react';
 import { SwipeableTransaction } from '@/components/swipeable-transaction';
-import type { Transaction } from '@/services/api/transaction.service';
+import type { Transaction } from '@/services/api';
 import type { Filter } from './transactions-tab/filter/types';
 import type { Sort } from './transactions-tab/sort/types';
 import { useNavigate } from 'react-router-dom';

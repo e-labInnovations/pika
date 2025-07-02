@@ -10,7 +10,7 @@ import { IconRenderer } from '@/components/icon-renderer';
 import { TagChip } from '@/components/tag-chip';
 import { type IconName } from '@/components/ui/icon-picker';
 import IconColorsFields from '@/components/categories/icon-colors-fields';
-import { tagsService, type Tag } from '@/services/api/tags.service';
+import { tagsService, type Tag } from '@/services/api';
 import { useLookupStore } from '@/store/useLookupStore';
 import { toast } from 'sonner';
 

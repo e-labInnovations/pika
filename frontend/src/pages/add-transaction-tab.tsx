@@ -13,10 +13,9 @@ import Note from '@/components/add-transaction-tab/note';
 import { Button } from '@/components/ui/button';
 import { type TransactionType } from '@/lib/transaction-utils';
 import { validateTransactionForm } from '@/components/add-transaction-tab/schema';
-import { transactionService, type TransactionInput } from '@/services/api/transaction.service';
+import { transactionsService, type TransactionInput, type UploadResponse } from '@/services/api';
 import { toast } from 'sonner';
 import type { AnalysisOutput } from '@/data/dummy-data';
-import type { UploadResponse } from '@/services/api/upload.service';
 import { useLookupStore } from '@/store/useLookupStore';
 
 const AddTransactionTab = () => {
@@ -103,7 +102,7 @@ const AddTransactionTab = () => {
       attachments: attachments.map((attachment) => attachment.id),
     };
 
-    transactionService
+    transactionsService
       .create(transactionInput)
       .then(() => {
         toast.success('Transaction saved successfully!');

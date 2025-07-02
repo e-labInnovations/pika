@@ -5,7 +5,7 @@ import { Check } from 'lucide-react';
 import SearchBar from './search-bar';
 import type { TransactionType } from '@/lib/transaction-utils';
 import { IconRenderer } from './icon-renderer';
-import { type Category } from '@/services/api/categories.service';
+import { type Category } from '@/services/api';
 import { useLookupStore } from '@/store/useLookupStore';
 
 interface CategoryPickerProps {

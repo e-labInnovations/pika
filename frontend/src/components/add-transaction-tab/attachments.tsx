@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Paperclip, Upload, X, File } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
-import { uploadService, type UploadResponse } from '@/services/api/upload.service';
+import { uploadService, type UploadResponse } from '@/services/api';
 import { toast } from 'sonner';
 
 interface AttachmentsProps {

@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Check } from 'lucide-react';
 import SearchBar from './search-bar';
-import { type Person } from '@/services/api/people.service';
+import { type Person } from '@/services/api';
 import { useLookupStore } from '@/store/useLookupStore';
 
 interface PeoplePickerProps {

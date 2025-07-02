@@ -1,7 +1,7 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Calendar } from 'lucide-react';
-import type { Person } from '@/services/api/people.service';
+import type { Person } from '@/services/api';
 import { useNavigate } from 'react-router-dom';
 import { currencyUtils } from '@/lib/currency-utils';
 import { useAuth } from '@/hooks/use-auth';

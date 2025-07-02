@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 import transactionUtils from '@/lib/transaction-utils';
 import { currencyUtils } from '@/lib/currency-utils';
 import { useAuth } from '@/hooks/use-auth';
-import { accountService } from '@/services/api/accounts.service';
+import { accountService } from '@/services/api';
 import { useLookupStore } from '@/store/useLookupStore';
 import { toast } from 'sonner';
 

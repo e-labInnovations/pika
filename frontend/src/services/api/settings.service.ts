@@ -1,28 +1,26 @@
-import api from './axios';
+import type { AxiosResponse } from 'axios';
+import { BaseService } from './base.service';
 
 export interface Settings {
   currency: string;
 }
 
 export interface SettingsInput {
-  currency: string;
+  key: 'currency';
+  value: string;
 }
 
-class SettingsService {
-  getSettings() {
-    return api.get('/settings', {
-      headers: {
-        Authorization: `Basic ${localStorage.getItem('api_key')}`,
-      },
-    });
+class SettingsService extends BaseService<Settings> {
+  constructor() {
+    super('/settings');
   }
 
-  updateSettings(settings: Settings) {
-    return api.put('/settings', settings, {
-      headers: {
-        Authorization: `Basic ${localStorage.getItem('api_key')}`,
-      },
-    });
+  getSettings(): Promise<AxiosResponse<Settings>> {
+    return this.api.get<Settings>(this.endpoint);
+  }
+
+  updateSettingsItem(data: SettingsInput): Promise<AxiosResponse<Settings>> {
+    return this.api.put(this.endpoint, data);
   }
 }
 

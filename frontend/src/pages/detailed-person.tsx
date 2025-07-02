@@ -11,7 +11,7 @@ import { currencyUtils } from '@/lib/currency-utils';
 import { useAuth } from '@/hooks/use-auth';
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
-import { peopleService, type Person } from '@/services/api/people.service';
+import { peopleService, type Person } from '@/services/api';
 
 const DetailedPerson = () => {
   const [isLoading, setIsLoading] = useState(false);

@@ -35,10 +35,10 @@ export interface TransactionInput {
   attachments: string[];
 }
 
-class TransactionService extends BaseService<Transaction> {
+class TransactionsService extends BaseService<Transaction> {
   constructor() {
     super('/transactions');
   }
 }
 
-export const transactionService = new TransactionService();
+export const transactionsService = new TransactionsService();

@@ -21,6 +21,15 @@ class CurrencyUtils {
     })}`;
   }
 
+  formatAmountWithoutSymbol(amount: string | number, currencyCode: CurrencyCode | undefined) {
+    if (!currencyCode) return `${amount}`;
+    const currency = this.getCurrencyByCode(currencyCode);
+    return `${Number(amount).toLocaleString('en-US', {
+      minimumFractionDigits: currency.decimal_digits,
+      maximumFractionDigits: currency.decimal_digits,
+    })}`;
+  }
+
   getCurrencies() {
     return Object.values(this.currencies).sort((a, b) => a.code.localeCompare(b.code));
   }

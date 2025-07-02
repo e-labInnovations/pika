@@ -4,7 +4,7 @@ import TabsLayout from '@/layouts/tabs';
 import { Plus, Trash2, Edit2 } from 'lucide-react';
 import { IconRenderer } from '@/components/icon-renderer';
 import { useNavigate } from 'react-router-dom';
-import { tagsService } from '@/services/api/tags.service';
+import { tagsService } from '@/services/api';
 import { useLookupStore } from '@/store/useLookupStore';
 import { toast } from 'sonner';
 

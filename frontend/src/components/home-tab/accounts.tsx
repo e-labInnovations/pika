@@ -5,7 +5,7 @@ import { useState } from 'react';
 import AccountAvatar from '../account-avatar';
 import { currencyUtils } from '@/lib/currency-utils';
 import { useAuth } from '@/hooks/use-auth';
-import type { Account } from '@/services/api/accounts.service';
+import type { Account } from '@/services/api';
 
 interface AccountsProps {
   accounts: Account[];

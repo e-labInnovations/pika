@@ -6,7 +6,7 @@ import CategoryItem from '@/components/categories/category-item';
 import CategoriesTabs from '@/components/categories/categories-tabs';
 import TransactionUtils, { type TransactionType } from '@/lib/transaction-utils';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { categoryService } from '@/services/api/categories.service';
+import { categoryService } from '@/services/api';
 import { useLookupStore } from '@/store/useLookupStore';
 import { toast } from 'sonner';
 

@@ -7,8 +7,7 @@ import { useEffect, useState } from 'react';
 import AccountPicker from '../account-picker';
 import CategoryPicker from '../category-picker';
 import { IconRenderer } from '../icon-renderer';
-import { accountService, type Account } from '@/services/api/accounts.service';
-import { categoryService, type Category } from '@/services/api/categories.service';
+import { accountService, categoryService, type Account, type Category } from '@/services/api';
 
 interface CategoryAccountProps {
   formData: TransactionFormData;

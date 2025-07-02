@@ -11,7 +11,7 @@ import { IconRenderer } from '@/components/icon-renderer';
 import { type IconName } from '@/components/ui/icon-picker';
 import TransactionTypeView from '@/components/transaction-type-view';
 import IconColorsFields from '@/components/categories/icon-colors-fields';
-import { categoryService, type Category, type CategoryInput } from '@/services/api/categories.service';
+import { categoryService, type Category, type CategoryInput } from '@/services/api';
 import { useLookupStore } from '@/store/useLookupStore';
 import { toast } from 'sonner';
 

@@ -5,7 +5,7 @@ import type { TransactionFormData } from './types';
 import { useEffect, useState } from 'react';
 import PeoplePicker from '../people-picker';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-import { peopleService, type Person } from '@/services/api/people.service';
+import { peopleService, type Person } from '@/services/api';
 
 interface PersonProps {
   formData: TransactionFormData;

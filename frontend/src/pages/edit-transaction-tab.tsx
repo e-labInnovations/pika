@@ -14,9 +14,8 @@ import Note from '@/components/add-transaction-tab/note';
 import { Button } from '@/components/ui/button';
 import { type TransactionType } from '@/lib/transaction-utils';
 import { validateTransactionForm } from '@/components/add-transaction-tab/schema';
-import { transactionService, type Transaction, type TransactionInput } from '@/services/api/transaction.service';
+import { transactionsService, type Transaction, type TransactionInput, type UploadResponse } from '@/services/api';
 import { toast } from 'sonner';
-import type { UploadResponse } from '@/services/api/upload.service';
 import type { AnalysisOutput } from '@/data/dummy-data';
 import { useLookupStore } from '@/store/useLookupStore';
 
@@ -47,7 +46,7 @@ const EditTransactionTab = () => {
   // Load transaction data on component mount
   useEffect(() => {
     if (id) {
-      transactionService
+      transactionsService
         .get(id)
         .then((response) => {
           setTransaction(response.data);
@@ -134,7 +133,7 @@ const EditTransactionTab = () => {
       attachments: attachments.map((attachment) => attachment.id),
     };
 
-    transactionService
+    transactionsService
       .update(id || '', transactionInput)
       .then(() => {
         toast.success('Transaction updated successfully!');

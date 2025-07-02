@@ -11,8 +11,7 @@ import {
   AccountPreview,
   InitialBalanceSection,
 } from '@/components/accounts-settings';
-import { accountService, type AccountInput } from '@/services/api/accounts.service';
-import { uploadService } from '@/services/api/upload.service';
+import { accountService, uploadService, type AccountInput } from '@/services/api';
 import { useLookupStore } from '@/store/useLookupStore';
 import { toast } from 'sonner';
 

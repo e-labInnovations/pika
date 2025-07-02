@@ -6,8 +6,8 @@ import TabsLayout from '@/layouts/tabs';
 import { Save, Trash2 } from 'lucide-react';
 import { type IconName } from '@/components/ui/icon-picker';
 import { AccountFormFields, AccountIconSelector, AccountPreview } from '@/components/accounts-settings';
-import { accountService, type Account, type AccountInput } from '@/services/api/accounts.service';
-import { uploadService } from '@/services/api/upload.service';
+import { accountService, type Account, type AccountInput } from '@/services/api';
+import { uploadService } from '@/services/api';
 import { useLookupStore } from '@/store/useLookupStore';
 import { toast } from 'sonner';
 

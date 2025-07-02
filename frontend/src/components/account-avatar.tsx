@@ -1,7 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { IconRenderer } from './icon-renderer';
 import type { TransactionAccount } from '@/data/dummy-data';
-import type { Account } from '@/services/api/accounts.service';
+import type { Account } from '@/services/api';
 
 interface AccountAvatarProps {
   account: Account | TransactionAccount;

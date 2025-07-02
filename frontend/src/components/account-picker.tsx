@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Check } from 'lucide-react';
 import SearchBar from './search-bar';
 import AccountAvatar from './account-avatar';
-import { type Account } from '@/services/api/accounts.service';
+import { type Account } from '@/services/api';
 import { useLookupStore } from '@/store/useLookupStore';
 
 interface AccountPickerProps {

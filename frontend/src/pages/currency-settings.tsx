@@ -9,7 +9,7 @@ import * as RadioGroup from '@radix-ui/react-radio-group';
 import { cn } from '@/lib/utils';
 import SearchBar from '@/components/search-bar';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { settingsService } from '@/services/api/settings.service';
+import { settingsService } from '@/services/api';
 import { toast } from 'sonner';
 
 const CurrencySettings = () => {
@@ -48,7 +48,10 @@ const CurrencySettings = () => {
   const handleSave = () => {
     if (selectedCurrency) {
       settingsService
-        .updateSettings({ currency: selectedCurrency.code })
+        .updateSettingsItem({
+          key: 'currency',
+          value: selectedCurrency.code,
+        })
         .then((response) => {
           toast.success('Updated successfully', {
             description: `Default currency updated to ${selectedCurrency.name} (${selectedCurrency.code})`,

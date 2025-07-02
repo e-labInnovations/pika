@@ -1,11 +1,28 @@
+import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import DayExpenseBar from './day-expense-bar';
+import { analyticsService, type WeeklyExpenses } from '@/services/api';
+import { toast } from 'sonner';
+import GlobalLoader from '../global-loader';
 
-interface ExpensesThisWeekProps {
-  weeklyExpenses: Array<{ day: string; amount: number }>;
-}
-const ExpensesThisWeek = ({ weeklyExpenses }: ExpensesThisWeekProps) => {
-  const maxExpense = Math.max(...weeklyExpenses.map((e) => e.amount));
+const ExpensesThisWeek = () => {
+  const [weeklyExpensesData, setWeeklyExpensesData] = useState<WeeklyExpenses>();
+  const maxExpense = Math.max(...Object.values(weeklyExpensesData || {}));
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    analyticsService
+      .getWeeklyExpenses()
+      .then((response) => {
+        setWeeklyExpensesData(response.data);
+      })
+      .catch((error) => {
+        toast.error(error.response.data.message);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, []);
 
   return (
     <Card className="gap-4">
@@ -13,15 +30,24 @@ const ExpensesThisWeek = ({ weeklyExpenses }: ExpensesThisWeekProps) => {
         <CardTitle className="text-md">Expenses This Week</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="flex justify-center gap-4 sm:gap-6 md:gap-8 lg:gap-10">
-          {weeklyExpenses.map((day) => {
-            const barHeight = (day.amount / maxExpense) * 100;
+        {isLoading ? (
+          <GlobalLoader />
+        ) : (
+          <div className="flex justify-center gap-4 sm:gap-6 md:gap-8 lg:gap-10">
+            {Object.entries(weeklyExpensesData || {}).map(([day, amount]) => {
+              const barHeight = (amount / maxExpense) * 100;
 
-            return (
-              <DayExpenseBar percentage={barHeight} day={day.day} amount={`${day.amount}`} progressColor="bg-red-500" />
-            );
-          })}
-        </div>
+              return (
+                <DayExpenseBar
+                  percentage={barHeight}
+                  day={day.charAt(0).toUpperCase() + day.slice(1)}
+                  amount={amount}
+                  progressColor="bg-red-500"
+                />
+              );
+            })}
+          </div>
+        )}
       </CardContent>
     </Card>
   );

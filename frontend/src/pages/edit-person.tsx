@@ -7,8 +7,7 @@ import { Save, Trash2 } from 'lucide-react';
 import AvatarUpload from '@/components/people-tab/avatar-upload';
 import PersonFormFields from '@/components/people-tab/person-form-fields';
 import PersonPreview from '@/components/people-tab/person-preview';
-import { peopleService, type Person, type PersonInput } from '@/services/api/people.service';
-import { uploadService } from '@/services/api/upload.service';
+import { peopleService, uploadService, type Person, type PersonInput } from '@/services/api';
 import { toast } from 'sonner';
 
 const EditPerson = () => {

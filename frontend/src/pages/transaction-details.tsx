@@ -9,7 +9,7 @@ import { CategoryTransactionIcon } from '@/components/category-transaction-icon'
 import { Button } from '@/components/ui/button';
 import { TagChip } from '@/components/tag-chip';
 import AccountAvatar from '@/components/account-avatar';
-import { transactionService, type Transaction } from '@/services/api/transaction.service';
+import { transactionsService, type Transaction } from '@/services/api';
 import { useEffect, useState } from 'react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import transactionUtils from '@/lib/transaction-utils';
@@ -22,7 +22,7 @@ const TransactionDetails = () => {
 
   useEffect(() => {
     if (id) {
-      transactionService
+      transactionsService
         .get(id)
         .then((response) => {
           setTransaction(response.data);

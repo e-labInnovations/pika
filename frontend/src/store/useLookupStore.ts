@@ -1,8 +1,14 @@
 import { create } from 'zustand';
-import { tagsService, type Tag } from '@/services/api/tags.service';
-import { categoryService, type Category } from '@/services/api/categories.service';
-import { accountService, type Account } from '@/services/api/accounts.service';
-import { peopleService, type Person } from '@/services/api/people.service';
+import {
+  tagsService,
+  categoryService,
+  accountService,
+  peopleService,
+  type Tag,
+  type Category,
+  type Account,
+  type Person,
+} from '@/services/api';
 
 interface LookupState {
   tags: Tag[];

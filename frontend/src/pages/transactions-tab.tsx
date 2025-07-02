@@ -8,7 +8,7 @@ import { defaultSort, type Sort } from '@/components/transactions-tab/sort/types
 import FilterSortBar from '@/components/transactions-tab/filter-sort-bar';
 import SearchBar from '@/components/search-bar';
 import HeaderRightActions from '@/components/transactions-tab/header-right-actions';
-import { transactionService, type Transaction } from '@/services/api/transaction.service';
+import { transactionsService, type Transaction } from '@/services/api';
 
 const TransactionsTab = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -21,7 +21,7 @@ const TransactionsTab = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    transactionService.list().then((response) => {
+    transactionsService.list().then((response) => {
       setTransactions(response.data);
     });
   }, []);

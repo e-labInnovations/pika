@@ -1,5 +1,5 @@
 import { createContext, useEffect, useMemo, useReducer, type PropsWithChildren } from 'react';
-import { type User, authService } from '@/services/api/auth.service';
+import { type User, authService } from '@/services/api';
 
 interface AuthContextType {
   user: User | null;
