@@ -12,7 +12,7 @@ import { type IconName } from '@/components/ui/icon-picker';
 import IconColorsFields from '@/components/categories/icon-colors-fields';
 import { tagsService } from '@/services/api';
 import { useLookupStore } from '@/store/useLookupStore';
-import { toast } from 'sonner';
+import { runWithLoaderAndError } from '@/lib/utils';
 
 const AddTag = () => {
   const navigate = useNavigate();
@@ -25,18 +25,20 @@ const AddTag = () => {
     color: '#ffffff',
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    tagsService
-      .create(formData)
-      .then(() => {
-        toast.success('Tag created successfully');
-        useLookupStore.getState().fetchTags(); // TODO: implement loading state
+
+    runWithLoaderAndError(
+      async () => {
+        await tagsService.create(formData);
+        await useLookupStore.getState().fetchTags();
         navigate('/settings/tags', { replace: true });
-      })
-      .catch((error) => {
-        toast.error(error.response.data.message);
-      });
+      },
+      {
+        loaderMessage: 'Creating tag...',
+        successMessage: 'Tag created successfully',
+      },
+    );
   };
 
   return (

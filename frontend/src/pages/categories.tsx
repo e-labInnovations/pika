@@ -6,9 +6,10 @@ import CategoryItem from '@/components/categories/category-item';
 import CategoriesTabs from '@/components/categories/categories-tabs';
 import TransactionUtils, { type TransactionType } from '@/lib/transaction-utils';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { categoryService } from '@/services/api';
+import { categoryService, type Category } from '@/services/api';
 import { useLookupStore } from '@/store/useLookupStore';
-import { toast } from 'sonner';
+import { useConfirmDialog } from '@/store/useConfirmDialog';
+import { runWithLoaderAndError } from '@/lib/utils';
 
 const Categories = () => {
   const navigate = useNavigate();
@@ -20,16 +21,23 @@ const Categories = () => {
     navigate(`/settings/categories?type=${transactionType}`);
   }, [transactionType, navigate]);
 
-  const onDeleteCategory = (id: string) => {
-    categoryService
-      .delete(id)
-      .then(() => {
-        toast.success('Category deleted successfully');
-        useLookupStore.getState().fetchCategories(); // TODO: implement loading state
-      })
-      .catch((error) => {
-        toast.error(error.response.data.message);
-      });
+  const onDeleteCategory = (category: Category) => {
+    useConfirmDialog.getState().open({
+      title: 'Delete Category',
+      message: `Are you sure you want to delete "${category.name}"?`,
+      onConfirm: () => {
+        runWithLoaderAndError(
+          async () => {
+            await categoryService.delete(category.id);
+            await useLookupStore.getState().fetchCategories();
+          },
+          {
+            loaderMessage: 'Deleting category...',
+            successMessage: 'Category deleted successfully',
+          },
+        );
+      },
+    });
   };
 
   const onEditCategory = (id: string) => {
@@ -44,16 +52,23 @@ const Categories = () => {
     navigate(`/settings/categories/${parentId}/${childId}/edit`);
   };
 
-  const onDeleteChildCategory = (id: string) => {
-    categoryService
-      .delete(id)
-      .then(() => {
-        toast.success('Child category deleted successfully');
-        useLookupStore.getState().fetchCategories(); // TODO: implement loading state
-      })
-      .catch((error) => {
-        toast.error(error.response.data.message);
-      });
+  const onDeleteChildCategory = (childCategory: Category) => {
+    useConfirmDialog.getState().open({
+      title: 'Delete Child Category',
+      message: `Are you sure you want to delete "${childCategory.name}"?`,
+      onConfirm: () => {
+        runWithLoaderAndError(
+          async () => {
+            await categoryService.delete(childCategory.id);
+            await useLookupStore.getState().fetchCategories();
+          },
+          {
+            loaderMessage: 'Deleting child category...',
+            successMessage: 'Child category deleted successfully',
+          },
+        );
+      },
+    });
   };
 
   const onAddCategory = (type: TransactionType | undefined) => {

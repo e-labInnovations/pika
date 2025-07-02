@@ -4,28 +4,36 @@ import TabsLayout from '@/layouts/tabs';
 import { Edit2, Plus, Trash2 } from 'lucide-react';
 import AccountAvatar from '@/components/account-avatar';
 import { useNavigate } from 'react-router-dom';
-import { cn } from '@/lib/utils';
+import { cn, runWithLoaderAndError } from '@/lib/utils';
 import transactionUtils from '@/lib/transaction-utils';
 import { currencyUtils } from '@/lib/currency-utils';
 import { useAuth } from '@/hooks/use-auth';
-import { accountService } from '@/services/api';
+import { accountService, type Account } from '@/services/api';
 import { useLookupStore } from '@/store/useLookupStore';
-import { toast } from 'sonner';
+import { useConfirmDialog } from '@/store/useConfirmDialog';
 
 const AccountsSettings = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const accounts = useLookupStore((state) => state.accounts);
 
-  const handleDeleteAccount = (id: string) => {
-    accountService
-      .delete(id)
-      .then(() => {
-        useLookupStore.getState().fetchAccounts(); // TODO: implement loading state
-      })
-      .catch((error) => {
-        toast.error(error.response.data.message);
-      });
+  const handleDeleteAccount = async (account: Account) => {
+    useConfirmDialog.getState().open({
+      title: 'Delete Account',
+      message: `Are you sure you want to delete "${account.name}"?`,
+      onConfirm: () => {
+        runWithLoaderAndError(
+          async () => {
+            await accountService.delete(account.id);
+            await useLookupStore.getState().fetchAccounts();
+          },
+          {
+            loaderMessage: 'Deleting account...',
+            successMessage: 'Account deleted successfully',
+          },
+        );
+      },
+    });
   };
 
   return (
@@ -69,9 +77,7 @@ const AccountsSettings = () => {
                     variant="ghost"
                     size="sm"
                     onClick={() => {
-                      if (confirm(`Are you sure you want to delete "${account.name}"?`)) {
-                        handleDeleteAccount(account.id);
-                      }
+                      handleDeleteAccount(account);
                     }}
                   >
                     <Trash2 className="h-4 w-4 text-red-500" />

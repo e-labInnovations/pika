@@ -9,6 +9,9 @@ import PersonFormFields from '@/components/people-tab/person-form-fields';
 import PersonPreview from '@/components/people-tab/person-preview';
 import { peopleService, uploadService, type Person, type PersonInput } from '@/services/api';
 import { toast } from 'sonner';
+import { runWithLoaderAndError } from '@/lib/utils';
+import { useLookupStore } from '@/store/useLookupStore';
+import { useConfirmDialog } from '@/store/useConfirmDialog';
 
 const EditPerson = () => {
   const { id } = useParams();
@@ -63,34 +66,41 @@ const EditPerson = () => {
       description: formData.description,
     };
 
-    if (avatarFile) {
-      const uploadResponse = await uploadService.uploadAvatar(avatarFile, 'person');
-      personInput.avatarId = uploadResponse.data.id;
-    }
-
-    peopleService
-      .update(id as string, personInput)
-      .then(() => {
-        toast.success('Person updated successfully');
+    runWithLoaderAndError(
+      async () => {
+        if (avatarFile) {
+          const uploadResponse = await uploadService.uploadAvatar(avatarFile, 'person');
+          personInput.avatarId = uploadResponse.data.id;
+        }
+        await peopleService.update(id as string, personInput);
+        useLookupStore.getState().fetchPeople();
         navigate(`/people/${id}`, { replace: true });
-      })
-      .catch((error) => {
-        toast.error(error.response.data.message);
-      });
+      },
+      {
+        loaderMessage: 'Updating person...',
+        successMessage: 'Person updated successfully',
+      },
+    );
   };
 
   const handleDelete = () => {
-    if (confirm(`Are you sure you want to delete "${formData.name}"?`)) {
-      peopleService
-        .delete(id as string)
-        .then(() => {
-          toast.success('Person deleted successfully');
-          navigate('/people', { replace: true });
-        })
-        .catch((error) => {
-          toast.error(error.response.data.message);
-        });
-    }
+    useConfirmDialog.getState().open({
+      title: 'Delete Person',
+      message: `Are you sure you want to delete "${formData.name}"?`,
+      onConfirm: () => {
+        runWithLoaderAndError(
+          async () => {
+            await peopleService.delete(id as string);
+            useLookupStore.getState().fetchPeople();
+            navigate('/people', { replace: true });
+          },
+          {
+            loaderMessage: 'Deleting person...',
+            successMessage: 'Person deleted successfully',
+          },
+        );
+      },
+    });
   };
 
   if (!person) {

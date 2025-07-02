@@ -4,23 +4,33 @@ import TabsLayout from '@/layouts/tabs';
 import { Plus, Trash2, Edit2 } from 'lucide-react';
 import { IconRenderer } from '@/components/icon-renderer';
 import { useNavigate } from 'react-router-dom';
-import { tagsService } from '@/services/api';
+import { tagsService, type Tag } from '@/services/api';
 import { useLookupStore } from '@/store/useLookupStore';
-import { toast } from 'sonner';
+import { useConfirmDialog } from '@/store/useConfirmDialog';
+import { runWithLoaderAndError } from '@/lib/utils';
 
 const Tags = () => {
   const navigate = useNavigate();
   const tags = useLookupStore((state) => state.tags);
 
-  const onDeleteTag = (id: string) => {
-    tagsService
-      .delete(id)
-      .then(() => {
-        useLookupStore.getState().fetchTags(); // TODO: implement loading state
-      })
-      .catch((error) => {
-        toast.error(error.response.data.message);
-      });
+  const onDeleteTag = (tag: Tag) => {
+    useConfirmDialog.getState().open({
+      title: 'Delete Tag',
+      message: `Are you sure you want to delete "${tag.name}"?`,
+      onConfirm: () => {
+        runWithLoaderAndError(
+          async () => {
+            await tagsService.delete(tag.id);
+            useLookupStore.getState().fetchTags();
+            navigate('/settings/tags', { replace: true });
+          },
+          {
+            loaderMessage: 'Deleting tag...',
+            successMessage: 'Tag deleted successfully',
+          },
+        );
+      },
+    });
   };
 
   const onEditTag = (id: string) => {
@@ -66,9 +76,7 @@ const Tags = () => {
                         variant="ghost"
                         size="sm"
                         onClick={() => {
-                          if (confirm(`Are you sure you want to delete "${tag.name}"?`)) {
-                            onDeleteTag(tag.id);
-                          }
+                          onDeleteTag(tag);
                         }}
                       >
                         <Trash2 className="h-4 w-4 text-red-500" />

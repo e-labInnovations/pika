@@ -8,7 +8,8 @@ import AvatarUpload from '@/components/people-tab/avatar-upload';
 import PersonFormFields from '@/components/people-tab/person-form-fields';
 import PersonPreview from '@/components/people-tab/person-preview';
 import { peopleService, uploadService, type PersonInput } from '@/services/api';
-import { toast } from 'sonner';
+import { runWithLoaderAndError } from '@/lib/utils';
+import { useLookupStore } from '@/store/useLookupStore';
 
 const AddPerson = () => {
   const navigate = useNavigate();
@@ -25,6 +26,7 @@ const AddPerson = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     const personInput: PersonInput = {
       name: formData.name,
       email: formData.email,
@@ -33,20 +35,22 @@ const AddPerson = () => {
       description: formData.description,
     };
 
-    if (avatarFile) {
-      const uploadResponse = await uploadService.uploadAvatar(avatarFile, 'person');
-      personInput.avatarId = uploadResponse.data.id;
-    }
+    runWithLoaderAndError(
+      async () => {
+        if (avatarFile) {
+          const uploadResponse = await uploadService.uploadAvatar(avatarFile, 'person');
+          personInput.avatarId = uploadResponse.data.id;
+        }
 
-    peopleService
-      .create(personInput)
-      .then(() => {
-        toast.success('Person created successfully');
+        await peopleService.create(personInput);
+        await useLookupStore.getState().fetchPeople();
         navigate('/people', { replace: true });
-      })
-      .catch((error) => {
-        toast.error(error.response.data.message);
-      });
+      },
+      {
+        loaderMessage: 'Creating person...',
+        successMessage: 'Person created successfully',
+      },
+    );
   };
 
   const handleAvatarChange = (avatarFile: File | null, avatarUrl: string | null) => {

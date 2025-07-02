@@ -12,6 +12,9 @@ import { useAuth } from '@/hooks/use-auth';
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import { peopleService, type Person } from '@/services/api';
+import { useConfirmDialog } from '@/store/useConfirmDialog';
+import { runWithLoaderAndError } from '@/lib/utils';
+import { useLookupStore } from '@/store/useLookupStore';
 
 const DetailedPerson = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -35,6 +38,7 @@ const DetailedPerson = () => {
       });
   }, [id]);
 
+  // TODO: Add Global Loader
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -44,21 +48,31 @@ const DetailedPerson = () => {
   };
 
   const handleShare = () => {
-    alert('Share functionality would open here');
+    useConfirmDialog.getState().open({
+      title: 'Share Person',
+      message: 'Share functionality would open here',
+      onConfirm: () => {},
+    });
   };
 
   const handleDelete = () => {
-    if (person && confirm(`Are you sure you want to delete "${person.name}"?`)) {
-      peopleService
-        .delete(id as string)
-        .then(() => {
-          toast.success(`${person.name} deleted successfully`);
-          navigate('/people');
-        })
-        .catch((error) => {
-          toast.error(error.response.data.message);
-        });
-    }
+    useConfirmDialog.getState().open({
+      title: 'Delete Person',
+      message: `Are you sure you want to delete "${person?.name}"?`,
+      onConfirm: () => {
+        runWithLoaderAndError(
+          async () => {
+            await peopleService.delete(id as string);
+            await useLookupStore.getState().fetchPeople();
+            navigate('/people');
+          },
+          {
+            loaderMessage: 'Deleting person...',
+            successMessage: 'Person deleted successfully',
+          },
+        );
+      },
+    });
   };
 
   return (

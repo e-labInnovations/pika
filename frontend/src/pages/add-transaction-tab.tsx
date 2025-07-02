@@ -17,6 +17,7 @@ import { transactionsService, type TransactionInput, type UploadResponse } from 
 import { toast } from 'sonner';
 import type { AnalysisOutput } from '@/data/dummy-data';
 import { useLookupStore } from '@/store/useLookupStore';
+import { runWithLoaderAndError } from '@/lib/utils';
 
 const AddTransactionTab = () => {
   const [openAiReceiptScanner, setOpenAiReceiptScanner] = useState(false);
@@ -102,10 +103,9 @@ const AddTransactionTab = () => {
       attachments: attachments.map((attachment) => attachment.id),
     };
 
-    transactionsService
-      .create(transactionInput)
-      .then(() => {
-        toast.success('Transaction saved successfully!');
+    runWithLoaderAndError(
+      async () => {
+        await transactionsService.create(transactionInput);
         setFormData({
           title: '',
           amount: 0,
@@ -119,15 +119,13 @@ const AddTransactionTab = () => {
           note: '',
         });
         setAttachments([]);
-        useLookupStore.getState().fetchAll(); // TODO: implement loading state
-      })
-      .catch((error) => {
-        console.error('Error saving transaction:', error);
-        toast.error('Failed to save transaction');
-      })
-      .finally(() => {
-        setIsSubmitting(false);
-      });
+        await useLookupStore.getState().fetchAll();
+      },
+      {
+        loaderMessage: 'Saving transaction...',
+        successMessage: 'Transaction saved successfully!',
+      },
+    );
   };
 
   return (

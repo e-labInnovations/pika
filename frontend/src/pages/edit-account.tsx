@@ -9,7 +9,8 @@ import { AccountFormFields, AccountIconSelector, AccountPreview } from '@/compon
 import { accountService, type Account, type AccountInput } from '@/services/api';
 import { uploadService } from '@/services/api';
 import { useLookupStore } from '@/store/useLookupStore';
-import { toast } from 'sonner';
+import { runWithLoaderAndError } from '@/lib/utils';
+import { useConfirmDialog } from '@/store/useConfirmDialog';
 
 const EditAccount = () => {
   const { accountId } = useParams();
@@ -50,42 +51,43 @@ const EditAccount = () => {
 
     const newFormData = { ...formData };
 
-    if (avatarFile) {
-      try {
-        const response = await uploadService.uploadAvatar(avatarFile, 'account');
-        newFormData.avatarId = response.data.id;
-      } catch (error) {
-        toast.error(`Failed to upload avatar - ${JSON.stringify(error)}`);
-      }
-    } else if (avatarUrl === null) {
-      newFormData.avatarId = null;
-    }
-
-    accountService
-      .update(accountId!, newFormData)
-      .then(() => {
-        toast.success('Account updated successfully');
-        useLookupStore.getState().fetchAccounts(); // TODO: implement loading state
-        navigate(`/settings/accounts/${accountId}`, { replace: true });
-      })
-      .catch((error) => {
-        toast.error(error.response.data.message);
-      });
+    runWithLoaderAndError(
+      async () => {
+        if (avatarFile) {
+          const response = await uploadService.uploadAvatar(avatarFile, 'account');
+          newFormData.avatarId = response.data.id;
+        } else if (avatarUrl === null) {
+          newFormData.avatarId = null;
+        }
+        await accountService.update(accountId!, newFormData);
+        useLookupStore.getState().fetchAccounts();
+        navigate(`/settings/accounts`, { replace: true });
+      },
+      {
+        loaderMessage: 'Updating account...',
+        successMessage: 'Account updated successfully',
+      },
+    );
   };
 
   const handleDelete = () => {
-    if (confirm(`Are you sure you want to delete "${formData.name}"?`)) {
-      accountService
-        .delete(accountId!)
-        .then(() => {
-          toast.success('Account deleted successfully');
-          useLookupStore.getState().fetchAccounts(); // TODO: implement loading state
-          navigate('/settings/accounts', { replace: true });
-        })
-        .catch((error) => {
-          toast.error(error.response.data.message);
-        });
-    }
+    useConfirmDialog.getState().open({
+      title: 'Delete Account',
+      message: `Are you sure you want to delete "${formData.name}"?`,
+      onConfirm: () => {
+        runWithLoaderAndError(
+          async () => {
+            await accountService.delete(accountId!);
+            useLookupStore.getState().fetchAccounts();
+            navigate('/settings/accounts', { replace: true });
+          },
+          {
+            loaderMessage: 'Deleting account...',
+            successMessage: 'Account deleted successfully',
+          },
+        );
+      },
+    });
   };
 
   const handleAvatarChange = (avatar: File | null, url: string | null) => {

@@ -14,6 +14,7 @@ import { categoryService, type Category, type CategoryInput } from '@/services/a
 import { useLookupStore } from '@/store/useLookupStore';
 import { toast } from 'sonner';
 import type { TransactionType } from '@/lib/transaction-utils';
+import { runWithLoaderAndError } from '@/lib/utils';
 
 const AddChildCategory = () => {
   const { parentCategoryId } = useParams();
@@ -52,18 +53,20 @@ const AddChildCategory = () => {
     }
   }, [parentCategoryId]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    categoryService
-      .create(formData)
-      .then(() => {
-        toast.success('Child category created successfully');
-        useLookupStore.getState().fetchCategories(); // TODO: implement loading state
+
+    runWithLoaderAndError(
+      async () => {
+        await categoryService.create(formData);
+        await useLookupStore.getState().fetchCategories();
         navigate(`/settings/categories?type=${transactionType}`, { replace: true });
-      })
-      .catch((error) => {
-        toast.error(error.response.data.message);
-      });
+      },
+      {
+        loaderMessage: 'Creating child category...',
+        successMessage: 'Child category created successfully',
+      },
+    );
   };
 
   if (!parentCategory) {

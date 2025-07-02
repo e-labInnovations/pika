@@ -13,7 +13,7 @@ import {
 } from '@/components/accounts-settings';
 import { accountService, uploadService, type AccountInput } from '@/services/api';
 import { useLookupStore } from '@/store/useLookupStore';
-import { toast } from 'sonner';
+import { runWithLoaderAndError } from '@/lib/utils';
 
 const AddAccount = () => {
   const navigate = useNavigate();
@@ -37,27 +37,24 @@ const AddAccount = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const newFormData = { ...formData };
+    runWithLoaderAndError(
+      async () => {
+        const newFormData = { ...formData };
 
-    if (avatarFile) {
-      try {
-        const response = await uploadService.uploadAvatar(avatarFile, 'account');
-        newFormData.avatarId = response.data.id;
-      } catch (error) {
-        toast.error(`Failed to upload avatar - ${JSON.stringify(error)}`);
-      }
-    }
+        if (avatarFile) {
+          const response = await uploadService.uploadAvatar(avatarFile, 'account');
+          newFormData.avatarId = response.data.id;
+        }
 
-    accountService
-      .create(newFormData)
-      .then(() => {
-        toast.success('Account created successfully');
-        useLookupStore.getState().fetchAccounts(); // TODO: implement loading state
+        await accountService.create(newFormData);
+        await useLookupStore.getState().fetchAccounts();
         navigate('/settings/accounts', { replace: true });
-      })
-      .catch((error) => {
-        toast.error(error.response.data.message);
-      });
+      },
+      {
+        loaderMessage: 'Creating account...',
+        successMessage: 'Account created successfully',
+      },
+    );
 
     // ToDo: If initial balance is included, create a transaction
     // if (includeInitialBalance && initialBalance !== 0 && initialBalanceCategory && initialBalanceTag) {

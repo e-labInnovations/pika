@@ -14,6 +14,8 @@ import { categoryService, type Category, type CategoryInput } from '@/services/a
 import { useLookupStore } from '@/store/useLookupStore';
 import { toast } from 'sonner';
 import type { TransactionType } from '@/lib/transaction-utils';
+import { runWithLoaderAndError } from '@/lib/utils';
+import { useConfirmDialog } from '@/store/useConfirmDialog';
 
 const EditChildCategory = () => {
   const { parentCategoryId, childCategoryId } = useParams();
@@ -67,31 +69,38 @@ const EditChildCategory = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    categoryService
-      .update(childCategoryId || '', formData)
-      .then(() => {
-        toast.success('Child category updated successfully');
-        useLookupStore.getState().fetchCategories(); // TODO: implement loading state
+
+    runWithLoaderAndError(
+      async () => {
+        await categoryService.update(childCategoryId || '', formData);
+        useLookupStore.getState().fetchCategories();
         navigate(`/settings/categories?type=${transactionType}`, { replace: true });
-      })
-      .catch((error) => {
-        toast.error(error.response.data.message);
-      });
+      },
+      {
+        loaderMessage: 'Updating child category...',
+        successMessage: 'Child category updated successfully',
+      },
+    );
   };
 
   const handleDelete = () => {
-    if (confirm(`Are you sure you want to delete "${formData.name}"?`)) {
-      categoryService
-        .delete(childCategoryId || '')
-        .then(() => {
-          toast.success('Child category deleted successfully');
-          useLookupStore.getState().fetchCategories(); // TODO: implement loading state
-          navigate(`/settings/categories?type=${transactionType}`, { replace: true });
-        })
-        .catch((error) => {
-          toast.error(error.response.data.message);
-        });
-    }
+    useConfirmDialog.getState().open({
+      title: 'Delete Child Category',
+      message: `Are you sure you want to delete "${formData.name}"?`,
+      onConfirm: () => {
+        runWithLoaderAndError(
+          async () => {
+            await categoryService.delete(childCategoryId || '');
+            useLookupStore.getState().fetchCategories();
+            navigate(`/settings/categories?type=${transactionType}`, { replace: true });
+          },
+          {
+            loaderMessage: 'Deleting child category...',
+            successMessage: 'Child category deleted successfully',
+          },
+        );
+      },
+    });
   };
 
   if (!parentCategory || !childCategory) {

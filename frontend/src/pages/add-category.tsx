@@ -13,7 +13,7 @@ import TransactionTypeView from '@/components/transaction-type-view';
 import IconColorsFields from '@/components/categories/icon-colors-fields';
 import { categoryService, type CategoryInput } from '@/services/api';
 import { useLookupStore } from '@/store/useLookupStore';
-import { toast } from 'sonner';
+import { runWithLoaderAndError } from '@/lib/utils';
 
 const AddCategory = () => {
   const [searchParams] = useSearchParams();
@@ -30,19 +30,20 @@ const AddCategory = () => {
     parentId: null,
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement category creation logic
-    categoryService
-      .create(formData)
-      .then(() => {
-        toast.success('Category created successfully');
-        useLookupStore.getState().fetchCategories(); // TODO: implement loading state
+
+    runWithLoaderAndError(
+      async () => {
+        await categoryService.create(formData);
+        await useLookupStore.getState().fetchCategories();
         navigate(`/settings/categories?type=${transactionType}`, { replace: true });
-      })
-      .catch((error) => {
-        toast.error(error.response.data.message);
-      });
+      },
+      {
+        loaderMessage: 'Creating category...',
+        successMessage: 'Category created successfully',
+      },
+    );
   };
 
   const getTransactionTypeLabel = (type: TransactionType) => {

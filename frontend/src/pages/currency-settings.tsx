@@ -6,11 +6,10 @@ import TabsLayout from '@/layouts/tabs';
 import { CircleCheck, Globe } from 'lucide-react';
 import { currencyUtils, type Currency, type CurrencyCode } from '@/lib/currency-utils';
 import * as RadioGroup from '@radix-ui/react-radio-group';
-import { cn } from '@/lib/utils';
+import { cn, runWithLoaderAndError } from '@/lib/utils';
 import SearchBar from '@/components/search-bar';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { settingsService } from '@/services/api';
-import { toast } from 'sonner';
 
 const CurrencySettings = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -47,21 +46,17 @@ const CurrencySettings = () => {
 
   const handleSave = () => {
     if (selectedCurrency) {
-      settingsService
-        .updateSettingsItem({
-          key: 'currency',
-          value: selectedCurrency.code,
-        })
-        .then((response) => {
-          toast.success('Updated successfully', {
-            description: `Default currency updated to ${selectedCurrency.name} (${selectedCurrency.code})`,
-          });
-          setCurrentCurrency(currencyUtils.getCurrencyByCode(response.data.currency as CurrencyCode));
-          setSelectedCurrency(currencyUtils.getCurrencyByCode(response.data.currency as CurrencyCode));
-        })
-        .catch((error) => {
-          toast.error(error.response.data.message);
-        });
+      runWithLoaderAndError(
+        async () => {
+          await settingsService.updateSettingsItem('currency', selectedCurrency.code);
+          setCurrentCurrency(currencyUtils.getCurrencyByCode(selectedCurrency.code as CurrencyCode));
+          setSelectedCurrency(currencyUtils.getCurrencyByCode(selectedCurrency.code as CurrencyCode));
+        },
+        {
+          loaderMessage: 'Updating currency...',
+          successMessage: 'Currency updated successfully',
+        },
+      );
     }
   };
 

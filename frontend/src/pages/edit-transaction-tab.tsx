@@ -18,6 +18,7 @@ import { transactionsService, type Transaction, type TransactionInput, type Uplo
 import { toast } from 'sonner';
 import type { AnalysisOutput } from '@/data/dummy-data';
 import { useLookupStore } from '@/store/useLookupStore';
+import { runWithLoaderAndError } from '@/lib/utils';
 
 const EditTransactionTab = () => {
   const { id } = useParams();
@@ -105,47 +106,44 @@ const EditTransactionTab = () => {
   };
 
   const handleSubmit = async () => {
-    setIsSubmitting(true);
     setFormErrors({});
 
-    // Validate form data
-    const validation = validateTransactionForm(formData);
+    runWithLoaderAndError(
+      async () => {
+        // Validate form data
+        const validation = validateTransactionForm(formData);
 
-    if (!validation.success) {
-      setFormErrors(validation.errors || {});
-      toast.error('Please fix the form errors');
-      setIsSubmitting(false);
-      return;
-    }
+        if (!validation.success) {
+          setFormErrors(validation.errors || {});
+          toast.error('Please fix the form errors');
+          setIsSubmitting(false);
+          return;
+        }
 
-    // Prepare transaction input
-    const transactionInput: TransactionInput = {
-      title: formData.title,
-      amount: formData.amount,
-      date: formData.date,
-      type: formData.type,
-      categoryId: formData.category,
-      accountId: formData.account,
-      personId: formData.person || null,
-      toAccountId: formData.toAccount || null,
-      note: formData.note,
-      tags: formData.tags,
-      attachments: attachments.map((attachment) => attachment.id),
-    };
+        // Prepare transaction input
+        const transactionInput: TransactionInput = {
+          title: formData.title,
+          amount: formData.amount,
+          date: formData.date,
+          type: formData.type,
+          categoryId: formData.category,
+          accountId: formData.account,
+          personId: formData.person || null,
+          toAccountId: formData.toAccount || null,
+          note: formData.note,
+          tags: formData.tags,
+          attachments: attachments.map((attachment) => attachment.id),
+        };
 
-    transactionsService
-      .update(id || '', transactionInput)
-      .then(() => {
-        toast.success('Transaction updated successfully!');
+        await transactionsService.update(id || '', transactionInput);
+        useLookupStore.getState().fetchAll();
         navigate(`/transactions/${id}`, { replace: true });
-        useLookupStore.getState().fetchAll(); // TODO: implement loading state
-      })
-      .catch(() => {
-        toast.error('Failed to update transaction');
-      })
-      .finally(() => {
-        setIsSubmitting(false);
-      });
+      },
+      {
+        loaderMessage: 'Updating transaction...',
+        successMessage: 'Transaction updated successfully',
+      },
+    );
   };
 
   if (!transaction) {

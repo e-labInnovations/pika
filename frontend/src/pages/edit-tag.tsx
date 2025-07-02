@@ -12,7 +12,8 @@ import { type IconName } from '@/components/ui/icon-picker';
 import IconColorsFields from '@/components/categories/icon-colors-fields';
 import { tagsService, type Tag } from '@/services/api';
 import { useLookupStore } from '@/store/useLookupStore';
-import { toast } from 'sonner';
+import { runWithLoaderAndError } from '@/lib/utils';
+import { useConfirmDialog } from '@/store/useConfirmDialog';
 
 const EditTag = () => {
   const { tagId } = useParams();
@@ -45,31 +46,38 @@ const EditTag = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    tagsService
-      .update(tagId!, formData)
-      .then(() => {
-        toast.success('Tag updated successfully');
-        useLookupStore.getState().fetchTags(); // TODO: implement loading state
+
+    runWithLoaderAndError(
+      async () => {
+        await tagsService.update(tagId!, formData);
+        useLookupStore.getState().fetchTags();
         navigate('/settings/tags', { replace: true });
-      })
-      .catch((error) => {
-        toast.error(error.response.data.message);
-      });
+      },
+      {
+        loaderMessage: 'Updating tag...',
+        successMessage: 'Tag updated successfully',
+      },
+    );
   };
 
   const handleDelete = () => {
-    if (confirm(`Are you sure you want to delete "${formData.name}"?`)) {
-      tagsService
-        .delete(tagId!)
-        .then(() => {
-          toast.success('Tag deleted successfully');
-          useLookupStore.getState().fetchTags(); // TODO: implement loading state
-          navigate('/settings/tags', { replace: true });
-        })
-        .catch((error) => {
-          toast.error(error.response.data.message);
-        });
-    }
+    useConfirmDialog.getState().open({
+      title: 'Delete Tag',
+      message: `Are you sure you want to delete "${formData.name}"?`,
+      onConfirm: () => {
+        runWithLoaderAndError(
+          async () => {
+            await tagsService.delete(tagId!);
+            useLookupStore.getState().fetchTags();
+            navigate('/settings/tags', { replace: true });
+          },
+          {
+            loaderMessage: 'Deleting tag...',
+            successMessage: 'Tag deleted successfully',
+          },
+        );
+      },
+    });
   };
 
   if (!tag) {

@@ -19,8 +19,8 @@ class SettingsService extends BaseService<Settings> {
     return this.api.get<Settings>(this.endpoint);
   }
 
-  updateSettingsItem(data: SettingsInput): Promise<AxiosResponse<Settings>> {
-    return this.api.put(this.endpoint, data);
+  updateSettingsItem(key: string, value: unknown): Promise<AxiosResponse<Settings>> {
+    return this.api.put(this.endpoint, { [key]: value });
   }
 }
 

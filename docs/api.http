@@ -2,7 +2,8 @@
 @base_url = http://localhost:8000
 @username = testuser
 # @password = mBqU EeIw 2aY6 Nxtm sTWu kOSc
-@password = F623 uYkb EXEI SBXl rNd1 6OMU
+@password = Bpab m4US BD1A 5QmT E1NX rFPO
+# @password = F623 uYkb EXEI SBXl rNd1 6OMU
 @admin_username = admin
 @admin_password = ufEK id77 GTpK fGdZ G1Zq 42E8
 

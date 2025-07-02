@@ -1,16 +1,16 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Edit2, Trash2, Plus } from 'lucide-react';
-import type { Category } from '@/data/dummy-data';
+import type { Category } from '@/services/api';
 import { IconRenderer } from '../icon-renderer';
 
 interface CategoryItemProps {
   category: Category;
   onEditCategory: (id: string) => void;
-  onDeleteCategory: (id: string) => void;
+  onDeleteCategory: (category: Category) => void;
   onAddChildCategory: (id: string) => void;
   onEditChildCategory: (parentId: string, childId: string) => void;
-  onDeleteChildCategory: (id: string) => void;
+  onDeleteChildCategory: (childCategory: Category) => void;
 }
 
 const CategoryItem = ({
@@ -43,7 +43,7 @@ const CategoryItem = ({
                   variant="ghost"
                   size="sm"
                   onClick={() => {
-                    onDeleteCategory(category.id);
+                    onDeleteCategory(category);
                   }}
                 >
                   <Trash2 className="h-4 w-4 text-red-500" />
@@ -77,7 +77,7 @@ const CategoryItem = ({
                       variant="ghost"
                       size="sm"
                       onClick={() => {
-                        onDeleteChildCategory(child.id);
+                        onDeleteChildCategory(child);
                       }}
                     >
                       <Trash2 className="h-3 w-3 text-red-500" />

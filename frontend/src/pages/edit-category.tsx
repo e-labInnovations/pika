@@ -14,6 +14,8 @@ import IconColorsFields from '@/components/categories/icon-colors-fields';
 import { categoryService, type Category, type CategoryInput } from '@/services/api';
 import { useLookupStore } from '@/store/useLookupStore';
 import { toast } from 'sonner';
+import { runWithLoaderAndError } from '@/lib/utils';
+import { useConfirmDialog } from '@/store/useConfirmDialog';
 
 const EditCategory = () => {
   const { categoryId } = useParams();
@@ -60,31 +62,37 @@ const EditCategory = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    categoryService
-      .update(categoryId || '', formData)
-      .then(() => {
-        toast.success('Category updated successfully');
-        useLookupStore.getState().fetchCategories(); // TODO: implement loading state
+    runWithLoaderAndError(
+      async () => {
+        await categoryService.update(categoryId || '', formData);
+        useLookupStore.getState().fetchCategories();
         navigate(`/settings/categories?type=${transactionType}`, { replace: true });
-      })
-      .catch((error) => {
-        toast.error(error.response.data.message);
-      });
+      },
+      {
+        loaderMessage: 'Updating category...',
+        successMessage: 'Category updated successfully',
+      },
+    );
   };
 
   const handleDelete = () => {
-    if (confirm(`Are you sure you want to delete "${formData.name}"?`)) {
-      categoryService
-        .delete(categoryId || '')
-        .then(() => {
-          toast.success('Category deleted successfully');
-          useLookupStore.getState().fetchCategories(); // TODO: implement loading state
-          navigate(`/settings/categories?type=${transactionType}`, { replace: true });
-        })
-        .catch((error) => {
-          toast.error(error.response.data.message);
-        });
-    }
+    useConfirmDialog.getState().open({
+      title: 'Delete Category',
+      message: `Are you sure you want to delete "${formData.name}"?`,
+      onConfirm: () => {
+        runWithLoaderAndError(
+          async () => {
+            await categoryService.delete(categoryId || '');
+            useLookupStore.getState().fetchCategories();
+            navigate(`/settings/categories?type=${transactionType}`, { replace: true });
+          },
+          {
+            loaderMessage: 'Deleting category...',
+            successMessage: 'Category deleted successfully',
+          },
+        );
+      },
+    });
   };
 
   const getTransactionTypeLabel = (type: TransactionType) => {
