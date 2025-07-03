@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { CircleCheck } from 'lucide-react';
 import SearchItem from './search-item';
 import FilterTabHeader from './filter-tab-header';
-import { cn } from '@/lib/utils';
+import { cn, getInitials } from '@/lib/utils';
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import type { Filter } from './types';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -69,7 +69,7 @@ const PeopleTabContent = ({ filters, setFilters }: PeopleTabContentProps) => {
               <div className="flex items-center space-x-3">
                 <Avatar>
                   <AvatarImage src={person.avatar?.url} alt={person.name} />
-                  <AvatarFallback>{person.name.split(' ')[0].charAt(0)}</AvatarFallback>
+                  <AvatarFallback>{getInitials(person.name)}</AvatarFallback>
                 </Avatar>
                 <div className="flex-1">
                   <p className="font-medium">{person.name}</p>

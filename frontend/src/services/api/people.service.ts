@@ -19,11 +19,11 @@ export interface Person {
 }
 
 export interface PersonInput {
-  name: string;
-  email: string;
-  phone: string;
-  avatarId: string;
-  description: string;
+  name: string | null;
+  email: string | null;
+  phone: string | null;
+  avatarId: string | null;
+  description: string | null;
 }
 
 class PeopleService extends BaseService<Person> {

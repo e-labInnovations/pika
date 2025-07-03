@@ -6,6 +6,7 @@ import { Check } from 'lucide-react';
 import SearchBar from './search-bar';
 import { type Person } from '@/services/api';
 import { useLookupStore } from '@/store/useLookupStore';
+import { getInitials } from '@/lib/utils';
 
 interface PeoplePickerProps {
   isOpen: boolean;
@@ -61,10 +62,7 @@ const PeoplePicker = ({ isOpen, onClose, onSelect, selectedPersonId }: PeoplePic
                 <Avatar className="h-10 w-10">
                   <AvatarImage src={person.avatar.url} alt={person.name} />
                   <AvatarFallback className="bg-emerald-500 font-semibold text-white">
-                    {person.name
-                      .split(' ')
-                      .map((n) => n[0])
-                      .join('')}
+                    {getInitials(person.name)}
                   </AvatarFallback>
                 </Avatar>
                 <div className="min-w-0 flex-1">

@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { currencyUtils } from '@/lib/currency-utils';
 import { useAuth } from '@/hooks/use-auth';
 import transactionUtils from '@/lib/transaction-utils';
+import { getInitials } from '@/lib/utils';
 
 interface PeopleListProps {
   people: Person[];
@@ -48,10 +49,7 @@ export function PeopleList({ people, searchTerm }: PeopleListProps) {
                   <Avatar className="h-12 w-12">
                     <AvatarImage src={person.avatar.url || '/placeholder.svg'} alt={person.name} />
                     <AvatarFallback className="bg-emerald-500 font-semibold text-white">
-                      {person.name
-                        .split(' ')
-                        .map((n) => n[0])
-                        .join('')}
+                      {getInitials(person.name)}
                     </AvatarFallback>
                   </Avatar>
                   <div className="min-w-0 flex-1">
@@ -71,11 +69,11 @@ export function PeopleList({ people, searchTerm }: PeopleListProps) {
                       </div>
                     </div>
                     <p className="truncate text-sm text-slate-500 dark:text-slate-400">{person.description}</p>
-                    <div className="mt-1 flex items-center space-x-4">
+                    <div className="mt-1 flex items-center justify-between space-x-4">
                       <span className="flex items-center text-xs text-slate-500 dark:text-slate-400">
                         <Calendar className="mr-1 h-3 w-3" />
                         Last:{' '}
-                        {person.lastTransactionAt ? transactionUtils.formatDateTime(person.lastTransactionAt) : 'N/A'}
+                        {person.lastTransactionAt ? transactionUtils.formatDateTime(person.lastTransactionAt) : '-'}
                       </span>
                       <span className="text-xs text-slate-500 dark:text-slate-400">
                         {person.totalTransactions} transactions

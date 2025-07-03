@@ -62,7 +62,7 @@ const EditPerson = () => {
       name: formData.name,
       email: formData.email,
       phone: formData.phone,
-      avatarId: person?.avatar.id || '',
+      avatarId: person?.avatar.id || null,
       description: formData.description,
     };
 
@@ -71,6 +71,8 @@ const EditPerson = () => {
         if (avatarFile) {
           const uploadResponse = await uploadService.uploadAvatar(avatarFile, 'person');
           personInput.avatarId = uploadResponse.data.id;
+        } else if (!avatarUrl && !avatarFile) {
+          personInput.avatarId = null;
         }
         await peopleService.update(id as string, personInput);
         useLookupStore.getState().fetchPeople();

@@ -14,6 +14,7 @@ import { peopleService, type Person } from '@/services/api';
 import { useConfirmDialog } from '@/store/useConfirmDialog';
 import { runWithLoaderAndError } from '@/lib/async-handler';
 import { useLookupStore } from '@/store/useLookupStore';
+import { getInitials } from '@/lib/utils';
 
 const DetailedPerson = () => {
   const [person, setPerson] = useState<Person | null>(null);
@@ -85,10 +86,7 @@ const DetailedPerson = () => {
                 <Avatar className="h-20 w-20">
                   <AvatarImage src={person?.avatar.url || undefined} alt={person?.name || 'Person'} />
                   <AvatarFallback className="bg-emerald-500 text-xl font-semibold text-white">
-                    {person.name
-                      .split(' ')
-                      .map((n) => n[0])
-                      .join('')}
+                    {getInitials(person.name)}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1">

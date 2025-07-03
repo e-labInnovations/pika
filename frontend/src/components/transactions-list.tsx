@@ -13,6 +13,7 @@ import { TagChip } from './tag-chip';
 import transactionUtils from '@/lib/transaction-utils';
 import { currencyUtils } from '@/lib/currency-utils';
 import { useAuth } from '@/hooks/use-auth';
+import { getInitials } from '@/lib/utils';
 
 interface TransactionsListProps {
   transactions: Transaction[];
@@ -252,12 +253,7 @@ export function TransactionsList({
                                 alt={transaction.person?.name}
                                 className="rounded-full"
                               />
-                              <AvatarFallback>
-                                {transaction.person?.name
-                                  .split(' ')
-                                  .map((name) => name[0])
-                                  .join('')}
-                              </AvatarFallback>
+                              <AvatarFallback>{getInitials(transaction.person?.name)}</AvatarFallback>
                             </Avatar>
                           )}
                         </div>
