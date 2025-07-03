@@ -31,18 +31,24 @@ const EditAccount = () => {
 
   useEffect(() => {
     if (accountId) {
-      accountService.get(accountId).then((response) => {
-        setAccount(response.data);
-        setFormData({
-          name: response.data.name,
-          description: response.data.description || '',
-          icon: response.data.icon as IconName,
-          bgColor: response.data.bgColor,
-          color: response.data.color,
-          avatarId: response.data.avatar?.id || null,
-        });
-        setAvatarUrl(response.data.avatar?.url || null);
-      });
+      runWithLoaderAndError(
+        async () => {
+          const response = await accountService.get(accountId);
+          setAccount(response.data);
+          setFormData({
+            name: response.data.name,
+            description: response.data.description || '',
+            icon: response.data.icon as IconName,
+            bgColor: response.data.bgColor,
+            color: response.data.color,
+            avatarId: response.data.avatar?.id || null,
+          });
+          setAvatarUrl(response.data.avatar?.url || null);
+        },
+        {
+          loaderMessage: 'Loading account...',
+        },
+      );
     }
   }, [accountId]);
 

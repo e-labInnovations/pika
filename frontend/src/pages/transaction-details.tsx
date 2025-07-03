@@ -1,6 +1,6 @@
 import TabsLayout from '@/layouts/tabs';
 import { Card, CardContent } from '@/components/ui/card';
-import { Calendar, Clock, Tag, Wallet, User, FileText, Paperclip, Eye, Loader2 } from 'lucide-react';
+import { Calendar, Clock, Tag, Wallet, User, FileText, Paperclip, Eye } from 'lucide-react';
 import { IconRenderer } from '@/components/icon-renderer';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -13,24 +13,24 @@ import { transactionsService, type Transaction } from '@/services/api';
 import { useEffect, useState } from 'react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import transactionUtils from '@/lib/transaction-utils';
+import { runWithLoaderAndError } from '@/lib/async-handler';
 
 const TransactionDetails = () => {
-  const [isLoading, setIsLoading] = useState(true);
   const { id } = useParams();
   const navigate = useNavigate();
   const [transaction, setTransaction] = useState<Transaction | null>(null);
 
   useEffect(() => {
     if (id) {
-      transactionsService
-        .get(id)
-        .then((response) => {
+      runWithLoaderAndError(
+        async () => {
+          const response = await transactionsService.get(id);
           setTransaction(response.data);
-          setIsLoading(false);
-        })
-        .catch(() => {
-          setIsLoading(false);
-        });
+        },
+        {
+          loaderMessage: 'Loading transaction...',
+        },
+      );
     }
   }, [id]);
 
@@ -301,13 +301,7 @@ const TransactionDetails = () => {
         </div>
       )}
 
-      {isLoading && (
-        <div className="flex h-full items-center justify-center">
-          <Loader2 className="h-4 w-4 animate-spin" />
-        </div>
-      )}
-
-      {!transaction && !isLoading && (
+      {!transaction && (
         <div className="flex h-full items-center justify-center">
           <p className="text-slate-500 dark:text-slate-400">Transaction not found</p>
         </div>

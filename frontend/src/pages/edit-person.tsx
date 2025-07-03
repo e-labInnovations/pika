@@ -8,8 +8,7 @@ import AvatarUpload from '@/components/people-tab/avatar-upload';
 import PersonFormFields from '@/components/people-tab/person-form-fields';
 import PersonPreview from '@/components/people-tab/person-preview';
 import { peopleService, uploadService, type Person, type PersonInput } from '@/services/api';
-import { toast } from 'sonner';
-import { runWithLoaderAndError } from '@/lib/utils';
+import { runWithLoaderAndError } from '@/lib/async-handler';
 import { useLookupStore } from '@/store/useLookupStore';
 import { useConfirmDialog } from '@/store/useConfirmDialog';
 
@@ -31,9 +30,9 @@ const EditPerson = () => {
 
   useEffect(() => {
     if (id) {
-      peopleService
-        .get(id)
-        .then((response) => {
+      runWithLoaderAndError(
+        async () => {
+          const response = await peopleService.get(id);
           setPerson(response.data);
           setFormData({
             name: response.data.name,
@@ -44,10 +43,11 @@ const EditPerson = () => {
           });
           setAvatarUrl(response.data.avatar.url);
           setAvatarFile(null);
-        })
-        .catch((error) => {
-          toast.error(error.response.data.message);
-        });
+        },
+        {
+          loaderMessage: 'Loading person...',
+        },
+      );
     }
   }, [id, navigate]);
 

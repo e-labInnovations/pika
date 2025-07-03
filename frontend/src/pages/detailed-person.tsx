@@ -10,38 +10,28 @@ import transactionUtils from '@/lib/transaction-utils';
 import { currencyUtils } from '@/lib/currency-utils';
 import { useAuth } from '@/hooks/use-auth';
 import { useState, useEffect } from 'react';
-import { toast } from 'sonner';
 import { peopleService, type Person } from '@/services/api';
 import { useConfirmDialog } from '@/store/useConfirmDialog';
-import { runWithLoaderAndError } from '@/lib/utils';
+import { runWithLoaderAndError } from '@/lib/async-handler';
 import { useLookupStore } from '@/store/useLookupStore';
 
 const DetailedPerson = () => {
-  const [isLoading, setIsLoading] = useState(false);
   const [person, setPerson] = useState<Person | null>(null);
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
 
   useEffect(() => {
-    setIsLoading(true);
-    peopleService
-      .get(id as string)
-      .then((response) => {
+    runWithLoaderAndError(
+      async () => {
+        const response = await peopleService.get(id as string);
         setPerson(response.data);
-      })
-      .catch((error) => {
-        toast.error(error.response.data.message);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+      },
+      {
+        loaderMessage: 'Loading person...',
+      },
+    );
   }, [id]);
-
-  // TODO: Add Global Loader
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
 
   const handleEdit = () => {
     navigate(`/people/${id}/edit`);
