@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Plus, DollarSign, Mail, Phone } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import DetailedPersonActions from '@/components/people-tab/detailed-person-actions';
-// import { CategoryTransactionIcon } from '@/components/category-transaction-icon';
 import transactionUtils from '@/lib/transaction-utils';
 import { currencyUtils } from '@/lib/currency-utils';
 import { useAuth } from '@/hooks/use-auth';
@@ -15,6 +14,7 @@ import { useConfirmDialog } from '@/store/useConfirmDialog';
 import { runWithLoaderAndError } from '@/lib/async-handler';
 import { useLookupStore } from '@/store/useLookupStore';
 import { getInitials } from '@/lib/utils';
+import PersonTransactions from '@/components/people-tab/person-transactions';
 
 const DetailedPerson = () => {
   const [person, setPerson] = useState<Person | null>(null);
@@ -175,43 +175,7 @@ const DetailedPerson = () => {
           </div>
 
           {/* Recent Transactions */}
-          <Card className="gap-4">
-            <CardHeader className="flex items-center justify-between">
-              <CardTitle>Recent Transactions</CardTitle>
-              <Button variant="ghost" size="sm" className="text-sm">
-                View All
-              </Button>
-            </CardHeader>
-            <CardContent className="gap-4">
-              <div className="space-y-3">
-                {/* {personTransactions.slice(0, 5).map((transaction) => (
-                  <div
-                    onClick={() => navigate(`/transactions/${transaction.id}`)}
-                    key={transaction.id}
-                    className="flex cursor-pointer items-center justify-between rounded-lg border border-slate-200 bg-white/70 p-3 dark:border-slate-700 dark:bg-slate-800/70"
-                  >
-                    <div className="flex items-center space-x-3">
-                      <CategoryTransactionIcon
-                        transactionType={transaction.type}
-                        iconName={transaction.category.icon}
-                        color={transaction.category.color}
-                        bgColor={transaction.category.bgColor}
-                      />
-                      <div>
-                        <p className="font-medium text-slate-900 dark:text-white">{transaction.title}</p>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">
-                          {transactionUtils.formatDateTime(transaction.date)}
-                        </p>
-                      </div>
-                    </div>
-                    <span className={`font-semibold ${transactionUtils.getAmountColor(transaction.type)}`}>
-                      {currencyUtils.formatAmount(transaction.amount, user?.settings?.currency)}
-                    </span>
-                  </div>
-                ))} */}
-              </div>
-            </CardContent>
-          </Card>
+          <PersonTransactions personId={id as string} />
         </div>
       )}
 

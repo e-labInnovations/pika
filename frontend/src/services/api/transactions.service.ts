@@ -39,6 +39,10 @@ class TransactionsService extends BaseService<Transaction> {
   constructor() {
     super('/transactions');
   }
+
+  getPersonTransactions(personId: string, limit: number, offset: number) {
+    return this.list({ personId, limit, offset });
+  }
 }
 
 export const transactionsService = new TransactionsService();

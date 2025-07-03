@@ -10,6 +10,7 @@ import SearchBar from '@/components/search-bar';
 import HeaderRightActions from '@/components/transactions-tab/header-right-actions';
 import { transactionsService, type Transaction } from '@/services/api';
 import { runWithLoaderAndError } from '@/lib/utils';
+import { useSearchParams } from 'react-router-dom';
 
 const TransactionsTab = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -20,18 +21,25 @@ const TransactionsTab = () => {
   const [sort, setSort] = useState<Sort>(defaultSort);
   const [activeFilterTab, setActiveFilterTab] = useState<FilterTab | undefined>(undefined);
   const [searchTerm, setSearchTerm] = useState('');
+  const [searchParams] = useSearchParams();
+  const personId = searchParams.get('personId');
+  const linkBackward = personId ? `/people/${personId}` : undefined;
+  const [description, setDescription] = useState('Your financial transactions');
 
   useEffect(() => {
     runWithLoaderAndError(
       async () => {
-        const response = await transactionsService.list();
+        const response = await transactionsService.list({
+          personId: personId ?? undefined,
+        });
         setTransactions(response.data);
+        setDescription(personId ? `Transactions with ${response.data[0].person.name}` : 'Your financial transactions');
       },
       {
         loaderMessage: 'Loading transactions...',
       },
     );
-  }, []);
+  }, [personId]);
 
   useEffect(() => {}, [filters]);
 
@@ -75,7 +83,8 @@ const TransactionsTab = () => {
     <TabsLayout
       header={{
         title: 'Transactions',
-        description: 'Your financial transactions',
+        description: description,
+        linkBackward: linkBackward,
         rightActions: (
           <HeaderRightActions
             showTransactionSearch={showTransactionSearch}
