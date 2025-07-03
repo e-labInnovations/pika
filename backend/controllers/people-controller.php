@@ -83,8 +83,8 @@ class Pika_People_Controller extends Pika_Base_Controller {
     public function create_person($request) {
         $params = $request->get_params();
         $name = sanitize_text_field($params['name'] ?? "");
-        $email = sanitize_email($params['email'] ?? "");
-        $phone = sanitize_text_field($params['phone'] ?? "");
+        $email = sanitize_email($params['email'] ?? "") ?? null;
+        $phone = sanitize_text_field($params['phone'] ?? "") ?? null;
         $avatar_id = $params['avatarId'] ?? null;
         $description = sanitize_text_field($params['description'] ?? "");
         
@@ -92,11 +92,11 @@ class Pika_People_Controller extends Pika_Base_Controller {
             return $this->people_manager->get_error('invalid_name');
         }
 
-        if (isset($email) && !is_email($email)) {
+        if (isset($email) && !empty($email) && !is_email($email)) {
             return $this->people_manager->get_error('invalid_email');
         }
 
-        if (isset($avatar_id) && !$this->people_manager->is_valid_avatar_id($avatar_id)) {
+        if (isset($avatar_id) && !empty($avatar_id) && !$this->people_manager->is_valid_avatar_id($avatar_id)) {
             return $this->people_manager->get_error('invalid_avatar');
         }
 
@@ -144,13 +144,16 @@ class Pika_People_Controller extends Pika_Base_Controller {
             $format['phone'] = '%s';
         }
 
-        if(isset($params['avatarId'])) {
+        if(isset($params['avatarId']) && !empty($params['avatarId'])) {
             $data['avatar_id'] = $params['avatarId'];
             $format['avatar_id'] = '%d';
 
-            if (!$this->people_manager->is_valid_avatar_id($data['avatar_id'])) {
+            if (!is_null($data['avatar_id']) && !$this->people_manager->is_valid_avatar_id($data['avatar_id'])) {
                 return $this->people_manager->get_error('invalid_avatar');
             }
+        } else if(is_null($params['avatarId'])) {
+            $data['avatar_id'] = null;
+            $format['avatar_id'] = '%d';
         }
 
         if(isset($params['description'])) {
