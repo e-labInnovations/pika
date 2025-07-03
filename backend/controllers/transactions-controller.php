@@ -72,7 +72,62 @@ class Pika_Transactions_Controller extends Pika_Base_Controller {
      * Get transactions
      */
     public function get_transactions($request) {
-        $transactions = $this->transactions_manager->get_all_transactions();
+        $params = $request->get_params();
+        $person_id = $params['personId'] ?? null;
+        $account_id = $params['accountId'] ?? null;
+        $category_id = $params['categoryId'] ?? null;
+        $date_from = $params['dateFrom'] ?? null;
+        $date_to = $params['dateTo'] ?? null;
+        $limit = $params['limit'] ?? null;
+        $offset = $params['offset'] ?? null;
+
+        if(!is_null($person_id) && !empty($person_id)) {
+            $person_id = intval($person_id);
+            $is_valid_person_id = $this->transactions_manager->is_valid_person_id($person_id);
+            if(is_wp_error($is_valid_person_id)) {
+                return $is_valid_person_id;
+            }
+        }
+
+        if(!is_null($account_id) && !empty($account_id)) {
+            $account_id = intval($account_id);
+            $is_valid_account_id = $this->transactions_manager->is_valid_account_id($account_id);
+            if(is_wp_error($is_valid_account_id)) {
+                return $is_valid_account_id;
+            }
+        }
+
+        if(!is_null($category_id) && !empty($category_id)) {
+            $category_id = intval($category_id);
+            $is_valid_category_id = $this->transactions_manager->is_valid_category_id($category_id);
+            if(is_wp_error($is_valid_category_id)) {
+                return $is_valid_category_id;
+            }
+        }
+
+        if(!is_null($date_from) && !empty($date_from)) {
+            $is_valid_date_from = $this->transactions_manager->sanitize_iso_datetime($date_from);
+            if(is_wp_error($is_valid_date_from)) {
+                return $is_valid_date_from;
+            }
+        }
+
+        if(!is_null($date_to) && !empty($date_to)) {
+            $is_valid_date_to = $this->transactions_manager->sanitize_iso_datetime($date_to);
+            if(is_wp_error($is_valid_date_to)) {
+                return $is_valid_date_to;
+            }
+        }
+
+        if(!is_null($limit) && !empty($limit)) {
+            $limit = intval($limit);
+        }
+
+        if(!is_null($offset) && !empty($offset)) {
+            $offset = intval($offset);
+        }
+
+        $transactions = $this->transactions_manager->get_all_transactions($person_id, $account_id, $category_id, $date_from, $date_to, $limit, $offset);
         return $transactions;
     }
 

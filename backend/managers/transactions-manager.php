@@ -168,11 +168,47 @@ class Pika_Transactions_Manager extends Pika_Base_Manager {
   /**
    * Get all transactions
    * 
+   * @param int|null $person_id
+   * @param int|null $account_id
+   * @param int|null $category_id
+   * @param string|null $date_from
+   * @param string|null $date_to
+   * @param int|null $limit
+   * @param int|null $offset
    * @return array|WP_Error
    */
-  public function get_all_transactions() {
+  public function get_all_transactions($person_id = null, $account_id = null, $category_id = null, $date_from = null, $date_to = null, $limit = null, $offset = null) {
     $table_name = $this->get_table_name();
-    $sql = $this->db()->prepare("SELECT * FROM {$table_name}");
+    $user_id = get_current_user_id();
+    $sql = $this->db()->prepare("SELECT * FROM {$table_name} WHERE user_id = %d", $user_id);
+
+    if (!is_null($person_id)) {
+      $sql .= $this->db()->prepare(" AND person_id = %d", $person_id);
+    }
+    if (!is_null($account_id)) {
+      $sql .= $this->db()->prepare(" AND (account_id = %d OR to_account_id = %d)", $account_id, $account_id);
+    }
+    if (!is_null($category_id)) {
+      $sql .= $this->db()->prepare(" AND category_id = %d", $category_id);
+    }
+    if (!is_null($date_from)) {
+      $sql .= $this->db()->prepare(" AND date >= %s", $date_from);
+    }
+    if (!is_null($date_to)) {
+      $sql .= $this->db()->prepare(" AND date <= %s", $date_to);
+    }
+
+    $sql .= $this->db()->prepare(" ORDER BY date DESC");
+
+    if (!is_null($limit)) {
+      $sql .= $this->db()->prepare(" LIMIT %d", $limit);
+    }
+    if (!is_null($offset)) {
+      $sql .= $this->db()->prepare(" OFFSET %d", $offset);
+    }
+
+    $this->utils->log('SQL', $sql, 'debug');
+
     $transactions = $this->db()->get_results($sql);
 
     if (is_wp_error($transactions)) {
