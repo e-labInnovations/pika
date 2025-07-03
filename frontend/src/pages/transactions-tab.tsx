@@ -9,6 +9,7 @@ import FilterSortBar from '@/components/transactions-tab/filter-sort-bar';
 import SearchBar from '@/components/search-bar';
 import HeaderRightActions from '@/components/transactions-tab/header-right-actions';
 import { transactionsService, type Transaction } from '@/services/api';
+import AsyncStateWrapper from '@/components/async-state-wrapper';
 
 const TransactionsTab = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -19,20 +20,26 @@ const TransactionsTab = () => {
   const [sort, setSort] = useState<Sort>(defaultSort);
   const [activeFilterTab, setActiveFilterTab] = useState<FilterTab | undefined>(undefined);
   const [searchTerm, setSearchTerm] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<unknown | null>(null);
 
   useEffect(() => {
-    transactionsService.list().then((response) => {
-      setTransactions(response.data);
-    });
+    transactionsService
+      .list()
+      .then((response) => {
+        setTransactions(response.data);
+      })
+      .catch((error) => {
+        setError(error);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }, []);
 
-  useEffect(() => {
-    console.log('🚀 ~ useEffect ~ filters:', filters);
-  }, [filters]);
+  useEffect(() => {}, [filters]);
 
-  useEffect(() => {
-    console.log('🚀 ~ useEffect ~ sort:', sort);
-  }, [sort]);
+  useEffect(() => {}, [sort]);
 
   const getFilterCount = () => {
     return Object.keys(filters).filter((key) => {
@@ -86,40 +93,42 @@ const TransactionsTab = () => {
         ),
       }}
     >
-      <FilterSortBar
-        filters={filters}
-        setFilters={setFilters}
-        sort={sort}
-        onSortClick={() => setShowSortModal(true)}
-        onFilterClick={handleFilterClick}
-      />
-
-      {showTransactionSearch && (
-        <SearchBar
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-          onSearchToggle={setShowTransactionSearch}
-          placeholder="Search transactions..."
+      <AsyncStateWrapper isLoading={isLoading} error={error} className="h-[calc(100dvh-175px)]">
+        <FilterSortBar
+          filters={filters}
+          setFilters={setFilters}
+          sort={sort}
+          onSortClick={() => setShowSortModal(true)}
+          onFilterClick={handleFilterClick}
         />
-      )}
 
-      <TransactionsList
-        transactions={transactions}
-        searchTerm={searchTerm}
-        onClearSearchAndFilters={clearSearchAndFilters}
-        filters={filters}
-        sort={sort}
-      />
+        {showTransactionSearch && (
+          <SearchBar
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            onSearchToggle={setShowTransactionSearch}
+            placeholder="Search transactions..."
+          />
+        )}
 
-      <TransactionsFilter
-        open={showFilterModal}
-        setOpen={setShowFilterModal}
-        filters={filters}
-        setFilters={setFilters}
-        defaultTab={activeFilterTab}
-      />
+        <TransactionsList
+          transactions={transactions}
+          searchTerm={searchTerm}
+          onClearSearchAndFilters={clearSearchAndFilters}
+          filters={filters}
+          sort={sort}
+        />
 
-      <TransactionsSort open={showSortModal} setOpen={setShowSortModal} sort={sort} setSort={setSort} />
+        <TransactionsFilter
+          open={showFilterModal}
+          setOpen={setShowFilterModal}
+          filters={filters}
+          setFilters={setFilters}
+          defaultTab={activeFilterTab}
+        />
+
+        <TransactionsSort open={showSortModal} setOpen={setShowSortModal} sort={sort} setSort={setSort} />
+      </AsyncStateWrapper>
     </TabsLayout>
   );
 };

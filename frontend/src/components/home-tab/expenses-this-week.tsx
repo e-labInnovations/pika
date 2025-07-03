@@ -2,13 +2,13 @@ import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import DayExpenseBar from './day-expense-bar';
 import { analyticsService, type WeeklyExpenses } from '@/services/api';
-import { toast } from 'sonner';
-import GlobalLoader from '../global-loader';
+import AsyncStateWrapper from '../async-state-wrapper';
 
 const ExpensesThisWeek = () => {
   const [weeklyExpensesData, setWeeklyExpensesData] = useState<WeeklyExpenses>();
   const maxExpense = Math.max(...Object.values(weeklyExpensesData || {}));
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<unknown | null>(null);
 
   useEffect(() => {
     analyticsService
@@ -17,7 +17,7 @@ const ExpensesThisWeek = () => {
         setWeeklyExpensesData(response.data);
       })
       .catch((error) => {
-        toast.error(error.response.data.message);
+        setError(error);
       })
       .finally(() => {
         setIsLoading(false);
@@ -30,9 +30,7 @@ const ExpensesThisWeek = () => {
         <CardTitle className="text-md">Expenses This Week</CardTitle>
       </CardHeader>
       <CardContent>
-        {isLoading ? (
-          <GlobalLoader />
-        ) : (
+        <AsyncStateWrapper isLoading={isLoading} error={error}>
           <div className="flex justify-center gap-4 sm:gap-6 md:gap-8 lg:gap-10">
             {Object.entries(weeklyExpensesData || {}).map(([day, amount]) => {
               const barHeight = (amount / maxExpense) * 100;
@@ -47,7 +45,7 @@ const ExpensesThisWeek = () => {
               );
             })}
           </div>
-        )}
+        </AsyncStateWrapper>
       </CardContent>
     </Card>
   );

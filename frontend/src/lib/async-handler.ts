@@ -1,7 +1,7 @@
-import axios from 'axios';
 import { useGlobalLoader } from '@/store/useGlobalLoader';
 import { useGlobalErrorDialog } from '@/store/useGlobalErrorDialog';
 import { toast } from 'sonner';
+import { getErrorMessage } from './error-utils';
 
 export async function runWithLoaderAndError(
   asyncTask: () => Promise<void>,
@@ -27,13 +27,7 @@ export async function runWithLoaderAndError(
 
     options?.onSuccess?.();
   } catch (error: unknown) {
-    let errorMessage = 'Something went wrong';
-
-    if (axios.isAxiosError(error)) {
-      errorMessage = error.response?.data?.message || error.message;
-    } else if (error instanceof Error) {
-      errorMessage = error.message;
-    }
+    const errorMessage = getErrorMessage(error);
 
     options?.onError?.(errorMessage);
     open(errorMessage, 'Error');

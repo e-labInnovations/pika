@@ -29,7 +29,7 @@ export const useLookupStore = create<LookupState>((set) => ({
   categories: [],
   accounts: [],
   people: [],
-  loading: true,
+  loading: false,
 
   async fetchTags() {
     const res = await tagsService.list();
