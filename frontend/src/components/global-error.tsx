@@ -6,8 +6,10 @@ interface GlobalErrorProps {
   className?: string;
   title?: string;
   message?: string;
-  onReload?: () => void;
+  onButtonClick?: () => void;
   icon?: React.ReactNode;
+  buttonText?: string;
+  buttonIcon?: React.ReactNode;
 }
 
 const GlobalError = ({
@@ -15,7 +17,9 @@ const GlobalError = ({
   title = 'Something went wrong',
   message = 'An unexpected error occurred. Please try again.',
   icon,
-  onReload,
+  onButtonClick,
+  buttonText = 'Retry',
+  buttonIcon = <RefreshCw className="h-4 w-4" />,
 }: GlobalErrorProps) => {
   return (
     <div className={cn('flex w-full items-center justify-center', className)}>
@@ -28,10 +32,10 @@ const GlobalError = ({
 
         <div className="text-muted-foreground mb-6 max-w-md text-sm">{message}</div>
 
-        {onReload && (
-          <Button onClick={onReload} variant="outline" size="lg" className="gap-2">
-            <RefreshCw className="h-4 w-4" />
-            Reload
+        {onButtonClick && (
+          <Button onClick={onButtonClick} variant="outline" size="lg" className="gap-2">
+            {buttonIcon}
+            {buttonText}
           </Button>
         )}
       </div>

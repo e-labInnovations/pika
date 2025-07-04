@@ -47,7 +47,7 @@ export function PeopleList({ people, searchTerm }: PeopleListProps) {
               <div className="flex items-center justify-between">
                 <div className="flex flex-1 items-center space-x-3">
                   <Avatar className="h-12 w-12">
-                    <AvatarImage src={person.avatar.url || '/placeholder.svg'} alt={person.name} />
+                    <AvatarImage src={person.avatar.url} alt={person.name} />
                     <AvatarFallback className="bg-emerald-500 font-semibold text-white">
                       {getInitials(person.name)}
                     </AvatarFallback>

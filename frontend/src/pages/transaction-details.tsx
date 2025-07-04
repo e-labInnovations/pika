@@ -250,7 +250,7 @@ const TransactionDetails = () => {
                       {attachment.type === 'image' ? (
                         <div className="flex h-full flex-col items-center justify-center gap-2">
                           <img
-                            src={attachment.url || '/placeholder.svg'}
+                            src={attachment.url}
                             alt={attachment.name}
                             className="h-20 w-full rounded object-cover"
                           />

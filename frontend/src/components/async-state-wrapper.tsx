@@ -2,33 +2,53 @@ import React from 'react';
 import GlobalLoader from './global-loader';
 import GlobalError from './global-error';
 import { getErrorMessage, isNetworkError } from '@/lib/error-utils';
-import { Globe } from 'lucide-react';
+import { ArrowLeft, Globe, RefreshCw } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { useNavigate } from 'react-router-dom';
 
 interface AsyncStateWrapperProps {
   isLoading: boolean;
   error?: unknown | null;
   onRetry?: () => void;
+  linkBackward?: string;
   children: React.ReactNode;
   className?: string;
 }
 
-const AsyncStateWrapper = ({ isLoading, error = null, onRetry, children, className }: AsyncStateWrapperProps) => {
+const AsyncStateWrapper = ({
+  isLoading,
+  error = null,
+  linkBackward,
+  children,
+  className,
+  onRetry,
+}: AsyncStateWrapperProps) => {
+  const navigate = useNavigate();
   if (isLoading) {
-    return <GlobalLoader className={className} />;
+    return <GlobalLoader className={cn('h-full flex-1', className)} />;
   }
 
   if (error) {
     const errorMessage = error ? getErrorMessage(error) : undefined;
     const errorIcon = isNetworkError(error) ? <Globe className="text-destructive h-16 w-16" /> : null;
     const errorTitle = isNetworkError(error) ? 'Network Error' : 'Error';
+    const errorButtonText = isNetworkError(error) ? 'Retry' : 'Go Back';
+    const errorButtonClick = isNetworkError(error) ? onRetry : () => navigate(linkBackward || '/');
+    const errorButtonIcon = isNetworkError(error) ? (
+      <RefreshCw className="h-4 w-4" />
+    ) : (
+      <ArrowLeft className="h-4 w-4" />
+    );
 
     return (
       <GlobalError
         title={errorTitle}
         message={errorMessage}
         icon={errorIcon}
-        onReload={onRetry}
-        className={className}
+        onButtonClick={errorButtonClick}
+        buttonText={errorButtonText}
+        buttonIcon={errorButtonIcon}
+        className={cn('h-full flex-1', className)}
       />
     );
   }

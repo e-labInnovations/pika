@@ -104,11 +104,7 @@ const Attachments = ({ attachments, setAttachments }: AttachmentsProps) => {
 
                   {attachment.type === 'image' ? (
                     <div className="flex h-full flex-col items-center gap-2">
-                      <img
-                        src={attachment.url || '/placeholder.svg'}
-                        alt={attachment.name}
-                        className="h-20 w-full rounded object-cover"
-                      />
+                      <img src={attachment.url} alt={attachment.name} className="h-20 w-full rounded object-cover" />
                       <div className="my-auto flex max-w-full flex-col items-center gap-1 overflow-hidden">
                         <Tooltip>
                           <TooltipTrigger asChild>

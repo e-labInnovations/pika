@@ -1,5 +1,5 @@
-import MainHeader from "@/components/main-header";
-import { Navigation } from "@/components/navigation";
+import MainHeader from '@/components/main-header';
+import { Navigation } from '@/components/navigation';
 
 interface TabsLayoutProps {
   header: {
@@ -23,8 +23,8 @@ const TabsLayout = ({ header, children }: TabsLayoutProps) => {
       />
 
       {/* Main Content */}
-      <main className="pb-20 lg:pb-4">
-        <div className="lg:flex lg:max-w-7xl lg:mx-auto">
+      <main className="flex h-full flex-1 flex-col pb-20 lg:pb-4">
+        <div className="flex h-full w-full flex-1 flex-col lg:flex-row">
           {/* Desktop Sidebar */}
           <div className="hidden lg:block lg:w-64 lg:flex-shrink-0">
             <div className="sticky top-24 p-4">
@@ -33,8 +33,8 @@ const TabsLayout = ({ header, children }: TabsLayoutProps) => {
           </div>
 
           {/* Content */}
-          <div className="lg:flex-1 lg:min-w-0">
-            <div className="px-4 py-2 space-y-2 lg:py-4">{children}</div>
+          <div className="flex w-full flex-1 flex-col lg:max-w-[calc(100vw-17rem)]">
+            <div className="flex w-full flex-1 flex-col space-y-2 px-4 py-2 lg:py-4">{children}</div>
           </div>
         </div>
       </main>

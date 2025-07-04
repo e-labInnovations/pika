@@ -9,8 +9,8 @@ import FilterSortBar from '@/components/transactions-tab/filter-sort-bar';
 import SearchBar from '@/components/search-bar';
 import HeaderRightActions from '@/components/transactions-tab/header-right-actions';
 import { transactionsService, type Transaction } from '@/services/api';
-import { runWithLoaderAndError } from '@/lib/utils';
 import { useSearchParams } from 'react-router-dom';
+import AsyncStateWrapper from '@/components/async-state-wrapper';
 
 const TransactionsTab = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -25,20 +25,26 @@ const TransactionsTab = () => {
   const personId = searchParams.get('personId');
   const linkBackward = personId ? `/people/${personId}` : undefined;
   const [description, setDescription] = useState('Your financial transactions');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<unknown | null>(null);
 
   useEffect(() => {
-    runWithLoaderAndError(
-      async () => {
-        const response = await transactionsService.list({
-          personId: personId ?? undefined,
-        });
+    setIsLoading(true);
+    setError(null);
+    transactionsService
+      .list({
+        personId: personId ?? undefined,
+      })
+      .then((response) => {
         setTransactions(response.data);
         setDescription(personId ? `Transactions with ${response.data[0].person.name}` : 'Your financial transactions');
-      },
-      {
-        loaderMessage: 'Loading transactions...',
-      },
-    );
+      })
+      .catch((error) => {
+        setError(error);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }, [personId]);
 
   useEffect(() => {}, [filters]);
@@ -98,40 +104,42 @@ const TransactionsTab = () => {
         ),
       }}
     >
-      <FilterSortBar
-        filters={filters}
-        setFilters={setFilters}
-        sort={sort}
-        onSortClick={() => setShowSortModal(true)}
-        onFilterClick={handleFilterClick}
-      />
-
-      {showTransactionSearch && (
-        <SearchBar
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-          onSearchToggle={setShowTransactionSearch}
-          placeholder="Search transactions..."
+      <AsyncStateWrapper isLoading={isLoading} error={error}>
+        <FilterSortBar
+          filters={filters}
+          setFilters={setFilters}
+          sort={sort}
+          onSortClick={() => setShowSortModal(true)}
+          onFilterClick={handleFilterClick}
         />
-      )}
 
-      <TransactionsList
-        transactions={transactions}
-        searchTerm={searchTerm}
-        onClearSearchAndFilters={clearSearchAndFilters}
-        filters={filters}
-        sort={sort}
-      />
+        {showTransactionSearch && (
+          <SearchBar
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            onSearchToggle={setShowTransactionSearch}
+            placeholder="Search transactions..."
+          />
+        )}
 
-      <TransactionsFilter
-        open={showFilterModal}
-        setOpen={setShowFilterModal}
-        filters={filters}
-        setFilters={setFilters}
-        defaultTab={activeFilterTab}
-      />
+        <TransactionsList
+          transactions={transactions}
+          searchTerm={searchTerm}
+          onClearSearchAndFilters={clearSearchAndFilters}
+          filters={filters}
+          sort={sort}
+        />
 
-      <TransactionsSort open={showSortModal} setOpen={setShowSortModal} sort={sort} setSort={setSort} />
+        <TransactionsFilter
+          open={showFilterModal}
+          setOpen={setShowFilterModal}
+          filters={filters}
+          setFilters={setFilters}
+          defaultTab={activeFilterTab}
+        />
+
+        <TransactionsSort open={showSortModal} setOpen={setShowSortModal} sort={sort} setSort={setSort} />
+      </AsyncStateWrapper>
     </TabsLayout>
   );
 };

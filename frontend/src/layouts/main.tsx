@@ -1,8 +1,8 @@
-import { Outlet } from "react-router-dom";
+import { Outlet } from 'react-router-dom';
 
 const MainLayout = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="bg-background flex h-full w-full flex-1 flex-col">
       <Outlet />
     </div>
   );
