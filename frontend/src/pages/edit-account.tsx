@@ -11,12 +11,16 @@ import { uploadService } from '@/services/api';
 import { useLookupStore } from '@/store/useLookupStore';
 import { runWithLoaderAndError } from '@/lib/utils';
 import { useConfirmDialog } from '@/store/useConfirmDialog';
+import AsyncStateWrapper from '@/components/async-state-wrapper';
 
 const EditAccount = () => {
-  const { accountId } = useParams();
   const navigate = useNavigate();
+  const { accountId } = useParams();
+  const [account, setAccount] = useState<Account | null>(null);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<unknown | null>(null);
 
   const [formData, setFormData] = useState<AccountInput>({
     name: '',
@@ -27,30 +31,38 @@ const EditAccount = () => {
     avatarId: null,
   });
 
-  const [account, setAccount] = useState<Account | null>(null);
-
   useEffect(() => {
     if (accountId) {
-      runWithLoaderAndError(
-        async () => {
-          const response = await accountService.get(accountId);
-          setAccount(response.data);
-          setFormData({
-            name: response.data.name,
-            description: response.data.description || '',
-            icon: response.data.icon as IconName,
-            bgColor: response.data.bgColor,
-            color: response.data.color,
-            avatarId: response.data.avatar?.id || null,
-          });
-          setAvatarUrl(response.data.avatar?.url || null);
-        },
-        {
-          loaderMessage: 'Loading account...',
-        },
-      );
+      fetchAccount();
+    } else {
+      setError(new Error('Account not found'));
     }
   }, [accountId]);
+
+  const fetchAccount = () => {
+    setIsLoading(true);
+    setError(null);
+    accountService
+      .get(accountId!)
+      .then((response) => {
+        setAccount(response.data);
+        setFormData({
+          name: response.data.name,
+          description: response.data.description || '',
+          icon: response.data.icon as IconName,
+          bgColor: response.data.bgColor,
+          color: response.data.color,
+          avatarId: response.data.avatar?.id || null,
+        });
+        setAvatarUrl(response.data.avatar?.url || null);
+      })
+      .catch((error) => {
+        setError(error);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -101,22 +113,6 @@ const EditAccount = () => {
     setAvatarUrl(url);
   };
 
-  if (!account) {
-    return (
-      <TabsLayout
-        header={{
-          title: 'Edit Account',
-          description: 'Account not found',
-          linkBackward: '/settings/accounts',
-        }}
-      >
-        <div className="py-8 text-center">
-          <p className="text-slate-500 dark:text-slate-400">Account not found</p>
-        </div>
-      </TabsLayout>
-    );
-  }
-
   return (
     <TabsLayout
       header={{
@@ -125,57 +121,59 @@ const EditAccount = () => {
         linkBackward: '/settings/accounts',
       }}
     >
-      <div className="mx-auto flex max-w-2xl flex-col gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Account Information</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <AccountFormFields
-                name={formData.name}
-                description={formData.description}
-                onNameChange={(name) => setFormData((prev) => ({ ...prev, name }))}
-                onDescriptionChange={(description) => setFormData((prev) => ({ ...prev, description }))}
-              />
+      <AsyncStateWrapper isLoading={isLoading} error={error} linkBackward="/settings/accounts">
+        <div className="mx-auto flex max-w-2xl flex-col gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Account Information</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <AccountFormFields
+                  name={formData.name}
+                  description={formData.description}
+                  onNameChange={(name) => setFormData((prev) => ({ ...prev, name }))}
+                  onDescriptionChange={(description) => setFormData((prev) => ({ ...prev, description }))}
+                />
 
-              <AccountIconSelector
-                name={formData.name}
-                icon={formData.icon as IconName}
-                bgColor={formData.bgColor}
-                color={formData.color}
-                avatar={avatarUrl}
-                onIconChange={(icon) => setFormData((prev) => ({ ...prev, icon }))}
-                onBgColorChange={(bgColor) => setFormData((prev) => ({ ...prev, bgColor }))}
-                onColorChange={(color) => setFormData((prev) => ({ ...prev, color }))}
-                onAvatarChange={handleAvatarChange}
-              />
+                <AccountIconSelector
+                  name={formData.name}
+                  icon={formData.icon as IconName}
+                  bgColor={formData.bgColor}
+                  color={formData.color}
+                  avatar={avatarUrl}
+                  onIconChange={(icon) => setFormData((prev) => ({ ...prev, icon }))}
+                  onBgColorChange={(bgColor) => setFormData((prev) => ({ ...prev, bgColor }))}
+                  onColorChange={(color) => setFormData((prev) => ({ ...prev, color }))}
+                  onAvatarChange={handleAvatarChange}
+                />
 
-              <AccountPreview
-                name={formData.name}
-                description={formData.description}
-                icon={formData.icon as IconName}
-                bgColor={formData.bgColor}
-                color={formData.color}
-                avatar={avatarUrl}
-                balance={account.balance}
-                useAvatar={!!avatarUrl}
-              />
-            </form>
-          </CardContent>
-        </Card>
+                <AccountPreview
+                  name={formData.name}
+                  description={formData.description}
+                  icon={formData.icon as IconName}
+                  bgColor={formData.bgColor}
+                  color={formData.color}
+                  avatar={avatarUrl}
+                  balance={account?.balance || 0}
+                  useAvatar={!!avatarUrl}
+                />
+              </form>
+            </CardContent>
+          </Card>
 
-        <div className="flex justify-end space-x-2">
-          <Button variant="destructive" onClick={handleDelete} className="w-1/2">
-            <Trash2 className="mr-2 h-4 w-4" />
-            Delete
-          </Button>
-          <Button onClick={handleSubmit} disabled={!formData.name.trim()} className="w-1/2">
-            <Save className="mr-2 h-4 w-4" />
-            Save
-          </Button>
+          <div className="flex justify-end space-x-2">
+            <Button variant="destructive" onClick={handleDelete} className="w-1/2">
+              <Trash2 className="mr-2 h-4 w-4" />
+              Delete
+            </Button>
+            <Button onClick={handleSubmit} disabled={!formData.name.trim()} className="w-1/2">
+              <Save className="mr-2 h-4 w-4" />
+              Save
+            </Button>
+          </div>
         </div>
-      </div>
+      </AsyncStateWrapper>
     </TabsLayout>
   );
 };

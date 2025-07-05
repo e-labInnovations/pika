@@ -10,17 +10,10 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
   const location = useLocation();
 
   useEffect(() => {
-    console.log('user', user);
     if (user) {
-      console.log('fetching data');
       useLookupStore.getState().fetchAll();
     }
   }, [user]);
-
-  useEffect(() => {
-    console.log('loading', loading);
-    console.log('dataLoading', dataLoading);
-  }, [loading, dataLoading]);
 
   if (loading || dataLoading) {
     return (

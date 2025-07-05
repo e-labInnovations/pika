@@ -14,20 +14,22 @@ import Note from '@/components/add-transaction-tab/note';
 import { Button } from '@/components/ui/button';
 import { type TransactionType } from '@/lib/transaction-utils';
 import { validateTransactionForm } from '@/components/add-transaction-tab/schema';
-import { transactionsService, type Transaction, type TransactionInput, type UploadResponse } from '@/services/api';
+import { transactionsService, type TransactionInput, type UploadResponse } from '@/services/api';
 import { toast } from 'sonner';
 import type { AnalysisOutput } from '@/data/dummy-data';
 import { useLookupStore } from '@/store/useLookupStore';
 import { runWithLoaderAndError } from '@/lib/utils';
+import AsyncStateWrapper from '@/components/async-state-wrapper';
 
 const EditTransactionTab = () => {
-  const { id } = useParams();
   const navigate = useNavigate();
+  const { id } = useParams();
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<unknown | null>(null);
 
   const [openAiReceiptScanner, setOpenAiReceiptScanner] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
-  const [transaction, setTransaction] = useState<Transaction | null>(null);
 
   const [formData, setFormData] = useState<TransactionFormData>({
     title: '',
@@ -47,30 +49,39 @@ const EditTransactionTab = () => {
   // Load transaction data on component mount
   useEffect(() => {
     if (id) {
-      transactionsService
-        .get(id)
-        .then((response) => {
-          setTransaction(response.data);
-          setFormData({
-            title: response.data.title,
-            amount: response.data.amount,
-            date: response.data.date,
-            type: response.data.type,
-            category: response.data.category.id,
-            account: response.data.account.id,
-            toAccount: response.data.toAccount?.id || null,
-            person: response.data.person?.id || null,
-            tags: response.data.tags.map((tag) => tag.id),
-            note: response.data.note,
-          });
-          setAttachments(response.data.attachments);
-        })
-        .catch(() => {
-          toast.error('Transaction not found');
-          navigate('/transactions', { replace: true });
-        });
+      fetchTransaction();
+    } else {
+      setError(new Error('Transaction not found'));
     }
   }, [id, navigate]);
+
+  const fetchTransaction = () => {
+    setIsLoading(true);
+    setError(null);
+    transactionsService
+      .get(id!)
+      .then((response) => {
+        setFormData({
+          title: response.data.title,
+          amount: response.data.amount,
+          date: response.data.date,
+          type: response.data.type,
+          category: response.data.category.id,
+          account: response.data.account.id,
+          toAccount: response.data.toAccount?.id || null,
+          person: response.data.person?.id || null,
+          tags: response.data.tags.map((tag) => tag.id),
+          note: response.data.note,
+        });
+        setAttachments(response.data.attachments);
+      })
+      .catch((error) => {
+        setError(error);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
 
   const handleTransactionDetails = (transaction: AnalysisOutput) => {
     console.log('AI Analysis Result:', transaction);
@@ -146,22 +157,6 @@ const EditTransactionTab = () => {
     );
   };
 
-  if (!transaction) {
-    return (
-      <TabsLayout
-        header={{
-          title: 'Edit Transaction',
-          description: 'Loading transaction...',
-          linkBackward: '/transactions',
-        }}
-      >
-        <div className="py-8 text-center">
-          <p className="text-slate-500 dark:text-slate-400">Loading...</p>
-        </div>
-      </TabsLayout>
-    );
-  }
-
   return (
     <TabsLayout
       header={{
@@ -171,39 +166,43 @@ const EditTransactionTab = () => {
         rightActions: <HeaderRightActions handleScanReceipt={() => setOpenAiReceiptScanner(true)} />,
       }}
     >
-      <TransactionTypeSelector value={formData.type} onChange={handleTypeChange} />
-      <BasicInfo formData={formData} setFormData={setFormData} />
-      <CategoryAccount formData={formData} setFormData={setFormData} />
-      {formData.type !== 'transfer' && <PersonView formData={formData} setFormData={setFormData} />}
-      <Attachments attachments={attachments} setAttachments={setAttachments} />
-      <Tags formData={formData} setFormData={setFormData} />
-      <Note formData={formData} setFormData={setFormData} />
+      <AsyncStateWrapper isLoading={isLoading} error={error} linkBackward="/transactions" onRetry={fetchTransaction}>
+        <TransactionTypeSelector value={formData.type} onChange={handleTypeChange} />
+        <BasicInfo formData={formData} setFormData={setFormData} />
+        <CategoryAccount formData={formData} setFormData={setFormData} />
+        {formData.type !== 'transfer' && <PersonView formData={formData} setFormData={setFormData} />}
+        <Attachments attachments={attachments} setAttachments={setAttachments} />
+        <Tags formData={formData} setFormData={setFormData} />
+        <Note formData={formData} setFormData={setFormData} />
 
-      {/* Display validation errors */}
-      {Object.keys(formErrors).length > 0 && (
-        <div className="rounded-md border border-red-200 bg-red-50 p-4 dark:border-red-800 dark:bg-red-900/20">
-          <h3 className="mb-2 text-sm font-medium text-red-800 dark:text-red-200">Please fix the following errors:</h3>
-          <ul className="space-y-1 text-sm text-red-700 dark:text-red-300">
-            {Object.entries(formErrors).map(([field, error]) => (
-              <li key={field}>
-                • {field}: {error}
-              </li>
-            ))}
-          </ul>
+        {/* Display validation errors */}
+        {Object.keys(formErrors).length > 0 && (
+          <div className="rounded-md border border-red-200 bg-red-50 p-4 dark:border-red-800 dark:bg-red-900/20">
+            <h3 className="mb-2 text-sm font-medium text-red-800 dark:text-red-200">
+              Please fix the following errors:
+            </h3>
+            <ul className="space-y-1 text-sm text-red-700 dark:text-red-300">
+              {Object.entries(formErrors).map(([field, error]) => (
+                <li key={field}>
+                  • {field}: {error}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <div className="flex space-x-2">
+          <Button onClick={handleSubmit} disabled={isSubmitting} className="flex-1">
+            {isSubmitting ? 'Updating...' : 'Update Transaction'}
+          </Button>
         </div>
-      )}
 
-      <div className="flex space-x-2">
-        <Button onClick={handleSubmit} disabled={isSubmitting} className="flex-1">
-          {isSubmitting ? 'Updating...' : 'Update Transaction'}
-        </Button>
-      </div>
-
-      <ScanReceipt
-        open={openAiReceiptScanner}
-        setOpen={setOpenAiReceiptScanner}
-        handleTransactionDetails={handleTransactionDetails}
-      />
+        <ScanReceipt
+          open={openAiReceiptScanner}
+          setOpen={setOpenAiReceiptScanner}
+          handleTransactionDetails={handleTransactionDetails}
+        />
+      </AsyncStateWrapper>
     </TabsLayout>
   );
 };

@@ -60,8 +60,6 @@ export interface ErrorDetails {
  * @returns True if it's a network error
  */
 export function isNetworkError(error: unknown): boolean {
-  console.log('🚀 ~ isNetworkError ~ error:', error);
-
   if (axios.isAxiosError(error)) {
     return !error.response || error.code === 'ERR_NETWORK';
   }
