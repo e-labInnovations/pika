@@ -11,26 +11,28 @@ interface DateTabContentProps {
 
 const DateTabContent = ({ filters, setFilters }: DateTabContentProps) => {
   return (
-    <div className="space-y-3">
-      <FilterTabHeader
-        title="Date"
-        action={
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() =>
-              setFilters((prev) => ({
-                ...prev,
-                dateRange: defaultFilterValues.dateRange,
-              }))
-            }
-          >
-            Clear
-          </Button>
-        }
-      />
+    <div className="flex h-full flex-grow flex-col gap-2">
+      <div className="flex flex-col gap-2">
+        <FilterTabHeader
+          title="Date"
+          action={
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() =>
+                setFilters((prev) => ({
+                  ...prev,
+                  dateRange: defaultFilterValues.dateRange,
+                }))
+              }
+            >
+              Clear
+            </Button>
+          }
+        />
+      </div>
 
-      <div className="space-y-4">
+      <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto p-1">
         <div className="flex flex-col gap-3">
           <Label htmlFor="date" className="px-1">
             From Date

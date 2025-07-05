@@ -3,7 +3,6 @@ import FilterTabHeader from './filter-tab-header';
 import type { Filter } from './types';
 import SearchItem from './search-item';
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
-import { cn } from '@/lib/utils';
 import { CircleCheck } from 'lucide-react';
 import AccountAvatar from '@/components/account-avatar';
 import { useLookupStore } from '@/store/useLookupStore';
@@ -40,21 +39,23 @@ const AccountTabContent = ({ filters, setFilters }: AccountTabContentProps) => {
   };
 
   return (
-    <div className="space-y-3">
-      <FilterTabHeader
-        title="Account"
-        handleSelectAll={handleSelectAllAccounts}
-        isAllSelected={
-          filters.accounts.length === getFilteredAccounts().length
-            ? true
-            : filters.accounts.length > 0
-              ? 'indeterminate'
-              : false
-        }
-      />
-      <SearchItem searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="Search person..." />
+    <div className="flex h-full flex-grow flex-col gap-2">
+      <div className="flex flex-col gap-2">
+        <FilterTabHeader
+          title="Account"
+          handleSelectAll={handleSelectAllAccounts}
+          isAllSelected={
+            filters.accounts.length === getFilteredAccounts().length
+              ? true
+              : filters.accounts.length > 0
+                ? 'indeterminate'
+                : false
+          }
+        />
+        <SearchItem searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="Search person..." />
+      </div>
 
-      <div className="grid grid-cols-1 gap-2">
+      <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto p-1">
         {getFilteredAccounts().map((account) => {
           const accountId = account.id?.toString() || account.name;
           return (
@@ -62,11 +63,7 @@ const AccountTabContent = ({ filters, setFilters }: AccountTabContentProps) => {
               key={accountId}
               checked={filters.accounts.includes(accountId)}
               onCheckedChange={() => handleAccountToggle(accountId)}
-              className={cn(
-                'ring-border text-muted-foreground relative rounded-lg px-4 py-3 text-start ring-[0.25px]',
-                'data-[state=checked]:ring-primary data-[state=checked]:text-primary data-[state=checked]:ring-[1.5px]',
-                'hover:bg-accent/50',
-              )}
+              className="ring-border text-muted-foreground data-[state=checked]:ring-primary data-[state=checked]:text-primary hover:bg-accent/50 relative rounded-lg border border-slate-200 px-4 py-3 text-start ring-[0.25px] data-[state=checked]:ring-[1.5px] dark:border-slate-700"
             >
               <div className="flex items-center space-x-3">
                 <AccountAvatar account={account} />

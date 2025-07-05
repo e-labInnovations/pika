@@ -1,20 +1,9 @@
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import FilterTabHeader from "./filter-tab-header";
-import {
-  amountOperators,
-  defaultFilterValues,
-  type AmountOperator,
-  type Filter,
-} from "./types";
-import { Button } from "@/components/ui/button";
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
+import FilterTabHeader from './filter-tab-header';
+import { amountOperators, defaultFilterValues, type AmountOperator, type Filter } from './types';
+import { Button } from '@/components/ui/button';
 
 interface AmountTabContentProps {
   filters: Filter;
@@ -30,34 +19,35 @@ const AmountTabContent = ({ filters, setFilters }: AmountTabContentProps) => {
   };
 
   return (
-    <div className="space-y-3">
-      <FilterTabHeader
-        title="Amount"
-        action={
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() =>
-              setFilters((prev) => ({
-                ...prev,
-                amount: defaultFilterValues.amount,
-              }))
-            }
-          >
-            Clear
-          </Button>
-        }
-      />
-      <div className="space-y-4">
+    <div className="flex h-full flex-grow flex-col gap-2">
+      <div className="flex flex-col gap-2">
+        <FilterTabHeader
+          title="Amount"
+          action={
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() =>
+                setFilters((prev) => ({
+                  ...prev,
+                  amount: defaultFilterValues.amount,
+                }))
+              }
+            >
+              Clear
+            </Button>
+          }
+        />
+      </div>
+
+      <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto p-1">
         <div className="flex flex-col gap-3">
           <Label htmlFor="amount-operator" className="px-1">
             Condition
           </Label>
           <Select
             value={filters.amount.operator}
-            onValueChange={(value) =>
-              handleOperatorChange(value as AmountOperator)
-            }
+            onValueChange={(value) => handleOperatorChange(value as AmountOperator)}
           >
             <SelectTrigger className="mt-1">
               <SelectValue placeholder="Select condition" />
@@ -73,10 +63,7 @@ const AmountTabContent = ({ filters, setFilters }: AmountTabContentProps) => {
         </div>
         <div className="flex flex-col gap-3">
           <Label htmlFor="amount-value1" className="px-1">
-            {filters.amount.operator ===
-            ("between" as keyof typeof amountOperators)
-              ? "Minimum Amount"
-              : "Amount"}
+            {filters.amount.operator === ('between' as keyof typeof amountOperators) ? 'Minimum Amount' : 'Amount'}
           </Label>
           <Input
             id="amount-value1"
@@ -92,7 +79,7 @@ const AmountTabContent = ({ filters, setFilters }: AmountTabContentProps) => {
             className="mt-1"
           />
         </div>
-        {filters.amount.operator === "between" && (
+        {filters.amount.operator === 'between' && (
           <div className="flex flex-col gap-3">
             <Label htmlFor="amount-value2" className="px-1">
               Maximum Amount
@@ -101,7 +88,7 @@ const AmountTabContent = ({ filters, setFilters }: AmountTabContentProps) => {
               id="amount-value2"
               type="number"
               placeholder="0.00"
-              value={filters.amount.value2 || ""}
+              value={filters.amount.value2 || ''}
               onChange={(e) =>
                 setFilters((prev) => ({
                   ...prev,

@@ -4,6 +4,7 @@ import SearchItem from './search-item';
 import type { Filter } from './types';
 import { IconRenderer } from '@/components/icon-renderer';
 import { useLookupStore } from '@/store/useLookupStore';
+import type { Category } from '@/services/api';
 
 interface CategoriesTabContentProps {
   filters: Filter;
@@ -26,8 +27,8 @@ const CategoriesTabContent = ({ filters, setFilters }: CategoriesTabContentProps
     });
   };
 
-  const getFilteredCategories = () => {
-    return categories.filter(
+  const getFilteredCategories = (_categories: Category[] = categories) => {
+    return _categories.filter(
       (parent) =>
         parent.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (parent.children?.some((child) => child.name.toLowerCase().includes(searchTerm.toLowerCase())) ?? false),
@@ -47,14 +48,16 @@ const CategoriesTabContent = ({ filters, setFilters }: CategoriesTabContentProps
       if (parent) {
         // If parent is being selected, select all children
         if (!prev.categories.includes(categoryId)) {
-          parent.children?.forEach((child) => {
+          getFilteredCategories(parent.children ?? []).forEach((child) => {
+            // parent.children?.forEach((child) => {
             if (!newCategories.includes(child.id)) {
               newCategories.push(child.id);
             }
           });
         } else {
           // If parent is being deselected, deselect all children
-          parent.children?.forEach((child) => {
+          getFilteredCategories(parent.children ?? []).forEach((child) => {
+            // parent.children?.forEach((child) => {
             const index = newCategories.indexOf(child.id);
             if (index > -1) {
               newCategories.splice(index, 1);
@@ -84,30 +87,31 @@ const CategoriesTabContent = ({ filters, setFilters }: CategoriesTabContentProps
   };
 
   return (
-    <div className="flex h-full flex-1 flex-col space-y-3">
-      <FilterTabHeader
-        title="Categories"
-        handleSelectAll={handleSelectAllCategories}
-        isAllSelected={
-          filters.categories.length === categories.length + categories.flatMap((p) => p.children).length
-            ? true
-            : filters.categories.length > 0
-              ? 'indeterminate'
-              : false
-        }
-      />
+    <div className="flex h-full flex-grow flex-col gap-2">
+      <div className="flex flex-col gap-2">
+        <FilterTabHeader
+          title="Categories"
+          handleSelectAll={handleSelectAllCategories}
+          isAllSelected={
+            filters.categories.length === categories.length + categories.flatMap((p) => p.children).length
+              ? true
+              : filters.categories.length > 0
+                ? 'indeterminate'
+                : false
+          }
+        />
 
-      {/* Search within categories */}
-      <SearchItem searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="Search categories..." />
+        <SearchItem searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="Search categories..." />
+      </div>
 
-      <div className="space-y-4">
+      <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto p-1">
         {getFilteredCategories().map((parent) => (
-          <div key={parent.id} className="space-y-2">
+          <div key={parent.id} className="flex flex-col gap-2">
             {/* Parent Category */}
             <div
               className={`flex cursor-pointer items-center space-x-3 rounded-lg border p-3 transition-all ${
                 filters.categories.includes(parent.id)
-                  ? 'border-emerald-300 bg-emerald-50 dark:bg-emerald-900/20'
+                  ? 'border-primary bg-primary/10'
                   : 'border-slate-200 hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800'
               }`}
               onClick={() => handleCategoryToggle(parent.id)}
@@ -120,7 +124,7 @@ const CategoriesTabContent = ({ filters, setFilters }: CategoriesTabContentProps
             </div>
 
             {/* Child Categories */}
-            <div className="ml-6 space-y-2">
+            <div className="ml-6 flex flex-col gap-2">
               {parent.children
                 ?.filter((child) => child.name.toLowerCase().includes(searchTerm.toLowerCase()))
                 .map((child) => (
@@ -128,7 +132,7 @@ const CategoriesTabContent = ({ filters, setFilters }: CategoriesTabContentProps
                     key={child.id}
                     className={`flex cursor-pointer items-center space-x-3 rounded-lg border p-2 transition-all ${
                       filters.categories.includes(child.id)
-                        ? 'border-emerald-300 bg-emerald-50 dark:bg-emerald-900/20'
+                        ? 'border-primary bg-primary/10'
                         : 'border-slate-200 hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800'
                     }`}
                     onClick={() => handleCategoryToggle(child.id)}

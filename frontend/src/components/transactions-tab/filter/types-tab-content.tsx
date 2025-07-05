@@ -2,7 +2,6 @@ import { CircleCheck } from 'lucide-react';
 import FilterTabHeader from './filter-tab-header';
 import { useState } from 'react';
 import SearchItem from './search-item';
-import { cn } from '@/lib/utils';
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import { type Filter } from './types';
 import TransactionUtils, { type TransactionType } from '@/lib/transaction-utils';
@@ -38,30 +37,31 @@ const TypesTabContent = ({ filters, setFilters }: TypesTabContentProps) => {
   };
 
   return (
-    <div className="space-y-3">
-      <FilterTabHeader
-        title="Transaction Types"
-        handleSelectAll={handleSelectAllTypes}
-        isAllSelected={
-          filters.types.length === getFilteredTypes().length ? true : filters.types.length > 0 ? 'indeterminate' : false
-        }
-      />
+    <div className="flex h-full flex-grow flex-col gap-2">
+      <div className="flex flex-col gap-2">
+        <FilterTabHeader
+          title="Transaction Types"
+          handleSelectAll={handleSelectAllTypes}
+          isAllSelected={
+            filters.types.length === getFilteredTypes().length
+              ? true
+              : filters.types.length > 0
+                ? 'indeterminate'
+                : false
+          }
+        />
 
-      {/* Search within types */}
-      <SearchItem searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="Search types..." />
+        <SearchItem searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="Search types..." />
+      </div>
 
-      <div className="grid grid-cols-1 gap-2">
+      <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto p-1">
         {getFilteredTypes().map((type) => {
           return (
             <CheckboxPrimitive.Root
               key={type.id}
               checked={filters.types.includes(type.id)}
               onCheckedChange={() => handleTypeToggle(type.id)}
-              className={cn(
-                'ring-border text-muted-foreground relative rounded-lg px-4 py-3 text-start ring-[0.25px]',
-                'data-[state=checked]:ring-primary data-[state=checked]:text-primary data-[state=checked]:ring-[1.5px]',
-                'hover:bg-accent/50',
-              )}
+              className="ring-border text-muted-foreground data-[state=checked]:ring-primary data-[state=checked]:text-primary hover:bg-accent/50 relative rounded-lg border border-slate-200 px-4 py-3 text-start ring-[0.25px] data-[state=checked]:ring-[1.5px] dark:border-slate-700"
             >
               <div className="flex items-center space-x-3">
                 <IconRenderer iconName={type.icon} size="md" className={`${type.bgColor} ${type.color}`} />

@@ -55,7 +55,7 @@ const TransactionsSort = ({ open, setOpen, sort, setSort }: TransactionsSortProp
         <RadioGroup.Root
           value={getRadioValue(localSort.field, localSort.direction)}
           onValueChange={handleSortChange}
-          className="flex h-[70%] flex-col gap-2 overflow-y-auto px-4"
+          className="flex flex-col gap-2 overflow-y-auto px-4"
         >
           {sortOptions.map((option) => (
             <div key={option.value} className="flex flex-col gap-2">

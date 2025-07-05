@@ -3,7 +3,6 @@ import { useState } from 'react';
 import SearchItem from './search-item';
 import FilterTabHeader from './filter-tab-header';
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
-import { cn } from '@/lib/utils';
 import type { Filter } from './types';
 import { IconRenderer } from '@/components/icon-renderer';
 import { useLookupStore } from '@/store/useLookupStore';
@@ -36,27 +35,25 @@ const TagsTabContent = ({ filters, setFilters }: TagsTabContentProps) => {
     }));
   };
   return (
-    <div className="space-y-3">
-      <FilterTabHeader
-        title="Tags"
-        handleSelectAll={handleSelectAllTags}
-        isAllSelected={
-          filters.tags.length === getFilteredTags().length ? true : filters.tags.length > 0 ? 'indeterminate' : false
-        }
-      />
-      <SearchItem searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="Search tags..." />
+    <div className="flex h-full flex-grow flex-col gap-2">
+      <div className="flex flex-col gap-2">
+        <FilterTabHeader
+          title="Tags"
+          handleSelectAll={handleSelectAllTags}
+          isAllSelected={
+            filters.tags.length === getFilteredTags().length ? true : filters.tags.length > 0 ? 'indeterminate' : false
+          }
+        />
+        <SearchItem searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="Search tags..." />
+      </div>
 
-      <div className="grid grid-cols-1 gap-2">
+      <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto p-1">
         {getFilteredTags().map((tag) => (
           <CheckboxPrimitive.Root
             key={tag.id}
             checked={filters.tags.includes(tag.id)}
             onCheckedChange={() => handleTagToggle(tag.id)}
-            className={cn(
-              'ring-border text-muted-foreground relative rounded-lg px-4 py-3 text-start ring-[0.25px]',
-              'data-[state=checked]:ring-primary data-[state=checked]:text-primary data-[state=checked]:ring-[1.5px]',
-              'hover:bg-accent/50',
-            )}
+            className="ring-border text-muted-foreground data-[state=checked]:ring-primary data-[state=checked]:text-primary hover:bg-accent/50 relative rounded-lg border border-slate-200 px-4 py-3 text-start ring-[0.25px] data-[state=checked]:ring-[1.5px] dark:border-slate-700"
           >
             <div className="flex items-center space-x-3">
               <IconRenderer iconName={tag.icon} bgColor={tag.bgColor} color={tag.color} />
