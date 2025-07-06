@@ -11,6 +11,16 @@ export interface WeeklyExpenses {
   sun: string;
 }
 
+export interface MonthlyExpenses {
+  year: number;
+  month: string;
+  monthName: string;
+  income: number;
+  expenses: number;
+  balance: number;
+  transactionCount: number;
+}
+
 class AnalyticsService extends BaseService<unknown> {
   constructor() {
     super('/analytics');
@@ -18,6 +28,10 @@ class AnalyticsService extends BaseService<unknown> {
 
   getWeeklyExpenses(): Promise<AxiosResponse<WeeklyExpenses>> {
     return this.api.get<WeeklyExpenses>(`${this.endpoint}/weekly-expenses`);
+  }
+
+  getMonthlyExpenses(): Promise<AxiosResponse<MonthlyExpenses[]>> {
+    return this.api.get<MonthlyExpenses[]>(`${this.endpoint}/monthly-expenses`);
   }
 }
 
