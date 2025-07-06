@@ -1,12 +1,11 @@
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Tag as TagIcon } from 'lucide-react';
 import type { TransactionFormData } from './types';
-import { useEffect, useState } from 'react';
-import { TagChip } from '../tag-chip';
-import { IconRenderer } from '../icon-renderer';
-import { tagsService, type Tag } from '@/services/api';
-import { toast } from 'sonner';
+import { TagChip } from '@/components/tag-chip';
+import { IconRenderer } from '@/components/icon-renderer';
+import { useLookupStore } from '@/store/useLookupStore';
 
 interface TagsProps {
   formData: TransactionFormData;
@@ -16,21 +15,12 @@ interface TagsProps {
 const Tags = ({ formData, setFormData }: TagsProps) => {
   const [tagInput, setTagInput] = useState('');
   const [showTagSuggestions, setShowTagSuggestions] = useState(false);
-  const [tags, setTags] = useState<Tag[]>([]);
-
-  useEffect(() => {
-    tagsService
-      .list()
-      .then((response) => {
-        setTags(response.data);
-      })
-      .catch(() => {
-        toast.error('Error fetching tags');
-      });
-  }, []);
+  const tags = useLookupStore((state) => state.tags);
 
   const filteredTagSuggestions = tags.filter(
-    (tag) => tag.name.toLowerCase().includes(tagInput.toLowerCase()) && !formData.tags.includes(tag.id),
+    (tag) =>
+      (tagInput.length === 0 || tag.name.toLowerCase().includes(tagInput.toLowerCase())) &&
+      !formData.tags.includes(tag.id),
   );
 
   const getTag = (id: string) => {
@@ -58,11 +48,14 @@ const Tags = ({ formData, setFormData }: TagsProps) => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setTagInput(value);
-    setShowTagSuggestions(value.length > 0);
+    // Keep suggestions visible when typing, but don't hide them when clearing input
+    if (value.length > 0) {
+      setShowTagSuggestions(true);
+    }
   };
 
   const handleInputFocus = () => {
-    setShowTagSuggestions(tagInput.length > 0);
+    setShowTagSuggestions(true);
   };
 
   const handleInputBlur = () => {

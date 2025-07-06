@@ -1,4 +1,4 @@
-import { Edit, Share, Trash2 } from 'lucide-react';
+import { Edit, EllipsisVertical, Share, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -7,7 +7,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { MoreHorizontal } from 'lucide-react';
 
 interface DetailedPersonActionsProps {
   onEdit: () => void;
@@ -19,8 +18,8 @@ const DetailedPersonActions = ({ onEdit, onShare, onDelete }: DetailedPersonActi
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="text-slate-600 dark:text-slate-400">
-          <MoreHorizontal className="h-4 w-4" />
+        <Button variant="outline" size="icon" className="rounded-full">
+          <EllipsisVertical />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
