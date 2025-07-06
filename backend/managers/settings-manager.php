@@ -23,6 +23,12 @@ class Pika_Settings_Manager extends Pika_Base_Manager {
       'type' => 'string',
       'allowed_values' => [], // Will be populated from currencies.php
       'sanitize' => 'sanitize_currency'
+    ],
+    'gemini_api_key' => [
+      'default' => '',
+      'type' => 'string',
+      'allowed_values' => null,
+      'sanitize' => 'sanitize_string'
     ]
   ];
 
@@ -171,6 +177,13 @@ class Pika_Settings_Manager extends Pika_Base_Manager {
   }
 
   /**
+   * Sanitize string value
+   */
+  private function sanitize_string($value) {
+    return sanitize_text_field($value);
+  }
+
+  /**
    * Get a settings item
    * 
    * @param string $key
@@ -281,7 +294,7 @@ class Pika_Settings_Manager extends Pika_Base_Manager {
     }
 
     // Start with all default values
-    $settings = array_map(function($setting) {
+    $settings = array_map(function ($setting) {
       return $setting['default'];
     }, $this->allowed_settings);
 

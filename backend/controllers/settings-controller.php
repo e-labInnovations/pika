@@ -46,10 +46,6 @@ class Pika_Settings_Controller extends Pika_Base_Controller {
 
         $settings = $this->settings_manager->get_all_settings($user_id);
 
-        if (is_wp_error($settings)) {
-            return $settings;
-        }
-
         return $settings;
     }
 

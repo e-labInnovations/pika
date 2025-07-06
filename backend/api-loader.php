@@ -19,7 +19,8 @@ class Pika_API_Loader {
         'transactions',
         'analytics',
         'upload',
-        'settings'
+        'settings',
+        'ai'
     ];
 
     /**

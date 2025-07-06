@@ -28,13 +28,19 @@ class Pika_Auth_Manager extends Pika_Base_Manager {
       return $this->get_error('unauthorized');
     }
 
+    $settings = $this->settings_manager->get_all_settings($user->ID);
+    $modified_settings = [
+      'currency' => $settings['currency'],
+      'is_api_key_set' => !empty($settings['gemini_api_key']) && !is_null($settings['gemini_api_key'])
+    ];
+
     return [
       'id' => $user->ID,
       'username' => $user->user_login,
       'email' => $user->user_email,
       'display_name' => $user->display_name,
       'avatar_url' => get_avatar_url($user->ID, array('size' => 96)),
-      'settings' => $this->settings_manager->get_all_settings($user->ID)
+      'settings' => $modified_settings
     ];
   }
 }

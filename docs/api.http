@@ -38,6 +38,17 @@ Content-Type: application/json
 
 ###
 
+# Update settings - valid gemini api key
+PUT {{base_url}}/wp-json/pika/v1/settings
+Authorization: Basic {{admin_username}}:{{admin_password}}
+Content-Type: application/json
+
+{
+  "gemini_api_key": "AIzaSyD-sample-api-key"
+}
+
+###
+
 # Update settings - invalid currency
 PUT {{base_url}}/wp-json/pika/v1/settings
 Authorization: Basic {{username}}:{{password}}
@@ -391,6 +402,12 @@ Authorization: Basic {{username}}:{{password}}
 
 # Get monthly expenses
 GET {{base_url}}/wp-json/pika/v1/analytics/monthly-expenses
+Authorization: Basic {{admin_username}}:{{admin_password}}
+
+###
+
+# Test gemini response
+GET {{base_url}}/wp-json/pika/v1/ai/test
 Authorization: Basic {{admin_username}}:{{admin_password}}
 
 ###
