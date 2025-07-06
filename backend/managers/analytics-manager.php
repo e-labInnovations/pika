@@ -15,8 +15,7 @@ class Pika_Analytics_Manager extends Pika_Base_Manager {
     protected $accounts_table_name = 'accounts';
     protected $people_table_name = 'people';
 
-    protected $errors = [
-      ];
+    protected $errors = [];
 
     public function __construct() {
         parent::__construct();
@@ -53,7 +52,7 @@ WHERE
         }
         return $account;
     }
-    
+
     /**
      * Get the summary of all people
      * 
@@ -64,7 +63,7 @@ WHERE
         $people_table = $this->get_table_name($this->people_table_name);
         $transactions_table = $this->get_table_name($this->transaction_table_name);
         $user_id = get_current_user_id();
-        
+
         $sql = $this->db()->prepare("
 SELECT 
     p.id AS person_id,
@@ -140,5 +139,106 @@ WHERE
             'sun' => $weekly_expenses_data->sun,
         ];
         return $weekly_expenses;
+    }
+
+    /**
+     * Get the monthly expenses
+     * 
+     * @return array|WP_Error
+     */
+    public function get_monthly_expenses() {
+        $transactions_table = $this->get_table_name($this->transaction_table_name);
+        $user_id = get_current_user_id();
+
+        // Get date range from transactions
+        $range_sql = $this->db()->prepare(
+            "SELECT 
+                MIN(DATE(date)) AS start_date,
+                MAX(DATE(date)) AS end_date
+            FROM {$transactions_table}
+            WHERE user_id = %d AND is_active = 1",
+            $user_id
+        );
+        $range = $this->db()->get_row($range_sql);
+        if (is_wp_error($range)) {
+            return $this->get_error('db_error');
+        }
+
+        // If no transactions exist yet, return empty array
+        if (!$range || !$range->start_date) {
+            return [];
+        }
+
+        $start = new DateTime($range->start_date);
+        $end = new DateTime();
+
+        // Generate array of all months between start and end dates
+        $period = new DatePeriod($start, new DateInterval('P1M'), $end);
+        $allMonths = [];
+        foreach ($period as $dt) {
+            $allMonths[] = [
+                'year' => (int)$dt->format('Y'),
+                'month' => (int)$dt->format('n'),
+                'monthName' => $dt->format('F'),
+                'label' => $dt->format('M Y')
+            ];
+        }
+
+        // Get transaction totals grouped by month
+        $sql = $this->db()->prepare(
+            "SELECT
+                YEAR(date) AS year,
+                MONTH(date) AS month,
+                DATE_FORMAT(date, '%M') AS monthName,
+                SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END) AS income,
+                SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END) AS expenses,
+                SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END) - 
+                SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END) AS balance,
+                COUNT(id) AS transactionCount
+            FROM {$transactions_table}
+            WHERE user_id = %d
+              AND is_active = 1
+            GROUP BY YEAR(date), MONTH(date), monthName
+            ORDER BY YEAR(date), MONTH(date)",
+            $user_id
+        );
+        $rawResults = $this->db()->get_results($sql);
+        if (is_wp_error($rawResults)) {
+            return $this->get_error('db_error');
+        }
+
+        // Index results by year-month for easier lookup
+        $indexedResults = [];
+        foreach ($rawResults as $row) {
+            $key = $row->year . '-' . $row->month;
+            $indexedResults[$key] = [
+                'year' => (int)$row->year,
+                'month' => (int)$row->month,
+                'monthName' => $row->monthName,
+                'income' => (float)$row->income,
+                'expenses' => (float)$row->expenses,
+                'balance' => (float)$row->balance,
+                'transactionCount' => (int)$row->transactionCount,
+            ];
+        }
+
+        // Merge results with all months, filling in zeros for months with no data
+        $finalData = [];
+        foreach ($allMonths as $m) {
+            $key = $m['year'] . '-' . $m['month'];
+            $finalData[] = isset($indexedResults[$key])
+                ? $indexedResults[$key]
+                : [
+                    'year' => $m['year'],
+                    'month' => $m['month'],
+                    'monthName' => $m['monthName'],
+                    'income' => 0,
+                    'expenses' => 0,
+                    'balance' => 0,
+                    'transactionCount' => 0,
+                ];
+        }
+
+        return $finalData;
     }
 }
