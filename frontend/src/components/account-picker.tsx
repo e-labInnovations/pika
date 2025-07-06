@@ -12,16 +12,18 @@ interface AccountPickerProps {
   onClose: () => void;
   onSelect: (account: Account) => void;
   selectedAccountId?: string;
+  filterAccountId?: string;
 }
 
-const AccountPicker = ({ isOpen, onClose, onSelect, selectedAccountId }: AccountPickerProps) => {
+const AccountPicker = ({ isOpen, onClose, onSelect, selectedAccountId, filterAccountId }: AccountPickerProps) => {
   const [searchTerm, setSearchTerm] = useState('');
   const accounts = useLookupStore((state) => state.accounts);
 
   const filteredAccounts = accounts.filter(
     (account) =>
-      account.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      account.description?.toLowerCase().includes(searchTerm.toLowerCase()),
+      (account.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        account.description?.toLowerCase().includes(searchTerm.toLowerCase())) &&
+      (filterAccountId ? account.id !== filterAccountId : true),
   );
 
   const handleSelect = (account: Account) => {

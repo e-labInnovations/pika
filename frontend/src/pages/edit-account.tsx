@@ -122,7 +122,7 @@ const EditAccount = () => {
       }}
     >
       <AsyncStateWrapper isLoading={isLoading} error={error} linkBackward="/settings/accounts">
-        <div className="mx-auto flex max-w-2xl flex-col gap-6">
+        <div className="flex flex-col gap-6">
           <Card>
             <CardHeader>
               <CardTitle>Account Information</CardTitle>
@@ -162,7 +162,7 @@ const EditAccount = () => {
             </CardContent>
           </Card>
 
-          <div className="flex justify-end space-x-2">
+          <div className="flex justify-end gap-2">
             <Button variant="destructive" onClick={handleDelete} className="w-1/2">
               <Trash2 className="mr-2 h-4 w-4" />
               Delete

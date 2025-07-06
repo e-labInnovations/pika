@@ -16,7 +16,7 @@ import { validateTransactionForm } from '@/components/add-transaction-tab/schema
 import { transactionsService, type TransactionInput, type UploadResponse } from '@/services/api';
 import { toast } from 'sonner';
 import type { AnalysisOutput } from '@/data/dummy-data';
-import { useLookupStore } from '@/store/useLookupStore';
+import { storeUtils, useLookupStore } from '@/store/useLookupStore';
 import { runWithLoaderAndError } from '@/lib/utils';
 
 const AddTransactionTab = () => {
@@ -29,8 +29,8 @@ const AddTransactionTab = () => {
     amount: 0,
     date: new Date().toISOString(),
     type: 'expense',
-    category: '1',
-    account: '1',
+    category: storeUtils.getDefaultCategory('expense')?.id ?? '',
+    account: '',
     toAccount: null,
     person: null,
     tags: [],
@@ -59,12 +59,7 @@ const AddTransactionTab = () => {
   };
 
   const handleTypeChange = (type: TransactionType) => {
-    const defaultCategoryByType = {
-      expense: '1',
-      income: '10',
-      transfer: '16',
-    };
-    setFormData((prev) => ({ ...prev, type, category: defaultCategoryByType[type] }));
+    setFormData((prev) => ({ ...prev, type, category: storeUtils.getDefaultCategory(type)?.id ?? '' }));
 
     // TODO: Handle account and person selection
     // if (type === 'expense' || type === 'income') {
