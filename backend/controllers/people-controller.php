@@ -62,7 +62,7 @@ class Pika_People_Controller extends Pika_Base_Controller {
 
         $person_id = $request->get_param('id');
         $person = $this->people_manager->get_person($person_id);
-        if(is_wp_error($person)) {
+        if (is_wp_error($person)) {
             return false;
         }
 
@@ -87,7 +87,7 @@ class Pika_People_Controller extends Pika_Base_Controller {
         $phone = sanitize_text_field($params['phone'] ?? "") ?? null;
         $avatar_id = $params['avatarId'] ?? null;
         $description = sanitize_text_field($params['description'] ?? "");
-        
+
         if (is_null($name) || empty($name)) {
             return $this->people_manager->get_error('invalid_name');
         }
@@ -98,6 +98,8 @@ class Pika_People_Controller extends Pika_Base_Controller {
 
         if (isset($avatar_id) && !empty($avatar_id) && !$this->people_manager->is_valid_avatar_id($avatar_id)) {
             return $this->people_manager->get_error('invalid_avatar');
+        } else if (empty($avatar_id)) {
+            $avatar_id = null;
         }
 
         if ($this->people_manager->is_person_exists($name, $email)) {
@@ -112,7 +114,7 @@ class Pika_People_Controller extends Pika_Base_Controller {
      */
     public function get_person($request) {
         $person_id = $request->get_param('id');
-        $person = $this->people_manager->get_person($person_id, true);
+        $person = $this->people_manager->get_detailed_person($person_id);
         return $person;
     }
 
@@ -125,47 +127,47 @@ class Pika_People_Controller extends Pika_Base_Controller {
         $format = [];
 
         $existing_person = $this->people_manager->get_person($request->get_param('id'));
-        if(is_wp_error($existing_person)) {
+        if (is_wp_error($existing_person)) {
             return $existing_person;
         }
 
-        if(isset($params['name'])) {
+        if (isset($params['name'])) {
             $data['name'] = sanitize_text_field($params['name']);
             $format['name'] = '%s';
         }
 
-        if(isset($params['email'])) {
+        if (isset($params['email'])) {
             $data['email'] = sanitize_email($params['email']);
             $format['email'] = '%s';
         }
 
-        if(isset($params['phone'])) {
+        if (isset($params['phone'])) {
             $data['phone'] = sanitize_text_field($params['phone']);
             $format['phone'] = '%s';
         }
 
-        if(isset($params['avatarId']) && !empty($params['avatarId'])) {
+        if (isset($params['avatarId']) && !empty($params['avatarId'])) {
             $data['avatar_id'] = $params['avatarId'];
             $format['avatar_id'] = '%d';
 
             if (!is_null($data['avatar_id']) && !$this->people_manager->is_valid_avatar_id($data['avatar_id'])) {
                 return $this->people_manager->get_error('invalid_avatar');
             }
-        } else if(is_null($params['avatarId'])) {
+        } else if (is_null($params['avatarId'])) {
             $data['avatar_id'] = null;
             $format['avatar_id'] = '%d';
         }
 
-        if(isset($params['description'])) {
+        if (isset($params['description'])) {
             $data['description'] = sanitize_text_field($params['description']);
             $format['description'] = '%s';
         }
 
-        if(count($data) === 0) {
+        if (count($data) === 0) {
             return $this->people_manager->get_error('no_update');
         }
 
-        if($this->people_manager->is_person_exists($data['name']??$existing_person->name, $data['email']??$existing_person->email, $request->get_param('id'))) {
+        if ($this->people_manager->is_person_exists($data['name'] ?? $existing_person->name, $data['email'] ?? $existing_person->email, $request->get_param('id'))) {
             return $this->people_manager->get_error('person_already_exists');
         }
 
@@ -178,16 +180,16 @@ class Pika_People_Controller extends Pika_Base_Controller {
     public function delete_person($request) {
         $person_id = $request->get_param('id');
         $person = $this->people_manager->get_person($person_id);
-        if(is_wp_error($person)) {
+        if (is_wp_error($person)) {
             return $person;
         }
 
-        if($this->people_manager->person_has_transactions($person_id)) {
+        if ($this->people_manager->person_has_transactions($person_id)) {
             return $this->people_manager->get_error('person_has_transactions');
         }
 
         $result = $this->people_manager->delete_person($person_id);
-        if(is_wp_error($result)) {
+        if (is_wp_error($result)) {
             return $result;
         }
 

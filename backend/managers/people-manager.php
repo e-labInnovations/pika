@@ -36,7 +36,7 @@ class Pika_People_Manager extends Pika_Base_Manager {
    * @return array
    */
   public function format_person($person) {
-    $avatar = $this->upload_manager->get_file_by_id($person->avatar_id, true);
+    $avatar = is_null($person->avatar_id) ? null : $this->upload_manager->get_file_by_id($person->avatar_id, true);
     $last_transaction_at = date('Y-m-d H:i:s');
     $total_transactions = 0;
     $balance = 'error';
@@ -46,7 +46,7 @@ class Pika_People_Manager extends Pika_Base_Manager {
       $last_transaction_at = $person_summary->last_transaction_at;
       $total_transactions = $person_summary->total_transactions;
     }
-    
+
     return [
       'id' => $person->id,
       'name' => $person->name,
@@ -127,6 +127,31 @@ class Pika_People_Manager extends Pika_Base_Manager {
   }
 
   /**
+   * Get detailed person
+   * 
+   * @param int $id Person ID
+   * @return array|WP_Error Person data on success, WP_Error on failure
+   */
+  public function get_detailed_person($id) {
+    $person = $this->get_person($id, true);
+    if (is_wp_error($person)) {
+      return $person;
+    }
+
+    $person_total_summary = $this->analytics_manager->get_person_total_summary($id);
+    if (is_wp_error($person_total_summary)) {
+      return $person_total_summary;
+    }
+
+    $person['totalSummary'] = [
+      'totalSpent' => $person_total_summary->total_spent,
+      'totalReceived' => $person_total_summary->total_received,
+    ];
+
+    return $person;
+  }
+
+  /**
    * Gel all people
    * 
    * @return array|WP_Error People data on success, WP_Error on failure
@@ -158,7 +183,7 @@ class Pika_People_Manager extends Pika_Base_Manager {
    * @param string $description Person description
    * @return array|WP_Error Person data on success, WP_Error on failure
    */
-  public function create_person($name, $email, $phone, $avatar_id, $description) {
+  public function create_person($name, $email = '', $phone = '', $avatar_id = null, $description = '') {
     $table_name = $this->get_table_name();
     $user_id = get_current_user_id();
     $data = [

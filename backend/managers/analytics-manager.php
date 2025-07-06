@@ -99,6 +99,30 @@ ORDER BY
     }
 
     /**
+     * Get the total summary of a specific person
+     * 
+     * @param int $person_id
+     * @return array|WP_Error
+     */
+    public function get_person_total_summary($person_id) {
+        $transactions_table = $this->get_table_name($this->transaction_table_name);
+
+        $sql = $this->db()->prepare("
+SELECT
+  SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END) AS total_spent,
+  SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END) AS total_received
+FROM
+  {$transactions_table}
+WHERE
+  person_id = %d AND is_active = 1;", $person_id);
+        $person_total_summary = $this->db()->get_row($sql);
+        if (is_wp_error($person_total_summary)) {
+            return $this->get_error('db_error');
+        }
+        return $person_total_summary;
+    }
+
+    /**
      * Get the weekly expenses
      * 
      * @return array|WP_Error

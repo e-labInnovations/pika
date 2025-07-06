@@ -143,7 +143,7 @@ class Pika_Transactions_Manager extends Pika_Base_Manager {
    */
   public function format_transaction($transaction) {
     $category = $this->categories_manager->get_category_by_id($transaction->category_id, true);
-    $account = $this->accounts_manager->get_account_by_id($transaction->account_id, true  );
+    $account = $this->accounts_manager->get_account_by_id($transaction->account_id, true);
     $person = $transaction->person_id ? $this->people_manager->get_person($transaction->person_id, true) : null;
     $to_account = $transaction->to_account_id ? $this->accounts_manager->get_account_by_id($transaction->to_account_id, true) : null;
     $attachments = $this->upload_manager->get_all_transaction_attachments($transaction->id);
@@ -206,8 +206,6 @@ class Pika_Transactions_Manager extends Pika_Base_Manager {
     if (!is_null($offset)) {
       $sql .= $this->db()->prepare(" OFFSET %d", $offset);
     }
-
-    $this->utils->log('SQL', $sql, 'debug');
 
     $transactions = $this->db()->get_results($sql);
 
@@ -291,27 +289,27 @@ class Pika_Transactions_Manager extends Pika_Base_Manager {
 
     if (!empty($attachments) && is_array($attachments)) {
       foreach ($attachments as $upload_id) {
-          $upload_id = intval($upload_id);
-          if ($upload_id > 0) {
-              $this->db()->insert($transaction_attachments_table, [
-                  'transaction_id' => $transaction_id,
-                  'upload_id' => $upload_id,
-              ]);
-          }
+        $upload_id = intval($upload_id);
+        if ($upload_id > 0) {
+          $this->db()->insert($transaction_attachments_table, [
+            'transaction_id' => $transaction_id,
+            'upload_id' => $upload_id,
+          ]);
+        }
       }
     }
 
-  if (!empty($tags) && is_array($tags)) {
-    foreach ($tags as $tag_id) {
+    if (!empty($tags) && is_array($tags)) {
+      foreach ($tags as $tag_id) {
         $tag_id = intval($tag_id);
         if ($tag_id > 0) {
-            $this->db()->insert($transaction_tags_table, [
-                'transaction_id' => $transaction_id,
-                'tag_id' => $tag_id,
-            ]);
+          $this->db()->insert($transaction_tags_table, [
+            'transaction_id' => $transaction_id,
+            'tag_id' => $tag_id,
+          ]);
         }
+      }
     }
-  }
 
     return $this->get_transaction_by_id($transaction_id, true);
   }
@@ -333,12 +331,6 @@ class Pika_Transactions_Manager extends Pika_Base_Manager {
     $transaction_tags_table = $this->get_table_name($this->transaction_tags_table);
     $transaction_attachments_table = $this->get_table_name($this->transaction_attachments_table);
 
-    $this->utils->log('Tags to add', $tags_to_add, 'debug');
-    $this->utils->log('Tags to remove', $tags_to_remove, 'debug');
-    $this->utils->log('Attachments to add', $attachments_to_add, 'debug');
-    $this->utils->log('Attachments to remove', $attachments_to_remove, 'debug');
-
-    // 🛠️ Update transaction data
     $result = $this->db()->update($table_name, $data, ['id' => $id], $format);
     if ($result === false) {
       return $this->get_error('db_update_error');
@@ -347,41 +339,41 @@ class Pika_Transactions_Manager extends Pika_Base_Manager {
     // 🔗 Handle tags to add
     if (!empty($tags_to_add)) {
       foreach ($tags_to_add as $tag_id) {
-          $this->db()->insert(
-              $transaction_tags_table,
-              ['transaction_id' => intval($id), 'tag_id' => intval($tag_id)]
-          );
+        $this->db()->insert(
+          $transaction_tags_table,
+          ['transaction_id' => intval($id), 'tag_id' => intval($tag_id)]
+        );
       }
     }
 
     // 🔗 Handle tags to remove
     if (!empty($tags_to_remove)) {
-        foreach ($tags_to_remove as $tag_id) {
-            $this->db()->delete(
-                $transaction_tags_table,
-                ['transaction_id' => intval($id), 'tag_id' => intval($tag_id)]
-            );
-        }
+      foreach ($tags_to_remove as $tag_id) {
+        $this->db()->delete(
+          $transaction_tags_table,
+          ['transaction_id' => intval($id), 'tag_id' => intval($tag_id)]
+        );
+      }
     }
 
     // 📎 Handle attachments to add
     if (!empty($attachments_to_add)) {
-        foreach ($attachments_to_add as $upload_id) {
-            $this->db()->insert(
-                $transaction_attachments_table,
-                ['transaction_id' => intval($id), 'upload_id' => intval($upload_id)]
-            );
-        }
+      foreach ($attachments_to_add as $upload_id) {
+        $this->db()->insert(
+          $transaction_attachments_table,
+          ['transaction_id' => intval($id), 'upload_id' => intval($upload_id)]
+        );
+      }
     }
 
     // 📎 Handle attachments to remove
     if (!empty($attachments_to_remove)) {
-        foreach ($attachments_to_remove as $upload_id) {
-            $this->db()->delete(
-                $transaction_attachments_table,
-                ['transaction_id' => intval($id), 'upload_id' => intval($upload_id)]
-            );
-        }
+      foreach ($attachments_to_remove as $upload_id) {
+        $this->db()->delete(
+          $transaction_attachments_table,
+          ['transaction_id' => intval($id), 'upload_id' => intval($upload_id)]
+        );
+      }
     }
 
     return $this->get_transaction_by_id($id, true);
