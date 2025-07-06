@@ -1,10 +1,10 @@
-import { Calendar, DollarSign } from 'lucide-react';
+import { DollarSign } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import DatePicker from '../date-picker';
 import type { TransactionFormData } from './types';
 import MoneyInput from '../money-input';
+import { DateTimePicker } from '../ui/datetime-picker';
 
 interface BasicInfoProps {
   formData: TransactionFormData;
@@ -43,12 +43,12 @@ const BasicInfo = ({ formData, setFormData }: BasicInfoProps) => {
         <div className="flex flex-col gap-2">
           <div className="flex flex-col gap-2">
             <Label htmlFor="date" className="flex items-center">
-              <Calendar className="mr-1 h-4 w-4" />
               Date & Time *
             </Label>
-            <DatePicker
-              date={formData.date ? new Date(formData.date) : undefined}
-              setDate={(date) =>
+            <DateTimePicker
+              use12HourFormat={true}
+              value={formData.date ? new Date(formData.date) : undefined}
+              onChange={(date) =>
                 setFormData((prev) => ({
                   ...prev,
                   date: date ? date.toISOString() : '',

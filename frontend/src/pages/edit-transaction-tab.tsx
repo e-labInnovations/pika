@@ -63,7 +63,7 @@ const EditTransactionTab = () => {
       .then((response) => {
         setFormData({
           title: response.data.title,
-          amount: response.data.amount,
+          amount: Number(response.data.amount),
           date: response.data.date,
           type: response.data.type,
           category: response.data.category.id,

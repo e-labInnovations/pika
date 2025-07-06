@@ -2,7 +2,7 @@ import FilterTabHeader from './filter-tab-header';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { defaultFilterValues, type Filter } from './types';
-import DatePicker from '@/components/date-picker';
+import { DateTimePicker } from '@/components/ui/datetime-picker';
 
 interface DateTabContentProps {
   filters: Filter;
@@ -37,9 +37,10 @@ const DateTabContent = ({ filters, setFilters }: DateTabContentProps) => {
           <Label htmlFor="date" className="px-1">
             From Date
           </Label>
-          <DatePicker
-            date={filters.dateRange.from ? new Date(filters.dateRange.from) : undefined}
-            setDate={(date) =>
+          <DateTimePicker
+            use12HourFormat={true}
+            value={filters.dateRange.from ? new Date(filters.dateRange.from) : undefined}
+            onChange={(date) =>
               setFilters((prev) => ({
                 ...prev,
                 dateRange: {
@@ -54,9 +55,10 @@ const DateTabContent = ({ filters, setFilters }: DateTabContentProps) => {
           <Label htmlFor="date" className="px-1">
             To Date
           </Label>
-          <DatePicker
-            date={filters.dateRange.to ? new Date(filters.dateRange.to) : undefined}
-            setDate={(date) =>
+          <DateTimePicker
+            use12HourFormat={true}
+            value={filters.dateRange.to ? new Date(filters.dateRange.to) : undefined}
+            onChange={(date) =>
               setFilters((prev) => ({
                 ...prev,
                 dateRange: {
