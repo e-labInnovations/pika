@@ -30,6 +30,11 @@ class CurrencyUtils {
     })}`;
   }
 
+  formatBalance(balance: number, currencyCode: CurrencyCode | undefined) {
+    if (balance === 0) return 'Even';
+    return this.formatAmount(Math.abs(balance), currencyCode);
+  }
+
   getCurrencies() {
     return Object.values(this.currencies).sort((a, b) => a.code.localeCompare(b.code));
   }

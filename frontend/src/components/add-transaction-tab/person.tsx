@@ -41,7 +41,7 @@ const PersonView = ({ formData, setFormData }: PersonProps) => {
             <div className="flex items-center justify-between rounded-lg border border-purple-200 bg-purple-50 p-3 dark:border-purple-800 dark:bg-purple-900/20">
               <div className="flex items-center space-x-3">
                 <Avatar className="h-10 w-10">
-                  <AvatarImage src={person?.avatar.url} alt={person?.name} />
+                  <AvatarImage src={person?.avatar?.url} alt={person?.name} />
                   <AvatarFallback className="bg-purple-500 font-semibold text-white">
                     {getInitials(person?.name || '')}
                   </AvatarFallback>

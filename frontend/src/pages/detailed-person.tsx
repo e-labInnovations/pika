@@ -9,7 +9,7 @@ import transactionUtils from '@/lib/transaction-utils';
 import { currencyUtils } from '@/lib/currency-utils';
 import { useAuth } from '@/hooks/use-auth';
 import { useState, useEffect } from 'react';
-import { peopleService, type Person } from '@/services/api';
+import { peopleService, type PersonDetailed } from '@/services/api';
 import { useConfirmDialog } from '@/store/useConfirmDialog';
 import { runWithLoaderAndError } from '@/lib/async-handler';
 import { useLookupStore } from '@/store/useLookupStore';
@@ -18,7 +18,7 @@ import PersonTransactions from '@/components/people-tab/person-transactions';
 import AsyncStateWrapper from '@/components/async-state-wrapper';
 
 const DetailedPerson = () => {
-  const [person, setPerson] = useState<Person | null>(null);
+  const [person, setPerson] = useState<PersonDetailed | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<unknown | null>(null);
   const navigate = useNavigate();
@@ -38,7 +38,7 @@ const DetailedPerson = () => {
       setIsLoading(true);
       setError(null);
       const response = await peopleService.get(id);
-      setPerson(response.data);
+      setPerson(response.data as PersonDetailed);
     } catch (error) {
       setError(error);
     } finally {
@@ -102,7 +102,7 @@ const DetailedPerson = () => {
               <CardContent>
                 <div className="flex items-center gap-4">
                   <Avatar className="h-20 w-20">
-                    <AvatarImage src={person?.avatar.url || undefined} alt={person?.name || 'Person'} />
+                    <AvatarImage src={person?.avatar?.url || undefined} alt={person?.name || 'Person'} />
                     <AvatarFallback className="bg-emerald-500 text-xl font-semibold text-white">
                       {getInitials(person.name)}
                     </AvatarFallback>
@@ -177,13 +177,13 @@ const DetailedPerson = () => {
                     </div>
                     <div>
                       <p className="text-2xl font-bold text-red-500 dark:text-red-400">
-                        {currencyUtils.formatAmount(person.balance || 0, user?.settings?.currency)}
+                        {currencyUtils.formatAmount(person.totalSummary.totalSpent || 0, user?.settings?.currency)}
                       </p>
                       <p className="text-xs text-slate-500 dark:text-slate-400">Total Spent</p>
                     </div>
                     <div>
                       <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
-                        {currencyUtils.formatAmount(person.balance || 0, user?.settings?.currency)}
+                        {currencyUtils.formatAmount(person.totalSummary.totalReceived || 0, user?.settings?.currency)}
                       </p>
                       <p className="text-xs text-slate-500 dark:text-slate-400">Total Received</p>
                     </div>

@@ -1,21 +1,30 @@
 import { BaseService } from './base.service';
 
+type PersonAvatar = {
+  id: string;
+  url: string;
+  type: string;
+  name: string;
+  size: string;
+};
+
 export interface Person {
   id: string;
   name: string;
   description: string;
   email: string;
   phone: string;
-  avatar: {
-    id: string;
-    url: string;
-    type: string;
-    name: string;
-    size: string;
-  };
+  avatar: PersonAvatar | null;
   lastTransactionAt: string | null;
   totalTransactions: number;
   balance: number;
+}
+
+export interface PersonDetailed extends Person {
+  totalSummary: {
+    totalSpent: string;
+    totalReceived: string;
+  };
 }
 
 export interface PersonInput {
@@ -26,7 +35,7 @@ export interface PersonInput {
   description: string | null;
 }
 
-class PeopleService extends BaseService<Person> {
+class PeopleService extends BaseService<Person | PersonDetailed> {
   constructor() {
     super('/people');
   }

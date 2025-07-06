@@ -7,7 +7,7 @@ import { Save, Trash2 } from 'lucide-react';
 import AvatarUpload from '@/components/people-tab/avatar-upload';
 import PersonFormFields from '@/components/people-tab/person-form-fields';
 import PersonPreview from '@/components/people-tab/person-preview';
-import { peopleService, uploadService, type Person, type PersonInput } from '@/services/api';
+import { peopleService, uploadService, type PersonDetailed, type PersonInput } from '@/services/api';
 import { runWithLoaderAndError } from '@/lib/async-handler';
 import { useLookupStore } from '@/store/useLookupStore';
 import { useConfirmDialog } from '@/store/useConfirmDialog';
@@ -24,10 +24,10 @@ const EditPerson = () => {
     email: '',
     phone: '',
     description: '',
-    avatar: '',
+    avatar: null,
   });
 
-  const [person, setPerson] = useState<Person | null>(null);
+  const [person, setPerson] = useState<PersonDetailed | null>(null);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
@@ -45,15 +45,15 @@ const EditPerson = () => {
     peopleService
       .get(id!)
       .then((response) => {
-        setPerson(response.data);
+        setPerson(response.data as PersonDetailed);
         setFormData({
           name: response.data.name,
           email: response.data.email,
           phone: response.data.phone,
           description: response.data.description,
-          avatar: '',
+          avatar: null,
         });
-        setAvatarUrl(response.data.avatar.url);
+        setAvatarUrl(response.data?.avatar?.url || null);
         setAvatarFile(null);
       })
       .catch((error) => {
@@ -75,7 +75,7 @@ const EditPerson = () => {
       name: formData.name,
       email: formData.email,
       phone: formData.phone,
-      avatarId: person?.avatar.id || null,
+      avatarId: person?.avatar?.id || null,
       description: formData.description,
     };
 

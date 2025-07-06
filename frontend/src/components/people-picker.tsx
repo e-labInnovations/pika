@@ -6,7 +6,10 @@ import { Check } from 'lucide-react';
 import SearchBar from './search-bar';
 import { type Person } from '@/services/api';
 import { useLookupStore } from '@/store/useLookupStore';
-import { getInitials } from '@/lib/utils';
+import { cn, getInitials } from '@/lib/utils';
+import { currencyUtils } from '@/lib/currency-utils';
+import { useAuth } from '@/hooks/use-auth';
+import transactionUtils from '@/lib/transaction-utils';
 
 interface PeoplePickerProps {
   isOpen: boolean;
@@ -18,6 +21,7 @@ interface PeoplePickerProps {
 const PeoplePicker = ({ isOpen, onClose, onSelect, selectedPersonId }: PeoplePickerProps) => {
   const [searchTerm, setSearchTerm] = useState('');
   const people = useLookupStore((state) => state.people);
+  const { user } = useAuth();
 
   const filteredPeople = people.filter(
     (person) =>
@@ -52,25 +56,40 @@ const PeoplePicker = ({ isOpen, onClose, onSelect, selectedPersonId }: PeoplePic
             {filteredPeople.map((person) => (
               <div
                 key={person.id}
-                className={`flex cursor-pointer items-center space-x-3 rounded-lg p-3 transition-colors ${
+                className={cn(
+                  'ring-border hover:bg-accent/50 relative rounded-lg border border-slate-200 px-4 py-3 text-start ring-[0.25px] transition-all dark:border-slate-700',
                   selectedPersonId === person.id.toString()
-                    ? 'border border-emerald-200 bg-emerald-100 dark:border-emerald-800 dark:bg-emerald-900'
-                    : 'hover:bg-slate-100 dark:hover:bg-slate-800'
-                }`}
+                    ? 'border-primary ring-primary bg-primary/5 text-primary ring-[1.5px]'
+                    : 'text-muted-foreground',
+                )}
                 onClick={() => handleSelect(person)}
               >
-                <Avatar className="h-10 w-10">
-                  <AvatarImage src={person.avatar.url} alt={person.name} />
-                  <AvatarFallback className="bg-emerald-500 font-semibold text-white">
-                    {getInitials(person.name)}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate font-medium text-slate-900 dark:text-white">{person.name}</p>
-                  <p className="truncate text-sm text-slate-500 dark:text-slate-400">{person.description}</p>
+                <div className="flex items-center space-x-3">
+                  <Avatar className="h-10 w-10">
+                    <AvatarImage src={person.avatar?.url} alt={person.name} />
+                    <AvatarFallback className="bg-emerald-500 font-semibold text-white">
+                      {getInitials(person.name)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between">
+                      <p className="truncate font-medium">{person.name}</p>
+                      <span className={cn('text-sm font-semibold', transactionUtils.getBalanceColor(person.balance))}>
+                        {currencyUtils.formatBalance(person.balance, user?.settings?.currency)}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <p className="text-muted-foreground truncate text-sm">{person.description}</p>
+                      {person.balance !== 0 && (
+                        <p className="text-muted-foreground text-xs">{person.balance > 0 ? 'owes you' : 'you owe'}</p>
+                      )}
+                    </div>
+                  </div>
                 </div>
                 {selectedPersonId === person.id.toString() && (
-                  <Check className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+                  <div className="absolute top-2 right-2">
+                    <Check className="fill-primary text-primary-foreground h-5 w-5" />
+                  </div>
                 )}
               </div>
             ))}

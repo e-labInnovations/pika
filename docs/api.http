@@ -228,7 +228,7 @@ Content-Type: application/pdf
 
 # Get all people
 GET {{base_url}}/wp-json/pika/v1/people
-Authorization: Basic {{username}}:{{password}}
+Authorization: Basic {{admin_username}}:{{admin_password}}
 
 ###
 
@@ -248,7 +248,7 @@ Content-Type: application/json
 
 # Get a person
 GET {{base_url}}/wp-json/pika/v1/people/1
-Authorization: Basic {{username}}:{{password}}
+Authorization: Basic {{admin_username}}:{{admin_password}}
 
 ###
 

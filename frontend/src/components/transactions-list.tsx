@@ -6,7 +6,7 @@ import type { Transaction } from '@/services/api';
 import type { Filter } from './transactions-tab/filter/types';
 import type { Sort } from './transactions-tab/sort/types';
 import { useNavigate } from 'react-router-dom';
-import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { CategoryTransactionIcon } from './category-transaction-icon';
 import AccountAvatar from './account-avatar';
 import { TagChip } from './tag-chip';
@@ -248,12 +248,10 @@ export function TransactionsList({
                         <div className="flex items-center gap-2">
                           {transaction.person && (
                             <Avatar className="h-8 w-8">
-                              <AvatarImage
-                                src={transaction.person?.avatar?.url}
-                                alt={transaction.person?.name}
-                                className="rounded-full"
-                              />
-                              <AvatarFallback>{getInitials(transaction.person?.name)}</AvatarFallback>
+                              <AvatarImage src={transaction.person?.avatar?.url} alt={transaction.person?.name} />
+                              <AvatarFallback className="bg-emerald-500 font-semibold text-white">
+                                {getInitials(transaction.person?.name)}
+                              </AvatarFallback>
                             </Avatar>
                           )}
                         </div>

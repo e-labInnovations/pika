@@ -59,27 +59,31 @@ const AccountPicker = ({ isOpen, onClose, onSelect, selectedAccountId, filterAcc
             {filteredAccounts.map((account) => (
               <div
                 key={account.id}
-                className={`flex cursor-pointer items-center space-x-3 rounded-lg p-3 transition-colors ${
+                className={`ring-border hover:bg-accent/50 relative rounded-lg border border-slate-200 px-4 py-3 text-start ring-[0.25px] transition-all dark:border-slate-700 ${
                   selectedAccountId === account.id
-                    ? 'border border-emerald-200 bg-emerald-100 dark:border-emerald-800 dark:bg-emerald-900'
-                    : 'hover:bg-slate-100 dark:hover:bg-slate-800'
+                    ? 'border-primary ring-primary bg-primary/5 text-primary ring-[1.5px]'
+                    : 'text-muted-foreground'
                 }`}
                 onClick={() => handleSelect(account)}
               >
-                <AccountAvatar account={account} size="md" />
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center justify-between">
-                    <p className="truncate font-medium text-slate-900 dark:text-white">{account.name}</p>
-                    <span className={`text-sm font-semibold ${getBalanceColor(account.balance)}`}>
-                      ${Math.abs(account.balance).toLocaleString('en-US', { minimumFractionDigits: 2 })}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <p className="truncate text-sm text-slate-500 dark:text-slate-400">{account.description}</p>
+                <div className="flex items-center space-x-3">
+                  <AccountAvatar account={account} size="md" />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between">
+                      <p className="truncate font-medium">{account.name}</p>
+                      <span className={`text-sm font-semibold ${getBalanceColor(account.balance)}`}>
+                        ${Math.abs(account.balance).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <p className="text-muted-foreground truncate text-sm">{account.description}</p>
+                    </div>
                   </div>
                 </div>
                 {selectedAccountId === account.id && (
-                  <Check className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+                  <div className="absolute top-2 right-2">
+                    <Check className="fill-primary text-primary-foreground h-5 w-5" />
+                  </div>
                 )}
               </div>
             ))}
