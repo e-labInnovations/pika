@@ -13,9 +13,13 @@ import Note from '@/components/add-transaction-tab/note';
 import { Button } from '@/components/ui/button';
 import { type TransactionType } from '@/lib/transaction-utils';
 import { validateTransactionForm } from '@/components/add-transaction-tab/schema';
-import { transactionsService, type TransactionInput, type UploadResponse } from '@/services/api';
+import {
+  transactionsService,
+  type AnalyzedTransactionData,
+  type TransactionInput,
+  type UploadResponse,
+} from '@/services/api';
 import { toast } from 'sonner';
-import type { AnalysisOutput } from '@/data/dummy-data';
 import { storeUtils, useLookupStore } from '@/store/useLookupStore';
 import { runWithLoaderAndError } from '@/lib/utils';
 
@@ -39,19 +43,22 @@ const AddTransactionTab = () => {
 
   const [attachments, setAttachments] = useState<UploadResponse[]>([]);
 
-  const handleTransactionDetails = (transaction: AnalysisOutput) => {
+  const handleTransactionDetails = (transaction: AnalyzedTransactionData) => {
     console.log('AI Analysis Result:', transaction);
 
     // Populate form data with AI analysis results
     setFormData((prev) => ({
       ...prev,
       title: transaction.title,
-      amount: transaction.total,
+      amount: transaction.amount,
       date: new Date(transaction.date).toISOString(),
       type: transaction.category.type, // Use category type to determine transaction type
       category: transaction.category.id,
       tags: transaction.tags.map((tag) => tag.id),
-      note: transaction.note,
+      note: transaction.note || '',
+      account: transaction.account?.id || '',
+      toAccount: transaction.toAccount?.id || null,
+      person: transaction.person?.id || null,
     }));
 
     // Show success message

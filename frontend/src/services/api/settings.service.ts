@@ -3,10 +3,11 @@ import { BaseService } from './base.service';
 
 export interface Settings {
   currency: string;
+  gemini_api_key: string;
 }
 
 export interface SettingsInput {
-  key: 'currency';
+  key: 'currency' | 'gemini_api_key';
   value: string;
 }
 

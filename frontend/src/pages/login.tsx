@@ -9,10 +9,11 @@ import { useAuth } from '@/hooks/use-auth';
 import { authService, type User } from '@/services/api';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AlertCircle, Clipboard } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 import Logo from '@/components/logo';
 import type { AxiosResponse } from 'axios';
 import { useTitle } from '@/hooks/use-title';
+import ApiInput from '@/components/api-input';
 
 const loginSchema = z.object({
   username: z.string().min(3, 'Username is required'),
@@ -44,12 +45,6 @@ export default function Login() {
 
   const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     setTouched((prev) => ({ ...prev, [e.target.name]: true }));
-  };
-
-  const handlePaste = () => {
-    navigator.clipboard.readText().then((text) => {
-      setForm((prev) => ({ ...prev, appPassword: text }));
-    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -137,7 +132,17 @@ export default function Login() {
                   What is this?
                 </a>
               </div>
-              <div className="relative">
+              <ApiInput
+                id="appPassword"
+                name="appPassword"
+                value={form.appPassword}
+                onChange={(value) => setForm((prev) => ({ ...prev, appPassword: value }))}
+                placeholder="Enter your application password"
+                aria-invalid={!!errors.appPassword && touched.appPassword}
+                required
+                onBlur={handleBlur}
+              />
+              {/* <div className="relative">
                 <Input
                   id="appPassword"
                   name="appPassword"
@@ -158,7 +163,7 @@ export default function Login() {
                 >
                   <Clipboard className="h-4 w-4" />
                 </Button>
-              </div>
+              </div> */}
               {touched.appPassword && errors.appPassword && (
                 <div className="mt-1 text-xs text-red-500">{errors.appPassword}</div>
               )}

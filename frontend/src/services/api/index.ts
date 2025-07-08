@@ -8,3 +8,4 @@ export * from './accounts.service';
 export * from './people.service';
 export * from './upload.service';
 export * from './auth.service';
+export * from './ai.service';
