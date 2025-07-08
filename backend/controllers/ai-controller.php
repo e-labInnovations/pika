@@ -27,6 +27,12 @@ class Pika_AI_Controller extends Pika_Base_Controller {
       'callback' => [$this, 'test'],
       'permission_callback' => [$this, 'check_auth']
     ]);
+
+    register_rest_route($this->namespace, '/ai/text-to-transaction', [
+      'methods' => 'POST',
+      'callback' => [$this, 'text_to_transaction'],
+      'permission_callback' => [$this, 'check_auth']
+    ]);
   }
 
   /**
@@ -34,6 +40,16 @@ class Pika_AI_Controller extends Pika_Base_Controller {
    */
   public function test($request) {
     $result = $this->ai_manager->get_test_gemini_response();
+
+    return $result;
+  }
+
+  /**
+   * Convert text to transaction
+   */
+  public function text_to_transaction($request) {
+    $text = sanitize_text_field($request->get_param('text'));
+    $result = $this->ai_manager->get_text_to_transaction_response($text);
 
     return $result;
   }

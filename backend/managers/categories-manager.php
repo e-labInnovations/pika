@@ -209,6 +209,34 @@ class Pika_Categories_Manager extends Pika_Base_Manager {
   }
 
   /**
+   * Get all child categories by type
+   * 
+   */
+  public function get_all_child_categories($type = 'all') {
+    $table_name = $this->get_table_name();
+    $user_id = get_current_user_id();
+    
+    $sql = "SELECT * FROM {$table_name} WHERE (user_id = %d OR user_id = 0) AND parent_id IS NOT NULL";
+    $params = [$user_id];
+    
+    if ($type != 'all') {
+      $sql .= " AND type = %s";
+      $params[] = $type;
+    }
+    
+    $sql = $this->db()->prepare($sql, ...$params);
+    $categories = $this->db()->get_results($sql);
+    
+    if (is_wp_error($categories)) {
+      return $this->get_error('db_error');
+    }
+
+    $result = array_values(array_map([$this, 'format_category'], $categories));
+
+    return $result;
+  }
+
+  /**
    * Get a nested category by id
    * 
    * @param int $id
