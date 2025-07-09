@@ -86,11 +86,11 @@ class Pika_Categories_Manager extends Pika_Base_Manager {
    */
   private function build_category_tree(array $categories) {
     $grouped = [];
-    
+
     foreach ($categories as $category) {
       if ($category->parent_id === null) {
         $parent_category = $this->format_category($category);
-        $children = array_filter($categories, function($c) use ($parent_category) {
+        $children = array_filter($categories, function ($c) use ($parent_category) {
           return $c->parent_id === $parent_category['id'];
         });
         $parent_category['children'] = array_values(array_map([$this, 'format_category'], $children));
@@ -99,6 +99,24 @@ class Pika_Categories_Manager extends Pika_Base_Manager {
     }
 
     return $grouped;
+  }
+
+  /**
+   * Get default category (Other)
+   * 
+   * @param string $type
+   * @return array|WP_Error
+   */
+  public function get_default_category($type = 'expense') {
+    $table_name = $this->get_table_name();
+    $user_id = get_current_user_id();
+    $sql = $this->db()->prepare("SELECT * FROM {$table_name} WHERE name = 'Other' AND type = %s AND (user_id = %d OR user_id = 0)", $type, $user_id);
+    $category = $this->db()->get_row($sql);
+    if (is_wp_error($category) || is_null($category)) {
+      return $this->get_error('db_error');
+    }
+
+    return $this->format_category($category);
   }
 
   /**
@@ -215,18 +233,18 @@ class Pika_Categories_Manager extends Pika_Base_Manager {
   public function get_all_child_categories($type = 'all') {
     $table_name = $this->get_table_name();
     $user_id = get_current_user_id();
-    
+
     $sql = "SELECT * FROM {$table_name} WHERE (user_id = %d OR user_id = 0) AND parent_id IS NOT NULL";
     $params = [$user_id];
-    
+
     if ($type != 'all') {
       $sql .= " AND type = %s";
       $params[] = $type;
     }
-    
+
     $sql = $this->db()->prepare($sql, ...$params);
     $categories = $this->db()->get_results($sql);
-    
+
     if (is_wp_error($categories)) {
       return $this->get_error('db_error');
     }

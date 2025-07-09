@@ -16,7 +16,7 @@ class pika_ai_prompt_utils {
   protected $pika_ai_prompts = [
     // Transaction Analysis Prompt
     'text_to_transaction' => [
-      'system' => 'You are a financial transaction analyzer that converts natural language text into structured transaction data for a money management application. You must return only valid JSON in the exact format specified.',
+      'system' => 'You are a financial transaction analyzer that converts natural language text into structured transaction data for a money management application. You must return only valid JSON in the exact format specified. Do not include any explanations or extra text.',
       'user_template' => '
         Extract transaction details from the provided text and return structured JSON data.
 
@@ -39,14 +39,16 @@ class pika_ai_prompt_utils {
         {current_date_time}
 
         REQUIREMENTS:
-        - Extract amount, date, description, and transaction type
+        - Extract amount, date, title/description, and transaction type
         - Use exact IDs from provided lists (not names)
-        - Format date as YYYY-MM-DD HH:MM:SS
-        - Amount must be numeric (no currency symbols)
+        - Format date as YYYY-MM-DD HH:MM:SS (24-hour format)
+        - Amount must be numeric (no currency symbols or commas)
         - Transaction type: "income", "expense", or "transfer"
-        - Must select a category from the available categories and if nothing matches, use other category with the type of same as the transaction type
+        - For "transfer" type: This is a transaction where money is moved from one account to another, such as transferring between banks, using an ATM (bank to wallet), using a CDM (wallet to bank), or any transfer between accounts. For transfer, both "account" (source) and "toAccount" (destination) must be filled with valid account IDs.
+        - Must select a category from the available categories; if nothing matches, use the category with name "other" and the type matching the transaction type
+        - If a field is not present in the input, use "" (empty string) or [] (empty array) as appropriate
 
-        RESPONSE FORMAT:
+        RESPONSE FORMAT (return only this JSON object, no extra text):
         {
           "title": "string",
           "amount": number,
@@ -61,13 +63,15 @@ class pika_ai_prompt_utils {
         }
 
         RULES:
-        - Return valid JSON only
-        - Use empty string "" for unknown/not applicable fields
+        - Return valid JSON only, no explanations or extra text
+        - Use empty string "" for unknown/not applicable fields (except tags)
         - Use empty array [] for no tags
-        - Use numeric IDs from provided lists
-        - Amount must be positive number
-        - Date format: YYYY-MM-DD HH:MM:SS
+        - Use numeric IDs from provided lists for category, tags, account, toAccount, and person
+        - Amount must be a positive number
+        - Date format: YYYY-MM-DD HH:MM:SS (24-hour format)
         - Type must be exactly: income, expense, or transfer
+        - If transaction type is "transfer", both "account" and "toAccount" must be filled with valid account IDs
+        - If transaction type is not "transfer", "toAccount" should be ""
       ',
       'output_structure' => [
         'type' => 'OBJECT',
@@ -112,22 +116,22 @@ class pika_ai_prompt_utils {
 
     return [
       'system_instruction' => [
-          'parts' => [
-              [
-                  'text' => $system_prompt
-              ]
+        'parts' => [
+          [
+            'text' => $system_prompt
           ]
+        ]
       ],
       'contents' => [
-          [
-              'parts' => [
-                  ['text' => $user_prompt]
-              ]
+        [
+          'parts' => [
+            ['text' => $user_prompt]
           ]
+        ]
       ],
       'generationConfig' => [
-          'responseMimeType' => 'application/json',
-          'responseSchema' => $response_structure
+        'responseMimeType' => 'application/json',
+        'responseSchema' => $response_structure
       ]
     ];
   }
