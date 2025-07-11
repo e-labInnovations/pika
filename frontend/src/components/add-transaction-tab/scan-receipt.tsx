@@ -1,19 +1,12 @@
-import { ImageIcon, Sparkles, X, CheckCircle2, ArrowBigRightDash } from 'lucide-react';
+import { ImageIcon, Sparkles, X } from 'lucide-react';
 import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from '@/components/ui/drawer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '../ui/card';
 import { useState } from 'react';
-import { format } from 'date-fns';
-import { DynamicIcon, type IconName } from 'lucide-react/dynamic';
-import { IconRenderer } from '../icon-renderer';
-import { aiService, mockTransactionData, type AnalyzedTransactionData } from '@/services/api';
-import { currencyUtils } from '@/lib/currency-utils';
-import transactionUtils from '@/lib/transaction-utils';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import AccountAvatar from '../account-avatar';
-import { TagChip } from '../tag-chip';
-import { getInitials } from '@/lib/utils';
-import { CategoryTransactionIcon } from '../category-transaction-icon';
+import { aiService, type AnalyzedTransactionData } from '@/services/api';
+import AnalysisOutput from './ai-transaction/analysis-output';
+import { runWithLoaderAndError } from '@/lib/utils';
+import { toast } from 'sonner';
 
 const TABS = [
   { id: 'text', label: 'Text' },
@@ -31,6 +24,7 @@ const ScanReceipt = ({ open, setOpen, handleTransactionDetails }: ScanReceiptPro
   const [selectedReceipt, setSelectedReceipt] = useState<File | null>(null);
   const [isScanning, setIsScanning] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [base64Image, setBase64Image] = useState<string | null>(null);
   const [analysisOutput, setAnalysisOutput] = useState<AnalyzedTransactionData | null>(null);
   const [textInput, setTextInput] = useState('');
   const [isSending, setIsSending] = useState(false);
@@ -52,16 +46,35 @@ const ScanReceipt = ({ open, setOpen, handleTransactionDetails }: ScanReceiptPro
       setSelectedReceipt(file);
       const url = URL.createObjectURL(file);
       setPreviewUrl(url);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setBase64Image(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setBase64Image(null);
     }
   };
 
   const handleAnalyze = () => {
     setIsScanning(true);
-    // TODO: Implement receipt analysis
-    setTimeout(() => {
-      setIsScanning(false);
-      setAnalysisOutput(mockTransactionData);
-    }, 4000);
+    if (base64Image) {
+      runWithLoaderAndError(
+        async () => {
+          const response = await aiService.analyzeReceipt(base64Image);
+          setAnalysisOutput(response.data);
+        },
+        {
+          loaderMessage: 'Analyzing receipt...',
+          successMessage: 'Receipt analyzed successfully',
+          finally: () => {
+            setIsScanning(false);
+          },
+        },
+      );
+    } else {
+      toast.error('Please select a receipt image');
+    }
   };
 
   const handleSendText = () => {
@@ -171,99 +184,7 @@ const ScanReceipt = ({ open, setOpen, handleTransactionDetails }: ScanReceiptPro
           )}
 
           {/* Analysis Output */}
-          {analysisOutput && (
-            <div className="space-y-4">
-              <Card className="p-0 transition-all duration-200">
-                <CardContent className="p-2">
-                  <div className="flex items-center justify-between">
-                    <div className="flex flex-1 items-center space-x-3">
-                      <CategoryTransactionIcon
-                        transactionType={analysisOutput.type}
-                        iconName={analysisOutput.category.icon}
-                        size="md"
-                        bgColor={analysisOutput.category.bgColor}
-                        color={analysisOutput.category.color}
-                      />
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center justify-between">
-                          <h4 className="truncate font-medium text-slate-900 dark:text-white">
-                            {analysisOutput.title}
-                          </h4>
-                          <span className={`font-semibold ${transactionUtils.getAmountColor(analysisOutput.type)}`}>
-                            {currencyUtils.formatAmount(analysisOutput.amount, 'USD')}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div className="flex grow flex-col gap-2">
-                            <div className="mt-1 flex items-center space-x-2">
-                              <span className="text-sm text-slate-500 dark:text-slate-400">
-                                {transactionUtils.formatDateTime(analysisOutput.date)}
-                              </span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              {analysisOutput.account && (
-                                <>
-                                  <AccountAvatar account={analysisOutput.account} size="xs" />
-                                  <span className="text-xs text-slate-500 dark:text-slate-400">
-                                    {analysisOutput.account.name}
-                                  </span>
-                                </>
-                              )}
-                              {analysisOutput.toAccount && (
-                                <>
-                                  <ArrowBigRightDash className="h-4 w-4 text-slate-500 dark:text-slate-400" />
-                                  <AccountAvatar account={analysisOutput.toAccount} size="xs" />
-                                  <span className="text-xs text-slate-500 dark:text-slate-400">
-                                    {analysisOutput.toAccount.name}
-                                  </span>
-                                </>
-                              )}
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            {analysisOutput.person && (
-                              <Avatar className="h-8 w-8">
-                                <AvatarImage
-                                  src={analysisOutput.person?.avatar?.url}
-                                  alt={analysisOutput.person?.name}
-                                />
-                                <AvatarFallback className="bg-emerald-500 font-semibold text-white">
-                                  {getInitials(analysisOutput.person?.name)}
-                                </AvatarFallback>
-                              </Avatar>
-                            )}
-                          </div>
-                        </div>
-                        <div className="mt-2 flex flex-wrap gap-1">
-                          {analysisOutput.tags.map((tag) => (
-                            <div key={tag.id}>
-                              <TagChip
-                                name={tag.name}
-                                iconName={tag.icon}
-                                bgColor={tag.bgColor}
-                                color={tag.color}
-                                size="xs"
-                              />
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-              {analysisOutput.note && (
-                <div className="text-muted-foreground mt-3 text-sm">
-                  <p className="mb-1 font-medium">Note</p>
-                  <p>{analysisOutput.note}</p>
-                </div>
-              )}
-              <div className="text-muted-foreground flex items-center justify-center gap-2 text-sm">
-                <CheckCircle2 className="h-4 w-4 text-green-500" />
-                <span>AI Analysis Complete</span>
-              </div>
-            </div>
-          )}
+          {analysisOutput && <AnalysisOutput analysisOutput={analysisOutput} />}
         </div>
 
         <DrawerFooter className="flex flex-row gap-2">

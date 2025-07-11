@@ -60,6 +60,10 @@ class AiService {
   analyzeText(text: string): Promise<AxiosResponse<AnalyzedTransactionData>> {
     return api.post('/ai/text-to-transaction', { text });
   }
+
+  analyzeReceipt(base64Image: string): Promise<AxiosResponse<AnalyzedTransactionData>> {
+    return api.post('/ai/receipt-to-transaction', { base64_image: base64Image });
+  }
 }
 
 export const aiService = new AiService();

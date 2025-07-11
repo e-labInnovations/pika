@@ -19,7 +19,7 @@ const MoneyInput = ({ value, onChange, id, labelText, placeholder, className, ..
   const { user } = useAuth();
   const [inputString, setInputString] = useState(value === 0 ? '' : value.toString());
   const [inputFocused, setInputFocused] = useState(false);
-  const decimalPlaces = currencyUtils.getCurrencyByCode(user?.default_currency || 'INR').decimal_digits;
+  const decimalPlaces = currencyUtils.getCurrencyByCode(user?.settings.currency || 'INR').decimal_digits;
 
   const hasMoreThanDecimalPlaces = (numberInputString: string) => {
     const length = numberInputString.length;
@@ -84,7 +84,7 @@ const MoneyInput = ({ value, onChange, id, labelText, placeholder, className, ..
     // Else return the formatted number string to display in the text input
     // that will be rendered when the number input loses focus.
     if (inputString !== '') {
-      const formatteNumStr = currencyUtils.formatAmount(Number(inputString), user?.default_currency);
+      const formatteNumStr = currencyUtils.formatAmount(Number(inputString), user?.settings.currency || 'INR');
       return formatteNumStr;
     }
     return inputString;
@@ -100,7 +100,7 @@ const MoneyInput = ({ value, onChange, id, labelText, placeholder, className, ..
         id={id}
         min="0"
         step="any"
-        placeholder={placeholder ?? currencyUtils.formatAmount(0, user?.default_currency)}
+        placeholder={placeholder ?? currencyUtils.formatAmount(0, user?.settings.currency || 'INR')}
         value={getValueToDisplay()}
         onFocus={() => {
           displayNumberInput();
