@@ -27,21 +27,15 @@ class Pika_Analytics_Controller extends Pika_Base_Controller {
             'permission_callback' => [$this, 'check_auth']
         ]);
 
-        // register_rest_route($this->namespace, '/analytics/monthly-expenses', [
-        //     'methods' => 'GET',
-        //     'callback' => [$this, 'get_monthly_expenses'],
-        //     'permission_callback' => [$this, 'check_auth']
-        // ]);
-
         register_rest_route($this->namespace, '/analytics/monthly-summary', [
             'methods' => 'GET',
             'callback' => [$this, 'get_monthly_summary'],
             'permission_callback' => [$this, 'check_auth']
         ]);
 
-        register_rest_route($this->namespace, '/analytics/daily-expenses', [
+        register_rest_route($this->namespace, '/analytics/daily-summaries', [
             'methods' => 'GET',
-            'callback' => [$this, 'get_daily_expenses'],
+            'callback' => [$this, 'get_daily_summaries'],
             'permission_callback' => [$this, 'check_auth']
         ]);
     }
@@ -50,11 +44,6 @@ class Pika_Analytics_Controller extends Pika_Base_Controller {
         $weekly_expenses = $this->analytics_manager->get_weekly_expenses();
         return $weekly_expenses;
     }
-
-    // public function get_monthly_expenses($request) {
-    //     $monthly_expenses = $this->analytics_manager->get_monthly_expenses();
-    //     return $monthly_expenses;
-    // }
 
     public function get_monthly_summary($request) {
         $params = $request->get_params();
@@ -79,7 +68,7 @@ class Pika_Analytics_Controller extends Pika_Base_Controller {
         return $monthly_summary;
     }
 
-    public function get_daily_expenses($request) {
+    public function get_daily_summaries($request) {
         $params = $request->get_params();
         $month = $params['month'];
         $year = $params['year'];
@@ -98,7 +87,7 @@ class Pika_Analytics_Controller extends Pika_Base_Controller {
             return $year;
         }
 
-        $daily_expenses = $this->analytics_manager->get_daily_expenses($month, $year);
-        return $daily_expenses;
+        $daily_summaries = $this->analytics_manager->get_daily_summaries($month, $year);
+        return $daily_summaries;
     }
 }

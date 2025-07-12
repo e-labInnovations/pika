@@ -400,8 +400,8 @@ Authorization: Basic {{username}}:{{password}}
 
 ###
 
-# Get daily expenses
-GET {{base_url}}/wp-json/pika/v1/analytics/daily-expenses
+# Get daily summaries
+GET {{base_url}}/wp-json/pika/v1/analytics/daily-summaries
 Authorization: Basic {{admin_username}}:{{admin_password}}
 Content-Type: application/json
 

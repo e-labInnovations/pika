@@ -299,7 +299,9 @@ WHERE
             SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END) AS income,
             SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END) AS expenses,
             COUNT(*) AS transactionCount,
-            COUNT(DISTINCT DATE(`date`)) AS activeDays
+            COUNT(DISTINCT DATE(`date`)) AS activeDays,
+            SUM(CASE WHEN type = 'income' THEN 1 ELSE 0 END) AS incomeTransactionCount,
+            SUM(CASE WHEN type = 'expense' THEN 1 ELSE 0 END) AS expenseTransactionCount
         FROM {$transactions_table}
         WHERE user_id = %d
             AND is_active = 1
@@ -330,12 +332,14 @@ WHERE
             'transactionCount' => $transactionCount,
             'savingsRate' => round($savingsRate, 2),
             'avgDaily' => round($avgDaily, 2),
+            'incomeTransactionCount' => intval($row['incomeTransactionCount']),
+            'expenseTransactionCount' => intval($row['expenseTransactionCount']),
         ];
 
         return rest_ensure_response($result);
     }
 
-    public function get_daily_expenses($month, $year) {
+    public function get_daily_summaries($month, $year) {
         $transactions_table = $this->get_table_name($this->transaction_table_name);
         $user_id = get_current_user_id();
         $start_date = date('Y-m-01', strtotime("$year-$month-01"));
@@ -343,11 +347,16 @@ WHERE
 
         $sql = $this->db()->prepare("
         SELECT 
-            DATE(`date`) AS date,
+            DATE(date) AS date,
             SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END) AS income,
             SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END) AS expenses,
             SUM(CASE WHEN type = 'transfer' THEN amount ELSE 0 END) AS transfers,
-            COUNT(*) AS transactionCount
+            SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END) - 
+            SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END) AS balance,
+            COUNT(*) AS transactionCount,
+            COUNT(CASE WHEN type = 'income' THEN 1 END) AS incomeTransactionCount,
+            COUNT(CASE WHEN type = 'expense' THEN 1 END) AS expenseTransactionCount,
+            COUNT(CASE WHEN type = 'transfer' THEN 1 END) AS transferTransactionCount
         FROM {$transactions_table}
         WHERE user_id = %d
             AND is_active = 1
@@ -376,12 +385,15 @@ WHERE
                 'expenses' => 0.0,
                 'transfers' => 0.0,
                 'transactionCount' => 0,
+                'incomeTransactionCount' => 0,
+                'expenseTransactionCount' => 0,
+                'transferTransactionCount' => 0,
             ];
         }
 
         foreach ($results as $row) {
             $key = $row['date'];
-            $balance = floatval($row['income']) - floatval($row['expenses']) - floatval($row['transfers']);
+            $balance = floatval($row['income']) - floatval($row['expenses']);
             $data[$key] = [
                 'date' => $key,
                 'income' => floatval($row['income']),
@@ -389,6 +401,9 @@ WHERE
                 'transfers' => floatval($row['transfers']),
                 'balance' => $balance,
                 'transactionCount' => intval($row['transactionCount']),
+                'incomeTransactionCount' => intval($row['incomeTransactionCount']),
+                'expenseTransactionCount' => intval($row['expenseTransactionCount']),
+                'transferTransactionCount' => intval($row['transferTransactionCount']),
             ];
         }
 
