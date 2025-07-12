@@ -13,7 +13,7 @@ interface DailyCalendarProps {
 const DailyCalendar = ({ selectedDate }: DailyCalendarProps) => {
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<unknown | null>(null);
   const [dailyExpenses, setDailyExpenses] = useState<DailyExpenses | null>(null);
 
   useEffect(() => {
@@ -27,7 +27,7 @@ const DailyCalendar = ({ selectedDate }: DailyCalendarProps) => {
       const response = await analyticsService.getDailyExpenses(selectedDate.getMonth() + 1, selectedDate.getFullYear());
       setDailyExpenses(response.data);
     } catch (error) {
-      setError(error as string);
+      setError(error);
     } finally {
       setIsLoading(false);
     }

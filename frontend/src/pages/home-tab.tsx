@@ -29,16 +29,18 @@ const HomeTab = () => {
         description: 'Your financial overview',
       }}
     >
-      <Accounts accounts={accounts} />
-      <ExpensesThisWeek />
+      <div className="flex flex-col gap-4">
+        <Accounts accounts={accounts} />
+        <ExpensesThisWeek />
 
-      <Separator className="my-4" />
+        <Separator className="my-4" />
 
-      <MonthNavigator selectedDate={selectedDate} onChangeDate={handleChangeDate} />
+        <MonthNavigator selectedDate={selectedDate} onChangeDate={handleChangeDate} />
 
-      <DailyCalendar selectedDate={selectedDate} />
+        <DailyCalendar selectedDate={selectedDate} />
 
-      <MonthlySummary />
+        <MonthlySummary selectedDate={selectedDate} />
+      </div>
     </TabsLayout>
   );
 };
