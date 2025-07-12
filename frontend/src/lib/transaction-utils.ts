@@ -59,6 +59,10 @@ class TransactionUtils {
     return this.amountColors[type as keyof typeof this.amountColors] || 'text-slate-600 dark:text-slate-400';
   };
 
+  getBgColor = (type: TransactionType) => {
+    return this.typesObject[type].bgColor;
+  };
+
   formatDate = (date: string) => {
     return format(new Date(date), 'MMM d, yyyy');
   };
@@ -69,6 +73,15 @@ class TransactionUtils {
 
   formatDateTime = (date: string) => {
     return `${this.formatDate(date)} • ${this.formatTime(date)}`;
+  };
+
+  getIcon = (type: TransactionType) => {
+    return this.typesObject[type].icon;
+  };
+
+  getCountLabel = (transactionCount: number, useShortLabel: boolean = true) => {
+    const label = useShortLabel ? 'Txn' : 'Transaction';
+    return transactionCount === 1 ? `1 ${label}` : `${transactionCount} ${label}s`;
   };
 
   // Create initial balance transaction

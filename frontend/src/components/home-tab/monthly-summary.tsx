@@ -68,7 +68,7 @@ const MonthlySummaryView = ({ selectedDate }: MonthlySummaryViewProps) => {
             <div className="grid grid-cols-3 gap-3">
               <SummaryCard
                 title="Income"
-                subtitle={`${monthlySummaryData.transactionCount} txns`}
+                subtitle={transactionUtils.getCountLabel(monthlySummaryData.incomeTransactionCount)}
                 amount={monthlySummaryData.income}
                 icon={TrendingUp}
                 iconBgColor="bg-emerald-500"
@@ -77,7 +77,7 @@ const MonthlySummaryView = ({ selectedDate }: MonthlySummaryViewProps) => {
 
               <SummaryCard
                 title="Expenses"
-                subtitle={`${monthlySummaryData.transactionCount} txns`}
+                subtitle={transactionUtils.getCountLabel(monthlySummaryData.expenseTransactionCount)}
                 amount={monthlySummaryData.expenses}
                 icon={TrendingDown}
                 iconBgColor="bg-red-500"

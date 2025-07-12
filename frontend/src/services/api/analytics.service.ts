@@ -21,19 +21,24 @@ export interface MonthlySummary {
   transactionCount: number;
   savingsRate: number;
   avgDaily: number;
+  incomeTransactionCount: number;
+  expenseTransactionCount: number;
 }
 
-export interface DailyExpense {
+export interface DailySummary {
   date: string;
   balance: number;
   income: number;
   expenses: number;
   transfers: number;
   transactionCount: number;
+  incomeTransactionCount: number;
+  expenseTransactionCount: number;
+  transferTransactionCount: number;
 }
 
-export interface DailyExpenses {
-  data: Record<string, DailyExpense>;
+export interface DailySummaries {
+  data: Record<string, DailySummary>;
   meta: {
     month: string;
     year: number;
@@ -55,8 +60,8 @@ class AnalyticsService extends BaseService<unknown> {
     });
   }
 
-  getDailyExpenses(month: number, year: number): Promise<AxiosResponse<DailyExpenses>> {
-    return this.api.get<DailyExpenses>(`${this.endpoint}/daily-expenses`, {
+  getDailySummaries(month: number, year: number): Promise<AxiosResponse<DailySummaries>> {
+    return this.api.get<DailySummaries>(`${this.endpoint}/daily-summaries`, {
       params: { month, year },
     });
   }
