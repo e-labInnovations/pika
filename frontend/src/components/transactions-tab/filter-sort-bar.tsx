@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { amountOperators, defaultFilterValues, type Filter, type FilterTab } from './filter/types';
 import FilterChip from './filter/filter-chip';
 import { Badge } from '../ui/badge';
@@ -7,6 +6,8 @@ import { Button } from '../ui/button';
 import { defaultSort, type Sort, sortOptions } from './sort/types';
 import TransactionUtils from '@/lib/transaction-utils';
 import { useLookupStore } from '@/store/useLookupStore';
+import { currencyUtils } from '@/lib/currency-utils';
+import { useAuth } from '@/hooks/use-auth';
 
 interface FilterSortBarProps {
   filters: Filter;
@@ -14,23 +15,22 @@ interface FilterSortBarProps {
   sort: Sort;
   onSortClick: () => void;
   onFilterClick: (action: 'open' | 'remove', type: FilterTab, value: string) => void;
+  activeFilterCount: number;
 }
 
-const FilterSortBar = ({ filters, setFilters, sort, onSortClick, onFilterClick }: FilterSortBarProps) => {
-  const [activeFilterCount, setActiveFilterCount] = useState(0);
+const FilterSortBar = ({
+  filters,
+  setFilters,
+  sort,
+  onSortClick,
+  onFilterClick,
+  activeFilterCount,
+}: FilterSortBarProps) => {
+  const { user } = useAuth();
   const accounts = useLookupStore((state) => state.accounts);
   const categories = useLookupStore((state) => state.categories);
   const tags = useLookupStore((state) => state.tags);
   const people = useLookupStore((state) => state.people);
-
-  useEffect(() => {
-    setActiveFilterCount(
-      Object.keys(filters).filter((key) => {
-        const value = filters[key as keyof Filter];
-        return Array.isArray(value) && value.length > 0;
-      }).length,
-    );
-  }, [activeFilterCount, filters]);
 
   const getSortLabel = () => {
     const sortOption = sortOptions.find((opt) => opt.value === sort.field);
@@ -63,18 +63,22 @@ const FilterSortBar = ({ filters, setFilters, sort, onSortClick, onFilterClick }
   }
 
   const formattedDateRange = () => {
-    const from = new Date(filters.dateRange.from);
-    const to = new Date(filters.dateRange.to);
-    const fromDate = from.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
-    const toDate = to.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
+    const from = filters.dateRange.from ? new Date(filters.dateRange.from) : undefined;
+    const to = filters.dateRange.to ? new Date(filters.dateRange.to) : undefined;
+    const fromDate = from
+      ? from.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+        })
+      : '';
+    const toDate = to
+      ? to.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+        })
+      : '';
 
     return `${filters.dateRange.from ? fromDate : ''} - ${filters.dateRange.to ? toDate : ''}`;
   };
@@ -82,7 +86,7 @@ const FilterSortBar = ({ filters, setFilters, sort, onSortClick, onFilterClick }
   const formattedAmount = () => {
     const operator = amountOperators.find((o) => o.value === filters.amount.operator);
     if (operator?.value === 'between') {
-      return `${filters.amount.value1} - ${filters.amount.value2}`;
+      return `${currencyUtils.formatAmount(filters.amount.value1, user?.settings.currency)} - ${filters.amount.value2 ? currencyUtils.formatAmount(filters.amount.value2, user?.settings.currency) : ''}`;
     }
     return `${operator?.shortLabel} ${filters.amount.value1}`;
   };

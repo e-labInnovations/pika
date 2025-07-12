@@ -48,7 +48,7 @@ const PersonTransactions = ({ personId }: PersonTransactionsProps) => {
             variant="ghost"
             size="sm"
             className="text-sm"
-            onClick={() => navigate(`/transactions?personId=${personId}`)}
+            onClick={() => navigate(`/transactions?personId=${personId}&source=person`)}
           >
             View All
           </Button>

@@ -30,7 +30,7 @@ const DayPopover = ({ children, dayData, date, open, onOpenChange }: DayPopoverP
     endOfDay.setHours(23, 59, 59, 999);
     const startDateFilter = startOfDay.getTime();
     const endDateFilter = endOfDay.getTime();
-    navigate(`/transactions?startDate=${startDateFilter}&endDate=${endDateFilter}`);
+    navigate(`/transactions?dateFrom=${startDateFilter}&dateTo=${endDateFilter}`);
     onOpenChange(false);
   };
 

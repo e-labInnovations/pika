@@ -23,8 +23,8 @@ export type AmountFilter = {
 };
 
 export type DateFilter = {
-  from: string;
-  to: string;
+  from?: string;
+  to?: string;
 };
 
 export type Filter = {
