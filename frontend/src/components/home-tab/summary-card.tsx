@@ -17,7 +17,7 @@ const SummaryCard = ({ title, subtitle, amount, icon: Icon, iconBgColor, amountC
   const { user } = useAuth();
 
   const formatCurrency = (amount: number) => {
-    return currencyUtils.formatAmount(amount, currency || user?.default_currency);
+    return currencyUtils.formatAmount(amount, currency || user?.settings?.currency);
   };
 
   return (

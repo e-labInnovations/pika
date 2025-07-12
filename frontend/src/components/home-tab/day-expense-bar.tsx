@@ -28,7 +28,11 @@ const DayExpenseBar = ({ percentage, day, amount, className, progressColor }: Da
   return (
     <div className={cn('flex flex-col items-center', className)} role="group" aria-label={`Expenses for ${day}`}>
       <div className="text-muted-foreground mb-1 text-xs font-medium" aria-hidden="true">
-        {currencyUtils.formatAmountWithoutSymbol(amount, user?.settings?.currency)}
+        {currencyUtils.formatAmount(amount, user?.settings?.currency, {
+          showSymbol: false,
+          showDecimal: false,
+          showNegative: false,
+        })}
       </div>
       <div
         className="bg-muted relative h-40 w-4 overflow-hidden rounded-full"

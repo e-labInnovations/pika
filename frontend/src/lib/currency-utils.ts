@@ -12,22 +12,41 @@ class CurrencyUtils {
     return this.currencies[code];
   }
 
-  formatAmount(amount: string | number, currencyCode: CurrencyCode | undefined) {
+  /**
+   * Format an amount with a currency symbol and decimal places
+   * @param amount - The amount to format
+   * @param currencyCode - The currency code
+   * @param options - The options to format the amount
+   * @returns The formatted amount
+   */
+  formatAmount(
+    amount: string | number,
+    currencyCode: CurrencyCode | undefined,
+    options?: {
+      showSymbol?: boolean;
+      showDecimal?: boolean;
+      showNegative?: boolean;
+      showEmptyForZero?: boolean;
+    },
+  ) {
     if (!currencyCode) return `${amount}`;
     const currency = this.getCurrencyByCode(currencyCode);
-    return `${currency.symbol}${Number(amount).toLocaleString('en-US', {
-      minimumFractionDigits: currency.decimal_digits,
-      maximumFractionDigits: currency.decimal_digits,
-    })}`;
-  }
-
-  formatAmountWithoutSymbol(amount: string | number, currencyCode: CurrencyCode | undefined) {
-    if (!currencyCode) return `${amount}`;
-    const currency = this.getCurrencyByCode(currencyCode);
-    return `${Number(amount).toLocaleString('en-US', {
-      minimumFractionDigits: currency.decimal_digits,
-      maximumFractionDigits: currency.decimal_digits,
-    })}`;
+    const _options = {
+      showSymbol: true,
+      showDecimal: true,
+      showNegative: true,
+      showEmptyForZero: false,
+      ...(options ?? {}),
+    };
+    const minimumFractionDigits = _options.showDecimal ? currency.decimal_digits : 0;
+    const maximumFractionDigits = _options.showDecimal ? currency.decimal_digits : 0;
+    let formattedAmount = Number(amount).toLocaleString('en-US', {
+      minimumFractionDigits,
+      maximumFractionDigits,
+    });
+    if (!_options.showNegative) formattedAmount = formattedAmount.replace('-', '');
+    if (_options.showEmptyForZero && formattedAmount === '0') return '';
+    return `${_options.showSymbol ? currency.symbol : ''}${formattedAmount}`;
   }
 
   formatBalance(balance: number, currencyCode: CurrencyCode | undefined) {
