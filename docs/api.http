@@ -400,6 +400,18 @@ Authorization: Basic {{username}}:{{password}}
 
 ###
 
+# Get daily expenses
+GET {{base_url}}/wp-json/pika/v1/analytics/daily-expenses
+Authorization: Basic {{admin_username}}:{{admin_password}}
+Content-Type: application/json
+
+{
+  "month": 7,
+  "year": 2025
+}
+
+###
+
 # Get monthly expenses
 GET {{base_url}}/wp-json/pika/v1/analytics/monthly-expenses
 Authorization: Basic {{admin_username}}:{{admin_password}}

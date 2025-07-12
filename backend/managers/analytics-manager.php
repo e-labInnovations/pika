@@ -15,10 +15,29 @@ class Pika_Analytics_Manager extends Pika_Base_Manager {
     protected $accounts_table_name = 'accounts';
     protected $people_table_name = 'people';
 
-    protected $errors = [];
+    protected $errors = [
+        'invalid_month' => ['message' => 'Invalid month, month must be a number between 1 and 12.', 'status' => 400],
+        'invalid_year' => ['message' => 'Invalid year, year must be a number.', 'status' => 400],
+    ];
 
     public function __construct() {
         parent::__construct();
+    }
+
+    public function sanitize_month($month) {
+        $month = intval($month);
+        if (!is_numeric($month) || $month < 1 || $month > 12) {
+            return $this->get_error('invalid_month');
+        }
+        return $month;
+    }
+
+    public function sanitize_year($year) {
+        $year = intval($year);
+        if (!is_numeric($year)) {
+            return $this->get_error('invalid_year');
+        }
+        return $year;
     }
 
     /**
@@ -264,5 +283,73 @@ WHERE
         }
 
         return $finalData;
+    }
+
+    public function get_daily_expenses($month, $year) {
+        $transactions_table = $this->get_table_name($this->transaction_table_name);
+        $user_id = get_current_user_id();
+        $start_date = date('Y-m-01', strtotime("$year-$month-01"));
+        $end_date = date('Y-m-t', strtotime($start_date)); // last day of month
+
+        $sql = $this->db()->prepare("
+        SELECT 
+            DATE(`date`) AS date,
+            SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END) AS income,
+            SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END) AS expenses,
+            SUM(CASE WHEN type = 'transfer' THEN amount ELSE 0 END) AS transfers,
+            COUNT(*) AS transactionCount
+        FROM {$transactions_table}
+        WHERE user_id = %d
+            AND is_active = 1
+            AND `date` BETWEEN %s AND %s
+        GROUP BY DATE(`date`)
+        ORDER BY DATE(`date`) ASC;
+    ", $user_id, $start_date, $end_date);
+
+        $results = $this->db()->get_results($sql, ARRAY_A);
+
+        $data = [];
+
+        // Create zero-filled entries for all days in the month
+        $period = new DatePeriod(
+            new DateTime($start_date),
+            new DateInterval('P1D'),
+            (new DateTime($end_date))->modify('+1 day')
+        );
+
+        foreach ($period as $date) {
+            $key = $date->format('Y-m-d');
+            $data[$key] = [
+                'date' => $key,
+                'balance' => 0.0,
+                'income' => 0.0,
+                'expenses' => 0.0,
+                'transfers' => 0.0,
+                'transactionCount' => 0,
+            ];
+        }
+
+        foreach ($results as $row) {
+            $key = $row['date'];
+            $balance = floatval($row['income']) - floatval($row['expenses']) - floatval($row['transfers']);
+            $data[$key] = [
+                'date' => $key,
+                'income' => floatval($row['income']),
+                'expenses' => floatval($row['expenses']),
+                'transfers' => floatval($row['transfers']),
+                'balance' => $balance,
+                'transactionCount' => intval($row['transactionCount']),
+            ];
+        }
+
+        $meta = [
+            'month' => date('F', strtotime($start_date)),
+            'year' => intval(date('Y', strtotime($start_date))),
+        ];
+
+        return [
+            'data' => $data,
+            'meta' => $meta,
+        ];
     }
 }
