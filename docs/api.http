@@ -412,9 +412,15 @@ Content-Type: application/json
 
 ###
 
-# Get monthly expenses
-GET {{base_url}}/wp-json/pika/v1/analytics/monthly-expenses
+# Get monthly summary
+GET {{base_url}}/wp-json/pika/v1/analytics/monthly-summary
 Authorization: Basic {{admin_username}}:{{admin_password}}
+Content-Type: application/json
+
+{
+  "month": 7,
+  "year": 2025
+}
 
 ###
 

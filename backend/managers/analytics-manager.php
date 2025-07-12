@@ -186,6 +186,7 @@ WHERE
 
     /**
      * Get the monthly expenses
+     * Not used anymore, use get_monthly_summary instead
      * 
      * @return array|WP_Error
      */
@@ -283,6 +284,55 @@ WHERE
         }
 
         return $finalData;
+    }
+
+    public function get_monthly_summary($month, $year) {
+        $transactions_table = $this->get_table_name($this->transaction_table_name);
+        $user_id = get_current_user_id();
+        $start_date = date('Y-m-01', strtotime("$year-$month-01"));
+        $end_date = date('Y-m-t', strtotime($start_date));
+        $monthName = date('F', strtotime($start_date));
+        $year = intval(date('Y', strtotime($start_date)));
+
+        $sql = $this->db()->prepare("
+        SELECT 
+            SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END) AS income,
+            SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END) AS expenses,
+            COUNT(*) AS transactionCount,
+            COUNT(DISTINCT DATE(`date`)) AS activeDays
+        FROM {$transactions_table}
+        WHERE user_id = %d
+            AND is_active = 1
+            AND `date` BETWEEN %s AND %s
+      ", $user_id, $start_date, $end_date);
+
+        $row = $this->db()->get_row($sql, ARRAY_A);
+        if (is_wp_error($row)) {
+            return $this->get_error('db_error');
+        }
+
+        $income = floatval($row['income']);
+        $expenses = floatval($row['expenses']);
+        $balance = $income - $expenses;
+        $transactionCount = intval($row['transactionCount']);
+        $activeDays = max(intval($row['activeDays']), 1); // Avoid division by zero
+
+        $savingsRate = $income > 0 ? ($balance / $income) * 100 : 0;
+        $avgDaily = $expenses / $activeDays;
+
+        $result = [
+            'year' => $year,
+            'month' => $month,
+            'monthName' => $monthName,
+            'income' => $income,
+            'expenses' => $expenses,
+            'balance' => $balance,
+            'transactionCount' => $transactionCount,
+            'savingsRate' => round($savingsRate, 2),
+            'avgDaily' => round($avgDaily, 2),
+        ];
+
+        return rest_ensure_response($result);
     }
 
     public function get_daily_expenses($month, $year) {

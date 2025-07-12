@@ -27,9 +27,15 @@ class Pika_Analytics_Controller extends Pika_Base_Controller {
             'permission_callback' => [$this, 'check_auth']
         ]);
 
-        register_rest_route($this->namespace, '/analytics/monthly-expenses', [
+        // register_rest_route($this->namespace, '/analytics/monthly-expenses', [
+        //     'methods' => 'GET',
+        //     'callback' => [$this, 'get_monthly_expenses'],
+        //     'permission_callback' => [$this, 'check_auth']
+        // ]);
+
+        register_rest_route($this->namespace, '/analytics/monthly-summary', [
             'methods' => 'GET',
-            'callback' => [$this, 'get_monthly_expenses'],
+            'callback' => [$this, 'get_monthly_summary'],
             'permission_callback' => [$this, 'check_auth']
         ]);
 
@@ -45,9 +51,32 @@ class Pika_Analytics_Controller extends Pika_Base_Controller {
         return $weekly_expenses;
     }
 
-    public function get_monthly_expenses($request) {
-        $monthly_expenses = $this->analytics_manager->get_monthly_expenses();
-        return $monthly_expenses;
+    // public function get_monthly_expenses($request) {
+    //     $monthly_expenses = $this->analytics_manager->get_monthly_expenses();
+    //     return $monthly_expenses;
+    // }
+
+    public function get_monthly_summary($request) {
+        $params = $request->get_params();
+        $month = $params['month'];
+        $year = $params['year'];
+
+        $this->utils->log('Month', $month, 'debug');
+        $this->utils->log('Year', $year, 'debug');
+
+        $month = $this->analytics_manager->sanitize_month($month);
+        $year = $this->analytics_manager->sanitize_year($year);
+
+        if (is_wp_error($month)) {
+            return $month;
+        }
+
+        if (is_wp_error($year)) {
+            return $year;
+        }
+
+        $monthly_summary = $this->analytics_manager->get_monthly_summary($month, $year);
+        return $monthly_summary;
     }
 
     public function get_daily_expenses($request) {
