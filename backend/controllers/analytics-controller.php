@@ -38,6 +38,12 @@ class Pika_Analytics_Controller extends Pika_Base_Controller {
             'callback' => [$this, 'get_daily_summaries'],
             'permission_callback' => [$this, 'check_auth']
         ]);
+
+        register_rest_route($this->namespace, '/analytics/monthly-category-spending', [
+            'methods' => 'GET',
+            'callback' => [$this, 'get_monthly_category_spending'],
+            'permission_callback' => [$this, 'check_auth']
+        ]);
     }
 
     public function get_weekly_expenses($request) {
@@ -49,9 +55,6 @@ class Pika_Analytics_Controller extends Pika_Base_Controller {
         $params = $request->get_params();
         $month = $params['month'];
         $year = $params['year'];
-
-        $this->utils->log('Month', $month, 'debug');
-        $this->utils->log('Year', $year, 'debug');
 
         $month = $this->analytics_manager->sanitize_month($month);
         $year = $this->analytics_manager->sanitize_year($year);
@@ -73,9 +76,6 @@ class Pika_Analytics_Controller extends Pika_Base_Controller {
         $month = $params['month'];
         $year = $params['year'];
 
-        $this->utils->log('Month', $month, 'debug');
-        $this->utils->log('Year', $year, 'debug');
-
         $month = $this->analytics_manager->sanitize_month($month);
         $year = $this->analytics_manager->sanitize_year($year);
 
@@ -89,5 +89,25 @@ class Pika_Analytics_Controller extends Pika_Base_Controller {
 
         $daily_summaries = $this->analytics_manager->get_daily_summaries($month, $year);
         return $daily_summaries;
+    }
+
+    public function get_monthly_category_spending($request) {
+        $params = $request->get_params();
+        $month = $params['month'];
+        $year = $params['year'];
+
+        $month = $this->analytics_manager->sanitize_month($month);
+        $year = $this->analytics_manager->sanitize_year($year);
+
+        if (is_wp_error($month)) {
+            return $month;
+        }
+
+        if (is_wp_error($year)) {
+            return $year;
+        }
+
+        $monthly_category_spending = $this->analytics_manager->get_monthly_category_spending($month, $year);
+        return $monthly_category_spending;
     }
 }

@@ -417,4 +417,122 @@ WHERE
             'meta' => $meta,
         ];
     }
+
+    /**
+     * Get the monthly category spending
+     * 
+     * @param int $month
+     * @param int $year
+     * @return array|WP_Error
+     */
+    public function get_monthly_category_spending($month, $year) {
+        $transactions_table = $this->get_table_name($this->transaction_table_name);
+        $categories_table = $this->get_table_name($this->category_table_name);
+        $user_id = get_current_user_id();
+
+        $start_date = date('Y-m-01', strtotime("$year-$month-01"));
+        $end_date = date('Y-m-t', strtotime($start_date)); // last day of month
+
+        $sql = $this->db()->prepare("
+        SELECT
+            c.id AS categoryId,
+            c.name AS categoryName,
+            c.icon AS categoryIcon,
+            c.color AS categoryColor,
+            c.bg_color AS categoryBgColor,
+            c.parent_id IS NULL AS isParent,
+            c.parent_id AS parentId,
+            (c.user_id = 0) AS isSystem,
+            c.description,
+            COUNT(t.id) AS transactionCount,
+            COALESCE(SUM(t.amount), 0) AS amount,
+            COALESCE(AVG(t.amount), 0) AS averagePerTransaction,
+            COALESCE(MAX(t.amount), 0) AS highestTransaction,
+            COALESCE(MIN(t.amount), 0) AS lowestTransaction
+        FROM {$categories_table} AS c
+        LEFT JOIN {$transactions_table} AS t
+            ON t.category_id = c.id
+            AND t.type = 'expense'
+            AND t.is_active = 1
+            AND t.user_id = %d
+            AND t.date BETWEEN %s AND %s
+        WHERE c.is_active = 1
+            AND (c.user_id = %d OR c.user_id = 0)
+        GROUP BY c.id
+        ORDER BY amount DESC
+        ", $user_id, $start_date, $end_date, $user_id);
+
+
+        $raw_results = $this->db()->get_results($sql, ARRAY_A);
+
+        if (is_wp_error($raw_results)) {
+            return $this->get_error('db_error');
+        }
+
+        $categoryMap = [];
+        $parentSums = [];
+
+        foreach ($raw_results as $row) {
+            $categoryId = intval($row['categoryId']);
+            $parentId = $row['parentId'] ? intval($row['parentId']) : null;
+
+            $categoryMap[$categoryId] = [
+                'categoryId' => strval($categoryId),
+                'categoryName' => $row['categoryName'],
+                'categoryIcon' => $row['categoryIcon'],
+                'categoryColor' => $row['categoryColor'],
+                'categoryBgColor' => $row['categoryBgColor'],
+                'isParent' => $row['isParent'] === '1',
+                'parentId' => $parentId !== null ? strval($parentId) : null,
+                'isSystem' => $row['isSystem'] === '1',
+                'description' => $row['description'],
+                'amount' => floatval($row['amount']),
+                'transactionCount' => intval($row['transactionCount']),
+                'averagePerTransaction' => floatval($row['averagePerTransaction']),
+                'highestTransaction' => floatval($row['highestTransaction']),
+                'lowestTransaction' => floatval($row['lowestTransaction']),
+            ];
+
+            if ($parentId) {
+                if (!isset($parentSums[$parentId])) {
+                    $parentSums[$parentId] = [
+                        'amount' => 0,
+                        'transactionCount' => 0,
+                        'highestTransaction' => 0,
+                        'lowestTransaction' => PHP_INT_MAX,
+                    ];
+                }
+
+                $parentSums[$parentId]['amount'] += floatval($row['amount']);
+                $parentSums[$parentId]['transactionCount'] += intval($row['transactionCount']);
+                $parentSums[$parentId]['highestTransaction'] = max($parentSums[$parentId]['highestTransaction'], floatval($row['highestTransaction']));
+                $parentSums[$parentId]['lowestTransaction'] = min($parentSums[$parentId]['lowestTransaction'], floatval($row['lowestTransaction']));
+            }
+        }
+
+        // Add or update parent category entries
+        foreach ($parentSums as $parentId => $data) {
+            if (isset($categoryMap[$parentId])) {
+                $categoryMap[$parentId]['amount'] = $data['amount'];
+                $categoryMap[$parentId]['transactionCount'] = $data['transactionCount'];
+                $categoryMap[$parentId]['averagePerTransaction'] = $data['transactionCount'] > 0 ? $data['amount'] / $data['transactionCount'] : 0;
+                $categoryMap[$parentId]['highestTransaction'] = $data['highestTransaction'];
+                $categoryMap[$parentId]['lowestTransaction'] = $data['lowestTransaction'] === PHP_INT_MAX ? 0 : $data['lowestTransaction'];
+            }
+        }
+
+
+        $data = array_values($categoryMap);
+
+        $meta = [
+            'month' => $month,
+            'year' => $year,
+            'totalExpenses' => array_sum(array_column($data, 'amount')),
+        ];
+
+        return [
+            'data' => $data,
+            'meta' => $meta,
+        ];
+    }
 }
