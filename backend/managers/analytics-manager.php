@@ -16,6 +16,8 @@ class Pika_Analytics_Manager extends Pika_Base_Manager {
     protected $accounts_table_name = 'accounts';
     protected $people_table_name = 'people';
 
+    protected $upload_manager;
+
     protected $errors = [
         'invalid_month' => ['message' => 'Invalid month, month must be a number between 1 and 12.', 'status' => 400],
         'invalid_year' => ['message' => 'Invalid year, year must be a number.', 'status' => 400],
@@ -23,6 +25,7 @@ class Pika_Analytics_Manager extends Pika_Base_Manager {
 
     public function __construct() {
         parent::__construct();
+        $this->upload_manager = new Pika_Upload_Manager();
     }
 
     public function sanitize_month($month) {
@@ -627,6 +630,115 @@ WHERE
             'totalExpenses' => $totalExpenses,
             'totalIncome' => $totalIncome,
             'totalTransfers' => $totalTransfers,
+        ];
+
+        return [
+            'data' => $data,
+            'meta' => $meta,
+        ];
+    }
+
+    public function get_monthly_person_spending($month, $year) {
+        $people_table = $this->get_table_name($this->people_table_name);
+        $transactions_table = $this->get_table_name($this->transaction_table_name);
+        $user_id = get_current_user_id();
+
+        $start_date = date('Y-m-01', strtotime("$year-$month-01"));
+        $end_date = date('Y-m-t', strtotime($start_date)); // last day of month
+
+        $sql = $this->db()->prepare("
+        SELECT 
+            p.id,
+            p.name,
+            p.email,
+            p.phone,
+            p.description,
+            p.avatar_id,
+            COALESCE(SUM(CASE WHEN t.user_id = %d THEN 
+                CASE 
+                    WHEN t.type = 'income' THEN t.amount 
+                    WHEN t.type = 'expense' THEN -t.amount 
+                    ELSE 0 
+                END 
+            ELSE 0 END), 0) AS totalAmount,
+            
+            COUNT(DISTINCT t.id) AS totalTransactionCount,
+
+            SUM(CASE WHEN t.type = 'income' THEN t.amount ELSE 0 END) AS incomeAmount,
+            COUNT(CASE WHEN t.type = 'income' THEN 1 END) AS incomeTransactionCount,
+
+            SUM(CASE WHEN t.type = 'expense' THEN t.amount ELSE 0 END) AS expenseAmount,
+            COUNT(CASE WHEN t.type = 'expense' THEN 1 END) AS expenseTransactionCount,
+
+            MIN(t.amount) AS lowestTransaction,
+            MAX(t.amount) AS highestTransaction,
+            AVG(t.amount) AS averagePerTransaction,
+
+            MAX(t.date) AS lastTransactionAt,
+
+            (
+                SELECT COALESCE(SUM(CASE 
+                    WHEN t2.type = 'income' THEN t2.amount 
+                    WHEN t2.type = 'expense' THEN -t2.amount 
+                    ELSE 0 END), 0)
+                FROM {$transactions_table} t2
+                WHERE t2.person_id = p.id 
+                AND t2.user_id = %d 
+                AND t2.is_active = 1
+            ) AS balance
+
+        FROM {$people_table} p
+        LEFT JOIN {$transactions_table} t 
+            ON t.person_id = p.id 
+            AND t.user_id = %d 
+            AND t.is_active = 1 
+            AND t.date BETWEEN %s AND %s
+
+        WHERE p.user_id = %d
+          AND p.is_active = 1
+
+        GROUP BY p.id
+        ORDER BY totalAmount DESC
+    ", $user_id, $user_id, $user_id, $start_date, $end_date, $user_id);
+
+        $results = $this->db()->get_results($sql, ARRAY_A);
+
+
+        $data = array_map(function ($row) {
+            $avatar = is_null($row['avatar_id']) || $row['avatar_id'] == '0' ? null : $this->upload_manager->get_file_by_id($row['avatar_id'], true);
+            $this->utils->log("Avatar: ", $avatar);
+            return [
+                'id' => (string)$row['id'],
+                'name' => $row['name'],
+                'email' => $row['email'],
+                'phone' => $row['phone'],
+                'description' => $row['description'],
+                'avatarUrl' => $avatar ? $avatar['url'] : null,
+                'balance' => floatval($row['balance']),
+                'totalAmount' => floatval($row['totalAmount']),
+                'totalTransactionCount' => intval($row['totalTransactionCount']),
+                'incomeAmount' => floatval($row['incomeAmount']),
+                'incomeTransactionCount' => intval($row['incomeTransactionCount']),
+                'expenseAmount' => floatval($row['expenseAmount']),
+                'expenseTransactionCount' => intval($row['expenseTransactionCount']),
+                'averagePerTransaction' => floatval($row['averagePerTransaction']),
+                'highestTransaction' => floatval($row['highestTransaction']),
+                'lowestTransaction' => floatval($row['lowestTransaction']),
+                'lastTransactionAt' => $row['lastTransactionAt'] ?? null,
+            ];
+        }, $results);
+
+        // Meta calculations
+        $total_expenses = array_sum(array_column($data, 'expenseAmount'));
+        $total_income = array_sum(array_column($data, 'incomeAmount'));
+        $total_transfers = 0; // Not person-specific in this query
+
+        $meta = [
+            'month' => date('F', strtotime($start_date)),
+            'year' => (int)$year,
+            'totalExpenses' => round($total_expenses, 2),
+            'totalIncome' => round($total_income, 2),
+            'totalTransfers' => $total_transfers,
         ];
 
         return [
