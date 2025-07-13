@@ -11,18 +11,21 @@ const ExpensesThisWeek = () => {
   const [error, setError] = useState<unknown | null>(null);
 
   useEffect(() => {
-    analyticsService
-      .getWeeklyExpenses()
-      .then((response) => {
-        setWeeklyExpensesData(response.data);
-      })
-      .catch((error) => {
-        setError(error);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+    fetchWeeklyExpenses();
   }, []);
+
+  const fetchWeeklyExpenses = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await analyticsService.getWeeklyExpenses();
+      setWeeklyExpensesData(response.data);
+    } catch (error) {
+      setError(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <Card className="gap-4">
@@ -30,7 +33,7 @@ const ExpensesThisWeek = () => {
         <CardTitle className="text-md">Expenses This Week</CardTitle>
       </CardHeader>
       <CardContent>
-        <AsyncStateWrapper isLoading={isLoading} error={error}>
+        <AsyncStateWrapper isLoading={isLoading} error={error} onRetry={fetchWeeklyExpenses}>
           <div className="flex justify-center gap-4 sm:gap-6 md:gap-8 lg:gap-10">
             {Object.entries(weeklyExpensesData || {}).map(([day, amount]) => {
               const barHeight = (amount / maxExpense) * 100;

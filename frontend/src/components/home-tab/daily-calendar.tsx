@@ -87,7 +87,12 @@ const DailyCalendar = ({ selectedDate }: DailyCalendarProps) => {
   };
 
   return (
-    <AsyncStateWrapper isLoading={isLoading} error={error} onRetry={getDailyExpenses} className="min-h-[430px]">
+    <AsyncStateWrapper
+      isLoading={isLoading}
+      error={error}
+      onRetry={getDailyExpenses}
+      className="min-h-[430px] w-full rounded-md border"
+    >
       <Calendar
         mode="single"
         selected={undefined}

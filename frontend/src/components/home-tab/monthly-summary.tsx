@@ -38,6 +38,7 @@ const MonthlySummaryView = ({ selectedDate }: MonthlySummaryViewProps) => {
       })
       .finally(() => {
         setIsLoading(false);
+        console.log('Fetch completed');
       });
   };
 
@@ -58,11 +59,16 @@ const MonthlySummaryView = ({ selectedDate }: MonthlySummaryViewProps) => {
   };
 
   return (
-    <AsyncStateWrapper isLoading={isLoading} error={error} onRetry={fetchMonthlyData}>
-      {monthlySummaryData && (
-        <div className="flex flex-col gap-4">
-          <h3 className="text-md font-semibold text-slate-900 dark:text-white">Monthly Summary</h3>
+    <div className="flex flex-col gap-4">
+      <h3 className="text-md font-semibold text-slate-900 dark:text-white">Monthly Summary</h3>
 
+      <AsyncStateWrapper
+        isLoading={isLoading}
+        error={error}
+        onRetry={fetchMonthlyData}
+        className="w-full rounded-md border"
+      >
+        {monthlySummaryData && (
           <div className="space-y-4">
             {/* Summary Cards Grid */}
             <div className="grid grid-cols-3 gap-3">
@@ -128,9 +134,9 @@ const MonthlySummaryView = ({ selectedDate }: MonthlySummaryViewProps) => {
               </CardContent>
             </Card>
           </div>
-        </div>
-      )}
-    </AsyncStateWrapper>
+        )}
+      </AsyncStateWrapper>
+    </div>
   );
 };
 

@@ -26,13 +26,7 @@ const HomeTab = () => {
     }
   }, [month, year]);
 
-  const handleChangeDate = (action: 'prev' | 'next') => {
-    const newDate = new Date(selectedDate);
-    if (action === 'prev') {
-      newDate.setMonth(newDate.getMonth() - 1);
-    } else {
-      newDate.setMonth(newDate.getMonth() + 1);
-    }
+  const handleChangeDate = (newDate: Date) => {
     setSelectedDate(newDate);
 
     const presentDate = new Date();

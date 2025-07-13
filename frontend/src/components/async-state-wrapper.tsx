@@ -34,7 +34,7 @@ const AsyncStateWrapper = ({
     const errorTitle = isNetworkError(error) ? 'Network Error' : 'Error';
     const errorButtonText = isNetworkError(error) ? 'Retry' : 'Go Back';
     const goBack = () => navigate(linkBackward || '/', { replace: true });
-    const errorButtonClick = isNetworkError(error) ? goBack : onRetry;
+    const errorButtonClick = isNetworkError(error) ? onRetry : goBack;
     const errorButtonIcon = isNetworkError(error) ? (
       <RefreshCw className="h-4 w-4" />
     ) : (

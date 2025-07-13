@@ -108,6 +108,11 @@ const CategorySpendingView = ({ selectedDate }: CategorySpendingProps) => {
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [meta, setMeta] = useState<{
+    parentCategories: CategorySpending[];
+    childCategories: CategorySpending[];
+    maxAmount: number;
+  } | null>(null);
 
   useEffect(() => {
     fetchCategorySpending();
@@ -122,6 +127,7 @@ const CategorySpendingView = ({ selectedDate }: CategorySpendingProps) => {
         selectedDate.getFullYear(),
       );
       setCategorySpendingData(response.data);
+      setMeta(getMeta(response.data));
     } catch (error) {
       setError(error);
     } finally {
@@ -152,44 +158,52 @@ const CategorySpendingView = ({ selectedDate }: CategorySpendingProps) => {
     }
   };
 
-  if (!categorySpendingData) {
-    return null;
-  }
+  const getMeta = (data: MonthlyCategorySpending | null) => {
+    if (!data) {
+      return {
+        parentCategories: [],
+        childCategories: [],
+        maxAmount: 0,
+      };
+    }
 
-  // Filter to only show expense categories with transactions
-  const expenseCategories = categorySpendingData.data.filter((cat) => cat.amount > 0);
+    // Filter to only show expense categories with transactions
+    const expenseCategories = data.data.filter((cat) => cat.amount > 0);
 
-  // Group by parent categories
-  const parentCategories = expenseCategories.filter((cat) => cat.isParent);
-  const childCategories = expenseCategories.filter((cat) => !cat.isParent);
+    // Group by parent categories
+    const parentCategories = expenseCategories.filter((cat) => cat.isParent);
+    const childCategories = expenseCategories.filter((cat) => !cat.isParent);
 
-  // Calculate max amount for percentage calculation
-  const maxAmount = Math.max(...expenseCategories.map((cat) => cat.amount));
+    // Calculate max amount for percentage calculation
+    const maxAmount = Math.max(...expenseCategories.map((cat) => cat.amount));
+
+    return {
+      parentCategories,
+      childCategories,
+      maxAmount,
+    };
+  };
 
   return (
-    <AsyncStateWrapper isLoading={isLoading} error={error} onRetry={fetchCategorySpending}>
-      <Card className="gap-4">
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-md">Category Spending</CardTitle>
-            <Button variant="ghost" size="sm" onClick={toggleExpanded} className="h-8 w-8 p-0">
-              {expandedCategories.size === 0 ? (
-                <ChevronRight className="h-4 w-4" />
-              ) : (
-                <ChevronDown className="h-4 w-4" />
-              )}
-            </Button>
-          </div>
-        </CardHeader>
+    <Card className="gap-4">
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-md">Category Spending</CardTitle>
+          <Button variant="ghost" size="sm" onClick={toggleExpanded} className="h-8 w-8 p-0">
+            {expandedCategories.size === 0 ? <ChevronRight className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+          </Button>
+        </div>
+      </CardHeader>
 
-        <CardContent>
+      <CardContent>
+        <AsyncStateWrapper isLoading={isLoading} error={error} onRetry={fetchCategorySpending}>
           <div className="space-y-2">
-            {parentCategories.map((parentCategory) => {
+            {meta?.parentCategories.map((parentCategory) => {
               const isExpanded = expandedCategories.has(parentCategory.categoryId);
-              const childCategoriesForParent = childCategories.filter(
+              const childCategoriesForParent = meta?.childCategories.filter(
                 (child) => child.parentId === parentCategory.categoryId,
               );
-              const percentage = (parentCategory.amount / maxAmount) * 100;
+              const percentage = (parentCategory.amount / meta?.maxAmount) * 100;
 
               return (
                 <div key={parentCategory.categoryId} className="space-y-1">
@@ -203,7 +217,7 @@ const CategorySpendingView = ({ selectedDate }: CategorySpendingProps) => {
 
                   {isExpanded &&
                     childCategoriesForParent.map((childCategory) => {
-                      const childPercentage = (childCategory.amount / maxAmount) * 100;
+                      const childPercentage = (childCategory.amount / meta?.maxAmount) * 100;
                       return (
                         <CategorySpendingBar
                           key={childCategory.categoryId}
@@ -220,15 +234,15 @@ const CategorySpendingView = ({ selectedDate }: CategorySpendingProps) => {
               );
             })}
 
-            {expenseCategories.length === 0 && (
+            {meta?.childCategories.length === 0 && (
               <div className="py-4 text-center">
                 <p className="text-sm text-slate-500 dark:text-slate-400">No expenses found for this month</p>
               </div>
             )}
           </div>
-        </CardContent>
-      </Card>
-    </AsyncStateWrapper>
+        </AsyncStateWrapper>
+      </CardContent>
+    </Card>
   );
 };
 

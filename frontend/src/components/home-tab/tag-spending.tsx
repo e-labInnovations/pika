@@ -88,11 +88,14 @@ const TagSpendingBar = ({ tag, percentage, popoverOpen, onPopoverOpenChange, dat
 };
 
 const TagSpendingView = ({ selectedDate }: TagSpendingProps) => {
-  const [tagSpendingData, setTagSpendingData] = useState<MonthlyTagSpending | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<unknown | null>(null);
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [meta, setMeta] = useState<{
+    tagsWithTransactions: TagSpending[];
+    maxAbsoluteAmount: number;
+  } | null>(null);
 
   useEffect(() => {
     fetchTagSpending();
@@ -103,7 +106,7 @@ const TagSpendingView = ({ selectedDate }: TagSpendingProps) => {
     setError(null);
     try {
       const response = await analyticsService.getTagSpending(selectedDate.getMonth() + 1, selectedDate.getFullYear());
-      setTagSpendingData(response.data);
+      setMeta(getMeta(response.data));
     } catch (error) {
       setError(error);
     } finally {
@@ -121,27 +124,38 @@ const TagSpendingView = ({ selectedDate }: TagSpendingProps) => {
     }
   };
 
-  if (!tagSpendingData) {
-    return null;
-  }
+  const getMeta = (data: MonthlyTagSpending | null) => {
+    if (!data) {
+      return {
+        tagsWithTransactions: [],
+        maxAbsoluteAmount: 0,
+      };
+    }
 
-  // Filter to only show tags with transactions
-  const tagsWithTransactions = tagSpendingData.data.filter((tag) => tag.totalTransactionCount > 0);
+    // Filter to only show tags with transactions
+    const tagsWithTransactions = data.data.filter((tag) => tag.totalTransactionCount > 0);
 
-  // Calculate max absolute amount for percentage calculation
-  const maxAbsoluteAmount = Math.max(...tagsWithTransactions.map((tag) => Math.abs(tag.totalAmount)));
+    // Calculate max absolute amount for percentage calculation
+    const maxAbsoluteAmount = Math.max(...tagsWithTransactions.map((tag) => Math.abs(tag.totalAmount)));
+
+    return {
+      tagsWithTransactions,
+      maxAbsoluteAmount,
+    };
+  };
 
   return (
-    <AsyncStateWrapper isLoading={isLoading} error={error} onRetry={fetchTagSpending}>
-      <Card className="gap-4">
-        <CardHeader>
-          <CardTitle className="text-md">Tag Spending</CardTitle>
-        </CardHeader>
+    <Card className="gap-4">
+      <CardHeader>
+        <CardTitle className="text-md">Tag Spending</CardTitle>
+      </CardHeader>
 
-        <CardContent>
+      <CardContent>
+        <AsyncStateWrapper isLoading={isLoading} error={error} onRetry={fetchTagSpending}>
           <div className="space-y-2">
-            {tagsWithTransactions.map((tag) => {
-              const percentage = maxAbsoluteAmount > 0 ? (Math.abs(tag.totalAmount) / maxAbsoluteAmount) * 100 : 0;
+            {meta?.tagsWithTransactions.map((tag) => {
+              const percentage =
+                meta?.maxAbsoluteAmount > 0 ? (Math.abs(tag.totalAmount) / meta?.maxAbsoluteAmount) * 100 : 0;
 
               return (
                 <TagSpendingBar
@@ -155,7 +169,7 @@ const TagSpendingView = ({ selectedDate }: TagSpendingProps) => {
               );
             })}
 
-            {tagsWithTransactions.length === 0 && (
+            {meta?.tagsWithTransactions.length === 0 && (
               <div className="py-4 text-center">
                 <p className="text-sm text-slate-500 dark:text-slate-400">
                   No tagged transactions found for this month
@@ -163,9 +177,9 @@ const TagSpendingView = ({ selectedDate }: TagSpendingProps) => {
               </div>
             )}
           </div>
-        </CardContent>
-      </Card>
-    </AsyncStateWrapper>
+        </AsyncStateWrapper>
+      </CardContent>
+    </Card>
   );
 };
 
