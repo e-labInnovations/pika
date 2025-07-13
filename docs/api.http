@@ -435,6 +435,18 @@ Content-Type: application/json
 }
 ###
 
+# Get monthly tag spending
+GET {{base_url}}/wp-json/pika/v1/analytics/monthly-tag-spending
+Authorization: Basic {{admin_username}}:{{admin_password}}
+Content-Type: application/json
+
+{
+  "month": 7,
+  "year": 2025
+}
+
+###
+
 # Test gemini response
 GET {{base_url}}/wp-json/pika/v1/ai/test
 Authorization: Basic {{admin_username}}:{{admin_password}}

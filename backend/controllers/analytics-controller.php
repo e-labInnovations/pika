@@ -44,6 +44,12 @@ class Pika_Analytics_Controller extends Pika_Base_Controller {
             'callback' => [$this, 'get_monthly_category_spending'],
             'permission_callback' => [$this, 'check_auth']
         ]);
+
+        register_rest_route($this->namespace, '/analytics/monthly-tag-spending', [
+            'methods' => 'GET',
+            'callback' => [$this, 'get_monthly_tag_spending'],
+            'permission_callback' => [$this, 'check_auth']
+        ]);
     }
 
     public function get_weekly_expenses($request) {
@@ -109,5 +115,14 @@ class Pika_Analytics_Controller extends Pika_Base_Controller {
 
         $monthly_category_spending = $this->analytics_manager->get_monthly_category_spending($month, $year);
         return $monthly_category_spending;
+    }
+
+    public function get_monthly_tag_spending($request) {
+        $params = $request->get_params();
+        $month = $params['month'];
+        $year = $params['year'];
+
+        $monthly_tag_spending = $this->analytics_manager->get_monthly_tag_spending($month, $year);
+        return $monthly_tag_spending;
     }
 }

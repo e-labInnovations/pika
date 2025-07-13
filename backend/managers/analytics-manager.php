@@ -12,6 +12,7 @@ class Pika_Analytics_Manager extends Pika_Base_Manager {
     protected $category_table_name = 'categories';
     protected $transaction_table_name = 'transactions';
     protected $tags_table_name = 'tags';
+    protected $transaction_tags_table_name = 'transaction_tags';
     protected $accounts_table_name = 'accounts';
     protected $people_table_name = 'people';
 
@@ -528,6 +529,104 @@ WHERE
             'month' => $month,
             'year' => $year,
             'totalExpenses' => array_sum(array_column($data, 'amount')),
+        ];
+
+        return [
+            'data' => $data,
+            'meta' => $meta,
+        ];
+    }
+
+    public function get_monthly_tag_spending($month, $year) {
+        $transactions_table = $this->get_table_name($this->transaction_table_name);
+        $tags_table = $this->get_table_name($this->tags_table_name);
+        $transaction_tags_table = $this->get_table_name($this->transaction_tags_table_name);
+        $user_id = get_current_user_id();
+
+        $start_date = date('Y-m-01', strtotime("$year-$month-01"));
+        $end_date = date('Y-m-t', strtotime($start_date)); // last day of month
+
+        $sql = $this->db()->prepare("
+            SELECT 
+                t.id AS id,
+                t.name,
+                t.icon,
+                t.color,
+                t.bg_color,
+                t.description,
+                t.user_id = 0 AS isSystem,
+    
+                COUNT(tt.transaction_id) AS totalTransactionCount,
+                SUM(CASE WHEN tx.type = 'expense' THEN tx.amount ELSE 0 END) AS expenseAmount,
+                COUNT(CASE WHEN tx.type = 'expense' THEN 1 END) AS expenseTransactionCount,
+                SUM(CASE WHEN tx.type = 'income' THEN tx.amount ELSE 0 END) AS incomeAmount,
+                COUNT(CASE WHEN tx.type = 'income' THEN 1 END) AS incomeTransactionCount,
+                SUM(CASE WHEN tx.type = 'transfer' THEN tx.amount ELSE 0 END) AS transferAmount,
+                COUNT(CASE WHEN tx.type = 'transfer' THEN 1 END) AS transferTransactionCount,
+                MIN(tx.amount) AS lowestTransaction,
+                MAX(tx.amount) AS highestTransaction,
+                AVG(tx.amount) AS averagePerTransaction
+    
+            FROM {$tags_table} t
+            LEFT JOIN {$transaction_tags_table} tt ON tt.tag_id = t.id
+            LEFT JOIN {$transactions_table} tx 
+                ON tx.id = tt.transaction_id 
+                AND tx.is_active = 1 
+                AND tx.user_id = %d 
+                AND tx.date BETWEEN %s AND %s
+    
+            WHERE (t.user_id = 0 OR t.user_id = %d)
+              AND t.is_active = 1
+    
+            GROUP BY t.id
+            ORDER BY totalTransactionCount DESC
+        ", $user_id, $start_date, $end_date, $user_id);
+
+        $results = $this->db()->get_results($sql, ARRAY_A);
+
+        // Structure results
+        $data = [];
+        $totalExpenses = 0.0;
+        $totalIncome = 0.0;
+        $totalTransfers = 0.0;
+
+        foreach ($results as $row) {
+            $expense = floatval($row['expenseAmount']);
+            $income = floatval($row['incomeAmount']);
+            $transfer = floatval($row['transferAmount']);
+
+            $totalExpenses += $expense;
+            $totalIncome += $income;
+            $totalTransfers += $transfer;
+
+            $data[] = [
+                'id' => strval($row['id']),
+                'name' => $row['name'],
+                'icon' => $row['icon'],
+                'color' => $row['color'],
+                'bgColor' => $row['bg_color'],
+                'description' => $row['description'],
+                'isSystem' => boolval($row['isSystem']),
+                'totalAmount' => $income - $expense, // Net
+                'totalTransactionCount' => intval($row['totalTransactionCount']),
+                'expenseAmount' => $expense,
+                'expenseTransactionCount' => intval($row['expenseTransactionCount']),
+                'incomeAmount' => $income,
+                'incomeTransactionCount' => intval($row['incomeTransactionCount']),
+                'transferAmount' => $transfer,
+                'transferTransactionCount' => intval($row['transferTransactionCount']),
+                'averagePerTransaction' => floatval($row['averagePerTransaction']),
+                'highestTransaction' => floatval($row['highestTransaction']),
+                'lowestTransaction' => floatval($row['lowestTransaction']),
+            ];
+        }
+
+        $meta = [
+            'month' => date('F', strtotime($start_date)),
+            'year' => intval(date('Y', strtotime($start_date))),
+            'totalExpenses' => $totalExpenses,
+            'totalIncome' => $totalIncome,
+            'totalTransfers' => $totalTransfers,
         ];
 
         return [
