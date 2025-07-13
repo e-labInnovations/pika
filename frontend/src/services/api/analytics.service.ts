@@ -71,6 +71,38 @@ export interface MonthlyCategorySpending {
   };
 }
 
+export interface TagSpending {
+  id: string;
+  name: string;
+  color: string;
+  bgColor: string;
+  icon: string;
+  description: string;
+  isSystem: boolean;
+  totalAmount: number; // Net amount (income - expenses)
+  totalTransactionCount: number;
+  expenseAmount: number;
+  expenseTransactionCount: number;
+  incomeAmount: number;
+  incomeTransactionCount: number;
+  transferAmount: number;
+  transferTransactionCount: number;
+  averagePerTransaction: number;
+  highestTransaction: number;
+  lowestTransaction: number;
+}
+
+export interface MonthlyTagSpending {
+  data: TagSpending[];
+  meta: {
+    month: string;
+    year: number;
+    totalExpenses: number;
+    totalIncome: number;
+    totalTransfers: number;
+  };
+}
+
 class AnalyticsService extends BaseService<unknown> {
   constructor() {
     super('/analytics');
@@ -94,6 +126,12 @@ class AnalyticsService extends BaseService<unknown> {
 
   getCategorySpending(month: number, year: number): Promise<AxiosResponse<MonthlyCategorySpending>> {
     return this.api.get<MonthlyCategorySpending>(`${this.endpoint}/monthly-category-spending`, {
+      params: { month, year },
+    });
+  }
+
+  getTagSpending(month: number, year: number): Promise<AxiosResponse<MonthlyTagSpending>> {
+    return this.api.get<MonthlyTagSpending>(`${this.endpoint}/monthly-tag-spending`, {
       params: { month, year },
     });
   }
