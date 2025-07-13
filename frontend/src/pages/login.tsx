@@ -61,7 +61,6 @@ export default function Login() {
       .getMe()
       .then((response: AxiosResponse<User>) => {
         const user = response.data;
-        console.log(user);
         signIn(token, user);
         setSuccess(true);
         navigate(location.state?.from?.pathname || '/', { replace: true });

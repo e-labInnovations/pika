@@ -5,7 +5,6 @@ const API_URL = 'http://localhost:8000/wp-json/pika/v1';
 
 export const authService = {
   login: async (token: string) => {
-    console.log('login', token);
     const response = await axios.get(`${API_URL}/auth/me`, {
       headers: {
         Authorization: `Basic ${token}`,

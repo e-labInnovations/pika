@@ -103,6 +103,37 @@ export interface MonthlyTagSpending {
   };
 }
 
+export interface PersonSpending {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  description: string;
+  avatarUrl: string | null;
+  balance: number; // Overall balance (positive = they owe you, negative = you owe them)
+  totalAmount: number; // Net amount for this month (income - expenses)
+  totalTransactionCount: number;
+  expenseAmount: number;
+  expenseTransactionCount: number;
+  incomeAmount: number;
+  incomeTransactionCount: number;
+  averagePerTransaction: number;
+  highestTransaction: number;
+  lowestTransaction: number;
+  lastTransactionAt: string | null;
+}
+
+export interface MonthlyPersonSpending {
+  data: PersonSpending[];
+  meta: {
+    month: string;
+    year: number;
+    totalExpenses: number;
+    totalIncome: number;
+    totalTransfers: number;
+  };
+}
+
 class AnalyticsService extends BaseService<unknown> {
   constructor() {
     super('/analytics');
@@ -132,6 +163,12 @@ class AnalyticsService extends BaseService<unknown> {
 
   getTagSpending(month: number, year: number): Promise<AxiosResponse<MonthlyTagSpending>> {
     return this.api.get<MonthlyTagSpending>(`${this.endpoint}/monthly-tag-spending`, {
+      params: { month, year },
+    });
+  }
+
+  getPeopleSpending(month: number, year: number): Promise<AxiosResponse<MonthlyPersonSpending>> {
+    return this.api.get<MonthlyPersonSpending>(`${this.endpoint}/monthly-person-spending`, {
       params: { month, year },
     });
   }

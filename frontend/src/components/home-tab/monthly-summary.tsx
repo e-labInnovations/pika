@@ -38,7 +38,6 @@ const MonthlySummaryView = ({ selectedDate }: MonthlySummaryViewProps) => {
       })
       .finally(() => {
         setIsLoading(false);
-        console.log('Fetch completed');
       });
   };
 
