@@ -556,7 +556,7 @@ WHERE
                 t.description,
                 t.user_id = 0 AS isSystem,
     
-                COUNT(tt.transaction_id) AS totalTransactionCount,
+                COUNT(DISTINCT tx.id) AS totalTransactionCount,
                 SUM(CASE WHEN tx.type = 'expense' THEN tx.amount ELSE 0 END) AS expenseAmount,
                 COUNT(CASE WHEN tx.type = 'expense' THEN 1 END) AS expenseTransactionCount,
                 SUM(CASE WHEN tx.type = 'income' THEN tx.amount ELSE 0 END) AS incomeAmount,
