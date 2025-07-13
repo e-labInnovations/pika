@@ -5,6 +5,7 @@ import ExpensesThisWeek from '@/components/home-tab/expenses-this-week';
 import MonthlySummary from '@/components/home-tab/monthly-summary';
 import DailyCalendar from '@/components/home-tab/daily-calendar';
 import MonthNavigator from '@/components/home-tab/month-navigator';
+import CategorySpendingView from '@/components/home-tab/category-spending';
 import { Separator } from '@/components/ui/separator';
 import { useLookupStore } from '@/store/useLookupStore';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -59,6 +60,8 @@ const HomeTab = () => {
         <DailyCalendar selectedDate={selectedDate} />
 
         <MonthlySummary selectedDate={selectedDate} />
+
+        <CategorySpendingView selectedDate={selectedDate} />
       </div>
     </TabsLayout>
   );

@@ -45,6 +45,32 @@ export interface DailySummaries {
   };
 }
 
+export interface CategorySpending {
+  categoryId: string;
+  categoryName: string;
+  categoryIcon: string;
+  categoryColor: string;
+  categoryBgColor: string;
+  isParent: boolean;
+  isSystem: boolean;
+  parentId: string | null;
+  amount: number;
+  transactionCount: number;
+  averagePerTransaction: number;
+  highestTransaction: number;
+  lowestTransaction: number;
+  description: string;
+}
+
+export interface MonthlyCategorySpending {
+  data: CategorySpending[];
+  meta: {
+    month: string;
+    year: number;
+    totalExpenses: number;
+  };
+}
+
 class AnalyticsService extends BaseService<unknown> {
   constructor() {
     super('/analytics');
@@ -62,6 +88,12 @@ class AnalyticsService extends BaseService<unknown> {
 
   getDailySummaries(month: number, year: number): Promise<AxiosResponse<DailySummaries>> {
     return this.api.get<DailySummaries>(`${this.endpoint}/daily-summaries`, {
+      params: { month, year },
+    });
+  }
+
+  getCategorySpending(month: number, year: number): Promise<AxiosResponse<MonthlyCategorySpending>> {
+    return this.api.get<MonthlyCategorySpending>(`${this.endpoint}/monthly-category-spending`, {
       params: { month, year },
     });
   }

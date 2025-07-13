@@ -37,6 +37,7 @@ const ExpensesThisWeek = () => {
 
               return (
                 <DayExpenseBar
+                  key={day}
                   percentage={barHeight}
                   day={day.charAt(0).toUpperCase() + day.slice(1)}
                   amount={amount}
