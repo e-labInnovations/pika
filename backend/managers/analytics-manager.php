@@ -156,13 +156,13 @@ WHERE
 
         $sql = $this->db()->prepare("
 SELECT
+    COALESCE(SUM(CASE WHEN DAYOFWEEK(date) = 1 THEN amount END), 0) AS sun,
     COALESCE(SUM(CASE WHEN DAYOFWEEK(date) = 2 THEN amount END), 0) AS mon,
     COALESCE(SUM(CASE WHEN DAYOFWEEK(date) = 3 THEN amount END), 0) AS tue,
     COALESCE(SUM(CASE WHEN DAYOFWEEK(date) = 4 THEN amount END), 0) AS wed,
     COALESCE(SUM(CASE WHEN DAYOFWEEK(date) = 5 THEN amount END), 0) AS thu,
     COALESCE(SUM(CASE WHEN DAYOFWEEK(date) = 6 THEN amount END), 0) AS fri,
-    COALESCE(SUM(CASE WHEN DAYOFWEEK(date) = 7 THEN amount END), 0) AS sat,
-    COALESCE(SUM(CASE WHEN DAYOFWEEK(date) = 1 THEN amount END), 0) AS sun
+    COALESCE(SUM(CASE WHEN DAYOFWEEK(date) = 7 THEN amount END), 0) AS sat
 FROM 
     {$transactions_table}
 WHERE 
@@ -177,13 +177,13 @@ WHERE
         }
 
         $weekly_expenses = [
+            'sun' => $weekly_expenses_data->sun,
             'mon' => $weekly_expenses_data->mon,
             'tue' => $weekly_expenses_data->tue,
             'wed' => $weekly_expenses_data->wed,
             'thu' => $weekly_expenses_data->thu,
             'fri' => $weekly_expenses_data->fri,
             'sat' => $weekly_expenses_data->sat,
-            'sun' => $weekly_expenses_data->sun,
         ];
         return $weekly_expenses;
     }
@@ -540,7 +540,7 @@ WHERE
         ];
     }
 
-    public function get_monthly_tag_spending($month, $year) {
+    public function get_monthly_tag_activity($month, $year) {
         $transactions_table = $this->get_table_name($this->transaction_table_name);
         $tags_table = $this->get_table_name($this->tags_table_name);
         $transaction_tags_table = $this->get_table_name($this->transaction_tags_table_name);
@@ -638,7 +638,7 @@ WHERE
         ];
     }
 
-    public function get_monthly_person_spending($month, $year) {
+    public function get_monthly_person_activity($month, $year) {
         $people_table = $this->get_table_name($this->people_table_name);
         $transactions_table = $this->get_table_name($this->transaction_table_name);
         $user_id = get_current_user_id();
@@ -706,7 +706,6 @@ WHERE
 
         $data = array_map(function ($row) {
             $avatar = is_null($row['avatar_id']) || $row['avatar_id'] == '0' ? null : $this->upload_manager->get_file_by_id($row['avatar_id'], true);
-            $this->utils->log("Avatar: ", $avatar);
             return [
                 'id' => (string)$row['id'],
                 'name' => $row['name'],

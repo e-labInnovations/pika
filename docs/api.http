@@ -436,7 +436,7 @@ Content-Type: application/json
 ###
 
 # Get monthly tag spending
-GET {{base_url}}/wp-json/pika/v1/analytics/monthly-tag-spending
+GET {{base_url}}/wp-json/pika/v1/analytics/monthly-tag-activity
 Authorization: Basic {{admin_username}}:{{admin_password}}
 Content-Type: application/json
 
@@ -448,7 +448,7 @@ Content-Type: application/json
 ###
 
 # Get monthly person spending
-GET {{base_url}}/wp-json/pika/v1/analytics/monthly-person-spending
+GET {{base_url}}/wp-json/pika/v1/analytics/monthly-person-activity
 Authorization: Basic {{admin_username}}:{{admin_password}}
 Content-Type: application/json
 

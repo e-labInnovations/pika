@@ -45,15 +45,15 @@ class Pika_Analytics_Controller extends Pika_Base_Controller {
             'permission_callback' => [$this, 'check_auth']
         ]);
 
-        register_rest_route($this->namespace, '/analytics/monthly-tag-spending', [
+        register_rest_route($this->namespace, '/analytics/monthly-tag-activity', [
             'methods' => 'GET',
-            'callback' => [$this, 'get_monthly_tag_spending'],
+            'callback' => [$this, 'get_monthly_tag_activity'],
             'permission_callback' => [$this, 'check_auth']
         ]);
 
-        register_rest_route($this->namespace, '/analytics/monthly-person-spending', [
+        register_rest_route($this->namespace, '/analytics/monthly-person-activity', [
             'methods' => 'GET',
-            'callback' => [$this, 'get_monthly_person_spending'],
+            'callback' => [$this, 'get_monthly_person_activity'],
             'permission_callback' => [$this, 'check_auth']
         ]);
     }
@@ -123,7 +123,7 @@ class Pika_Analytics_Controller extends Pika_Base_Controller {
         return $monthly_category_spending;
     }
 
-    public function get_monthly_tag_spending($request) {
+    public function get_monthly_tag_activity($request) {
         $params = $request->get_params();
         $month = $params['month'];
         $year = $params['year'];
@@ -139,11 +139,11 @@ class Pika_Analytics_Controller extends Pika_Base_Controller {
             return $year;
         }
 
-        $monthly_tag_spending = $this->analytics_manager->get_monthly_tag_spending($month, $year);
-        return $monthly_tag_spending;
+        $monthly_tag_activity = $this->analytics_manager->get_monthly_tag_activity($month, $year);
+        return $monthly_tag_activity;
     }
 
-    public function get_monthly_person_spending($request) {
+    public function get_monthly_person_activity($request) {
         $params = $request->get_params();
         $month = $params['month'];
         $year = $params['year'];
@@ -159,7 +159,7 @@ class Pika_Analytics_Controller extends Pika_Base_Controller {
             return $year;
         }
 
-        $monthly_person_spending = $this->analytics_manager->get_monthly_person_spending($month, $year);
-        return $monthly_person_spending;
+        $monthly_person_activity = $this->analytics_manager->get_monthly_person_activity($month, $year);
+        return $monthly_person_activity;
     }
 }
