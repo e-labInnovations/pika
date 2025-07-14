@@ -89,6 +89,31 @@ const TransactionsTab = () => {
   }, [searchParams]);
 
   useEffect(() => {
+    fetchTransactions();
+  }, [source]);
+
+  useEffect(() => {
+    let count = 0;
+
+    // Count array filters that have items
+    if (filters.types.length > 0) count++;
+    if (filters.categories.length > 0) count++;
+    if (filters.tags.length > 0) count++;
+    if (filters.people.length > 0) count++;
+    if (filters.accounts.length > 0) count++;
+
+    // Count date range filter if either from or to is set
+    if (filters.dateRange.from || filters.dateRange.to) count++;
+
+    // Count amount filter if value1 is set
+    if (filters.amount.value1) count++;
+
+    setActiveFilterCount(count);
+  }, [filters]);
+
+  useEffect(() => {}, [sort]);
+
+  const fetchTransactions = () => {
     setIsLoading(true);
     setError(null);
 
@@ -124,28 +149,7 @@ const TransactionsTab = () => {
           setIsLoading(false);
         });
     }
-  }, [source]);
-
-  useEffect(() => {
-    let count = 0;
-
-    // Count array filters that have items
-    if (filters.types.length > 0) count++;
-    if (filters.categories.length > 0) count++;
-    if (filters.tags.length > 0) count++;
-    if (filters.people.length > 0) count++;
-    if (filters.accounts.length > 0) count++;
-
-    // Count date range filter if either from or to is set
-    if (filters.dateRange.from || filters.dateRange.to) count++;
-
-    // Count amount filter if value1 is set
-    if (filters.amount.value1) count++;
-
-    setActiveFilterCount(count);
-  }, [filters]);
-
-  useEffect(() => {}, [sort]);
+  };
 
   const clearSearchAndFilters = () => {
     setSearchTerm('');
@@ -218,6 +222,7 @@ const TransactionsTab = () => {
           onClearSearchAndFilters={clearSearchAndFilters}
           filters={filters}
           sort={sort}
+          refreshTransactions={fetchTransactions}
         />
 
         <TransactionsFilter

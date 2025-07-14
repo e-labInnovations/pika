@@ -6,6 +6,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { runWithLoaderAndError } from '@/lib/utils';
+import { transactionsService } from '@/services/api';
+import { useConfirmDialog } from '@/store/useConfirmDialog';
 import { EllipsisVertical, Edit, Copy, Share, Trash2 } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -30,11 +33,22 @@ const HeaderDropdownMenu = () => {
   };
 
   const handleDelete = () => {
-    if (confirm('Are you sure you want to delete this transaction? This action cannot be undone.')) {
-      // TODO: Implement delete functionality
-      console.log('Delete transaction:', id);
-      navigate('/transactions');
-    }
+    useConfirmDialog.getState().open({
+      title: 'Delete Transaction',
+      message: `Are you sure you want to delete this transaction?`,
+      onConfirm: () => {
+        runWithLoaderAndError(
+          async () => {
+            await transactionsService.delete(id!);
+            navigate('/transactions');
+          },
+          {
+            loaderMessage: 'Deleting transaction...',
+            successMessage: 'Transaction deleted successfully',
+          },
+        );
+      },
+    });
   };
 
   return (

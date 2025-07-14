@@ -240,9 +240,11 @@ const TransactionDetails = () => {
                     <FileText className="h-4 w-4" />
                     <span>Note</span>
                   </div>
-                  <p className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800/50 dark:text-white">
-                    {transaction.note}
-                  </p>
+                  {transaction.note && (
+                    <p className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800/50 dark:text-white">
+                      {transaction.note}
+                    </p>
+                  )}
                 </div>
 
                 {/* Attachments */}

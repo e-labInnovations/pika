@@ -2,7 +2,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowBigRightDash } from 'lucide-react';
 import { SwipeableTransaction } from '@/components/swipeable-transaction';
-import type { Transaction } from '@/services/api';
+import { transactionsService, type Transaction } from '@/services/api';
 import type { Filter } from './transactions-tab/filter/types';
 import type { Sort } from './transactions-tab/sort/types';
 import { useNavigate } from 'react-router-dom';
@@ -13,7 +13,8 @@ import { TagChip } from './tag-chip';
 import transactionUtils from '@/lib/transaction-utils';
 import { currencyUtils } from '@/lib/currency-utils';
 import { useAuth } from '@/hooks/use-auth';
-import { getInitials } from '@/lib/utils';
+import { getInitials, runWithLoaderAndError } from '@/lib/utils';
+import { useConfirmDialog } from '@/store/useConfirmDialog';
 
 interface TransactionsListProps {
   transactions: Transaction[];
@@ -21,6 +22,7 @@ interface TransactionsListProps {
   searchTerm: string;
   filters: Filter;
   sort: Sort;
+  refreshTransactions: () => void;
 }
 
 export function TransactionsList({
@@ -29,6 +31,7 @@ export function TransactionsList({
   onClearSearchAndFilters,
   filters,
   sort,
+  refreshTransactions,
 }: TransactionsListProps) {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -168,18 +171,30 @@ export function TransactionsList({
     );
   };
 
-  const handleDelete = (id: string) => {
-    if (confirm(`Are you sure you want to delete "${id}"?`)) {
-      console.log('Delete transaction with id:', id);
-    }
+  const handleDelete = (transaction: Transaction) => {
+    useConfirmDialog.getState().open({
+      title: 'Delete Transaction',
+      message: `Are you sure you want to delete "${transaction.title}"? This action cannot be undone.`,
+      onConfirm: () => {
+        runWithLoaderAndError(
+          async () => {
+            await transactionsService.delete(transaction.id);
+            refreshTransactions();
+          },
+          {
+            loaderMessage: 'Deleting transaction...',
+            successMessage: 'Transaction deleted successfully',
+          },
+        );
+      },
+    });
   };
 
   const handleEdit = (id: string) => {
-    alert(`Edit functionality for transaction with id: ${id}`);
+    navigate(`/transactions/${id}/edit`);
   };
 
   const handleSelect = (id: string) => {
-    alert(`Open functionality for transaction with id: ${id}`);
     navigate(`/transactions/${id}`);
   };
 
@@ -191,12 +206,12 @@ export function TransactionsList({
           <SwipeableTransaction
             key={transaction.id}
             onEdit={() => {
-              handleEdit(`${transaction.id}`);
+              handleEdit(transaction.id);
             }}
             onDelete={() => {
-              handleDelete(`${transaction.id}`);
+              handleDelete(transaction);
             }}
-            onClick={() => handleSelect(`${transaction.id}`)}
+            onClick={() => handleSelect(transaction.id)}
           >
             <Card className="p-0 transition-all duration-200">
               <CardContent className="p-2">

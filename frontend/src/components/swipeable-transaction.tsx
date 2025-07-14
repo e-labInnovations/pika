@@ -1,7 +1,7 @@
-import type React from "react";
-import { useState, useRef, useEffect, useCallback } from "react";
-import { Edit, Trash2 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import type React from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
+import { Edit, Trash2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 type SwipeAction = {
   label: string;
@@ -25,24 +25,20 @@ const openItemCallbacks = new Set<(id: string | null) => void>();
 export function SwipeableTransaction({
   onClick,
   children,
-  className = "",
+  className = '',
   onEdit,
   onDelete,
 }: SwipeableTransactionProps) {
   const [dragX, setDragX] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [openDirection, setOpenDirection] = useState<"left" | "right" | null>(
-    null
-  );
+  const [openDirection, setOpenDirection] = useState<'left' | 'right' | null>(null);
 
   const itemRef = useRef<HTMLDivElement>(null);
   const startXRef = useRef(0);
   const startTimeRef = useRef(0);
   const hasDraggedRef = useRef(false);
-  const itemId = useRef(
-    `swipe-item-${Math.random().toString(36).substr(2, 9)}`
-  );
+  const itemId = useRef(`swipe-item-${Math.random().toString(36).substr(2, 9)}`);
 
   const SWIPE_THRESHOLD = 60;
   const TAP_THRESHOLD = 10;
@@ -51,19 +47,19 @@ export function SwipeableTransaction({
   // Define actions - Edit on left swipe, Delete on right swipe
   const leftActions: SwipeAction[] = [
     {
-      label: "Edit",
+      label: 'Edit',
       onClick: onEdit,
-      className: "bg-blue-500 hover:bg-blue-600",
-      icon: <Edit className="w-4 h-4" />,
+      className: 'bg-blue-500 hover:bg-blue-600',
+      icon: <Edit className="h-4 w-4" />,
     },
   ];
 
   const rightActions: SwipeAction[] = [
     {
-      label: "Delete",
+      label: 'Delete',
       onClick: onDelete,
-      className: "bg-red-500 hover:bg-red-600",
-      icon: <Trash2 className="w-4 h-4" />,
+      className: 'bg-red-500 hover:bg-red-600',
+      icon: <Trash2 className="h-4 w-4" />,
     },
   ];
 
@@ -96,13 +92,13 @@ export function SwipeableTransaction({
   }, []);
 
   const openItem = useCallback(
-    (direction: "left" | "right", distance: number) => {
+    (direction: 'left' | 'right', distance: number) => {
       setDragX(distance);
       setIsOpen(true);
       setOpenDirection(direction);
       notifyItemOpened(itemId.current);
     },
-    [notifyItemOpened]
+    [notifyItemOpened],
   );
 
   const handleStart = (clientX: number) => {
@@ -133,8 +129,7 @@ export function SwipeableTransaction({
     if (Math.abs(deltaX) > maxDrag) {
       const excess = Math.abs(deltaX) - maxDrag;
       const rubberBand = Math.log(excess / 50 + 1) * 20;
-      limitedDeltaX =
-        deltaX > 0 ? maxDrag + rubberBand : -(maxDrag + rubberBand);
+      limitedDeltaX = deltaX > 0 ? maxDrag + rubberBand : -(maxDrag + rubberBand);
     }
 
     setDragX(limitedDeltaX);
@@ -158,10 +153,10 @@ export function SwipeableTransaction({
     if (absDeltaX >= SWIPE_THRESHOLD) {
       if (deltaX > 0 && leftActions.length > 0) {
         // Swipe right - show left actions (Edit)
-        openItem("left", 100);
+        openItem('left', 100);
       } else if (deltaX < 0 && rightActions.length > 0) {
         // Swipe left - show right actions (Delete)
-        openItem("right", -100);
+        openItem('right', -100);
       } else {
         setDragX(0);
       }
@@ -180,12 +175,16 @@ export function SwipeableTransaction({
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    e.preventDefault();
+    // e.preventDefault();
     handleMove(e.touches[0].clientX);
   };
 
   const handleTouchEnd = () => {
-    handleEnd();
+    if (isOpen) {
+      closeItem();
+    } else {
+      handleEnd();
+    }
   };
 
   // Handle mouse events globally when dragging
@@ -195,16 +194,10 @@ export function SwipeableTransaction({
         handleMove(e.clientX);
       };
 
-      const handleGlobalMouseUp = () => {
-        handleEnd();
-      };
-
-      document.addEventListener("mousemove", handleGlobalMouseMove);
-      document.addEventListener("mouseup", handleGlobalMouseUp);
+      document.addEventListener('mousemove', handleGlobalMouseMove);
 
       return () => {
-        document.removeEventListener("mousemove", handleGlobalMouseMove);
-        document.removeEventListener("mouseup", handleGlobalMouseUp);
+        document.removeEventListener('mousemove', handleGlobalMouseMove);
       };
     }
   }, [isDragging]);
@@ -218,13 +211,12 @@ export function SwipeableTransaction({
         }
       };
 
-      document.addEventListener("mousedown", handleClickOutside);
-      return () =>
-        document.removeEventListener("mousedown", handleClickOutside);
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
     }
   }, [isOpen, closeItem]);
 
-  const renderActions = (actions: SwipeAction[], side: "left" | "right") => {
+  const renderActions = (actions: SwipeAction[], side: 'left' | 'right') => {
     return actions.map((action, index) => (
       <button
         key={index}
@@ -233,22 +225,11 @@ export function SwipeableTransaction({
           action.onClick();
           closeItem();
         }}
-        className={`
-          px-6 py-2 h-full flex items-center justify-center min-w-[80px] flex-col space-y-1
-          text-white font-medium text-sm transition-colors
-          ${
-            action.className ||
-            (side === "left"
-              ? "bg-blue-500 hover:bg-blue-600"
-              : "bg-red-500 hover:bg-red-600")
-          }
-          ${index === 0 && side === "left" ? "rounded-l-lg" : ""}
-          ${
-            index === actions.length - 1 && side === "right"
-              ? "rounded-r-lg"
-              : ""
-          }
-        `}
+        className={`flex h-full min-w-[80px] flex-col items-center justify-center space-y-1 px-6 py-2 text-sm font-medium text-white transition-colors ${
+          action.className || (side === 'left' ? 'bg-blue-500 hover:bg-blue-600' : 'bg-red-500 hover:bg-red-600')
+        } ${index === 0 && side === 'left' ? 'rounded-l-lg' : ''} ${
+          index === actions.length - 1 && side === 'right' ? 'rounded-r-lg' : ''
+        } `}
       >
         {action.icon}
         <span className="text-xs">{action.label}</span>
@@ -257,54 +238,39 @@ export function SwipeableTransaction({
   };
 
   return (
-    <div
-      className={cn("relative overflow-hidden rounded-lg", className)}
-      ref={itemRef}
-    >
+    <div className={cn('relative overflow-hidden rounded-lg', className)} ref={itemRef}>
       {/* Left Actions (Edit) */}
       {leftActions.length > 0 && (
         <div
-          className="absolute left-0 top-0 h-full flex items-center z-10"
+          className="absolute top-0 left-0 z-10 flex h-full items-center"
           style={{
-            transform: `translateX(${Math.min(
-              -100 + (isOpen && openDirection === "left" ? 100 : 0),
-              0
-            )}px)`,
-            transition: isDragging
-              ? "none"
-              : "transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+            transform: `translateX(${Math.min(-100 + (isOpen && openDirection === 'left' ? 100 : 0), 0)}px)`,
+            transition: isDragging ? 'none' : 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
           }}
         >
-          {renderActions(leftActions, "left")}
+          {renderActions(leftActions, 'left')}
         </div>
       )}
 
       {/* Right Actions (Delete) */}
       {rightActions.length > 0 && (
         <div
-          className="absolute right-0 top-0 h-full flex items-center z-10"
+          className="absolute top-0 right-0 z-10 flex h-full items-center"
           style={{
-            transform: `translateX(${Math.max(
-              100 - (isOpen && openDirection === "right" ? 100 : 0),
-              0
-            )}px)`,
-            transition: isDragging
-              ? "none"
-              : "transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+            transform: `translateX(${Math.max(100 - (isOpen && openDirection === 'right' ? 100 : 0), 0)}px)`,
+            transition: isDragging ? 'none' : 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
           }}
         >
-          {renderActions(rightActions, "right")}
+          {renderActions(rightActions, 'right')}
         </div>
       )}
 
       {/* Main Content */}
       <div
-        className="relative z-20 bg-white dark:bg-slate-800 cursor-pointer select-none"
+        className="relative z-20 cursor-pointer bg-white select-none dark:bg-slate-800"
         style={{
           transform: `translateX(${dragX}px)`,
-          transition: isDragging
-            ? "none"
-            : "transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+          transition: isDragging ? 'none' : 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
         }}
         onMouseDown={handleMouseDown}
         onTouchStart={handleTouchStart}

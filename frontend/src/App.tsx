@@ -11,7 +11,7 @@ function App() {
   return (
     <>
       <RouterProvider router={router} />
-      <Toaster position="bottom-center" richColors duration={4000} />
+      <Toaster position="top-right" richColors duration={3000} />
       <GlobalDialogLoader />
       <GlobalErrorDialog />
       <GlobalConfirmDialog />
