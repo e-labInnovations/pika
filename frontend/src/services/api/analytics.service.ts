@@ -71,7 +71,7 @@ export interface MonthlyCategorySpending {
   };
 }
 
-export interface TagSpending {
+export interface TagActivity {
   id: string;
   name: string;
   color: string;
@@ -92,8 +92,8 @@ export interface TagSpending {
   lowestTransaction: number;
 }
 
-export interface MonthlyTagSpending {
-  data: TagSpending[];
+export interface MonthlyTagActivity {
+  data: TagActivity[];
   meta: {
     month: string;
     year: number;
@@ -103,7 +103,7 @@ export interface MonthlyTagSpending {
   };
 }
 
-export interface PersonSpending {
+export interface PersonActivity {
   id: string;
   name: string;
   email: string;
@@ -123,8 +123,8 @@ export interface PersonSpending {
   lastTransactionAt: string | null;
 }
 
-export interface MonthlyPersonSpending {
-  data: PersonSpending[];
+export interface MonthlyPersonActivity {
+  data: PersonActivity[];
   meta: {
     month: string;
     year: number;
@@ -161,14 +161,14 @@ class AnalyticsService extends BaseService<unknown> {
     });
   }
 
-  getTagSpending(month: number, year: number): Promise<AxiosResponse<MonthlyTagSpending>> {
-    return this.api.get<MonthlyTagSpending>(`${this.endpoint}/monthly-tag-spending`, {
+  getTagActivity(month: number, year: number): Promise<AxiosResponse<MonthlyTagActivity>> {
+    return this.api.get<MonthlyTagActivity>(`${this.endpoint}/monthly-tag-activity`, {
       params: { month, year },
     });
   }
 
-  getPeopleSpending(month: number, year: number): Promise<AxiosResponse<MonthlyPersonSpending>> {
-    return this.api.get<MonthlyPersonSpending>(`${this.endpoint}/monthly-person-spending`, {
+  getPeopleActivity(month: number, year: number): Promise<AxiosResponse<MonthlyPersonActivity>> {
+    return this.api.get<MonthlyPersonActivity>(`${this.endpoint}/monthly-person-activity`, {
       params: { month, year },
     });
   }

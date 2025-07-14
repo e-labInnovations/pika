@@ -13,7 +13,7 @@ import { peopleService, type PersonDetailed } from '@/services/api';
 import { useConfirmDialog } from '@/store/useConfirmDialog';
 import { runWithLoaderAndError } from '@/lib/async-handler';
 import { useLookupStore } from '@/store/useLookupStore';
-import { getInitials } from '@/lib/utils';
+import { cn, getInitials } from '@/lib/utils';
 import PersonTransactions from '@/components/people-tab/person-transactions';
 import AsyncStateWrapper from '@/components/async-state-wrapper';
 
@@ -111,14 +111,16 @@ const DetailedPerson = () => {
                     <h1 className="text-2xl font-bold text-slate-900 dark:text-white">{person.name}</h1>
                     <p className="text-slate-600 dark:text-slate-400">{person.description}</p>
                     <div className="mt-2">
-                      <span className={`text-lg font-semibold ${transactionUtils.getBalanceColor(person.balance)}`}>
+                      <span
+                        className={cn('text-lg font-semibold', transactionUtils.getBalanceColor(person.balance, true))}
+                      >
                         {person.balance === 0
                           ? 'All settled up'
                           : currencyUtils.formatAmount(Math.abs(person.balance), user?.settings?.currency)}
                       </span>
                       {person.balance !== 0 && (
                         <p className="text-sm text-slate-500 dark:text-slate-400">
-                          {person.balance > 0 ? 'owes you' : 'you owe'}
+                          {person.balance > 0 ? 'You owe' : 'Owes you'}
                         </p>
                       )}
                     </div>

@@ -5,21 +5,21 @@ import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { currencyUtils } from '@/lib/currency-utils';
 import { useAuth } from '@/hooks/use-auth';
-import type { PersonSpending } from '@/services/api/analytics.service';
+import type { PersonActivity } from '@/services/api/analytics.service';
 import { useNavigate } from 'react-router-dom';
 import transactionUtils from '@/lib/transaction-utils';
 import { TagChip } from '../tag-chip';
-import { cn } from '@/lib/utils';
+import { cn, getInitials } from '@/lib/utils';
 
-interface PeoplePopoverProps {
+interface PeopleActivityPopoverProps {
   children: React.ReactNode;
-  personData: PersonSpending;
+  personData: PersonActivity;
   open: boolean;
   date: Date;
   onOpenChange: (open: boolean) => void;
 }
 
-const PeoplePopover = ({ children, personData, open, onOpenChange, date }: PeoplePopoverProps) => {
+const PeopleActivityPopover = ({ children, personData, open, onOpenChange, date }: PeopleActivityPopoverProps) => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -45,30 +45,6 @@ const PeoplePopover = ({ children, personData, open, onOpenChange, date }: Peopl
       showDecimal: true,
       showNegative: showSign,
     });
-  };
-
-  const formatDate = (dateString: string | null) => {
-    if (!dateString) return 'Never';
-    return new Date(dateString).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    });
-  };
-
-  const getInitials = (name: string) => {
-    return name
-      .split(' ')
-      .map((n) => n[0])
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
-  };
-
-  const getBalanceColor = (balance: number) => {
-    if (balance > 0) return 'text-emerald-600 dark:text-emerald-400';
-    if (balance < 0) return 'text-red-600 dark:text-red-400';
-    return 'text-slate-600 dark:text-slate-400';
   };
 
   return (
@@ -104,11 +80,13 @@ const PeoplePopover = ({ children, personData, open, onOpenChange, date }: Peopl
             <div className="flex items-center justify-between gap-4">
               <span className="text-xs font-medium">Overall Balance</span>
               <div className="text-right">
-                <span className={cn('text-sm font-semibold', getBalanceColor(personData.balance))}>
+                <span
+                  className={cn('text-sm font-semibold', transactionUtils.getBalanceColor(personData.balance, true))}
+                >
                   {personData.balance === 0 ? 'Even' : formatAmount(Math.abs(personData.balance), false)}
                 </span>
                 {personData.balance !== 0 && (
-                  <p className="text-muted-foreground text-xs">{personData.balance > 0 ? 'owes you' : 'you owe'}</p>
+                  <p className="text-muted-foreground text-xs">{personData.balance > 0 ? 'You owe' : 'Owes you'}</p>
                 )}
               </div>
             </div>
@@ -173,7 +151,7 @@ const PeoplePopover = ({ children, personData, open, onOpenChange, date }: Peopl
             <div className="flex items-center justify-between gap-4">
               <span className="text-muted-foreground text-xs">Last Activity</span>
               <span className="text-xs font-medium text-slate-700 dark:text-slate-300">
-                {formatDate(personData.lastTransactionAt)}
+                {personData.lastTransactionAt ? transactionUtils.formatDate(personData.lastTransactionAt) : 'Never'}
               </span>
             </div>
           </div>
@@ -200,4 +178,4 @@ const PeoplePopover = ({ children, personData, open, onOpenChange, date }: Peopl
   );
 };
 
-export default PeoplePopover;
+export default PeopleActivityPopover;

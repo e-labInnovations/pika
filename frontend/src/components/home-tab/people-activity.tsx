@@ -3,17 +3,18 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { currencyUtils } from '@/lib/currency-utils';
 import { useAuth } from '@/hooks/use-auth';
-import { analyticsService, type PersonSpending, type MonthlyPersonSpending } from '@/services/api';
+import { analyticsService, type PersonActivity, type MonthlyPersonActivity } from '@/services/api';
 import AsyncStateWrapper from '../async-state-wrapper';
-import { cn } from '@/lib/utils';
-import PeoplePopover from './people-popover';
+import { cn, getInitials } from '@/lib/utils';
+import PeopleActivityPopover from './people-activity-popover';
+import transactionUtils from '@/lib/transaction-utils';
 
-interface PeopleSpendingProps {
+interface PeopleActivityProps {
   selectedDate: Date;
 }
 
 interface PersonItemProps {
-  person: PersonSpending;
+  person: PersonActivity;
   popoverOpen: boolean;
   onPopoverOpenChange: (open: boolean) => void;
   date: Date;
@@ -29,28 +30,13 @@ const PersonItem = ({ person, popoverOpen, onPopoverOpenChange, date }: PersonIt
     });
   };
 
-  const getBalanceColor = (balance: number) => {
-    if (balance > 0) return 'text-emerald-400 dark:text-emerald-400';
-    if (balance < 0) return 'text-red-400 dark:text-red-400';
-    return 'text-slate-400 dark:text-slate-400';
-  };
-
-  const getInitials = (name: string) => {
-    return name
-      .split(' ')
-      .map((n) => n[0])
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
-  };
-
   // Calculate total transactions and percentages for the progress border
   const totalTransactions = person.expenseAmount + person.incomeAmount;
   const sentPercentage = totalTransactions > 0 ? (person.expenseAmount / totalTransactions) * 100 : 0;
   const receivedPercentage = totalTransactions > 0 ? (person.incomeAmount / totalTransactions) * 100 : 0;
 
   return (
-    <PeoplePopover personData={person} open={popoverOpen} onOpenChange={onPopoverOpenChange} date={date}>
+    <PeopleActivityPopover personData={person} open={popoverOpen} onOpenChange={onPopoverOpenChange} date={date}>
       <div className="group relative h-12 w-full cursor-pointer">
         {/* Progress Border Background */}
         <div className="absolute inset-0 rounded-full bg-slate-300 p-0.5 transition-all duration-200 group-hover:shadow-lg dark:bg-slate-600">
@@ -59,10 +45,10 @@ const PersonItem = ({ person, popoverOpen, onPopoverOpenChange, date }: PersonIt
             {/* Background for progress */}
             <div className="h-full w-full rounded-full bg-slate-300 dark:bg-slate-600"></div>
 
-            {/* Sent Progress (Red) */}
+            {/* Sent Progress (Green) */}
             {sentPercentage > 0 && (
               <div
-                className="absolute top-0 left-0 h-full bg-red-500 transition-all duration-300"
+                className="absolute top-0 left-0 h-full bg-green-500 transition-all duration-300"
                 style={{
                   width: `${sentPercentage}%`,
                   borderRadius: sentPercentage === 100 ? '9999px' : '9999px 0 0 9999px',
@@ -70,10 +56,10 @@ const PersonItem = ({ person, popoverOpen, onPopoverOpenChange, date }: PersonIt
               ></div>
             )}
 
-            {/* Received Progress (Green) */}
+            {/* Received Progress (Red) */}
             {receivedPercentage > 0 && (
               <div
-                className="absolute top-0 h-full bg-green-500 transition-all duration-300"
+                className="absolute top-0 h-full bg-red-500 transition-all duration-300"
                 style={{
                   left: `${sentPercentage}%`,
                   width: `${receivedPercentage}%`,
@@ -95,40 +81,40 @@ const PersonItem = ({ person, popoverOpen, onPopoverOpenChange, date }: PersonIt
 
             {/* Balance Information */}
             <div className="mx-2 flex-1 text-right">
-              <div className={cn('text-sm font-bold', getBalanceColor(person.balance))}>
+              <div className={cn('text-sm font-bold', transactionUtils.getBalanceColor(person.balance, true))}>
                 {person.balance === 0 ? 'Even' : formatAmount(person.balance)}
               </div>
               <div className="text-xs text-slate-500 dark:text-slate-400">
-                {person.balance === 0 ? 'Settled' : person.balance >= 0 ? 'owes you' : 'you owe'}
+                {person.balance === 0 ? 'Settled' : person.balance >= 0 ? 'You owe' : 'Owes you'}
               </div>
             </div>
           </div>
         </div>
       </div>
-    </PeoplePopover>
+    </PeopleActivityPopover>
   );
 };
 
-const PeopleSpendingView = ({ selectedDate }: PeopleSpendingProps) => {
-  const [peopleSpendingData, setPeopleSpendingData] = useState<MonthlyPersonSpending | null>(null);
+const PeopleActivityView = ({ selectedDate }: PeopleActivityProps) => {
+  const [peopleActivityData, setPeopleActivityData] = useState<MonthlyPersonActivity | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<unknown | null>(null);
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [selectedPerson, setSelectedPerson] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchPeopleSpending();
+    fetchPeopleActivity();
   }, [selectedDate]);
 
-  const fetchPeopleSpending = async () => {
+  const fetchPeopleActivity = async () => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await analyticsService.getPeopleSpending(
+      const response = await analyticsService.getPeopleActivity(
         selectedDate.getMonth() + 1,
         selectedDate.getFullYear(),
       );
-      setPeopleSpendingData(response.data);
+      setPeopleActivityData(response.data);
     } catch (error) {
       setError(error);
     } finally {
@@ -148,7 +134,7 @@ const PeopleSpendingView = ({ selectedDate }: PeopleSpendingProps) => {
 
   // Filter out people with zero transactions and sort by balance amount (descending)
   const peopleWithTransactions =
-    peopleSpendingData?.data
+    peopleActivityData?.data
       .filter((person) => person.totalTransactionCount > 0)
       .sort((a, b) => a.balance - b.balance) || [];
   const totalPeople = peopleWithTransactions.length;
@@ -162,7 +148,7 @@ const PeopleSpendingView = ({ selectedDate }: PeopleSpendingProps) => {
       </CardHeader>
 
       <CardContent>
-        <AsyncStateWrapper isLoading={isLoading} error={error} onRetry={fetchPeopleSpending}>
+        <AsyncStateWrapper isLoading={isLoading} error={error} onRetry={fetchPeopleActivity}>
           <div className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4">
             {peopleWithTransactions.map((person) => (
               <PersonItem
@@ -188,4 +174,4 @@ const PeopleSpendingView = ({ selectedDate }: PeopleSpendingProps) => {
   );
 };
 
-export default PeopleSpendingView;
+export default PeopleActivityView;

@@ -4,22 +4,22 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Separator } from '@/components/ui/separator';
 import { currencyUtils } from '@/lib/currency-utils';
 import { useAuth } from '@/hooks/use-auth';
-import type { TagSpending } from '@/services/api/analytics.service';
+import type { TagActivity } from '@/services/api/analytics.service';
 import { useNavigate } from 'react-router-dom';
 import transactionUtils from '@/lib/transaction-utils';
 import { TagChip } from '../tag-chip';
 import { IconRenderer } from '../icon-renderer';
 import { cn } from '@/lib/utils';
 
-interface TagPopoverProps {
+interface TagActivityPopoverProps {
   children: React.ReactNode;
-  tagData: TagSpending;
+  tagData: TagActivity;
   open: boolean;
   date: Date;
   onOpenChange: (open: boolean) => void;
 }
 
-const TagPopover = ({ children, tagData, open, onOpenChange, date }: TagPopoverProps) => {
+const TagActivityPopover = ({ children, tagData, open, onOpenChange, date }: TagActivityPopoverProps) => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -178,4 +178,4 @@ const TagPopover = ({ children, tagData, open, onOpenChange, date }: TagPopoverP
   );
 };
 
-export default TagPopover;
+export default TagActivityPopover;

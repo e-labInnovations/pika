@@ -2,27 +2,27 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { currencyUtils } from '@/lib/currency-utils';
 import { useAuth } from '@/hooks/use-auth';
-import { analyticsService, type TagSpending, type MonthlyTagSpending } from '@/services/api';
+import { analyticsService, type TagActivity, type MonthlyTagActivity } from '@/services/api';
 import AsyncStateWrapper from '../async-state-wrapper';
-import TagPopover from './tag-popover';
+import TagActivityPopover from './tag-activity-popover';
 import { IconRenderer } from '../icon-renderer';
 import { cn } from '@/lib/utils';
 import { TagChip } from '../tag-chip';
 import transactionUtils from '@/lib/transaction-utils';
 
-interface TagSpendingProps {
+interface TagActivityProps {
   selectedDate: Date;
 }
 
-interface TagSpendingBarProps {
-  tag: TagSpending;
+interface TagActivityBarProps {
+  tag: TagActivity;
   percentage: number;
   popoverOpen: boolean;
   onPopoverOpenChange: (open: boolean) => void;
   date: Date;
 }
 
-const TagSpendingBar = ({ tag, percentage, popoverOpen, onPopoverOpenChange, date }: TagSpendingBarProps) => {
+const TagActivityBar = ({ tag, percentage, popoverOpen, onPopoverOpenChange, date }: TagActivityBarProps) => {
   const [animatedPercentage, setAnimatedPercentage] = useState(0);
   const { user } = useAuth();
 
@@ -44,7 +44,7 @@ const TagSpendingBar = ({ tag, percentage, popoverOpen, onPopoverOpenChange, dat
   };
 
   return (
-    <TagPopover tagData={tag} open={popoverOpen} onOpenChange={onPopoverOpenChange} date={date}>
+    <TagActivityPopover tagData={tag} open={popoverOpen} onOpenChange={onPopoverOpenChange} date={date}>
       <div className="relative h-6 cursor-pointer">
         {/* Single Progress Bar Background */}
         <div className="absolute inset-0 overflow-hidden rounded-full">
@@ -83,29 +83,29 @@ const TagSpendingBar = ({ tag, percentage, popoverOpen, onPopoverOpenChange, dat
           />
         </div>
       </div>
-    </TagPopover>
+    </TagActivityPopover>
   );
 };
 
-const TagSpendingView = ({ selectedDate }: TagSpendingProps) => {
+const TagActivityView = ({ selectedDate }: TagActivityProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<unknown | null>(null);
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [meta, setMeta] = useState<{
-    tagsWithTransactions: TagSpending[];
+    tagsWithTransactions: TagActivity[];
     maxAbsoluteAmount: number;
   } | null>(null);
 
   useEffect(() => {
-    fetchTagSpending();
+    fetchTagActivity();
   }, [selectedDate]);
 
-  const fetchTagSpending = async () => {
+  const fetchTagActivity = async () => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await analyticsService.getTagSpending(selectedDate.getMonth() + 1, selectedDate.getFullYear());
+      const response = await analyticsService.getTagActivity(selectedDate.getMonth() + 1, selectedDate.getFullYear());
       setMeta(getMeta(response.data));
     } catch (error) {
       setError(error);
@@ -124,7 +124,7 @@ const TagSpendingView = ({ selectedDate }: TagSpendingProps) => {
     }
   };
 
-  const getMeta = (data: MonthlyTagSpending | null) => {
+  const getMeta = (data: MonthlyTagActivity | null) => {
     if (!data) {
       return {
         tagsWithTransactions: [],
@@ -147,18 +147,18 @@ const TagSpendingView = ({ selectedDate }: TagSpendingProps) => {
   return (
     <Card className="gap-4">
       <CardHeader>
-        <CardTitle className="text-md">Tag Spending</CardTitle>
+        <CardTitle className="text-md">Tag Activity</CardTitle>
       </CardHeader>
 
       <CardContent>
-        <AsyncStateWrapper isLoading={isLoading} error={error} onRetry={fetchTagSpending}>
+        <AsyncStateWrapper isLoading={isLoading} error={error} onRetry={fetchTagActivity}>
           <div className="space-y-2">
             {meta?.tagsWithTransactions.map((tag) => {
               const percentage =
                 meta?.maxAbsoluteAmount > 0 ? (Math.abs(tag.totalAmount) / meta?.maxAbsoluteAmount) * 100 : 0;
 
               return (
-                <TagSpendingBar
+                <TagActivityBar
                   key={tag.id}
                   tag={tag}
                   percentage={percentage}
@@ -183,4 +183,4 @@ const TagSpendingView = ({ selectedDate }: TagSpendingProps) => {
   );
 };
 
-export default TagSpendingView;
+export default TagActivityView;

@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { currencyUtils } from '@/lib/currency-utils';
 import { useAuth } from '@/hooks/use-auth';
 import transactionUtils from '@/lib/transaction-utils';
-import { getInitials } from '@/lib/utils';
+import { cn, getInitials } from '@/lib/utils';
 
 interface PeopleListProps {
   people: Person[];
@@ -23,12 +23,6 @@ export function PeopleList({ people, searchTerm }: PeopleListProps) {
       person.phone.toLowerCase().includes(searchTerm.toLowerCase()) ||
       person.description.toLowerCase().includes(searchTerm.toLowerCase()),
   );
-
-  const getBalanceColor = (balance: number) => {
-    if (balance > 0) return 'text-emerald-600 dark:text-emerald-400';
-    if (balance < 0) return 'text-red-500 dark:text-red-400';
-    return 'text-slate-600 dark:text-slate-400';
-  };
 
   const handleCardClick = (personId: string) => {
     navigate(`/people/${personId}`);
@@ -56,14 +50,14 @@ export function PeopleList({ people, searchTerm }: PeopleListProps) {
                     <div className="flex items-center justify-between">
                       <h4 className="truncate font-medium text-slate-900 dark:text-white">{person.name}</h4>
                       <div className="text-right">
-                        <span className={`font-semibold ${getBalanceColor(person.balance)}`}>
-                          {person.balance === 0
+                        <span className={cn('font-semibold', transactionUtils.getBalanceColor(person.balance, true))}>
+                          {person.balance == 0
                             ? 'Even'
                             : currencyUtils.formatAmount(Math.abs(person.balance), user?.settings?.currency)}
                         </span>
                         {person.balance !== 0 && (
                           <p className="text-xs text-slate-500 dark:text-slate-400">
-                            {person.balance > 0 ? 'owes you' : 'you owe'}
+                            {person.balance > 0 ? 'You owe' : 'Owes you'}
                           </p>
                         )}
                       </div>

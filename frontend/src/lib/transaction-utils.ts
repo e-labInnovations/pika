@@ -49,10 +49,18 @@ class TransactionUtils {
 
   types: TransactionItemType[] = Object.values(this.typesObject);
 
-  getBalanceColor = (balance: number) => {
-    if (balance > 0) return 'text-emerald-600 dark:text-emerald-400';
-    if (balance < 0) return 'text-red-500 dark:text-red-400';
-    return 'text-slate-600 dark:text-slate-400';
+  getBalanceColor = (balance: number, isPerson: boolean = false) => {
+    const red = 'text-red-400 dark:text-red-400';
+    const green = 'text-emerald-400 dark:text-emerald-400';
+    const grey = 'text-slate-400 dark:text-slate-400';
+    if (isPerson) {
+      if (balance > 0) return red; // you owe person
+      if (balance < 0) return green; // person owes you
+      return grey;
+    }
+    if (balance > 0) return green;
+    if (balance < 0) return red;
+    return grey;
   };
 
   getAmountColor = (type: string) => {

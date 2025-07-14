@@ -74,14 +74,16 @@ const PeoplePicker = ({ isOpen, onClose, onSelect, selectedPersonId }: PeoplePic
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between">
                       <p className="truncate font-medium">{person.name}</p>
-                      <span className={cn('text-sm font-semibold', transactionUtils.getBalanceColor(person.balance))}>
+                      <span
+                        className={cn('text-sm font-semibold', transactionUtils.getBalanceColor(person.balance, true))}
+                      >
                         {currencyUtils.formatBalance(person.balance, user?.settings?.currency)}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
                       <p className="text-muted-foreground truncate text-sm">{person.description}</p>
                       {person.balance !== 0 && (
-                        <p className="text-muted-foreground text-xs">{person.balance > 0 ? 'owes you' : 'you owe'}</p>
+                        <p className="text-muted-foreground text-xs">{person.balance > 0 ? 'You owe' : 'Owes you'}</p>
                       )}
                     </div>
                   </div>

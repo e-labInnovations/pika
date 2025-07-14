@@ -6,8 +6,8 @@ import MonthlySummary from '@/components/home-tab/monthly-summary';
 import DailyCalendar from '@/components/home-tab/daily-calendar';
 import MonthNavigator from '@/components/home-tab/month-navigator';
 import CategorySpendingView from '@/components/home-tab/category-spending';
-import TagSpendingView from '@/components/home-tab/tag-spending';
-import PeopleSpendingView from '@/components/home-tab/people-spending';
+import TagActivityView from '@/components/home-tab/tag-activity';
+import PeopleActivityView from '@/components/home-tab/people-activity';
 import { Separator } from '@/components/ui/separator';
 import { useLookupStore } from '@/store/useLookupStore';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -59,9 +59,9 @@ const HomeTab = () => {
 
         <CategorySpendingView selectedDate={selectedDate} />
 
-        <TagSpendingView selectedDate={selectedDate} />
+        <TagActivityView selectedDate={selectedDate} />
 
-        <PeopleSpendingView selectedDate={selectedDate} />
+        <PeopleActivityView selectedDate={selectedDate} />
       </div>
     </TabsLayout>
   );

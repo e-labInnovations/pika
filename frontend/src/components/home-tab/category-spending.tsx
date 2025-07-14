@@ -53,7 +53,7 @@ const CategorySpendingBar = ({
 
   return (
     <CategoryPopover categoryData={category} open={popoverOpen} onOpenChange={onPopoverOpenChange} date={date}>
-      <div className={cn('relative h-6 cursor-pointer', isChild && 'ml-4')}>
+      <div className={cn('relative h-6 cursor-pointer', isChild && 'ml-4 h-5')}>
         {/* Single Progress Bar Background */}
         <div className="absolute inset-0 overflow-hidden rounded-full">
           {/* Background with category color */}
@@ -75,11 +75,13 @@ const CategorySpendingBar = ({
         </div>
 
         {/* Icon and Name Section - Overlaid on Left */}
-        <div className="absolute top-0 left-0 z-10 flex h-6 items-center gap-1 px-1 py-1">
+        <div
+          className={cn('absolute top-0 left-0 z-10 flex h-6 items-center gap-1 px-1 py-1', isChild && 'h-5 py-0.5')}
+        >
           <IconRenderer
             iconName={category.categoryIcon}
             size={isChild ? 'xs' : 'sm'}
-            bgColor="transparent"
+            bgColor={category.categoryBgColor}
             color={category.categoryColor}
           />
           <span
