@@ -464,3 +464,188 @@ GET {{base_url}}/wp-json/pika/v1/ai/test
 Authorization: Basic {{admin_username}}:{{admin_password}}
 
 ###
+
+# Get all reminders
+GET {{base_url}}/wp-json/pika/v1/reminders
+Authorization: Basic {{admin_username}}:{{admin_password}}
+
+###
+
+# Get all reminders including archived
+GET {{base_url}}/wp-json/pika/v1/reminders?archived=true
+Authorization: Basic {{admin_username}}:{{admin_password}}
+
+###
+
+# Get due reminders
+GET {{base_url}}/wp-json/pika/v1/reminders/due
+Authorization: Basic {{admin_username}}:{{admin_password}}
+
+###
+
+# Get due reminders for specific date
+GET {{base_url}}/wp-json/pika/v1/reminders/due?date=2024-01-15
+Authorization: Basic {{admin_username}}:{{admin_password}}
+
+###
+
+# Get a reminder by id
+GET {{base_url}}/wp-json/pika/v1/reminders/2
+Authorization: Basic {{admin_username}}:{{admin_password}}
+
+###
+
+# Create a new one-time reminder
+POST {{base_url}}/wp-json/pika/v1/reminders
+Authorization: Basic {{admin_username}}:{{admin_password}}
+Content-Type: application/json
+
+{
+  "title": "Pay electricity bill",
+  "description": "Monthly electricity bill payment",
+  "amount": 150.00,
+  "type": "expense",
+  "accountId": 1,
+  "categoryId": 5,
+  "date": "2024-01-15",
+  "isRecurring": false
+}
+
+###
+
+# Create a new recurring reminder - postpaid (fixed schedule)
+POST {{base_url}}/wp-json/pika/v1/reminders
+Authorization: Basic {{admin_username}}:{{admin_password}}
+Content-Type: application/json
+
+{
+  "title": "Monthly rent payment",
+  "description": "Rent due every 1st of month",
+  "amount": 1500.00,
+  "type": "expense",
+  "accountId": 1,
+  "categoryId": 3,
+  "memberId": 2,
+  "tagIds": [1, 5],
+  "date": "2024-01-01",
+  "isRecurring": true,
+  "recurrencePeriod": "1 month",
+  "recurrenceType": "postpaid"
+}
+
+###
+
+# Create a new recurring reminder - prepaid (after completion)
+POST {{base_url}}/wp-json/pika/v1/reminders
+Authorization: Basic {{admin_username}}:{{admin_password}}
+Content-Type: application/json
+
+{
+  "title": "Gym membership renewal",
+  "description": "Renew gym membership every 3 months after payment",
+  "amount": 300.00,
+  "type": "expense",
+  "accountId": 1,
+  "categoryId": 8,
+  "date": "2024-01-15",
+  "isRecurring": true,
+  "recurrencePeriod": "3 months",
+  "recurrenceType": "prepaid"
+}
+
+###
+
+# Create a transfer reminder
+POST {{base_url}}/wp-json/pika/v1/reminders
+Authorization: Basic {{admin_username}}:{{admin_password}}
+Content-Type: application/json
+
+{
+  "title": "Monthly savings transfer",
+  "description": "Transfer to savings account",
+  "amount": 500.00,
+  "type": "transfer",
+  "accountId": 1,
+  "fromMemberId": 1,
+  "toMemberId": 2,
+  "date": "2024-01-01",
+  "isRecurring": true,
+  "recurrencePeriod": "1 month",
+  "recurrenceType": "postpaid"
+}
+
+###
+
+# Update a reminder
+PUT {{base_url}}/wp-json/pika/v1/reminders/2
+Authorization: Basic {{admin_username}}:{{admin_password}}
+Content-Type: application/json
+
+{
+  "title": "Pay electricity bill - Updated",
+  "amount": 175.00,
+  "description": "Updated monthly electricity bill payment",
+  "date": "2024-01-20"
+}
+
+###
+
+# Update reminder recurrence settings
+PUT {{base_url}}/wp-json/pika/v1/reminders/2
+Authorization: Basic {{admin_username}}:{{admin_password}}
+Content-Type: application/json
+
+{
+  "isRecurring": true,
+  "recurrencePeriod": "2 months",
+  "recurrenceType": "postpaid",
+  "nextDueDate": "2024-03-01"
+}
+
+###
+
+# Mark reminder as completed (with default date - today)
+POST {{base_url}}/wp-json/pika/v1/reminders/2/complete
+Authorization: Basic {{admin_username}}:{{admin_password}}
+Content-Type: application/json
+
+{}
+
+###
+
+# Mark reminder as completed with specific date
+POST {{base_url}}/wp-json/pika/v1/reminders/2/complete
+Authorization: Basic {{admin_username}}:{{admin_password}}
+Content-Type: application/json
+
+{
+  "completionDate": "2024-01-01"
+}
+
+###
+
+# Convert reminder to transaction (with default date - now)
+POST {{base_url}}/wp-json/pika/v1/reminders/2/convert
+Authorization: Basic {{admin_username}}:{{admin_password}}
+Content-Type: application/json
+
+{}
+
+###
+
+# Convert reminder to transaction with specific date
+POST {{base_url}}/wp-json/pika/v1/reminders/3/convert
+Authorization: Basic {{admin_username}}:{{admin_password}}
+Content-Type: application/json
+
+{
+  "transactionDate": "2024-01-15 10:30:00"
+}
+
+###
+
+# Archive a reminder (soft delete)
+POST {{base_url}}/wp-json/pika/v1/reminders/5/archive
+Authorization: Basic {{admin_username}}:{{admin_password}}
+
+###

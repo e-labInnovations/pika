@@ -20,7 +20,8 @@ class Pika_API_Loader {
         'analytics',
         'upload',
         'settings',
-        'ai'
+        'ai',
+        'reminders'
     ];
 
     /**

@@ -17,6 +17,7 @@ class Pika_Loader {
      */
     public function run() {
         $this->load_dependencies();
+        $this->check_db_upgrade();
         $this->set_locale();
         // $this->define_admin_hooks();
         $this->define_public_hooks();
@@ -33,6 +34,9 @@ class Pika_Loader {
         // Load ai utils
         require_once PIKA_PLUGIN_PATH . 'backend/data/ai-prompts.php';
 
+        // Load upgrader (needed for version checks)
+        require_once PIKA_PLUGIN_PATH . 'backend/upgrader.php';
+
         // Load API loader
         require_once PIKA_PLUGIN_PATH . 'backend/api-loader.php';
 
@@ -41,6 +45,21 @@ class Pika_Loader {
 
         // Load admin page
         // require_once PIKA_PLUGIN_PATH . 'backend/admin/admin-page.php';
+    }
+
+    /**
+     * Check if database upgrade is needed and run it
+     */
+    private function check_db_upgrade() {
+        // Only check for upgrades if PIKA_DB_VERSION is defined (from activator.php)
+        if (defined('PIKA_DB_VERSION')) {
+            $installed_version = get_option('pika_db_version', '0.0.0');
+
+            // Run upgrade if needed
+            if (version_compare($installed_version, PIKA_DB_VERSION, '<')) {
+                Pika_Upgrader::check_upgrade();
+            }
+        }
     }
 
     /**

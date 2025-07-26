@@ -24,6 +24,7 @@ define('PIKA_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('PIKA_PLUGIN_PATH', plugin_dir_path(__FILE__));
 define('PIKA_PLUGIN_VERSION', '1.0.0');
 define('PIKA_PLUGIN_BASENAME', plugin_basename(__FILE__));
+define('PIKA_DB_VERSION', '1.1.0');
 
 // Include the main plugin class
 require_once PIKA_PLUGIN_PATH . 'backend/pika-loader.php';

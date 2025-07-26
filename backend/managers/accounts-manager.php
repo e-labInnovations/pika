@@ -127,7 +127,7 @@ class Pika_Accounts_Manager extends Pika_Base_Manager {
     if ($format) {
       return $this->format_account($account);
     }
-    
+
     return $account;
   }
 

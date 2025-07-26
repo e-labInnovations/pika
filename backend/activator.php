@@ -23,12 +23,20 @@ class Pika_Activator {
         self::insert_default_data();
         self::create_upload_directories();
         self::flush_rewrite_rules();
+
+        // Update database version
+        update_option('pika_db_version', PIKA_DB_VERSION);
+
+        // Set installation timestamp if not exists
+        if (!get_option('pika_installed_at')) {
+            update_option('pika_installed_at', current_time('mysql'));
+        }
     }
 
     /**
      * Create database tables
      */
-    private static function create_database_tables() {
+    public static function create_database_tables() {
         global $wpdb;
 
         $charset_collate = $wpdb->get_charset_collate();
