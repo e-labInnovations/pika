@@ -40,8 +40,8 @@ class Pika_Loader {
         // Load API loader
         require_once PIKA_PLUGIN_PATH . 'backend/api-loader.php';
 
-        // Load PWA loader
-        require_once PIKA_PLUGIN_PATH . 'backend/pwa-loader.php';
+        // Load frontend loader
+        require_once PIKA_PLUGIN_PATH . 'backend/frontend-loader.php';
 
         // Load admin page
         // require_once PIKA_PLUGIN_PATH . 'backend/admin/admin-page.php';
@@ -87,7 +87,8 @@ class Pika_Loader {
      * Register public hooks
      */
     private function define_public_hooks() {
-        $pwa_loader = new Pika_PWA_Loader();
+        // Load frontend loader
+        $frontend_loader = new Pika_Frontend_Loader();
     }
 
     /**
