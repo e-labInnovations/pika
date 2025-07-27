@@ -1,10 +1,11 @@
 import { Drawer, DrawerTitle, DrawerHeader, DrawerContent, DrawerClose, DrawerFooter } from '@/components/ui/drawer';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import * as RadioGroup from '@radix-ui/react-radio-group';
 import { X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import SortRadioItem from './sort/sort-radio-item';
 import { defaultSort, type Sort, type SortDirection, sortOptions } from './sort/types';
+import { cn } from '@/lib/utils';
 
 interface TransactionsSortProps {
   open: boolean;
@@ -79,11 +80,7 @@ const TransactionsSort = ({ open, setOpen, sort, setSort }: TransactionsSortProp
         </RadioGroup.Root>
 
         <DrawerFooter className="flex flex-row gap-2">
-          <DrawerClose className="w-1/2">
-            <Button variant="outline" className="w-full">
-              Cancel
-            </Button>
-          </DrawerClose>
+          <DrawerClose className={cn('w-1/2', buttonVariants({ variant: 'outline' }))}>Cancel</DrawerClose>
           <Button className="w-1/2" onClick={handleSubmitSort}>
             Submit
           </Button>

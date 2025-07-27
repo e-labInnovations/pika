@@ -1,5 +1,5 @@
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from '@/components/ui/drawer';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
@@ -119,11 +119,7 @@ const TransactionsFilter = ({ open, setOpen, filters, setFilters, defaultTab }: 
           </div>
         </Tabs>
         <DrawerFooter className="flex flex-row gap-2">
-          <DrawerClose className="w-1/2">
-            <Button variant="outline" className="w-full">
-              Cancel
-            </Button>
-          </DrawerClose>
+          <DrawerClose className={cn('w-1/2', buttonVariants({ variant: 'outline' }))}>Cancel</DrawerClose>
           <Button className="w-1/2" onClick={handleSubmitFilters}>
             Submit
           </Button>

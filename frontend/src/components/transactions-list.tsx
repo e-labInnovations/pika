@@ -274,16 +274,14 @@ export function TransactionsList({
 
                       <div className="mt-2 flex flex-wrap gap-1">
                         {transaction.tags.map((tag) => (
-                          <div>
-                            <TagChip
-                              name={tag.name}
-                              iconName={tag.icon}
-                              bgColor={tag.bgColor}
-                              color={tag.color}
-                              size="xs"
-                              key={tag.id}
-                            />
-                          </div>
+                          <TagChip
+                            name={tag.name}
+                            iconName={tag.icon}
+                            bgColor={tag.bgColor}
+                            color={tag.color}
+                            size="xs"
+                            key={tag.id}
+                          />
                         ))}
                       </div>
                     </div>

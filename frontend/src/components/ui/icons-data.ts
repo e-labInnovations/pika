@@ -5,11 +5,14 @@ export const IconCategory = {
   Navigation: 'navigation',
   Social: 'social',
 } as const;
-export const iconsData: Array<{
+
+type IconData = {
   name: string;
   categories: string[];
   tags: string[];
-}> = [
+};
+
+export const iconsData: IconData[] = [
   {
     name: 'a-arrow-down',
     categories: ['text', 'design'],
@@ -1093,26 +1096,26 @@ export const iconsData: Array<{
     categories: ['connectivity', 'devices'],
     tags: ['power', 'electricity', 'energy', 'accumulator', 'charge'],
   },
-  {
-    name: 'battery-plus',
-    categories: ['devices'],
-    tags: [
-      'power',
-      'electricity',
-      'energy',
-      'accumulator',
-      'charge',
-      'plus',
-      'economy',
-      'health',
-      'add',
-      'new',
-      'maximum',
-      'upgrade',
-      'extra',
-      '+',
-    ],
-  },
+  // {
+  //   name: 'battery-plus',
+  //   categories: ['devices'],
+  //   tags: [
+  //     'power',
+  //     'electricity',
+  //     'energy',
+  //     'accumulator',
+  //     'charge',
+  //     'plus',
+  //     'economy',
+  //     'health',
+  //     'add',
+  //     'new',
+  //     'maximum',
+  //     'upgrade',
+  //     'extra',
+  //     '+',
+  //   ],
+  // },
   {
     name: 'battery-warning',
     categories: ['connectivity', 'devices'],
@@ -3316,11 +3319,11 @@ export const iconsData: Array<{
       '/',
     ],
   },
-  {
-    name: 'circle-small',
-    categories: ['shapes', 'medical'],
-    tags: ['shape', 'bullet', 'gender', 'genderless'],
-  },
+  // {
+  //   name: 'circle-small',
+  //   categories: ['shapes', 'medical'],
+  //   tags: ['shape', 'bullet', 'gender', 'genderless'],
+  // },
   {
     name: 'circle-stop',
     categories: ['multimedia'],
@@ -6894,26 +6897,26 @@ export const iconsData: Array<{
     categories: ['navigation', 'travel', 'account'],
     tags: ['location', 'waypoint', 'marker', 'drop'],
   },
-  {
-    name: 'map-plus',
-    categories: ['navigation'],
-    tags: ['location', 'navigation', 'travel', 'new', 'add', 'create'],
-  },
+  // {
+  //   name: 'map-plus',
+  //   categories: ['navigation'],
+  //   tags: ['location', 'navigation', 'travel', 'new', 'add', 'create'],
+  // },
   {
     name: 'map',
     categories: ['text', 'navigation'],
     tags: ['location', 'navigation', 'travel'],
   },
-  {
-    name: 'mars-stroke',
-    categories: ['medical'],
-    tags: ['gender', 'androgyne', 'transgender'],
-  },
-  {
-    name: 'mars',
-    categories: ['medical'],
-    tags: ['gender', 'sex', 'male', 'masculine', 'man', 'boy'],
-  },
+  // {
+  //   name: 'mars-stroke',
+  //   categories: ['medical'],
+  //   tags: ['gender', 'androgyne', 'transgender'],
+  // },
+  // {
+  //   name: 'mars',
+  //   categories: ['medical'],
+  //   tags: ['gender', 'sex', 'male', 'masculine', 'man', 'boy'],
+  // },
   {
     name: 'martini',
     categories: ['food-beverage'],
@@ -7673,11 +7676,11 @@ export const iconsData: Array<{
     categories: ['communication', 'finance', 'devices'],
     tags: ['contactless', 'payment', 'near-field communication'],
   },
-  {
-    name: 'non-binary',
-    categories: ['medical'],
-    tags: ['gender', 'nonbinary', 'enby'],
-  },
+  // {
+  //   name: 'non-binary',
+  //   categories: ['medical'],
+  //   tags: ['gender', 'nonbinary', 'enby'],
+  // },
   {
     name: 'notebook-pen',
     categories: ['text', 'social'],
@@ -11675,11 +11678,11 @@ export const iconsData: Array<{
     categories: ['transportation'],
     tags: ['railway', 'metro', 'subway', 'underground', 'track', 'line', 'tourism'],
   },
-  {
-    name: 'transgender',
-    categories: ['medical', 'accessibility'],
-    tags: ['gender', 'inclusive'],
-  },
+  // {
+  //   name: 'transgender',
+  //   categories: ['medical', 'accessibility'],
+  //   tags: ['gender', 'inclusive'],
+  // },
   {
     name: 'trash-2',
     categories: ['files', 'mail'],
@@ -12148,16 +12151,16 @@ export const iconsData: Array<{
     categories: ['account', 'gaming'],
     tags: ['mask', 'masquerade', 'impersonate', 'secret', 'incognito'],
   },
-  {
-    name: 'venus-and-mars',
-    categories: ['medical'],
-    tags: ['gender', 'sex', 'intersex', 'androgynous', 'hermaphrodite'],
-  },
-  {
-    name: 'venus',
-    categories: ['medical'],
-    tags: ['gender', 'sex', 'female', 'feminine', 'woman', 'girl'],
-  },
+  // {
+  //   name: 'venus-and-mars',
+  //   categories: ['medical'],
+  //   tags: ['gender', 'sex', 'intersex', 'androgynous', 'hermaphrodite'],
+  // },
+  // {
+  //   name: 'venus',
+  //   categories: ['medical'],
+  //   tags: ['gender', 'sex', 'female', 'feminine', 'woman', 'girl'],
+  // },
   {
     name: 'vibrate-off',
     categories: ['devices', 'connectivity', 'account'],
@@ -12478,5 +12481,1030 @@ export const iconsData: Array<{
     name: 'zoom-out',
     categories: ['accessibility', 'layout', 'design', 'text', 'photography'],
     tags: ['magnifying glass', 'plus'],
+  },
+  {
+    name: 'alarm-check',
+    categories: ['time', 'notification'],
+    tags: ['alarm', 'check', 'complete', 'done', 'verified', 'time'],
+  },
+  {
+    name: 'alarm-minus',
+    categories: ['time', 'notification'],
+    tags: ['alarm', 'minus', 'remove', 'delete', 'time'],
+  },
+  {
+    name: 'alarm-plus',
+    categories: ['time', 'notification'],
+    tags: ['alarm', 'plus', 'add', 'new', 'time'],
+  },
+  {
+    name: 'arrow-down-01',
+    categories: ['arrows', 'navigation'],
+    tags: ['arrow', 'down', 'direction', 'sort', '01'],
+  },
+  {
+    name: 'arrow-down-10',
+    categories: ['arrows', 'navigation'],
+    tags: ['arrow', 'down', 'direction', 'sort', '10'],
+  },
+  {
+    name: 'arrow-down-az',
+    categories: ['arrows', 'navigation', 'text'],
+    tags: ['arrow', 'down', 'direction', 'sort', 'alphabetical', 'az'],
+  },
+  {
+    name: 'sort-desc',
+    categories: ['arrows', 'navigation'],
+    tags: ['sort', 'descending', 'arrow', 'down', 'order'],
+  },
+  {
+    name: 'arrow-down-za',
+    categories: ['arrows', 'navigation', 'text'],
+    tags: ['arrow', 'down', 'direction', 'sort', 'alphabetical', 'za', 'reverse'],
+  },
+  {
+    name: 'arrow-up-01',
+    categories: ['arrows', 'navigation'],
+    tags: ['arrow', 'up', 'direction', 'sort', '01'],
+  },
+  {
+    name: 'arrow-up-10',
+    categories: ['arrows', 'navigation'],
+    tags: ['arrow', 'up', 'direction', 'sort', '10'],
+  },
+  {
+    name: 'arrow-up-az',
+    categories: ['arrows', 'navigation', 'text'],
+    tags: ['arrow', 'up', 'direction', 'sort', 'alphabetical', 'az'],
+  },
+  {
+    name: 'sort-asc',
+    categories: ['arrows', 'navigation'],
+    tags: ['sort', 'ascending', 'arrow', 'up', 'order'],
+  },
+  {
+    name: 'arrow-up-za',
+    categories: ['arrows', 'navigation', 'text'],
+    tags: ['arrow', 'up', 'direction', 'sort', 'alphabetical', 'za', 'reverse'],
+  },
+  {
+    name: 'axis-3-d',
+    categories: ['design', 'science'],
+    tags: ['axis', '3d', 'coordinate', 'xyz', 'dimension'],
+  },
+  {
+    name: 'verified',
+    categories: ['social', 'account'],
+    tags: ['verified', 'check', 'badge', 'approved', 'authentic'],
+  },
+  {
+    name: 'between-horizonal-end',
+    categories: ['layout', 'arrows'],
+    tags: ['between', 'horizontal', 'end', 'spacing', 'alignment'],
+  },
+  {
+    name: 'between-horizonal-start',
+    categories: ['layout', 'arrows'],
+    tags: ['between', 'horizontal', 'start', 'spacing', 'alignment'],
+  },
+  {
+    name: 'book-template',
+    categories: ['text', 'design'],
+    tags: ['book', 'template', 'document', 'page', 'layout'],
+  },
+  {
+    name: 'curly-braces',
+    categories: ['text', 'code'],
+    tags: ['curly', 'braces', 'code', 'programming', 'brackets'],
+  },
+  {
+    name: 'subtitles',
+    categories: ['multimedia', 'text'],
+    tags: ['subtitles', 'captions', 'text', 'video', 'accessibility'],
+  },
+  {
+    name: 'area-chart',
+    categories: ['charts', 'analytics'],
+    tags: ['area', 'chart', 'graph', 'analytics', 'data'],
+  },
+  {
+    name: 'bar-chart-horizontal-big',
+    categories: ['charts', 'analytics'],
+    tags: ['bar', 'chart', 'horizontal', 'big', 'graph', 'analytics', 'data'],
+  },
+  {
+    name: 'bar-chart-horizontal',
+    categories: ['charts', 'analytics'],
+    tags: ['bar', 'chart', 'horizontal', 'graph', 'analytics', 'data'],
+  },
+  {
+    name: 'candlestick-chart',
+    categories: ['charts', 'analytics', 'finance'],
+    tags: ['candlestick', 'chart', 'trading', 'finance', 'stock', 'graph'],
+  },
+  {
+    name: 'bar-chart-big',
+    categories: ['charts', 'analytics'],
+    tags: ['bar', 'chart', 'big', 'graph', 'analytics', 'data'],
+  },
+  {
+    name: 'bar-chart-4',
+    categories: ['charts', 'analytics'],
+    tags: ['bar', 'chart', '4', 'graph', 'analytics', 'data'],
+  },
+  {
+    name: 'bar-chart-3',
+    categories: ['charts', 'analytics'],
+    tags: ['bar', 'chart', '3', 'graph', 'analytics', 'data'],
+  },
+  {
+    name: 'line-chart',
+    categories: ['charts', 'analytics'],
+    tags: ['line', 'chart', 'graph', 'analytics', 'data', 'trend'],
+  },
+  {
+    name: 'bar-chart',
+    categories: ['charts', 'analytics'],
+    tags: ['bar', 'chart', 'graph', 'analytics', 'data'],
+  },
+  {
+    name: 'bar-chart-2',
+    categories: ['charts', 'analytics'],
+    tags: ['bar', 'chart', '2', 'graph', 'analytics', 'data'],
+  },
+  {
+    name: 'gantt-chart',
+    categories: ['charts', 'analytics', 'time'],
+    tags: ['gantt', 'chart', 'timeline', 'project', 'schedule'],
+  },
+  {
+    name: 'pie-chart',
+    categories: ['charts', 'analytics'],
+    tags: ['pie', 'chart', 'graph', 'analytics', 'data', 'circular'],
+  },
+  {
+    name: 'scatter-chart',
+    categories: ['charts', 'analytics'],
+    tags: ['scatter', 'chart', 'graph', 'analytics', 'data', 'plot'],
+  },
+  {
+    name: 'alert-circle',
+    categories: ['notification', 'shapes'],
+    tags: ['alert', 'circle', 'warning', 'notification', 'attention'],
+  },
+  {
+    name: 'arrow-down-circle',
+    categories: ['arrows', 'shapes'],
+    tags: ['arrow', 'down', 'circle', 'direction', 'navigation'],
+  },
+  {
+    name: 'arrow-left-circle',
+    categories: ['arrows', 'shapes'],
+    tags: ['arrow', 'left', 'circle', 'direction', 'navigation'],
+  },
+  {
+    name: 'arrow-down-left-from-circle',
+    categories: ['arrows', 'shapes'],
+    tags: ['arrow', 'down', 'left', 'from', 'circle', 'direction'],
+  },
+  {
+    name: 'arrow-down-right-from-circle',
+    categories: ['arrows', 'shapes'],
+    tags: ['arrow', 'down', 'right', 'from', 'circle', 'direction'],
+  },
+  {
+    name: 'arrow-up-left-from-circle',
+    categories: ['arrows', 'shapes'],
+    tags: ['arrow', 'up', 'left', 'from', 'circle', 'direction'],
+  },
+  {
+    name: 'arrow-up-right-from-circle',
+    categories: ['arrows', 'shapes'],
+    tags: ['arrow', 'up', 'right', 'from', 'circle', 'direction'],
+  },
+  {
+    name: 'arrow-right-circle',
+    categories: ['arrows', 'shapes'],
+    tags: ['arrow', 'right', 'circle', 'direction', 'navigation'],
+  },
+  {
+    name: 'arrow-up-circle',
+    categories: ['arrows', 'shapes'],
+    tags: ['arrow', 'up', 'circle', 'direction', 'navigation'],
+  },
+  {
+    name: 'check-circle',
+    categories: ['shapes', 'notification'],
+    tags: ['check', 'circle', 'complete', 'done', 'success', 'verified'],
+  },
+  {
+    name: 'check-circle-2',
+    categories: ['shapes', 'notification'],
+    tags: ['check', 'circle', '2', 'complete', 'done', 'success', 'verified'],
+  },
+  {
+    name: 'chevron-down-circle',
+    categories: ['arrows', 'shapes'],
+    tags: ['chevron', 'down', 'circle', 'direction', 'navigation'],
+  },
+  {
+    name: 'chevron-left-circle',
+    categories: ['arrows', 'shapes'],
+    tags: ['chevron', 'left', 'circle', 'direction', 'navigation'],
+  },
+  {
+    name: 'chevron-right-circle',
+    categories: ['arrows', 'shapes'],
+    tags: ['chevron', 'right', 'circle', 'direction', 'navigation'],
+  },
+  {
+    name: 'chevron-up-circle',
+    categories: ['arrows', 'shapes'],
+    tags: ['chevron', 'up', 'circle', 'direction', 'navigation'],
+  },
+  {
+    name: 'divide-circle',
+    categories: ['shapes', 'math'],
+    tags: ['divide', 'circle', 'math', 'division', 'operator'],
+  },
+  {
+    name: 'gauge-circle',
+    categories: ['shapes', 'measurement'],
+    tags: ['gauge', 'circle', 'meter', 'measurement', 'speed'],
+  },
+  {
+    name: 'help-circle',
+    categories: ['shapes', 'notification'],
+    tags: ['help', 'circle', 'question', 'support', 'info'],
+  },
+  {
+    name: 'minus-circle',
+    categories: ['shapes', 'math'],
+    tags: ['minus', 'circle', 'subtract', 'remove', 'math'],
+  },
+  {
+    name: 'parking-circle-off',
+    categories: ['shapes', 'transportation'],
+    tags: ['parking', 'circle', 'off', 'disabled', 'car', 'vehicle'],
+  },
+  {
+    name: 'parking-circle',
+    categories: ['shapes', 'transportation'],
+    tags: ['parking', 'circle', 'car', 'vehicle', 'spot'],
+  },
+  {
+    name: 'pause-circle',
+    categories: ['shapes', 'multimedia'],
+    tags: ['pause', 'circle', 'stop', 'media', 'control'],
+  },
+  {
+    name: 'percent-circle',
+    categories: ['shapes', 'math'],
+    tags: ['percent', 'circle', 'percentage', 'math', 'symbol'],
+  },
+  {
+    name: 'play-circle',
+    categories: ['shapes', 'multimedia'],
+    tags: ['play', 'circle', 'start', 'media', 'control'],
+  },
+  {
+    name: 'plus-circle',
+    categories: ['shapes', 'math'],
+    tags: ['plus', 'circle', 'add', 'create', 'new', 'math'],
+  },
+  {
+    name: 'power-circle',
+    categories: ['shapes', 'devices'],
+    tags: ['power', 'circle', 'on', 'off', 'button', 'control'],
+  },
+  {
+    name: 'circle-slashed',
+    categories: ['shapes'],
+    tags: ['circle', 'slashed', 'prohibited', 'forbidden', 'cancel'],
+  },
+  {
+    name: 'stop-circle',
+    categories: ['shapes', 'multimedia'],
+    tags: ['stop', 'circle', 'halt', 'media', 'control'],
+  },
+  {
+    name: 'user-circle-2',
+    categories: ['shapes', 'account'],
+    tags: ['user', 'circle', '2', 'person', 'profile', 'account'],
+  },
+  {
+    name: 'user-circle',
+    categories: ['shapes', 'account'],
+    tags: ['user', 'circle', 'person', 'profile', 'account'],
+  },
+  {
+    name: 'x-circle',
+    categories: ['shapes', 'notification'],
+    tags: ['x', 'circle', 'close', 'cancel', 'delete', 'error'],
+  },
+  {
+    name: 'clipboard-signature',
+    categories: ['text', 'business'],
+    tags: ['clipboard', 'signature', 'sign', 'document', 'approval'],
+  },
+  {
+    name: 'clipboard-edit',
+    categories: ['text', 'design'],
+    tags: ['clipboard', 'edit', 'modify', 'document', 'write'],
+  },
+  {
+    name: 'download-cloud',
+    categories: ['connectivity', 'arrows'],
+    tags: ['download', 'cloud', 'save', 'transfer', 'internet'],
+  },
+  {
+    name: 'upload-cloud',
+    categories: ['connectivity', 'arrows'],
+    tags: ['upload', 'cloud', 'transfer', 'internet', 'sync'],
+  },
+  {
+    name: 'code-2',
+    categories: ['development', 'text'],
+    tags: ['code', '2', 'programming', 'development', 'script'],
+  },
+  {
+    name: 'columns',
+    categories: ['layout', 'design'],
+    tags: ['columns', 'layout', 'grid', 'structure', 'organize'],
+  },
+  {
+    name: 'panels-left-right',
+    categories: ['layout', 'design'],
+    tags: ['panels', 'left', 'right', 'layout', 'split', 'divide'],
+  },
+  {
+    name: 'contact-2',
+    categories: ['social', 'communication'],
+    tags: ['contact', '2', 'person', 'communication', 'people'],
+  },
+  {
+    name: 'percent-diamond',
+    categories: ['shapes', 'math'],
+    tags: ['percent', 'diamond', 'percentage', 'math', 'symbol'],
+  },
+  {
+    name: 'globe-2',
+    categories: ['connectivity', 'geography'],
+    tags: ['globe', '2', 'world', 'earth', 'international', 'web'],
+  },
+  {
+    name: 'more-vertical',
+    categories: ['navigation', 'layout'],
+    tags: ['more', 'vertical', 'menu', 'options', 'dots'],
+  },
+  {
+    name: 'more-horizontal',
+    categories: ['navigation', 'layout'],
+    tags: ['more', 'horizontal', 'menu', 'options', 'dots'],
+  },
+  {
+    name: 'file-axis-3-d',
+    categories: ['files', 'science'],
+    tags: ['file', 'axis', '3d', 'coordinate', 'document'],
+  },
+  {
+    name: 'file-bar-chart',
+    categories: ['files', 'charts'],
+    tags: ['file', 'bar', 'chart', 'document', 'analytics'],
+  },
+  {
+    name: 'file-bar-chart-2',
+    categories: ['files', 'charts'],
+    tags: ['file', 'bar', 'chart', '2', 'document', 'analytics'],
+  },
+  {
+    name: 'file-line-chart',
+    categories: ['files', 'charts'],
+    tags: ['file', 'line', 'chart', 'document', 'analytics'],
+  },
+  {
+    name: 'file-pie-chart',
+    categories: ['files', 'charts'],
+    tags: ['file', 'pie', 'chart', 'document', 'analytics'],
+  },
+  {
+    name: 'file-cog-2',
+    categories: ['files', 'settings'],
+    tags: ['file', 'cog', '2', 'settings', 'document', 'configure'],
+  },
+  {
+    name: 'file-signature',
+    categories: ['files', 'business'],
+    tags: ['file', 'signature', 'sign', 'document', 'approval'],
+  },
+  {
+    name: 'file-edit',
+    categories: ['files', 'design'],
+    tags: ['file', 'edit', 'modify', 'document', 'write'],
+  },
+  {
+    name: 'folder-cog-2',
+    categories: ['files', 'settings'],
+    tags: ['folder', 'cog', '2', 'settings', 'directory', 'configure'],
+  },
+  {
+    name: 'folder-edit',
+    categories: ['files', 'design'],
+    tags: ['folder', 'edit', 'modify', 'directory', 'rename'],
+  },
+  {
+    name: 'git-commit',
+    categories: ['development', 'version-control'],
+    tags: ['git', 'commit', 'version', 'control', 'development'],
+  },
+  {
+    name: 'grid-2-x-2-check',
+    categories: ['layout', 'design'],
+    tags: ['grid', '2x2', 'check', 'complete', 'verified', 'layout'],
+  },
+  {
+    name: 'grid-2-x-2-plus',
+    categories: ['layout', 'design'],
+    tags: ['grid', '2x2', 'plus', 'add', 'create', 'layout'],
+  },
+  {
+    name: 'grid-2-x-2-x',
+    categories: ['layout', 'design'],
+    tags: ['grid', '2x2', 'x', 'close', 'delete', 'layout'],
+  },
+  {
+    name: 'grid-2-x-2',
+    categories: ['layout', 'design'],
+    tags: ['grid', '2x2', 'layout', 'structure', 'organize'],
+  },
+  {
+    name: 'grid',
+    categories: ['layout', 'design'],
+    tags: ['grid', 'layout', 'structure', 'organize', 'table'],
+  },
+  {
+    name: 'grid-3-x-3',
+    categories: ['layout', 'design'],
+    tags: ['grid', '3x3', 'layout', 'structure', 'organize'],
+  },
+  {
+    name: 'helping-hand',
+    categories: ['social', 'gesture'],
+    tags: ['helping', 'hand', 'support', 'assistance', 'help'],
+  },
+  {
+    name: 'home',
+    categories: ['navigation', 'buildings'],
+    tags: ['home', 'house', 'main', 'start', 'dashboard'],
+  },
+  {
+    name: 'ice-cream-2',
+    categories: ['food'],
+    tags: ['ice', 'cream', '2', 'dessert', 'cold', 'sweet'],
+  },
+  {
+    name: 'ice-cream',
+    categories: ['food'],
+    tags: ['ice', 'cream', 'dessert', 'cold', 'sweet'],
+  },
+  {
+    name: 'outdent',
+    categories: ['text', 'design'],
+    tags: ['outdent', 'text', 'formatting', 'indent', 'margin'],
+  },
+  {
+    name: 'indent',
+    categories: ['text', 'design'],
+    tags: ['indent', 'text', 'formatting', 'margin', 'spacing'],
+  },
+  {
+    name: 'laptop-2',
+    categories: ['devices', 'technology'],
+    tags: ['laptop', '2', 'computer', 'device', 'technology'],
+  },
+  {
+    name: 'layers-3',
+    categories: ['design', 'layout'],
+    tags: ['layers', '3', 'stack', 'organize', 'depth'],
+  },
+  {
+    name: 'loader-2',
+    categories: ['loading', 'interface'],
+    tags: ['loader', '2', 'loading', 'spinner', 'progress'],
+  },
+  {
+    name: 'unlock-keyhole',
+    categories: ['security', 'access'],
+    tags: ['unlock', 'keyhole', 'access', 'open', 'security'],
+  },
+  {
+    name: 'unlock',
+    categories: ['security', 'access'],
+    tags: ['unlock', 'access', 'open', 'security', 'key'],
+  },
+  {
+    name: 'mic-2',
+    categories: ['multimedia', 'audio'],
+    tags: ['mic', '2', 'microphone', 'audio', 'record', 'voice'],
+  },
+  {
+    name: 'move-3-d',
+    categories: ['arrows', 'design'],
+    tags: ['move', '3d', 'direction', 'axis', 'coordinate'],
+  },
+  {
+    name: 'alert-octagon',
+    categories: ['notification', 'shapes'],
+    tags: ['alert', 'octagon', 'warning', 'attention', 'caution'],
+  },
+  {
+    name: 'pause-octagon',
+    categories: ['shapes', 'multimedia'],
+    tags: ['pause', 'octagon', 'stop', 'media', 'control'],
+  },
+  {
+    name: 'x-octagon',
+    categories: ['shapes', 'notification'],
+    tags: ['x', 'octagon', 'close', 'cancel', 'delete', 'error'],
+  },
+  {
+    name: 'paintbrush-2',
+    categories: ['design', 'art'],
+    tags: ['paintbrush', '2', 'brush', 'paint', 'art', 'design'],
+  },
+  {
+    name: 'panel-bottom-inactive',
+    categories: ['layout', 'interface'],
+    tags: ['panel', 'bottom', 'inactive', 'layout', 'interface'],
+  },
+  {
+    name: 'sidebar-close',
+    categories: ['layout', 'navigation'],
+    tags: ['sidebar', 'close', 'hide', 'collapse', 'navigation'],
+  },
+  {
+    name: 'panel-left-inactive',
+    categories: ['layout', 'interface'],
+    tags: ['panel', 'left', 'inactive', 'layout', 'interface'],
+  },
+  {
+    name: 'sidebar-open',
+    categories: ['layout', 'navigation'],
+    tags: ['sidebar', 'open', 'show', 'expand', 'navigation'],
+  },
+  {
+    name: 'sidebar',
+    categories: ['layout', 'navigation'],
+    tags: ['sidebar', 'navigation', 'menu', 'panel', 'layout'],
+  },
+  {
+    name: 'panel-right-inactive',
+    categories: ['layout', 'interface'],
+    tags: ['panel', 'right', 'inactive', 'layout', 'interface'],
+  },
+  {
+    name: 'panel-top-inactive',
+    categories: ['layout', 'interface'],
+    tags: ['panel', 'top', 'inactive', 'layout', 'interface'],
+  },
+  {
+    name: 'layout',
+    categories: ['design', 'layout'],
+    tags: ['layout', 'structure', 'organize', 'design', 'grid'],
+  },
+  {
+    name: 'edit-3',
+    categories: ['design', 'text'],
+    tags: ['edit', '3', 'modify', 'write', 'change', 'pen'],
+  },
+  {
+    name: 'edit-2',
+    categories: ['design', 'text'],
+    tags: ['edit', '2', 'modify', 'write', 'change', 'pen'],
+  },
+  {
+    name: 'plug-zap-2',
+    categories: ['devices', 'power'],
+    tags: ['plug', 'zap', '2', 'electricity', 'power', 'energy'],
+  },
+  {
+    name: 'form-input',
+    categories: ['interface', 'text'],
+    tags: ['form', 'input', 'field', 'text', 'entry'],
+  },
+  {
+    name: 'rotate-3-d',
+    categories: ['arrows', 'design'],
+    tags: ['rotate', '3d', 'turn', 'spin', 'dimension'],
+  },
+  {
+    name: 'rows',
+    categories: ['layout', 'design'],
+    tags: ['rows', 'layout', 'horizontal', 'structure', 'organize'],
+  },
+  {
+    name: 'panels-top-bottom',
+    categories: ['layout', 'design'],
+    tags: ['panels', 'top', 'bottom', 'layout', 'split', 'divide'],
+  },
+  {
+    name: 'scale-3-d',
+    categories: ['design', 'arrows'],
+    tags: ['scale', '3d', 'resize', 'dimension', 'size'],
+  },
+  {
+    name: 'send-horizonal',
+    categories: ['communication', 'arrows'],
+    tags: ['send', 'horizontal', 'arrow', 'message', 'communication'],
+  },
+  {
+    name: 'shield-close',
+    categories: ['security', 'protection'],
+    tags: ['shield', 'close', 'security', 'protection', 'guard'],
+  },
+  {
+    name: 'sliders',
+    categories: ['interface', 'controls'],
+    tags: ['sliders', 'controls', 'settings', 'adjust', 'parameters'],
+  },
+  {
+    name: 'stars',
+    categories: ['shapes', 'rating'],
+    tags: ['stars', 'rating', 'favorite', 'quality', 'celestial'],
+  },
+  {
+    name: 'activity-square',
+    categories: ['shapes', 'analytics'],
+    tags: ['activity', 'square', 'pulse', 'health', 'monitor'],
+  },
+  {
+    name: 'arrow-down-left-square',
+    categories: ['arrows', 'shapes'],
+    tags: ['arrow', 'down', 'left', 'square', 'direction'],
+  },
+  {
+    name: 'arrow-down-right-square',
+    categories: ['arrows', 'shapes'],
+    tags: ['arrow', 'down', 'right', 'square', 'direction'],
+  },
+  {
+    name: 'arrow-down-square',
+    categories: ['arrows', 'shapes'],
+    tags: ['arrow', 'down', 'square', 'direction', 'navigation'],
+  },
+  {
+    name: 'arrow-left-square',
+    categories: ['arrows', 'shapes'],
+    tags: ['arrow', 'left', 'square', 'direction', 'navigation'],
+  },
+  {
+    name: 'arrow-down-left-from-square',
+    categories: ['arrows', 'shapes'],
+    tags: ['arrow', 'down', 'left', 'from', 'square', 'direction'],
+  },
+  {
+    name: 'arrow-down-right-from-square',
+    categories: ['arrows', 'shapes'],
+    tags: ['arrow', 'down', 'right', 'from', 'square', 'direction'],
+  },
+  {
+    name: 'arrow-up-left-from-square',
+    categories: ['arrows', 'shapes'],
+    tags: ['arrow', 'up', 'left', 'from', 'square', 'direction'],
+  },
+  {
+    name: 'arrow-up-right-from-square',
+    categories: ['arrows', 'shapes'],
+    tags: ['arrow', 'up', 'right', 'from', 'square', 'direction'],
+  },
+  {
+    name: 'arrow-right-square',
+    categories: ['arrows', 'shapes'],
+    tags: ['arrow', 'right', 'square', 'direction', 'navigation'],
+  },
+  {
+    name: 'arrow-up-left-square',
+    categories: ['arrows', 'shapes'],
+    tags: ['arrow', 'up', 'left', 'square', 'direction'],
+  },
+  {
+    name: 'arrow-up-right-square',
+    categories: ['arrows', 'shapes'],
+    tags: ['arrow', 'up', 'right', 'square', 'direction'],
+  },
+  {
+    name: 'arrow-up-square',
+    categories: ['arrows', 'shapes'],
+    tags: ['arrow', 'up', 'square', 'direction', 'navigation'],
+  },
+  {
+    name: 'asterisk-square',
+    categories: ['shapes', 'symbols'],
+    tags: ['asterisk', 'square', 'star', 'symbol', 'special'],
+  },
+  {
+    name: 'scissors-square-dashed-bottom',
+    categories: ['shapes', 'tools'],
+    tags: ['scissors', 'square', 'dashed', 'bottom', 'cut', 'tool'],
+  },
+  {
+    name: 'gantt-chart-square',
+    categories: ['shapes', 'charts'],
+    tags: ['gantt', 'chart', 'square', 'timeline', 'project'],
+  },
+  {
+    name: 'square-gantt-chart',
+    categories: ['shapes', 'charts'],
+    tags: ['square', 'gantt', 'chart', 'timeline', 'project'],
+  },
+  {
+    name: 'check-square',
+    categories: ['shapes', 'interface'],
+    tags: ['check', 'square', 'complete', 'done', 'verified'],
+  },
+  {
+    name: 'check-square-2',
+    categories: ['shapes', 'interface'],
+    tags: ['check', 'square', '2', 'complete', 'done', 'verified'],
+  },
+  {
+    name: 'chevron-down-square',
+    categories: ['arrows', 'shapes'],
+    tags: ['chevron', 'down', 'square', 'direction', 'navigation'],
+  },
+  {
+    name: 'chevron-left-square',
+    categories: ['arrows', 'shapes'],
+    tags: ['chevron', 'left', 'square', 'direction', 'navigation'],
+  },
+  {
+    name: 'chevron-right-square',
+    categories: ['arrows', 'shapes'],
+    tags: ['chevron', 'right', 'square', 'direction', 'navigation'],
+  },
+  {
+    name: 'chevron-up-square',
+    categories: ['arrows', 'shapes'],
+    tags: ['chevron', 'up', 'square', 'direction', 'navigation'],
+  },
+  {
+    name: 'code-square',
+    categories: ['shapes', 'development'],
+    tags: ['code', 'square', 'programming', 'development', 'script'],
+  },
+  {
+    name: 'kanban-square-dashed',
+    categories: ['shapes', 'workflow'],
+    tags: ['kanban', 'square', 'dashed', 'workflow', 'project'],
+  },
+  {
+    name: 'mouse-pointer-square-dashed',
+    categories: ['shapes', 'interface'],
+    tags: ['mouse', 'pointer', 'square', 'dashed', 'cursor'],
+  },
+  {
+    name: 'box-select',
+    categories: ['interface', 'selection'],
+    tags: ['box', 'select', 'selection', 'area', 'rectangle'],
+  },
+  {
+    name: 'divide-square',
+    categories: ['shapes', 'math'],
+    tags: ['divide', 'square', 'math', 'division', 'operator'],
+  },
+  {
+    name: 'dot-square',
+    categories: ['shapes', 'symbols'],
+    tags: ['dot', 'square', 'point', 'symbol', 'mark'],
+  },
+  {
+    name: 'equal-square',
+    categories: ['shapes', 'math'],
+    tags: ['equal', 'square', 'math', 'equals', 'operator'],
+  },
+  {
+    name: 'function-square',
+    categories: ['shapes', 'math'],
+    tags: ['function', 'square', 'math', 'formula', 'calculation'],
+  },
+  {
+    name: 'kanban-square',
+    categories: ['shapes', 'workflow'],
+    tags: ['kanban', 'square', 'workflow', 'project', 'board'],
+  },
+  {
+    name: 'library-square',
+    categories: ['shapes', 'education'],
+    tags: ['library', 'square', 'books', 'education', 'knowledge'],
+  },
+  {
+    name: 'm-square',
+    categories: ['shapes', 'text'],
+    tags: ['m', 'square', 'letter', 'text', 'character'],
+  },
+  {
+    name: 'menu-square',
+    categories: ['shapes', 'navigation'],
+    tags: ['menu', 'square', 'navigation', 'options', 'list'],
+  },
+  {
+    name: 'minus-square',
+    categories: ['shapes', 'math'],
+    tags: ['minus', 'square', 'subtract', 'remove', 'math'],
+  },
+  {
+    name: 'inspect',
+    categories: ['tools', 'analysis'],
+    tags: ['inspect', 'examine', 'analyze', 'magnify', 'review'],
+  },
+  {
+    name: 'parking-square-off',
+    categories: ['shapes', 'transportation'],
+    tags: ['parking', 'square', 'off', 'disabled', 'car'],
+  },
+  {
+    name: 'parking-square',
+    categories: ['shapes', 'transportation'],
+    tags: ['parking', 'square', 'car', 'vehicle', 'spot'],
+  },
+  {
+    name: 'pen-box',
+    categories: ['shapes', 'tools'],
+    tags: ['pen', 'box', 'write', 'edit', 'tool'],
+  },
+  {
+    name: 'edit',
+    categories: ['tools', 'design'],
+    tags: ['edit', 'modify', 'change', 'write', 'pen'],
+  },
+  {
+    name: 'pen-square',
+    categories: ['shapes', 'tools'],
+    tags: ['pen', 'square', 'write', 'edit', 'tool'],
+  },
+  {
+    name: 'percent-square',
+    categories: ['shapes', 'math'],
+    tags: ['percent', 'square', 'percentage', 'math', 'symbol'],
+  },
+  {
+    name: 'pi-square',
+    categories: ['shapes', 'math'],
+    tags: ['pi', 'square', 'math', 'symbol', 'constant'],
+  },
+  {
+    name: 'pilcrow-square',
+    categories: ['shapes', 'text'],
+    tags: ['pilcrow', 'square', 'paragraph', 'text', 'symbol'],
+  },
+  {
+    name: 'play-square',
+    categories: ['shapes', 'multimedia'],
+    tags: ['play', 'square', 'start', 'media', 'control'],
+  },
+  {
+    name: 'plus-square',
+    categories: ['shapes', 'math'],
+    tags: ['plus', 'square', 'add', 'create', 'new', 'math'],
+  },
+  {
+    name: 'power-square',
+    categories: ['shapes', 'devices'],
+    tags: ['power', 'square', 'on', 'off', 'button', 'control'],
+  },
+  {
+    name: 'scissors-square',
+    categories: ['shapes', 'tools'],
+    tags: ['scissors', 'square', 'cut', 'tool', 'trim'],
+  },
+  {
+    name: 'sigma-square',
+    categories: ['shapes', 'math'],
+    tags: ['sigma', 'square', 'math', 'sum', 'symbol'],
+  },
+  {
+    name: 'slash-square',
+    categories: ['shapes', 'symbols'],
+    tags: ['slash', 'square', 'divide', 'symbol', 'separator'],
+  },
+  {
+    name: 'split-square-horizontal',
+    categories: ['shapes', 'layout'],
+    tags: ['split', 'square', 'horizontal', 'divide', 'layout'],
+  },
+  {
+    name: 'split-square-vertical',
+    categories: ['shapes', 'layout'],
+    tags: ['split', 'square', 'vertical', 'divide', 'layout'],
+  },
+  {
+    name: 'terminal-square',
+    categories: ['shapes', 'development'],
+    tags: ['terminal', 'square', 'command', 'console', 'development'],
+  },
+  {
+    name: 'user-square-2',
+    categories: ['shapes', 'account'],
+    tags: ['user', 'square', '2', 'person', 'profile', 'account'],
+  },
+  {
+    name: 'user-square',
+    categories: ['shapes', 'account'],
+    tags: ['user', 'square', 'person', 'profile', 'account'],
+  },
+  {
+    name: 'x-square',
+    categories: ['shapes', 'interface'],
+    tags: ['x', 'square', 'close', 'cancel', 'delete', 'error'],
+  },
+  {
+    name: 'test-tube-2',
+    categories: ['science', 'medical'],
+    tags: ['test', 'tube', '2', 'science', 'lab', 'experiment'],
+  },
+  {
+    name: 'text-selection',
+    categories: ['text', 'interface'],
+    tags: ['text', 'selection', 'highlight', 'select', 'choose'],
+  },
+  {
+    name: 'train',
+    categories: ['transportation', 'travel'],
+    tags: ['train', 'railway', 'transport', 'travel', 'locomotive'],
+  },
+  {
+    name: 'palmtree',
+    categories: ['nature', 'travel'],
+    tags: ['palm', 'tree', 'tropical', 'nature', 'vacation'],
+  },
+  {
+    name: 'alert-triangle',
+    categories: ['notification', 'shapes'],
+    tags: ['alert', 'triangle', 'warning', 'caution', 'attention'],
+  },
+  {
+    name: 'tv-2',
+    categories: ['devices', 'multimedia'],
+    tags: ['tv', '2', 'television', 'screen', 'media', 'display'],
+  },
+  {
+    name: 'school-2',
+    categories: ['education', 'buildings'],
+    tags: ['school', '2', 'education', 'learning', 'building'],
+  },
+  {
+    name: 'user-check-2',
+    categories: ['account', 'verification'],
+    tags: ['user', 'check', '2', 'verified', 'approved', 'person'],
+  },
+  {
+    name: 'user-cog-2',
+    categories: ['account', 'settings'],
+    tags: ['user', 'cog', '2', 'settings', 'person', 'configure'],
+  },
+  {
+    name: 'user-minus-2',
+    categories: ['account', 'social'],
+    tags: ['user', 'minus', '2', 'remove', 'person', 'delete'],
+  },
+  {
+    name: 'user-plus-2',
+    categories: ['account', 'social'],
+    tags: ['user', 'plus', '2', 'add', 'person', 'create'],
+  },
+  {
+    name: 'user-x-2',
+    categories: ['account', 'social'],
+    tags: ['user', 'x', '2', 'delete', 'person', 'remove'],
+  },
+  {
+    name: 'user-2',
+    categories: ['account', 'social'],
+    tags: ['user', '2', 'person', 'profile', 'account', 'individual'],
+  },
+  {
+    name: 'users-2',
+    categories: ['account', 'social'],
+    tags: ['users', '2', 'people', 'group', 'team', 'multiple'],
+  },
+  {
+    name: 'fork-knife-crossed',
+    categories: ['food', 'utensils'],
+    tags: ['fork', 'knife', 'crossed', 'cutlery', 'dining', 'eat'],
+  },
+  {
+    name: 'fork-knife',
+    categories: ['food', 'utensils'],
+    tags: ['fork', 'knife', 'cutlery', 'dining', 'eat', 'utensils'],
+  },
+  {
+    name: 'wallet-2',
+    categories: ['finance', 'business'],
+    tags: ['wallet', '2', 'money', 'payment', 'finance', 'cash'],
+  },
+  {
+    name: 'wand-2',
+    categories: ['tools', 'magic'],
+    tags: ['wand', '2', 'magic', 'tool', 'wizard', 'design'],
   },
 ];
