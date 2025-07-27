@@ -44,16 +44,8 @@ class Pika_Frontend_Loader {
         $relative_path = substr($request_uri, strlen($base_path));
         $relative_path = trim($relative_path, '/');
 
-        Pika_Utils::log('$request_uri', $request_uri, 'json');
-        Pika_Utils::log('$base_path', $base_path, 'json');
-        Pika_Utils::log('$relative_path', $relative_path, 'json');
-        Pika_Utils::log('$build_dir', $this->build_dir, 'json');
-
         // Default to index.html for root or unknown path
         $file_path = $this->build_dir . '/' . ($relative_path ?: 'index.html');
-
-        Pika_Utils::log('$file_path', $file_path, 'json');
-        Pika_Utils::log('file_exists', file_exists($file_path), 'json');
 
         // If the request ends in / and no file, fallback to index.html
         if (!file_exists($file_path)) {
@@ -68,7 +60,6 @@ class Pika_Frontend_Loader {
 
         if (file_exists($file_path)) {
             $mime = $this->get_mime_type($file_path);
-            Pika_Utils::log('$mime', $mime, 'json');
             header('Content-Type: ' . $mime);
             readfile($file_path);
             exit;

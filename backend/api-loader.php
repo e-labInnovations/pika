@@ -21,7 +21,8 @@ class Pika_API_Loader {
         'upload',
         'settings',
         'ai',
-        'reminders'
+        'reminders',
+        'import-export'
     ];
 
     /**
@@ -65,7 +66,9 @@ class Pika_API_Loader {
      * Register routes for a specific controller
      */
     private function register_controller_routes($controller) {
-        $class_name = 'Pika_' . ucfirst($controller) . '_Controller';
+        // Convert hyphenated names to underscored class names
+        $class_suffix = str_replace('-', '_', ucwords($controller, '-'));
+        $class_name = 'Pika_' . $class_suffix . '_Controller';
         $controller_instance = new $class_name();
         $controller_instance->register_routes();
     }

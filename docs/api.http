@@ -649,3 +649,141 @@ POST {{base_url}}/wp-json/pika/v1/reminders/5/archive
 Authorization: Basic {{admin_username}}:{{admin_password}}
 
 ###
+
+# Get supported import/export formats
+GET {{base_url}}/wp-json/pika/v1/import-export/formats
+Authorization: Basic {{username}}:{{password}}
+
+###
+
+# Get import/export operation status
+GET {{base_url}}/wp-json/pika/v1/import-export/status
+Authorization: Basic {{username}}:{{password}}
+
+###
+
+# Export categories as JSON (including system categories)
+GET {{base_url}}/wp-json/pika/v1/import-export/export?format=json&include=categories
+Authorization: Basic {{username}}:{{password}}
+
+###
+
+# Export categories as JSON (excluding system categories)
+GET {{base_url}}/wp-json/pika/v1/import-export/export?format=json&include=categories&exclude_system_categories=true
+Authorization: Basic {{username}}:{{password}}
+
+###
+
+# Export categories as CSV (including system categories)
+GET {{base_url}}/wp-json/pika/v1/import-export/export?format=csv&include=categories
+Authorization: Basic {{username}}:{{password}}
+
+###
+
+# Export categories as CSV (excluding system categories)
+GET {{base_url}}/wp-json/pika/v1/import-export/export?format=csv&include=categories&exclude_system_categories=true
+Authorization: Basic {{username}}:{{password}}
+
+###
+
+# Download categories as JSON file (triggers file download)
+GET {{base_url}}/wp-json/pika/v1/import-export/export?format=json&include=categories&download=true
+Authorization: Basic {{username}}:{{password}}
+
+###
+
+# Download categories as CSV file (triggers file download)
+GET {{base_url}}/wp-json/pika/v1/import-export/export?format=csv&include=categories&download=true
+Authorization: Basic {{username}}:{{password}}
+
+###
+
+# Download categories CSV file (excluding system categories)
+GET {{base_url}}/wp-json/pika/v1/import-export/export?format=csv&include=categories&exclude_system_categories=true&download=true
+Authorization: Basic {{username}}:{{password}}
+
+###
+
+# Export all data types as JSON
+GET {{base_url}}/wp-json/pika/v1/import-export/export?format=json
+Authorization: Basic {{username}}:{{password}}
+
+###
+
+# Export multiple data types as JSON
+GET {{base_url}}/wp-json/pika/v1/import-export/export?format=json&include=categories,accounts,tags
+Authorization: Basic {{username}}:{{password}}
+
+###
+
+# Import data from JSON (validation only)
+POST {{base_url}}/wp-json/pika/v1/import-export/import?validate_only=true&format=json
+Authorization: Basic {{username}}:{{password}}
+Content-Type: application/json
+
+{
+  "data": {
+    "categories": [
+      {
+        "name": "Test Import Category",
+        "icon": "tag",
+        "color": "#ff0000",
+        "bgColor": "#ffffff",
+        "description": "Imported category",
+        "type": "expense",
+        "parentId": null
+      }
+    ]
+  }
+}
+
+###
+
+# Import data from JSON (actual import with merge strategy)
+POST {{base_url}}/wp-json/pika/v1/import-export/import?merge_strategy=merge&format=json
+Authorization: Basic {{username}}:{{password}}
+Content-Type: application/json
+
+{
+  "data": {
+    "categories": [
+      {
+        "name": "Test Import Category",
+        "icon": "tag",
+        "color": "#ff0000",
+        "bgColor": "#ffffff",
+        "description": "Imported category",
+        "type": "expense",
+        "parentId": null
+      }
+    ]
+  }
+}
+
+###
+
+# Import data from file upload
+POST {{base_url}}/wp-json/pika/v1/import-export/import?format=json&merge_strategy=merge
+Authorization: Basic {{username}}:{{password}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
+
+------WebKitFormBoundary
+Content-Disposition: form-data; name="import_file"; filename="pika_export.json"
+Content-Type: application/json
+
+{
+  "categories": [
+    {
+      "name": "File Import Category",
+      "icon": "folder",
+      "color": "#00ff00",
+      "bgColor": "#ffffff",
+      "description": "Category imported from file",
+      "type": "income",
+      "parentId": null
+    }
+  ]
+}
+------WebKitFormBoundary--
+
+###

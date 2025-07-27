@@ -212,16 +212,19 @@ class Pika_Categories_Manager extends Pika_Base_Manager {
    * 
    * @return array
    */
-  public function get_all_categories() {
+  public function get_all_categories($tree = true, $exclude_system_categories = false) {
     $table_name = $this->get_table_name();
     $user_id = get_current_user_id();
-    $sql = $this->db()->prepare("SELECT * FROM {$table_name} WHERE user_id = %d OR user_id = 0", $user_id);
+    $sql = $this->db()->prepare("SELECT * FROM {$table_name} WHERE user_id = %d", $user_id);
+    if (!$exclude_system_categories) {
+      $sql .= " OR user_id = 0";
+    }
     $categories = $this->db()->get_results($sql);
     if (is_wp_error($categories)) {
       return $this->get_error('db_error');
     }
 
-    $result = $this->build_category_tree($categories);
+    $result = $tree ? $this->build_category_tree($categories) : array_values(array_map([$this, 'format_category'], $categories));
 
     return $result;
   }
