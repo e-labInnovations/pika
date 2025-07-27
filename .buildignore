@@ -1,0 +1,14 @@
+# Development files
+.git/
+.gitignore
+docs/
+frontend/
+package.json
+
+# Build process files
+.buildignore
+build.sh
+temp-*/
+
+# Editor files
+.vscode/
