@@ -1,5 +1,5 @@
 import { format } from 'date-fns';
-import type { IconName } from 'lucide-react/dynamic';
+import type { IconName } from '@/components/lucide';
 import type { Transaction, TransactionAccount, TransactionCategory, TransactionTag } from '@/data/dummy-data';
 
 export type TransactionType = 'income' | 'expense' | 'transfer';

@@ -1,4 +1,4 @@
-import type { IconName } from 'lucide-react/dynamic';
+import type { IconName } from '@/components/lucide';
 
 export type SettingSection = {
   id: string;

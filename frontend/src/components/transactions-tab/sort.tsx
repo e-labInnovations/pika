@@ -2,7 +2,7 @@ import { Drawer, DrawerTitle, DrawerHeader, DrawerContent, DrawerClose, DrawerFo
 import { Button, buttonVariants } from '@/components/ui/button';
 import * as RadioGroup from '@radix-ui/react-radio-group';
 import { X } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import SortRadioItem from './sort/sort-radio-item';
 import { defaultSort, type Sort, type SortDirection, sortOptions } from './sort/types';
 import { cn } from '@/lib/utils';
@@ -16,10 +16,6 @@ interface TransactionsSortProps {
 
 const TransactionsSort = ({ open, setOpen, sort, setSort }: TransactionsSortProps) => {
   const [localSort, setLocalSort] = useState<Sort>(sort);
-
-  useEffect(() => {
-    console.log('🚀 ~ useEffect ~ localSort:', localSort);
-  }, [localSort]);
 
   const handleSortChange = (value: string) => {
     setLocalSort({

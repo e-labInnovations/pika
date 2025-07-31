@@ -106,6 +106,7 @@ const FilterSortBar = ({
                     name={typeInfo.name}
                     onClick={() => onFilterClick('remove', 'types', typeInfo.id)}
                     shouldShowRemove={true}
+                    key={type}
                   />
                 ) : null;
               })}
@@ -119,6 +120,7 @@ const FilterSortBar = ({
                     shouldShowRemove={true}
                     bgColor="bg-purple-100 dark:bg-purple-900"
                     color="text-purple-800 dark:text-purple-200"
+                    key={categoryId}
                   />
                 ) : null;
               })}
@@ -130,6 +132,7 @@ const FilterSortBar = ({
                   shouldShowRemove={false}
                   color="text-slate-500"
                   bgColor="bg-slate-100 dark:bg-slate-800"
+                  key="more-categories"
                 />
               )}
               {filters.tags.slice(0, 2).map((tagId) => {
@@ -142,6 +145,7 @@ const FilterSortBar = ({
                     shouldShowRemove={true}
                     bgColor="bg-emerald-100 dark:bg-emerald-900"
                     color="text-emerald-800 dark:text-emerald-200"
+                    key={tagId}
                   />
                 ) : null;
               })}
@@ -153,6 +157,7 @@ const FilterSortBar = ({
                   shouldShowRemove={false}
                   color="text-slate-500"
                   bgColor="bg-slate-100 dark:bg-slate-800"
+                  key="more-tags"
                 />
               )}
               {filters.people.slice(0, 1).map((personId) => {
@@ -165,6 +170,7 @@ const FilterSortBar = ({
                     shouldShowRemove={true}
                     bgColor="bg-orange-100 dark:bg-orange-900"
                     color="text-orange-800 dark:text-orange-200"
+                    key={personId}
                   />
                 ) : null;
               })}
@@ -176,6 +182,7 @@ const FilterSortBar = ({
                   shouldShowRemove={false}
                   color="text-slate-500"
                   bgColor="bg-slate-100 dark:bg-slate-800"
+                  key="more-people"
                 />
               )}
               {(filters.dateRange.from || filters.dateRange.to) && (
@@ -186,6 +193,7 @@ const FilterSortBar = ({
                   shouldShowRemove={false}
                   bgColor="bg-cyan-100 dark:bg-cyan-900"
                   color="text-cyan-800 dark:text-cyan-200"
+                  key="date-range"
                 />
               )}
               {filters.amount.value1 && (
@@ -196,6 +204,7 @@ const FilterSortBar = ({
                   shouldShowRemove={false}
                   bgColor="bg-pink-100 dark:bg-pink-900"
                   color="text-pink-800 dark:text-pink-200"
+                  key="amount"
                 />
               )}
               {filters.accounts.slice(0, 1).map((accountId) => {
@@ -208,6 +217,7 @@ const FilterSortBar = ({
                     shouldShowRemove={true}
                     bgColor="bg-orange-100 dark:bg-orange-900"
                     color="text-orange-800 dark:text-orange-200"
+                    key={accountId}
                   />
                 ) : null;
               })}
@@ -219,6 +229,7 @@ const FilterSortBar = ({
                   shouldShowRemove={false}
                   color="text-slate-500"
                   bgColor="bg-slate-100 dark:bg-slate-800"
+                  key="more-accounts"
                 />
               )}
             </div>

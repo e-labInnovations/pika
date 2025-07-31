@@ -8,7 +8,6 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { type LucideProps, type LucideIcon } from 'lucide-react';
-// import { DynamicIcon, type IconName } from 'lucide-react/dynamic';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { iconsData } from './icons-data';
 import { useVirtualizer, type VirtualItem } from '@tanstack/react-virtual';

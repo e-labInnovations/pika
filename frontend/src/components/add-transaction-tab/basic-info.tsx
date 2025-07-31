@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import type { TransactionFormData } from './types';
 import MoneyInput from '../money-input';
-import { DateTimePicker } from '../ui/datetime-picker';
+import { DateTimePicker } from '@/components/datetime-picker';
 
 interface BasicInfoProps {
   formData: TransactionFormData;
@@ -46,7 +46,6 @@ const BasicInfo = ({ formData, setFormData }: BasicInfoProps) => {
               Date & Time *
             </Label>
             <DateTimePicker
-              use12HourFormat={true}
               value={formData.date ? new Date(formData.date) : undefined}
               onChange={(date) =>
                 setFormData((prev) => ({

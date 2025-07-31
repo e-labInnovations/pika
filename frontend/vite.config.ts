@@ -13,6 +13,24 @@ export default defineConfig({
       registerType: 'autoUpdate',
       devOptions: { enabled: true },
       includeAssets: ['/pika/lucide.svg'],
+      workbox: {
+        runtimeCaching: [
+          {
+            urlPattern: /\/pika\/lucide\.svg$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'lucide-sprite-cache',
+              expiration: {
+                maxEntries: 1,
+                maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
+          },
+        ],
+      },
       manifest: {
         name: 'Pika Finance',
         short_name: 'Pika',
