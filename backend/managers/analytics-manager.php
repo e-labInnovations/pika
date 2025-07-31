@@ -293,10 +293,10 @@ WHERE
     public function get_monthly_summary($month, $year) {
         $transactions_table = $this->get_table_name($this->transaction_table_name);
         $user_id = get_current_user_id();
-        $start_date = date('Y-m-01', strtotime("$year-$month-01"));
-        $end_date = date('Y-m-t', strtotime($start_date));
-        $monthName = date('F', strtotime($start_date));
-        $year = intval(date('Y', strtotime($start_date)));
+        $start_date = date('Y-m-01 00:00:00', strtotime("$year-$month-01"));
+        $end_date = date('Y-m-t 23:59:59', strtotime("$year-$month-01"));
+        $monthName = date('F', strtotime("$year-$month-01"));
+        $year = intval($year);
 
         $sql = $this->db()->prepare("
         SELECT 
@@ -347,7 +347,9 @@ WHERE
         $transactions_table = $this->get_table_name($this->transaction_table_name);
         $user_id = get_current_user_id();
         $start_date = date('Y-m-01', strtotime("$year-$month-01"));
-        $end_date = date('Y-m-t', strtotime($start_date)); // last day of month
+        $end_date = date('Y-m-t', strtotime("$year-$month-01")); // last day of month
+        $start_datetime = $start_date . ' 00:00:00';
+        $end_datetime = $end_date . ' 23:59:59';
 
         $sql = $this->db()->prepare("
         SELECT 
@@ -367,7 +369,7 @@ WHERE
             AND `date` BETWEEN %s AND %s
         GROUP BY DATE(`date`)
         ORDER BY DATE(`date`) ASC;
-    ", $user_id, $start_date, $end_date);
+    ", $user_id, $start_datetime, $end_datetime);
 
         $results = $this->db()->get_results($sql, ARRAY_A);
 
@@ -434,8 +436,8 @@ WHERE
         $categories_table = $this->get_table_name($this->category_table_name);
         $user_id = get_current_user_id();
 
-        $start_date = date('Y-m-01', strtotime("$year-$month-01"));
-        $end_date = date('Y-m-t', strtotime($start_date)); // last day of month
+        $start_date = date('Y-m-01 00:00:00', strtotime("$year-$month-01"));
+        $end_date = date('Y-m-t 23:59:59', strtotime("$year-$month-01")); // last day of month
 
         $sql = $this->db()->prepare("
         SELECT
@@ -546,8 +548,8 @@ WHERE
         $transaction_tags_table = $this->get_table_name($this->transaction_tags_table_name);
         $user_id = get_current_user_id();
 
-        $start_date = date('Y-m-01', strtotime("$year-$month-01"));
-        $end_date = date('Y-m-t', strtotime($start_date)); // last day of month
+        $start_date = date('Y-m-01 00:00:00', strtotime("$year-$month-01"));
+        $end_date = date('Y-m-t 23:59:59', strtotime("$year-$month-01")); // last day of month
 
         $sql = $this->db()->prepare("
             SELECT 
@@ -643,8 +645,8 @@ WHERE
         $transactions_table = $this->get_table_name($this->transaction_table_name);
         $user_id = get_current_user_id();
 
-        $start_date = date('Y-m-01', strtotime("$year-$month-01"));
-        $end_date = date('Y-m-t', strtotime($start_date)); // last day of month
+        $start_date = date('Y-m-01 00:00:00', strtotime("$year-$month-01"));
+        $end_date = date('Y-m-t 23:59:59', strtotime("$year-$month-01")); // last day of month
 
         $sql = $this->db()->prepare("
         SELECT 
