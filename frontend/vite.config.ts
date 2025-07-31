@@ -12,6 +12,7 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       devOptions: { enabled: true },
+      includeAssets: ['/pika/lucide.svg'],
       manifest: {
         name: 'Pika Finance',
         short_name: 'Pika',

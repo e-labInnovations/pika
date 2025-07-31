@@ -87,6 +87,7 @@ export const PikaLoader = () => {
 
 // 5. Card component with shadcn/ui
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { DynamicIcon } from '@/components/lucide';
 
 export const PikaCard = ({ title, children }: { title: string; children: React.ReactNode }) => {
   return (
@@ -122,12 +123,39 @@ export default function LogoDemo() {
 
         {/* Loading Example */}
         <PikaLoader />
-      </div>
 
-      <div className="flex items-center space-x-4">
-        <PikaIcon size={32} style="filled" />
-        <PikaIcon size={24} style="outline" className="transition-transform hover:scale-110" />
-        <PikaIcon size={20} style="minimal" />
+        <div className="flex items-center space-x-4">
+          <PikaIcon size={32} style="filled" />
+          <PikaIcon size={24} style="outline" className="transition-transform hover:scale-110" />
+          <PikaIcon size={20} style="minimal" />
+        </div>
+
+        <div className="bg-primary flex items-center space-x-4">
+          Sprite Demo
+          <svg
+            width={24}
+            height={24}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <use href="/pika/lucide.svg#database" />
+          </svg>
+        </div>
+        <div className="flex flex-row space-x-2">
+          {/* Basic usage */}
+          <DynamicIcon name="database" />
+          {/* Custom size and color */}
+          <DynamicIcon name="user" size={32} color="#3b82f6" />
+          {/* Custom stroke width */}
+          <DynamicIcon name="heart" strokeWidth={1.5} />
+          {/* With className */}
+          <DynamicIcon name="settings" className="text-gray-500" />
+          {/* With absolute stroke width */}
+          <DynamicIcon name="home" size={16} strokeWidth={2} absoluteStrokeWidth />
+        </div>
       </div>
     </div>
   );

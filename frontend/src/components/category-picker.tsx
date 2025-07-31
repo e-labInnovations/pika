@@ -49,7 +49,7 @@ const CategoryPicker = ({ isOpen, onClose, onSelect, transactionType, selectedCa
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-h-[80vh] max-w-2xl overflow-hidden">
+      <DialogContent className="max-h-[80vh] overflow-hidden">
         <DialogHeader>
           <DialogTitle>
             Select Category - {transactionType.charAt(0).toUpperCase() + transactionType.slice(1)}

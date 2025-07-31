@@ -8,7 +8,7 @@ import type { DailySummary } from '@/services/api/analytics.service';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import transactionUtils from '@/lib/transaction-utils';
-import { DynamicIcon } from 'lucide-react/dynamic';
+import { DynamicIcon } from '@/components/lucide';
 
 interface DayPopoverProps {
   children: React.ReactNode;

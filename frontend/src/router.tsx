@@ -78,10 +78,10 @@ const router = createBrowserRouter(
 
         {/* Other Routes */}
         <Route path="/about" element={<div>About Page</div>} />
-
-        {/* 404 Route - Must be last */}
-        <Route path="*" element={<NotFound />} />
       </Route>
+
+      {/* 404 Route - Must be last */}
+      <Route path="*" element={<NotFound />} />
     </>,
   ),
   {

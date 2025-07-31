@@ -19,8 +19,8 @@ if [ ! -f .buildignore ]; then
     exit 1
 fi
 
-# Get version from plugin file
-if ! VERSION=$(grep -oP "Version:\s*\K[0-9.]+" "$PLUGIN_FILE"); then
+# Get version from plugin file (macOS compatible)
+if ! VERSION=$(grep "Version:" "$PLUGIN_FILE" | sed 's/.*Version:[[:space:]]*\([0-9.]*\).*/\1/'); then
     echo -e "${RED}❌ Could not extract version from plugin file${NC}"
     exit 1
 fi

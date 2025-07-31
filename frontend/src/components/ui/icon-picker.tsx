@@ -8,7 +8,7 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { type LucideProps, type LucideIcon } from 'lucide-react';
-import { DynamicIcon, type IconName } from 'lucide-react/dynamic';
+// import { DynamicIcon, type IconName } from 'lucide-react/dynamic';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { iconsData } from './icons-data';
 import { useVirtualizer, type VirtualItem } from '@tanstack/react-virtual';
@@ -16,6 +16,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import Fuse from 'fuse.js';
 import { useDebounceValue } from 'usehooks-ts';
 import { useMediaQuery } from '@/hooks/use-media-query';
+import { DynamicIcon, type IconName } from '@/components/lucide';
 
 export type IconData = (typeof iconsData)[number];
 

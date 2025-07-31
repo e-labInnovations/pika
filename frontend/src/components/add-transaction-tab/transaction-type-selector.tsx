@@ -1,7 +1,7 @@
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import TransactionUtils, { type TransactionType } from '@/lib/transaction-utils';
 import { cn } from '@/lib/utils';
-import { DynamicIcon, type IconName } from 'lucide-react/dynamic';
+import { DynamicIcon, type IconName } from '@/components/lucide';
 
 interface TransactionTypeSelectorProps {
   value: TransactionType;

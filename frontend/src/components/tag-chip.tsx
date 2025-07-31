@@ -1,4 +1,4 @@
-import { DynamicIcon, type IconName } from 'lucide-react/dynamic';
+import { DynamicIcon, type IconName } from '@/components/lucide';
 import { cn } from '@/lib/utils';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { Button } from './ui/button';

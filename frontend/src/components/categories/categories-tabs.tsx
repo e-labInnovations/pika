@@ -1,6 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
-import { DynamicIcon, type IconName } from 'lucide-react/dynamic';
+import { DynamicIcon, type IconName } from '@/components/lucide';
 import TransactionUtils, { type TransactionType } from '@/lib/transaction-utils';
 
 interface CategoriesTabsProps {

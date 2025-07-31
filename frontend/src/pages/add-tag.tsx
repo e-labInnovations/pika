@@ -49,7 +49,7 @@ const AddTag = () => {
         linkBackward: '/settings/tags',
       }}
     >
-      <div className="mx-auto flex max-w-2xl flex-col gap-6">
+      <div className="mx-auto flex flex-col gap-6">
         <Card>
           <CardHeader>
             <CardTitle>Tag Information</CardTitle>
