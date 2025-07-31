@@ -136,7 +136,7 @@ class Pika_Reminders_Manager extends Pika_Base_Manager {
       'description' => $reminder->description,
       'amount' => floatval($reminder->amount),
       'type' => $reminder->type,
-      'date' => $reminder->date,
+      'date' => $this->utils->to_iso8601_utc($reminder->date),
       'category' => $category,
       'account' => $account,
       'member' => $member,

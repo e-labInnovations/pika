@@ -104,15 +104,13 @@ abstract class Pika_Base_Manager {
    */
   public function sanitize_iso_datetime( $datetime_string ) {
     $datetime_string = trim( $datetime_string );
-
-    $timestamp = strtotime( $datetime_string );
-
-    if ( $timestamp === false ) {
+    
+    // Validate ISO 8601 format (optional strict check)
+    if (!preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z$/', $datetime_string)) {
         return null;
     }
 
-    // Convert to MySQL datetime format in UTC
-    return gmdate( 'Y-m-d H:i:s', $timestamp );
+    return $datetime_string;
 }
 
   /**

@@ -249,4 +249,24 @@ class Pika_Utils {
             }
         }
     }
+
+    /**
+     * Convert MySQL datetime to ISO 8601 (UTC) format with Z
+     *
+     * @param string|null $datetime_string MySQL datetime (Y-m-d H:i:s)
+     * @return string|null ISO 8601 datetime (e.g., 2025-07-31T10:57:04Z) or null on failure
+     */
+    public static function to_iso8601_utc($datetime_string) {
+        if (empty($datetime_string)) {
+            return null;
+        }
+
+        try {
+            $dt = new DateTime($datetime_string, new DateTimeZone('UTC'));
+            return $dt->format('c'); // ISO 8601 with Z
+        } catch (Exception $e) {
+            return null;
+        }
+    }
+
 }

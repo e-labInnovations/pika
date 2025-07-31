@@ -153,7 +153,7 @@ class Pika_Transactions_Manager extends Pika_Base_Manager {
       'id' => $transaction->id,
       'title' => $transaction->title,
       'amount' => $transaction->amount,
-      'date' => $transaction->date,
+      'date' => $this->utils->to_iso8601_utc($transaction->date),
       'type' => $transaction->type,
       'category' => $category,
       'account' => $account,
