@@ -10,6 +10,7 @@ import { Link } from 'react-router';
 import ApiInput from '@/components/api-input';
 import { runWithLoaderAndError } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { TimezonePicker } from '@/components/ui/timezone-picker';
 
 const GeneralSettings = () => {
   const { theme, setTheme } = useTheme();
@@ -17,6 +18,7 @@ const GeneralSettings = () => {
   const [error, setError] = useState<unknown | null>(null);
   const [settings, setSettings] = useState<Settings | null>(null);
   const [geminiApiKey, setGeminiApiKey] = useState<string>('');
+  const [timezone, setTimezone] = useState<string>('UTC');
 
   useEffect(() => {
     fetchSettings();
@@ -30,6 +32,7 @@ const GeneralSettings = () => {
       .then((res) => {
         setSettings(res.data);
         setGeminiApiKey(res.data.gemini_api_key || '');
+        setTimezone(res.data.timezone || 'UTC');
       })
       .catch((err) => {
         setError(err);
@@ -38,6 +41,23 @@ const GeneralSettings = () => {
         setIsLoading(false);
       });
   };
+
+  // Save timezone to localStorage when it changes
+  useEffect(() => {
+    if (!settings) return;
+    if (timezone === settings.timezone) return;
+
+    runWithLoaderAndError(
+      async () => {
+        await settingsService.updateSettingsItem('timezone', timezone);
+        fetchSettings();
+      },
+      {
+        loaderMessage: 'Updating timezone...',
+        successMessage: 'Timezone updated successfully',
+      },
+    );
+  }, [timezone, settings]);
 
   // Debounced update for Gemini API key
   useEffect(() => {
@@ -103,14 +123,17 @@ const GeneralSettings = () => {
               onCheckedChange={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
             />
           </div>
-          <div className="pointer-events-none flex items-center justify-between opacity-50">
+
+          <div className="flex flex-col gap-2">
             <div>
-              <Label htmlFor="auto-backup" className="text-sm font-medium">
-                Auto Backup
+              <Label htmlFor="timezone" className="text-sm font-medium">
+                Timezone
               </Label>
-              <p className="text-xs text-slate-500 dark:text-slate-400">Automatically backup your data</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Select your timezone for accurate date and time display
+              </p>
             </div>
-            <Switch id="auto-backup" checked={false} onCheckedChange={() => {}} />
+            <TimezonePicker value={timezone} onValueChange={setTimezone} placeholder="Select your timezone..." />
           </div>
         </div>
 

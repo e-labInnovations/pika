@@ -4,10 +4,11 @@ import { BaseService } from './base.service';
 export interface Settings {
   currency: string;
   gemini_api_key: string;
+  timezone: string;
 }
 
 export interface SettingsInput {
-  key: 'currency' | 'gemini_api_key';
+  key: 'currency' | 'gemini_api_key' | 'timezone';
   value: string;
 }
 
