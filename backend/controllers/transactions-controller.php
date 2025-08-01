@@ -106,14 +106,14 @@ class Pika_Transactions_Controller extends Pika_Base_Controller {
         }
 
         if(!is_null($date_from) && !empty($date_from)) {
-            $is_valid_date_from = $this->transactions_manager->sanitize_iso_datetime($date_from);
+            $is_valid_date_from = $this->transactions_manager->sanitize_datetime($date_from);
             if(is_wp_error($is_valid_date_from)) {
                 return $is_valid_date_from;
             }
         }
 
         if(!is_null($date_to) && !empty($date_to)) {
-            $is_valid_date_to = $this->transactions_manager->sanitize_iso_datetime($date_to);
+            $is_valid_date_to = $this->transactions_manager->sanitize_datetime($date_to);
             if(is_wp_error($is_valid_date_to)) {
                 return $is_valid_date_to;
             }
@@ -148,7 +148,7 @@ class Pika_Transactions_Controller extends Pika_Base_Controller {
         $params = $request->get_params();
         $title = sanitize_text_field($params['title']??'');
         $amount = sanitize_text_field((float)$params['amount']??0);
-        $date = $this->transactions_manager->sanitize_iso_datetime($params['date']??'');
+        $date = $this->transactions_manager->sanitize_datetime($params['date']??'');
         $type = $this->transactions_manager->sanitize_type($params['type']??'');
         $category_id = sanitize_text_field($params['categoryId']??'');
         $account_id = sanitize_text_field($params['accountId']??'');
@@ -241,7 +241,7 @@ class Pika_Transactions_Controller extends Pika_Base_Controller {
         }
 
         if (isset($params['date'])) {
-            $data['date'] = $this->transactions_manager->sanitize_iso_datetime($params['date']);
+            $data['date'] = $this->transactions_manager->sanitize_datetime($params['date']);
             $format['date'] = '%s';
 
             if (is_null($data['date']) || empty($data['date'])) {

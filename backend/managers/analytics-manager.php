@@ -17,6 +17,7 @@ class Pika_Analytics_Manager extends Pika_Base_Manager {
     protected $people_table_name = 'people';
 
     protected $upload_manager;
+    protected $settings_manager;
 
     protected $errors = [
         'invalid_month' => ['message' => 'Invalid month, month must be a number between 1 and 12.', 'status' => 400],
@@ -26,6 +27,7 @@ class Pika_Analytics_Manager extends Pika_Base_Manager {
     public function __construct() {
         parent::__construct();
         $this->upload_manager = new Pika_Upload_Manager();
+        $this->settings_manager = new Pika_Settings_Manager();
     }
 
     public function sanitize_month($month) {
@@ -42,6 +44,37 @@ class Pika_Analytics_Manager extends Pika_Base_Manager {
             return $this->get_error('invalid_year');
         }
         return $year;
+    }
+
+    /**
+     * Get start and end of month in user's timezone, then convert to UTC
+     *
+     * @param int $year Full year (e.g. 2025)
+     * @param int $month 1–12 (e.g. 7 for July)
+     * @return array|null ['start' => string, 'end' => string] in UTC ISO 8601, or null if invalid
+     */
+    private function get_month_boundaries($year, $month) {
+        $user_timezone = $this->settings_manager->get_settings_item(get_current_user_id(), 'timezone');
+        try {
+            $tz = new DateTimeZone($user_timezone);
+
+            // Start of month in user timezone
+            $start_local = new DateTimeImmutable("{$year}-{$month}-01 00:00:00", $tz);
+
+            // End of month in user timezone
+            $end_local = $start_local->modify('last day of this month')->setTime(23, 59, 59);
+
+            // Convert to UTC
+            $start_utc = $start_local->setTimezone(new DateTimeZone('UTC'));
+            $end_utc = $end_local->setTimezone(new DateTimeZone('UTC'));
+
+            return [
+                'start' => $start_utc->format('Y-m-d\TH:i:s\Z'),
+                'end'   => $end_utc->format('Y-m-d\TH:i:s\Z'),
+            ];
+        } catch (Exception $e) {
+            return null;
+        }
     }
 
     /**
@@ -291,10 +324,15 @@ WHERE
     }
 
     public function get_monthly_summary($month, $year) {
+        $date_boundaries = $this->get_month_boundaries($year, $month);
+        if(is_null($date_boundaries)) {
+            return $this->get_error('unknown');
+        }
+
         $transactions_table = $this->get_table_name($this->transaction_table_name);
         $user_id = get_current_user_id();
-        $start_date = date('Y-m-01 00:00:00', strtotime("$year-$month-01"));
-        $end_date = date('Y-m-t 23:59:59', strtotime("$year-$month-01"));
+        $start_date = $date_boundaries['start'];
+        $end_date = $date_boundaries['end'];
         $monthName = date('F', strtotime("$year-$month-01"));
         $year = intval($year);
 
@@ -344,16 +382,21 @@ WHERE
     }
 
     public function get_daily_summaries($month, $year) {
+        $user_id = get_current_user_id();
+        $user_timezone = $this->settings_manager->get_settings_item($user_id, 'timezone');
+        $date_boundaries = $this->get_month_boundaries($year, $month);
+        if(is_null($date_boundaries)) {
+            return $this->get_error('unknown');
+        }
+        
         $transactions_table = $this->get_table_name($this->transaction_table_name);
         $user_id = get_current_user_id();
-        $start_date = date('Y-m-01', strtotime("$year-$month-01"));
-        $end_date = date('Y-m-t', strtotime("$year-$month-01")); // last day of month
-        $start_datetime = $start_date . ' 00:00:00';
-        $end_datetime = $end_date . ' 23:59:59';
+        $start_date_utc = $date_boundaries['start'];
+        $end_date_utc = $date_boundaries['end'];
 
         $sql = $this->db()->prepare("
         SELECT 
-            DATE(date) AS date,
+            DATE(CONVERT_TZ(`date`, '+00:00', %s)) AS date,
             SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END) AS income,
             SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END) AS expenses,
             SUM(CASE WHEN type = 'transfer' THEN amount ELSE 0 END) AS transfers,
@@ -367,19 +410,18 @@ WHERE
         WHERE user_id = %d
             AND is_active = 1
             AND `date` BETWEEN %s AND %s
-        GROUP BY DATE(`date`)
-        ORDER BY DATE(`date`) ASC;
-    ", $user_id, $start_datetime, $end_datetime);
+        GROUP BY DATE(CONVERT_TZ(`date`, '+00:00', %s))
+        ORDER BY DATE(CONVERT_TZ(`date`, '+00:00', %s)) ASC
+        ", $user_timezone, $user_id, $start_date_utc, $end_date_utc, $user_timezone, $user_timezone);
 
         $results = $this->db()->get_results($sql, ARRAY_A);
 
+        // Build zero-filled summary for each day of the month
         $data = [];
-
-        // Create zero-filled entries for all days in the month
         $period = new DatePeriod(
-            new DateTime($start_date),
+            new DateTimeImmutable($date_boundaries['start_user']),
             new DateInterval('P1D'),
-            (new DateTime($end_date))->modify('+1 day')
+            (new DateTimeImmutable($date_boundaries['end_user']))->modify('+1 day')
         );
 
         foreach ($period as $date) {
@@ -399,13 +441,12 @@ WHERE
 
         foreach ($results as $row) {
             $key = $row['date'];
-            $balance = floatval($row['income']) - floatval($row['expenses']);
             $data[$key] = [
                 'date' => $key,
                 'income' => floatval($row['income']),
                 'expenses' => floatval($row['expenses']),
                 'transfers' => floatval($row['transfers']),
-                'balance' => $balance,
+                'balance' => floatval($row['balance']),
                 'transactionCount' => intval($row['transactionCount']),
                 'incomeTransactionCount' => intval($row['incomeTransactionCount']),
                 'expenseTransactionCount' => intval($row['expenseTransactionCount']),
@@ -414,8 +455,9 @@ WHERE
         }
 
         $meta = [
-            'month' => date('F', strtotime($start_date)),
-            'year' => intval(date('Y', strtotime($start_date))),
+            'month' => date('F', strtotime($date_boundaries['start_user'])),
+            'year' => intval(date('Y', strtotime($date_boundaries['start_user']))),
+            'timezone' => $user_timezone,
         ];
 
         return [
@@ -432,12 +474,17 @@ WHERE
      * @return array|WP_Error
      */
     public function get_monthly_category_spending($month, $year) {
+        $date_boundaries = $this->get_month_boundaries($year, $month);
+        if(is_null($date_boundaries)) {
+            return $this->get_error('unknown');
+        }
+        
         $transactions_table = $this->get_table_name($this->transaction_table_name);
         $categories_table = $this->get_table_name($this->category_table_name);
         $user_id = get_current_user_id();
 
-        $start_date = date('Y-m-01 00:00:00', strtotime("$year-$month-01"));
-        $end_date = date('Y-m-t 23:59:59', strtotime("$year-$month-01")); // last day of month
+        $start_date = $date_boundaries['start'];
+        $end_date = $date_boundaries['end'];
 
         $sql = $this->db()->prepare("
         SELECT
@@ -543,13 +590,18 @@ WHERE
     }
 
     public function get_monthly_tag_activity($month, $year) {
+        $date_boundaries = $this->get_month_boundaries($year, $month);
+        if(is_null($date_boundaries)) {
+            return $this->get_error('unknown');
+        }
+        
         $transactions_table = $this->get_table_name($this->transaction_table_name);
         $tags_table = $this->get_table_name($this->tags_table_name);
         $transaction_tags_table = $this->get_table_name($this->transaction_tags_table_name);
         $user_id = get_current_user_id();
 
-        $start_date = date('Y-m-01 00:00:00', strtotime("$year-$month-01"));
-        $end_date = date('Y-m-t 23:59:59', strtotime("$year-$month-01")); // last day of month
+        $start_date = $date_boundaries['start'];
+        $end_date = $date_boundaries['end'];
 
         $sql = $this->db()->prepare("
             SELECT 
@@ -641,12 +693,17 @@ WHERE
     }
 
     public function get_monthly_person_activity($month, $year) {
+        $date_boundaries = $this->get_month_boundaries($year, $month);
+        if(is_null($date_boundaries)) {
+            return $this->get_error('unknown');
+        }
+        
         $people_table = $this->get_table_name($this->people_table_name);
         $transactions_table = $this->get_table_name($this->transaction_table_name);
         $user_id = get_current_user_id();
 
-        $start_date = date('Y-m-01 00:00:00', strtotime("$year-$month-01"));
-        $end_date = date('Y-m-t 23:59:59', strtotime("$year-$month-01")); // last day of month
+        $start_date = $date_boundaries['start'];
+        $end_date = $date_boundaries['end'];
 
         $sql = $this->db()->prepare("
         SELECT 

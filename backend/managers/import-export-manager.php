@@ -75,8 +75,8 @@ class Pika_Import_Export_Manager extends Pika_Base_Manager {
   public function export_data($user_id, $options = []) {
     $format = $options['format'] ?? 'json';
     $include = $options['include'] ?? array_keys($this->data_types);
-    $date_from = isset($options['date_from']) ? $this->sanitize_iso_datetime($options['date_from']) : null;
-    $date_to = isset($options['date_to']) ? $this->sanitize_iso_datetime($options['date_to']) : null;
+    $date_from = isset($options['date_from']) ? $this->sanitize_datetime($options['date_from']) : null;
+    $date_to = isset($options['date_to']) ? $this->sanitize_datetime($options['date_to']) : null;
     $exclude_system_categories = $options['exclude_system_categories'] ?? false;
 
     // Suppress any errors/warnings during export to prevent output corruption

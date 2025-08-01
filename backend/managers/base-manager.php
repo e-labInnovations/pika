@@ -53,6 +53,7 @@ abstract class Pika_Base_Manager {
     'invalid_bg_color' => ['message' => 'Invalid background color. Use hex format like #000000.', 'status' => 400],
     'no_update' => ['message' => 'Nothing to update.', 'status' => 400],
     'invalid_name' => ['message' => 'Invalid name.', 'status' => 400],
+    'unknown' => ['message' => 'An unknown error occurred.', 'status' => 500],
   ];
 
   /**
@@ -100,18 +101,27 @@ abstract class Pika_Base_Manager {
   }
 
   /**
-   * Sanitize ISO datetime
-   */
-  public function sanitize_iso_datetime( $datetime_string ) {
-    $datetime_string = trim( $datetime_string );
-    
-    // Validate ISO 8601 format (optional strict check)
-    if (!preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z$/', $datetime_string)) {
+ * Sanitize ISO 8601 datetime (supports both Z and +00:00 UTC variants)
+ *
+ * @param string $datetime_string
+ * @return string|null Sanitized ISO 8601 string with Z, or null if invalid
+ */
+  public function sanitize_datetime($datetime_string) {
+    $datetime_string = trim($datetime_string);
+
+    // Match ISO 8601 with optional milliseconds and either Z or +00:00
+    if (!preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|\+00:00)$/', $datetime_string)) {
         return null;
     }
 
-    return $datetime_string;
-}
+    try {
+        $dt = new DateTimeImmutable($datetime_string);
+        // Normalize to ISO 8601 format with literal Z
+        return $dt->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d\TH:i:s\Z');
+    } catch (Exception $e) {
+        return null;
+    }
+  }
 
   /**
    * Load icons

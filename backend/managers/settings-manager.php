@@ -29,6 +29,12 @@ class Pika_Settings_Manager extends Pika_Base_Manager {
       'type' => 'string',
       'allowed_values' => null,
       'sanitize' => 'sanitize_string'
+    ],
+    'timezone' => [
+      'default' => 'Asia/Kolkata',
+      'type' => 'string',
+      'allowed_values' => null,
+      'sanitize' => 'sanitize_timezone_string'
     ]
   ];
 
@@ -184,6 +190,19 @@ class Pika_Settings_Manager extends Pika_Base_Manager {
   }
 
   /**
+   * Sanitize timezone string
+   */
+  private function sanitize_timezone_string($value) {
+    $timezone_string = trim( (string) $value );
+
+    if ( in_array( $timezone_string, timezone_identifiers_list(), true ) ) {
+      return $timezone_string;
+    }
+
+    return 'UTC';
+  }
+
+  /**
    * Get a settings item
    * 
    * @param string $key
@@ -201,7 +220,7 @@ class Pika_Settings_Manager extends Pika_Base_Manager {
     );
 
     if (!$value) {
-      return $default;
+      return $default || $this->get_default_value($key);
     }
 
     return $value;
