@@ -90,7 +90,7 @@ const AddAccount = () => {
         linkBackward: '/settings/accounts',
       }}
     >
-      <div className="mx-auto flex flex-col gap-6">
+      <div className="flex flex-col gap-6">
         <Card>
           <CardHeader>
             <CardTitle>Account Information</CardTitle>

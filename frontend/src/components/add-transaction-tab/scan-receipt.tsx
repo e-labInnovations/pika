@@ -1,12 +1,13 @@
 import { ImageIcon, Sparkles, X } from 'lucide-react';
-import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from '@/components/ui/drawer';
+import { Drawer, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from '@/components/ui/drawer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '../ui/card';
 import { useState } from 'react';
 import { aiService, type AnalyzedTransactionData } from '@/services/api';
 import AnalysisOutput from './ai-transaction/analysis-output';
-import { runWithLoaderAndError } from '@/lib/utils';
+import { cn, runWithLoaderAndError } from '@/lib/utils';
 import { toast } from 'sonner';
+import { Textarea } from '@/components/ui/textarea';
 
 const TABS = [
   { id: 'text', label: 'Text' },
@@ -81,7 +82,6 @@ const ScanReceipt = ({ open, setOpen, handleTransactionDetails }: ScanReceiptPro
     setIsSending(true);
     aiService.analyzeText(textInput).then((response) => {
       setIsSending(false);
-      console.log(response.data);
       setAnalysisOutput(response.data);
     });
   };
@@ -97,6 +97,15 @@ const ScanReceipt = ({ open, setOpen, handleTransactionDetails }: ScanReceiptPro
     setAnalysisOutput(null);
   };
 
+  const handleRetryAnalysis = () => {
+    setAnalysisOutput(null);
+    if (selectedTab === 'text') {
+      handleSendText();
+    } else {
+      handleAnalyze();
+    }
+  };
+
   return (
     <Drawer open={open} onOpenChange={handleClose}>
       <DrawerContent className="h-[60%]">
@@ -107,7 +116,7 @@ const ScanReceipt = ({ open, setOpen, handleTransactionDetails }: ScanReceiptPro
           </DrawerTitle>
         </DrawerHeader>
 
-        <div className="flex flex-col gap-4 px-4">
+        <div className="flex h-full flex-col gap-4 px-4">
           {/* Tabs */}
           <div className="mb-2 flex gap-2 border-b">
             {TABS.map((tab) => (
@@ -129,13 +138,15 @@ const ScanReceipt = ({ open, setOpen, handleTransactionDetails }: ScanReceiptPro
 
           {/* Text Tab */}
           {selectedTab === 'text' && !analysisOutput && (
-            <div className="flex flex-col gap-3">
-              <textarea
-                className="focus-visible:border-ring focus-visible:ring-ring/50 border-input min-h-[100px] w-full rounded-md border px-3 py-2 text-base focus-visible:ring-[3px]"
+            <div className="flex h-full flex-col gap-3">
+              <Textarea
+                id="text-input"
+                className="h-[75%] max-h-[350px] resize-none"
                 placeholder="Paste or type receipt text here..."
                 value={textInput}
                 onChange={(e) => setTextInput(e.target.value)}
                 disabled={isSending}
+                rows={5}
               />
             </div>
           )}
@@ -184,7 +195,7 @@ const ScanReceipt = ({ open, setOpen, handleTransactionDetails }: ScanReceiptPro
           )}
 
           {/* Analysis Output */}
-          {analysisOutput && <AnalysisOutput analysisOutput={analysisOutput} />}
+          {analysisOutput && <AnalysisOutput analysisOutput={analysisOutput} onRetryAnalysis={handleRetryAnalysis} />}
         </div>
 
         <DrawerFooter className="flex flex-row gap-2">
@@ -193,13 +204,15 @@ const ScanReceipt = ({ open, setOpen, handleTransactionDetails }: ScanReceiptPro
               Reject Suggestion
             </Button>
           )}
-          <DrawerClose className="w-1/2 grow">
-            {!analysisOutput && (
-              <Button variant="outline" className="w-full">
-                Cancel
-              </Button>
-            )}
-          </DrawerClose>
+          {!analysisOutput && (
+            <Button
+              variant="outline"
+              className={cn('w-1/2', selectedTab === 'receipt' && !selectedReceipt && 'w-full')}
+              onClick={handleClose}
+            >
+              Cancel
+            </Button>
+          )}
           {/* Text Tab Send Button (footer) */}
           {selectedTab === 'text' && !analysisOutput && (
             <Button

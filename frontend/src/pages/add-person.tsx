@@ -66,7 +66,7 @@ const AddPerson = () => {
         linkBackward: '/people',
       }}
     >
-      <div className="mx-auto flex flex-col gap-6">
+      <div className="flex flex-col gap-6">
         <Card>
           <CardHeader>
             <CardTitle>Person Information</CardTitle>

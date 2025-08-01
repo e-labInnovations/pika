@@ -7,15 +7,17 @@ import AccountAvatar from '@/components/account-avatar';
 import { ArrowBigRightDash } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { TagChip } from '@/components/tag-chip';
-import { getInitials } from '@/lib/utils';
-import { CheckCircle2 } from 'lucide-react';
+import { cn, getInitials } from '@/lib/utils';
+import { CheckCircle2, RotateCcw } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
+import { Button } from '@/components/ui/button';
 
 interface AnalysisOutputProps {
   analysisOutput: AnalyzedTransactionData;
+  onRetryAnalysis?: () => void;
 }
 
-const AnalysisOutput = ({ analysisOutput }: AnalysisOutputProps) => {
+const AnalysisOutput = ({ analysisOutput, onRetryAnalysis }: AnalysisOutputProps) => {
   const { user } = useAuth();
 
   return (
@@ -94,9 +96,17 @@ const AnalysisOutput = ({ analysisOutput }: AnalysisOutputProps) => {
           <p>{analysisOutput.note}</p>
         </div>
       )}
-      <div className="text-muted-foreground flex items-center justify-center gap-2 text-sm">
-        <CheckCircle2 className="h-4 w-4 text-green-500" />
-        <span>AI Analysis Complete</span>
+      <div className={cn('flex items-center justify-between', !onRetryAnalysis && 'justify-center')}>
+        <div className="text-muted-foreground flex items-center gap-2 text-sm">
+          <CheckCircle2 className="h-4 w-4 text-green-500" />
+          <span>AI Analysis Complete</span>
+        </div>
+        {onRetryAnalysis && (
+          <Button variant="outline" size="sm" onClick={onRetryAnalysis} className="gap-2">
+            <RotateCcw className="h-4 w-4" />
+            Re-analyze
+          </Button>
+        )}
       </div>
     </div>
   );

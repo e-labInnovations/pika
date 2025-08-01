@@ -1,6 +1,6 @@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/use-auth';
 import { currencyUtils } from '@/lib/currency-utils';
@@ -20,6 +20,10 @@ const MoneyInput = ({ value, onChange, id, labelText, placeholder, className, ..
   const [inputString, setInputString] = useState(value === 0 ? '' : value.toString());
   const [inputFocused, setInputFocused] = useState(false);
   const decimalPlaces = currencyUtils.getCurrencyByCode(user?.settings.currency || 'INR').decimal_digits;
+
+  useEffect(() => {
+    setInputString(value === 0 ? '' : value.toString());
+  }, [value]);
 
   const hasMoreThanDecimalPlaces = (numberInputString: string) => {
     const length = numberInputString.length;

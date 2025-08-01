@@ -1,5 +1,4 @@
 import ColorPicker from '@/components/color-picker';
-import { Label } from '@/components/ui/label';
 import { IconPicker, type IconName } from '@/components/ui/icon-picker';
 import { IconRenderer } from '@/components/icon-renderer';
 
@@ -14,8 +13,8 @@ interface IconColorsFieldsProps {
 const IconColorsFields = ({ icon, bgColor, color, setIcon, setBgColor, setColor }: IconColorsFieldsProps) => {
   return (
     <div className="space-y-4">
-      <Label>Icon & Colors</Label>
-      <div className="flex items-center space-x-4">
+      <span className="flex items-center gap-2 text-sm leading-none font-medium select-none">Icon & Colors</span>
+      <div className="flex items-center justify-between gap-4">
         <IconPicker value={icon} onValueChange={(icon) => setIcon(icon as IconName)}>
           <IconRenderer
             iconName={icon}
@@ -26,16 +25,12 @@ const IconColorsFields = ({ icon, bgColor, color, setIcon, setBgColor, setColor 
           />
         </IconPicker>
         <div className="flex-1 space-y-2">
-          <div className="flex space-x-2">
-            <div className="flex-1 space-y-2">
-              <Label className="text-xs">Background Color</Label>
-              <ColorPicker color={bgColor} setColor={(color: string) => setBgColor(color)} />
-            </div>
-            <div className="flex-1 space-y-2">
-              <Label className="text-xs">Icon Color</Label>
-              <ColorPicker color={color} setColor={(color: string) => setColor(color)} />
-            </div>
-          </div>
+          <span className="text-xs">Background Color</span>
+          <ColorPicker color={bgColor} setColor={(color: string) => setBgColor(color)} />
+        </div>
+        <div className="flex-1 space-y-2">
+          <span className="text-xs">Icon Color</span>
+          <ColorPicker color={color} setColor={(color: string) => setColor(color)} />
         </div>
       </div>
     </div>
