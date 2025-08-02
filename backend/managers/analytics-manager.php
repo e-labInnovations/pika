@@ -53,7 +53,7 @@ class Pika_Analytics_Manager extends Pika_Base_Manager {
      * @param int $month 1–12 (e.g. 7 for July)
      * @return array|null ['start' => string, 'end' => string] in UTC ISO 8601, or null if invalid
      */
-    private function get_month_boundaries($year, $month) {
+    private function get_month_utc_boundaries($year, $month) {
         $user_timezone = $this->settings_manager->get_settings_item(get_current_user_id(), 'timezone');
         try {
             $tz = new DateTimeZone($user_timezone);
@@ -61,16 +61,16 @@ class Pika_Analytics_Manager extends Pika_Base_Manager {
             // Start of month in user timezone
             $start_local = new DateTimeImmutable("{$year}-{$month}-01 00:00:00", $tz);
 
-            // End of month in user timezone
-            $end_local = $start_local->modify('last day of this month')->setTime(23, 59, 59);
+            // End of month in user timezone (start of next month for cleaner boundary logic)
+            $end_local = $start_local->modify('first day of next month')->setTime(0, 0, 0);
 
             // Convert to UTC
             $start_utc = $start_local->setTimezone(new DateTimeZone('UTC'));
             $end_utc = $end_local->setTimezone(new DateTimeZone('UTC'));
 
             return [
-                'start' => $start_utc->format('Y-m-d\TH:i:s\Z'),
-                'end'   => $end_utc->format('Y-m-d\TH:i:s\Z'),
+                'start' => $start_utc->format('Y-m-d H:i:s'),
+                'end'   => $end_utc->format('Y-m-d H:i:s'),
             ];
         } catch (Exception $e) {
             return null;
@@ -324,7 +324,7 @@ WHERE
     }
 
     public function get_monthly_summary($month, $year) {
-        $date_boundaries = $this->get_month_boundaries($year, $month);
+        $date_boundaries = $this->get_month_utc_boundaries($year, $month);
         if(is_null($date_boundaries)) {
             return $this->get_error('unknown');
         }
@@ -347,7 +347,7 @@ WHERE
         FROM {$transactions_table}
         WHERE user_id = %d
             AND is_active = 1
-            AND `date` BETWEEN %s AND %s
+            AND `date` >= %s AND `date` < %s
       ", $user_id, $start_date, $end_date);
 
         $row = $this->db()->get_row($sql, ARRAY_A);
@@ -384,19 +384,18 @@ WHERE
     public function get_daily_summaries($month, $year) {
         $user_id = get_current_user_id();
         $user_timezone = $this->settings_manager->get_settings_item($user_id, 'timezone');
-        $date_boundaries = $this->get_month_boundaries($year, $month);
+        $date_boundaries = $this->get_month_utc_boundaries($year, $month);
         if(is_null($date_boundaries)) {
             return $this->get_error('unknown');
         }
-        
+
         $transactions_table = $this->get_table_name($this->transaction_table_name);
-        $user_id = get_current_user_id();
         $start_date_utc = $date_boundaries['start'];
         $end_date_utc = $date_boundaries['end'];
 
         $sql = $this->db()->prepare("
         SELECT 
-            DATE(CONVERT_TZ(`date`, '+00:00', %s)) AS date,
+            DATE(CONVERT_TZ(`date`, '+00:00', %s)) AS local_date,
             SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END) AS income,
             SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END) AS expenses,
             SUM(CASE WHEN type = 'transfer' THEN amount ELSE 0 END) AS transfers,
@@ -409,38 +408,57 @@ WHERE
         FROM {$transactions_table}
         WHERE user_id = %d
             AND is_active = 1
-            AND `date` BETWEEN %s AND %s
-        GROUP BY DATE(CONVERT_TZ(`date`, '+00:00', %s))
-        ORDER BY DATE(CONVERT_TZ(`date`, '+00:00', %s)) ASC
+            AND `date` >= %s AND `date` < %s
+        GROUP BY local_date
+        ORDER BY local_date ASC
         ", $user_timezone, $user_id, $start_date_utc, $end_date_utc, $user_timezone, $user_timezone);
 
         $results = $this->db()->get_results($sql, ARRAY_A);
+        if (is_wp_error($results)) {
+            return $this->get_error('db_error');
+        }
 
-        // Build zero-filled summary for each day of the month
+        // Build zero-filled summary for each day of the month in user's timezone
         $data = [];
-        $period = new DatePeriod(
-            new DateTimeImmutable($date_boundaries['start_user']),
-            new DateInterval('P1D'),
-            (new DateTimeImmutable($date_boundaries['end_user']))->modify('+1 day')
-        );
+        try {
+            $tz = new DateTimeZone($user_timezone);
+            
+            // Create DatePeriod directly for the requested month (avoid double timezone conversion)
+            $start_local = new DateTimeImmutable("{$year}-{$month}-01 00:00:00", $tz);
+            $end_boundary = $start_local->modify('first day of next month'); // Start of next month
+            
+            $period = new DatePeriod(
+                $start_local,
+                new DateInterval('P1D'),
+                $end_boundary // DatePeriod excludes this end date
+            );
 
-        foreach ($period as $date) {
-            $key = $date->format('Y-m-d');
-            $data[$key] = [
-                'date' => $key,
-                'balance' => 0.0,
-                'income' => 0.0,
-                'expenses' => 0.0,
-                'transfers' => 0.0,
-                'transactionCount' => 0,
-                'incomeTransactionCount' => 0,
-                'expenseTransactionCount' => 0,
-                'transferTransactionCount' => 0,
-            ];
+            foreach ($period as $date) {
+                $key = $date->format('Y-m-d');
+                $data[$key] = [
+                    'date' => $key,
+                    'balance' => 0.0,
+                    'income' => 0.0,
+                    'expenses' => 0.0,
+                    'transfers' => 0.0,
+                    'transactionCount' => 0,
+                    'incomeTransactionCount' => 0,
+                    'expenseTransactionCount' => 0,
+                    'transferTransactionCount' => 0,
+                ];
+            }
+        } catch (Exception $e) {
+            return $this->get_error('unknown');
         }
 
         foreach ($results as $row) {
-            $key = $row['date'];
+            $key = $row['local_date'];
+            
+            // Guard against duplicate dates (defensive programming)
+            if (isset($data[$key]) && $data[$key]['transactionCount'] > 0) {
+                error_log("Warning: Duplicate date entry found for: $key - this should not happen with GROUP BY");
+            }
+            
             $data[$key] = [
                 'date' => $key,
                 'income' => floatval($row['income']),
@@ -455,8 +473,8 @@ WHERE
         }
 
         $meta = [
-            'month' => date('F', strtotime($date_boundaries['start_user'])),
-            'year' => intval(date('Y', strtotime($date_boundaries['start_user']))),
+            'month' => date('F', strtotime($date_boundaries['start'])),
+            'year' => intval(date('Y', strtotime($date_boundaries['start']))),
             'timezone' => $user_timezone,
         ];
 
@@ -474,7 +492,7 @@ WHERE
      * @return array|WP_Error
      */
     public function get_monthly_category_spending($month, $year) {
-        $date_boundaries = $this->get_month_boundaries($year, $month);
+        $date_boundaries = $this->get_month_utc_boundaries($year, $month);
         if(is_null($date_boundaries)) {
             return $this->get_error('unknown');
         }
@@ -508,7 +526,7 @@ WHERE
             AND t.type = 'expense'
             AND t.is_active = 1
             AND t.user_id = %d
-            AND t.date BETWEEN %s AND %s
+            AND t.date >= %s AND t.date < %s
         WHERE c.is_active = 1
             AND (c.user_id = %d OR c.user_id = 0)
         GROUP BY c.id
@@ -590,7 +608,7 @@ WHERE
     }
 
     public function get_monthly_tag_activity($month, $year) {
-        $date_boundaries = $this->get_month_boundaries($year, $month);
+        $date_boundaries = $this->get_month_utc_boundaries($year, $month);
         if(is_null($date_boundaries)) {
             return $this->get_error('unknown');
         }
@@ -630,7 +648,7 @@ WHERE
                 ON tx.id = tt.transaction_id 
                 AND tx.is_active = 1 
                 AND tx.user_id = %d 
-                AND tx.date BETWEEN %s AND %s
+                AND tx.date >= %s AND tx.date < %s
     
             WHERE (t.user_id = 0 OR t.user_id = %d)
               AND t.is_active = 1
@@ -693,7 +711,7 @@ WHERE
     }
 
     public function get_monthly_person_activity($month, $year) {
-        $date_boundaries = $this->get_month_boundaries($year, $month);
+        $date_boundaries = $this->get_month_utc_boundaries($year, $month);
         if(is_null($date_boundaries)) {
             return $this->get_error('unknown');
         }
@@ -751,7 +769,7 @@ WHERE
             ON t.person_id = p.id 
             AND t.user_id = %d 
             AND t.is_active = 1 
-            AND t.date BETWEEN %s AND %s
+            AND t.date >= %s AND t.date < %s
 
         WHERE p.user_id = %d
           AND p.is_active = 1

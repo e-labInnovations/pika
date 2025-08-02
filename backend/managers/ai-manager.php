@@ -85,7 +85,7 @@ class Pika_AI_Manager extends Pika_Base_Manager {
 
 
   private function get_gemini_api_key() {
-    return $this->settings_manager->get_settings_item(get_current_user_id(), 'gemini_api_key', null);
+    return $this->settings_manager->get_settings_item(get_current_user_id(), 'gemini_api_key');
   }
 
   private function get_gemini_endpoint() {

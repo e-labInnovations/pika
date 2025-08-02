@@ -210,7 +210,7 @@ class Pika_Settings_Manager extends Pika_Base_Manager {
    * @param mixed $default
    * @return mixed
    */
-  public function get_settings_item($user_id, $key, $default = null) {
+  public function get_settings_item($user_id, $key) {
     $value = $this->db()->get_var(
       $this->db()->prepare(
         "SELECT setting_value FROM {$this->get_table_name()} WHERE setting_key = %s AND user_id = %d",
@@ -220,7 +220,7 @@ class Pika_Settings_Manager extends Pika_Base_Manager {
     );
 
     if (!$value) {
-      return $default || $this->get_default_value($key);
+      return $this->get_default_value($key);
     }
 
     return $value;
