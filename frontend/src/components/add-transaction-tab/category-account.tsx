@@ -86,7 +86,7 @@ const CategoryAccount = ({ formData, setFormData }: CategoryAccountProps) => {
           <div className="flex flex-col gap-2">
             <Label>Account*</Label>
             {account ? (
-              <SelectedAccount account={account} onRemove={() => setFormData((prev) => ({ ...prev, account: '' }))} />
+              <SelectedAccount account={account} onEdit={() => setShowAccountPicker(true)} />
             ) : (
               <Button
                 type="button"
@@ -104,7 +104,7 @@ const CategoryAccount = ({ formData, setFormData }: CategoryAccountProps) => {
               {formData.toAccount && toAccount ? (
                 <SelectedAccount
                   account={toAccount}
-                  onRemove={() => setFormData((prev) => ({ ...prev, toAccount: '' }))}
+                  onEdit={() => setShowToAccountPicker(true)}
                   className="border-purple-200 bg-purple-50 dark:border-purple-800 dark:bg-purple-900/20"
                 />
               ) : (

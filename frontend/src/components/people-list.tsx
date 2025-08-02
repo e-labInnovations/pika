@@ -40,7 +40,7 @@ export function PeopleList({ people, searchTerm }: PeopleListProps) {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div className="flex flex-1 items-center space-x-3">
-                  <Avatar className="h-12 w-12">
+                  <Avatar className="h-12 w-12 border-2 border-slate-300 dark:border-slate-600">
                     <AvatarImage src={person.avatar?.url} alt={person.name} />
                     <AvatarFallback className="bg-emerald-500 font-semibold text-white">
                       {getInitials(person.name)}

@@ -14,6 +14,8 @@ import { useEffect, useState } from 'react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import transactionUtils from '@/lib/transaction-utils';
 import AsyncStateWrapper from '@/components/async-state-wrapper';
+import { currencyUtils } from '@/lib/currency-utils';
+import { useAuth } from '@/hooks/use-auth';
 
 const TransactionDetails = () => {
   const navigate = useNavigate();
@@ -21,6 +23,7 @@ const TransactionDetails = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<unknown | null>(null);
   const [transaction, setTransaction] = useState<Transaction | null>(null);
+  const { user } = useAuth();
 
   useEffect(() => {
     if (id) {
@@ -75,9 +78,7 @@ const TransactionDetails = () => {
               </div>
               <h1 className="text-2xl font-bold text-slate-900 dark:text-white">{transaction.title}</h1>
               <p className={`text-3xl font-bold ${transactionUtils.getAmountColor(transaction.type)}`}>
-                {Math.abs(transaction.amount).toLocaleString('en-US', {
-                  minimumFractionDigits: 2,
-                })}
+                {currencyUtils.formatAmount(transaction.amount, user?.settings?.currency)}
               </p>
             </div>
             <Card className="border-slate-200 bg-white/70 p-0 backdrop-blur-sm dark:border-slate-700 dark:bg-slate-800/70">
@@ -188,7 +189,7 @@ const TransactionDetails = () => {
                       <span>Person</span>
                     </div>
                     <div className="flex items-center justify-start gap-3">
-                      <Avatar className="h-8 w-8">
+                      <Avatar className="h-8 w-8 border-1 border-slate-300 dark:border-slate-600">
                         <AvatarImage src={transaction.person?.avatar?.url} alt={transaction.person?.name} />
                         <AvatarFallback>CN</AvatarFallback>
                       </Avatar>

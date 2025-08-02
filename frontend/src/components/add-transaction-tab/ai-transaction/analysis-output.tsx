@@ -69,7 +69,7 @@ const AnalysisOutput = ({ analysisOutput, onRetryAnalysis }: AnalysisOutputProps
                   </div>
                   <div className="flex items-center gap-2">
                     {analysisOutput.person && (
-                      <Avatar className="h-8 w-8">
+                      <Avatar className="h-8 w-8 border-1 border-slate-300 dark:border-slate-600">
                         <AvatarImage src={analysisOutput.person?.avatar?.url} alt={analysisOutput.person?.name} />
                         <AvatarFallback className="bg-emerald-500 font-semibold text-white">
                           {getInitials(analysisOutput.person?.name)}

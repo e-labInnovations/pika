@@ -101,7 +101,7 @@ const DetailedPerson = () => {
             <Card className="border-slate-200 bg-white/70 backdrop-blur-sm dark:border-slate-700 dark:bg-slate-800/70">
               <CardContent>
                 <div className="flex items-center gap-4">
-                  <Avatar className="h-20 w-20">
+                  <Avatar className="h-20 w-20 border-2 border-slate-300 dark:border-slate-600">
                     <AvatarImage src={person?.avatar?.url || undefined} alt={person?.name || 'Person'} />
                     <AvatarFallback className="bg-emerald-500 text-xl font-semibold text-white">
                       {getInitials(person.name)}

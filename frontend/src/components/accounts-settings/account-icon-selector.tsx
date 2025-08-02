@@ -65,7 +65,7 @@ const AccountIconSelector = ({
         /* Avatar Upload */
         <div className="space-y-4">
           <div className="flex items-center space-x-4">
-            <Avatar className="h-16 w-16">
+            <Avatar className="h-16 w-16 border-2 border-slate-300 dark:border-slate-600">
               <AvatarImage src={avatar || undefined} alt="Account avatar" />
               <AvatarFallback className="text-lg">{name.charAt(0).toUpperCase()}</AvatarFallback>
             </Avatar>

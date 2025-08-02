@@ -34,7 +34,7 @@ const AccountPreview = ({
       <div className="rounded-md border border-slate-200 p-4 dark:border-slate-700">
         <div className="flex items-center space-x-3">
           {useAvatar && avatar ? (
-            <Avatar className="h-10 w-10">
+            <Avatar className="h-10 w-10 border-1 border-slate-300 dark:border-slate-600">
               <AvatarImage src={avatar} alt="Account avatar" />
               <AvatarFallback>{name.charAt(0).toUpperCase()}</AvatarFallback>
             </Avatar>

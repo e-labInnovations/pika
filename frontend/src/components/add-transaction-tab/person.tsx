@@ -1,4 +1,4 @@
-import { User, X } from 'lucide-react';
+import { Pencil, User } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import type { TransactionFormData } from './types';
@@ -40,7 +40,7 @@ const PersonView = ({ formData, setFormData }: PersonProps) => {
           {formData.person ? (
             <div className="flex items-center justify-between rounded-lg border border-purple-200 bg-purple-50 p-3 dark:border-purple-800 dark:bg-purple-900/20">
               <div className="flex items-center space-x-3">
-                <Avatar className="h-10 w-10">
+                <Avatar className="h-10 w-10 border-1 border-slate-300 dark:border-slate-600">
                   <AvatarImage src={person?.avatar?.url} alt={person?.name} />
                   <AvatarFallback className="bg-purple-500 font-semibold text-white">
                     {getInitials(person?.name || '')}
@@ -51,8 +51,8 @@ const PersonView = ({ formData, setFormData }: PersonProps) => {
                   <p className="line-clamp-1 text-sm text-slate-500">{person?.description}</p>
                 </div>
               </div>
-              <Button variant="ghost" size="sm" onClick={() => setFormData((prev) => ({ ...prev, person: null }))}>
-                <X className="h-4 w-4" />
+              <Button variant="ghost" size="sm" onClick={() => setShowPeoplePicker(true)}>
+                <Pencil className="h-4 w-4" />
               </Button>
             </div>
           ) : (

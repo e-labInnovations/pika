@@ -262,7 +262,7 @@ export function TransactionsList({
                         </div>
                         <div className="flex items-center gap-2">
                           {transaction.person && (
-                            <Avatar className="h-8 w-8">
+                            <Avatar className="h-8 w-8 border-1 border-slate-300 dark:border-slate-600">
                               <AvatarImage src={transaction.person?.avatar?.url} alt={transaction.person?.name} />
                               <AvatarFallback className="bg-emerald-500 font-semibold text-white">
                                 {getInitials(transaction.person?.name)}

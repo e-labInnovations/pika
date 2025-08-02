@@ -53,7 +53,7 @@ const PeopleActivityPopover = ({ children, personData, open, onOpenChange, date 
       <PopoverContent className="w-fit" align="center">
         <div className="space-y-3">
           <div className="flex items-center gap-3">
-            <Avatar className="h-10 w-10">
+            <Avatar className="h-10 w-10 border-1 border-slate-300 dark:border-slate-600">
               <AvatarImage src={personData.avatarUrl || undefined} alt={personData.name} />
               <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 font-semibold text-white">
                 {getInitials(personData.name)}

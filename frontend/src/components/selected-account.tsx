@@ -1,17 +1,17 @@
 import { Button } from '@/components/ui/button';
-import { X } from 'lucide-react';
+import { Pencil } from 'lucide-react';
 import AccountAvatar from '@/components/account-avatar';
 import type { Account } from '@/services/api';
 import { cn } from '@/lib/utils';
 
 interface SelectedAccountProps {
   account: Account;
-  onRemove: () => void;
+  onEdit: () => void;
   showBalance?: boolean;
   className?: string;
 }
 
-const SelectedAccount = ({ account, onRemove, showBalance = true, className = '' }: SelectedAccountProps) => {
+const SelectedAccount = ({ account, onEdit, showBalance = true, className = '' }: SelectedAccountProps) => {
   const getBalanceColor = (balance: number) => {
     if (balance >= 0) return 'text-emerald-600 dark:text-emerald-400';
     return 'text-red-500 dark:text-red-400';
@@ -36,8 +36,8 @@ const SelectedAccount = ({ account, onRemove, showBalance = true, className = ''
           {account.description && <p className="text-xs text-slate-500 dark:text-slate-400">{account.description}</p>}
         </div>
       </div>
-      <Button variant="ghost" size="sm" onClick={onRemove} className="h-8 w-8 p-0">
-        <X className="h-4 w-4" />
+      <Button variant="ghost" size="sm" onClick={onEdit} className="h-8 w-8 p-0">
+        <Pencil className="h-4 w-4" />
       </Button>
     </div>
   );

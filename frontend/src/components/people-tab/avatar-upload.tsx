@@ -31,7 +31,7 @@ const AvatarUpload = ({ avatar, name, onAvatarChange }: AvatarUploadProps) => {
       <Label>Profile Picture</Label>
       <div className="flex justify-center">
         <div className="relative">
-          <Avatar className="h-24 w-24">
+          <Avatar className="h-24 w-24 border-2 border-slate-300 dark:border-slate-600">
             <AvatarImage src={avatar} alt="Person avatar" />
             <AvatarFallback className="text-2xl">{name.charAt(0).toUpperCase()}</AvatarFallback>
           </Avatar>

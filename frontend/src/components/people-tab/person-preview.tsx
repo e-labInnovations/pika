@@ -16,7 +16,7 @@ const PersonPreview = ({ name, email, phone, description, avatar }: PersonPrevie
       <Label>Preview</Label>
       <div className="rounded-md border border-slate-200 p-4 dark:border-slate-700">
         <div className="flex items-center space-x-3">
-          <Avatar className="h-12 w-12">
+          <Avatar className="h-12 w-12 border-2 border-slate-300 dark:border-slate-600">
             <AvatarImage src={avatar} alt="Person avatar" />
             <AvatarFallback>{getInitials(name)}</AvatarFallback>
           </Avatar>
