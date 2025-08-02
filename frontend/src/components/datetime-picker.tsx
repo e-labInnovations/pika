@@ -102,12 +102,12 @@ export function DateTimePicker({ value, onChange, disabled, className }: DateTim
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">
-          <div className="p-2">
+          <div className="p-2 pb-0">
             <Button variant="outline" size="sm" onClick={handleSetNow} className="mb-2 w-full">
               Set Now
             </Button>
           </div>
-          <Calendar mode="single" selected={value} onSelect={handleDateChange} initialFocus />
+          <Calendar mode="single" className="pt-0" selected={value} onSelect={handleDateChange} month={value} />
         </PopoverContent>
       </Popover>
 

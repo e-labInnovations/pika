@@ -41,11 +41,11 @@ const DayPopover = ({ children, dayData, date, open, onOpenChange }: DayPopoverP
     });
   };
 
-  if (!dayData) {
+  if (!dayData || dayData.transactionCount === 0) {
     return (
       <Popover open={open} onOpenChange={onOpenChange}>
         <PopoverTrigger asChild>{children}</PopoverTrigger>
-        <PopoverContent className="w-72" align="center">
+        <PopoverContent className="w-fit" align="center">
           <div className="space-y-3">
             <div className="flex items-center space-x-2">
               <Calendar className="text-muted-foreground h-4 w-4" />
