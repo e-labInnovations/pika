@@ -10,12 +10,20 @@ import { Button } from '@/components/ui/button';
 import { TagChip } from '@/components/tag-chip';
 import AccountAvatar from '@/components/account-avatar';
 import { transactionsService, type Transaction } from '@/services/api';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import transactionUtils from '@/lib/transaction-utils';
 import AsyncStateWrapper from '@/components/async-state-wrapper';
 import { currencyUtils } from '@/lib/currency-utils';
 import { useAuth } from '@/hooks/use-auth';
+import AttachmentViewer from '@/components/attachment-viewer';
+
+interface TransactionAttachment {
+  name: string;
+  url: string;
+  type: string;
+  size: string;
+}
 
 const TransactionDetails = () => {
   const navigate = useNavigate();
@@ -23,17 +31,11 @@ const TransactionDetails = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<unknown | null>(null);
   const [transaction, setTransaction] = useState<Transaction | null>(null);
+  const [selectedAttachment, setSelectedAttachment] = useState<TransactionAttachment | null>(null);
+  const [isAttachmentViewerOpen, setIsAttachmentViewerOpen] = useState(false);
   const { user } = useAuth();
 
-  useEffect(() => {
-    if (id) {
-      fetchTransaction();
-    } else {
-      setError(new Error('Transaction not found'));
-    }
-  }, [id]);
-
-  const fetchTransaction = () => {
+  const fetchTransaction = useCallback(() => {
     setIsLoading(true);
     setError(null);
     transactionsService
@@ -47,11 +49,29 @@ const TransactionDetails = () => {
       .finally(() => {
         setIsLoading(false);
       });
-  };
+  }, [id]);
+
+  useEffect(() => {
+    if (id) {
+      fetchTransaction();
+    } else {
+      setError(new Error('Transaction not found'));
+    }
+  }, [id, fetchTransaction]);
 
   const getTransactionType = (type: string) => {
     const transactionType = transactionUtils.types.find((transactionType) => transactionType.id === type);
     return transactionType;
+  };
+
+  const handleAttachmentClick = (attachment: TransactionAttachment) => {
+    setSelectedAttachment(attachment);
+    setIsAttachmentViewerOpen(true);
+  };
+
+  const handleCloseAttachmentViewer = () => {
+    setIsAttachmentViewerOpen(false);
+    setSelectedAttachment(null);
   };
 
   return (
@@ -262,6 +282,7 @@ const TransactionDetails = () => {
                       <div
                         key={index}
                         className="cursor-pointer rounded-lg border border-slate-200 p-3 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800"
+                        onClick={() => handleAttachmentClick(attachment)}
                       >
                         {attachment.type === 'image' ? (
                           <div className="flex h-full flex-col items-center justify-center gap-2">
@@ -316,6 +337,12 @@ const TransactionDetails = () => {
             </Card>
           </div>
         )}
+
+        <AttachmentViewer
+          isOpen={isAttachmentViewerOpen}
+          onClose={handleCloseAttachmentViewer}
+          attachment={selectedAttachment}
+        />
       </AsyncStateWrapper>
     </TabsLayout>
   );
