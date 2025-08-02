@@ -5,8 +5,9 @@ import type { TransactionFormData } from './types';
 import { useEffect, useState } from 'react';
 import PeoplePicker from '../people-picker';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-import { peopleService, type Person } from '@/services/api';
+import { type Person } from '@/services/api';
 import { cn, getColorFromName, getInitials } from '@/lib/utils';
+import { storeUtils } from '@/store/useLookupStore';
 
 interface PersonProps {
   formData: TransactionFormData;
@@ -19,9 +20,8 @@ const PersonView = ({ formData, setFormData }: PersonProps) => {
 
   useEffect(() => {
     if (formData.person) {
-      peopleService.get(formData.person).then((response) => {
-        setPerson(response.data);
-      });
+      const _person = storeUtils.getPersonById(formData.person);
+      setPerson(_person ?? null);
     } else {
       setPerson(null);
     }
