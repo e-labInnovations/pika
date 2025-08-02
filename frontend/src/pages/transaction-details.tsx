@@ -17,6 +17,7 @@ import AsyncStateWrapper from '@/components/async-state-wrapper';
 import { currencyUtils } from '@/lib/currency-utils';
 import { useAuth } from '@/hooks/use-auth';
 import AttachmentViewer from '@/components/attachment-viewer';
+import { cn, getColorFromName, getInitials } from '@/lib/utils';
 
 interface TransactionAttachment {
   name: string;
@@ -211,7 +212,11 @@ const TransactionDetails = () => {
                     <div className="flex items-center justify-start gap-3">
                       <Avatar className="h-8 w-8 border-1 border-slate-300 dark:border-slate-600">
                         <AvatarImage src={transaction.person?.avatar?.url} alt={transaction.person?.name} />
-                        <AvatarFallback>CN</AvatarFallback>
+                        <AvatarFallback
+                          className={cn('text-xs font-semibold', getColorFromName(transaction.person?.name))}
+                        >
+                          {getInitials(transaction.person?.name)}
+                        </AvatarFallback>
                       </Avatar>
                       <div className="flex flex-1 flex-col">
                         <span className="font-semibold tracking-tight">{transaction.person?.name}</span>

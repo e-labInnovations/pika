@@ -5,7 +5,7 @@ import { currencyUtils } from '@/lib/currency-utils';
 import { useAuth } from '@/hooks/use-auth';
 import { analyticsService, type PersonActivity, type MonthlyPersonActivity } from '@/services/api';
 import AsyncStateWrapper from '../async-state-wrapper';
-import { cn, getInitials } from '@/lib/utils';
+import { cn, getColorFromName, getInitials } from '@/lib/utils';
 import PeopleActivityPopover from './people-activity-popover';
 import transactionUtils from '@/lib/transaction-utils';
 
@@ -74,7 +74,7 @@ const PersonItem = ({ person, popoverOpen, onPopoverOpenChange, date }: PersonIt
             {/* Avatar */}
             <Avatar className="h-10 w-10 border-2 border-slate-300 dark:border-slate-600">
               <AvatarImage src={person.avatarUrl || undefined} alt={person.name} />
-              <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-xs font-semibold text-white">
+              <AvatarFallback className={cn('text-xs font-semibold text-white', getColorFromName(person.name))}>
                 {getInitials(person.name)}
               </AvatarFallback>
             </Avatar>

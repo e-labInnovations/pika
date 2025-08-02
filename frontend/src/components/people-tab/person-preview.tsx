@@ -1,6 +1,6 @@
 import { Label } from '@/components/ui/label';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { getInitials } from '@/lib/utils';
+import { cn, getColorFromName, getInitials } from '@/lib/utils';
 
 interface PersonPreviewProps {
   name: string;
@@ -18,7 +18,9 @@ const PersonPreview = ({ name, email, phone, description, avatar }: PersonPrevie
         <div className="flex items-center space-x-3">
           <Avatar className="h-12 w-12 border-2 border-slate-300 dark:border-slate-600">
             <AvatarImage src={avatar} alt="Person avatar" />
-            <AvatarFallback>{getInitials(name)}</AvatarFallback>
+            <AvatarFallback className={cn('text-md font-semibold', getColorFromName(name))}>
+              {getInitials(name)}
+            </AvatarFallback>
           </Avatar>
           <div>
             <p className="font-medium">{name || 'Full Name'}</p>

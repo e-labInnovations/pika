@@ -13,7 +13,7 @@ import { TagChip } from './tag-chip';
 import transactionUtils from '@/lib/transaction-utils';
 import { currencyUtils } from '@/lib/currency-utils';
 import { useAuth } from '@/hooks/use-auth';
-import { getInitials, runWithLoaderAndError } from '@/lib/utils';
+import { cn, getColorFromName, getInitials, runWithLoaderAndError } from '@/lib/utils';
 import { useConfirmDialog } from '@/store/useConfirmDialog';
 
 interface TransactionsListProps {
@@ -264,7 +264,12 @@ export function TransactionsList({
                           {transaction.person && (
                             <Avatar className="h-8 w-8 border-1 border-slate-300 dark:border-slate-600">
                               <AvatarImage src={transaction.person?.avatar?.url} alt={transaction.person?.name} />
-                              <AvatarFallback className="bg-emerald-500 font-semibold text-white">
+                              <AvatarFallback
+                                className={cn(
+                                  'text-xs font-semibold text-white',
+                                  getColorFromName(transaction.person?.name),
+                                )}
+                              >
                                 {getInitials(transaction.person?.name)}
                               </AvatarFallback>
                             </Avatar>

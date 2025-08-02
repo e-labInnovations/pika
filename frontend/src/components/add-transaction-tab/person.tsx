@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import PeoplePicker from '../people-picker';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { peopleService, type Person } from '@/services/api';
-import { getInitials } from '@/lib/utils';
+import { cn, getColorFromName, getInitials } from '@/lib/utils';
 
 interface PersonProps {
   formData: TransactionFormData;
@@ -42,7 +42,9 @@ const PersonView = ({ formData, setFormData }: PersonProps) => {
               <div className="flex items-center space-x-3">
                 <Avatar className="h-10 w-10 border-1 border-slate-300 dark:border-slate-600">
                   <AvatarImage src={person?.avatar?.url} alt={person?.name} />
-                  <AvatarFallback className="bg-purple-500 font-semibold text-white">
+                  <AvatarFallback
+                    className={cn('text-xs font-semibold text-white', getColorFromName(person?.name || ''))}
+                  >
                     {getInitials(person?.name || '')}
                   </AvatarFallback>
                 </Avatar>

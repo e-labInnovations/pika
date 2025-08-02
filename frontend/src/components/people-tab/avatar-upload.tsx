@@ -3,6 +3,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Camera, X } from 'lucide-react';
+import { cn, getColorFromName } from '@/lib/utils';
 
 interface AvatarUploadProps {
   avatar: string;
@@ -33,7 +34,9 @@ const AvatarUpload = ({ avatar, name, onAvatarChange }: AvatarUploadProps) => {
         <div className="relative">
           <Avatar className="h-24 w-24 border-2 border-slate-300 dark:border-slate-600">
             <AvatarImage src={avatar} alt="Person avatar" />
-            <AvatarFallback className="text-2xl">{name.charAt(0).toUpperCase()}</AvatarFallback>
+            <AvatarFallback className={cn('text-3xl font-semibold', name && getColorFromName(name))}>
+              {name.charAt(0).toUpperCase()}
+            </AvatarFallback>
           </Avatar>
 
           {/* Edit button - bottom right */}

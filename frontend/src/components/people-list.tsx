@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { currencyUtils } from '@/lib/currency-utils';
 import { useAuth } from '@/hooks/use-auth';
 import transactionUtils from '@/lib/transaction-utils';
-import { cn, getInitials } from '@/lib/utils';
+import { cn, getColorFromName, getInitials } from '@/lib/utils';
 
 interface PeopleListProps {
   people: Person[];
@@ -42,7 +42,7 @@ export function PeopleList({ people, searchTerm }: PeopleListProps) {
                 <div className="flex flex-1 items-center space-x-3">
                   <Avatar className="h-12 w-12 border-2 border-slate-300 dark:border-slate-600">
                     <AvatarImage src={person.avatar?.url} alt={person.name} />
-                    <AvatarFallback className="bg-emerald-500 font-semibold text-white">
+                    <AvatarFallback className={cn('text-xs font-semibold text-white', getColorFromName(person.name))}>
                       {getInitials(person.name)}
                     </AvatarFallback>
                   </Avatar>

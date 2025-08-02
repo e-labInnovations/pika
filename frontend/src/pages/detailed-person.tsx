@@ -13,7 +13,7 @@ import { peopleService, type PersonDetailed } from '@/services/api';
 import { useConfirmDialog } from '@/store/useConfirmDialog';
 import { runWithLoaderAndError } from '@/lib/async-handler';
 import { useLookupStore } from '@/store/useLookupStore';
-import { cn, getInitials } from '@/lib/utils';
+import { cn, getColorFromName, getInitials } from '@/lib/utils';
 import PersonTransactions from '@/components/people-tab/person-transactions';
 import AsyncStateWrapper from '@/components/async-state-wrapper';
 
@@ -103,7 +103,7 @@ const DetailedPerson = () => {
                 <div className="flex items-center gap-4">
                   <Avatar className="h-20 w-20 border-2 border-slate-300 dark:border-slate-600">
                     <AvatarImage src={person?.avatar?.url || undefined} alt={person?.name || 'Person'} />
-                    <AvatarFallback className="bg-emerald-500 text-xl font-semibold text-white">
+                    <AvatarFallback className={cn('text-xl font-semibold text-white', getColorFromName(person.name))}>
                       {getInitials(person.name)}
                     </AvatarFallback>
                   </Avatar>

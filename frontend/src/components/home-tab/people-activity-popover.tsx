@@ -9,7 +9,7 @@ import type { PersonActivity } from '@/services/api/analytics.service';
 import { useNavigate } from 'react-router-dom';
 import transactionUtils from '@/lib/transaction-utils';
 import { TagChip } from '../tag-chip';
-import { cn, getInitials } from '@/lib/utils';
+import { cn, getColorFromName, getInitials } from '@/lib/utils';
 
 interface PeopleActivityPopoverProps {
   children: React.ReactNode;
@@ -55,7 +55,7 @@ const PeopleActivityPopover = ({ children, personData, open, onOpenChange, date 
           <div className="flex items-center gap-3">
             <Avatar className="h-10 w-10 border-1 border-slate-300 dark:border-slate-600">
               <AvatarImage src={personData.avatarUrl || undefined} alt={personData.name} />
-              <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 font-semibold text-white">
+              <AvatarFallback className={cn('text-xs font-semibold text-white', getColorFromName(personData.name))}>
                 {getInitials(personData.name)}
               </AvatarFallback>
             </Avatar>

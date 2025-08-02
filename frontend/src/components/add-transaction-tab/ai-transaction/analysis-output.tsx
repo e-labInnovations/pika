@@ -7,7 +7,7 @@ import AccountAvatar from '@/components/account-avatar';
 import { ArrowBigRightDash } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { TagChip } from '@/components/tag-chip';
-import { cn, getInitials } from '@/lib/utils';
+import { cn, getColorFromName, getInitials } from '@/lib/utils';
 import { CheckCircle2, RotateCcw } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
 import { Button } from '@/components/ui/button';
@@ -71,7 +71,12 @@ const AnalysisOutput = ({ analysisOutput, onRetryAnalysis }: AnalysisOutputProps
                     {analysisOutput.person && (
                       <Avatar className="h-8 w-8 border-1 border-slate-300 dark:border-slate-600">
                         <AvatarImage src={analysisOutput.person?.avatar?.url} alt={analysisOutput.person?.name} />
-                        <AvatarFallback className="bg-emerald-500 font-semibold text-white">
+                        <AvatarFallback
+                          className={cn(
+                            'text-xs font-semibold text-white',
+                            getColorFromName(analysisOutput.person?.name),
+                          )}
+                        >
                           {getInitials(analysisOutput.person?.name)}
                         </AvatarFallback>
                       </Avatar>

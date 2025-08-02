@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import SearchBar from './search-bar';
 import { type Person } from '@/services/api';
 import { useLookupStore } from '@/store/useLookupStore';
-import { cn, getInitials } from '@/lib/utils';
+import { cn, getColorFromName, getInitials } from '@/lib/utils';
 import { currencyUtils } from '@/lib/currency-utils';
 import { useAuth } from '@/hooks/use-auth';
 import transactionUtils from '@/lib/transaction-utils';
@@ -68,7 +68,7 @@ const PeoplePicker = ({ isOpen, onClose, onSelect, selectedPersonId }: PeoplePic
               <div className="flex items-center space-x-3">
                 <Avatar className="h-10 w-10 border-1 border-slate-300 dark:border-slate-600">
                   <AvatarImage src={person.avatar?.url} alt={person.name} />
-                  <AvatarFallback className="bg-emerald-500 font-semibold text-white">
+                  <AvatarFallback className={cn('text-xs font-semibold text-white', getColorFromName(person.name))}>
                     {getInitials(person.name)}
                   </AvatarFallback>
                 </Avatar>
