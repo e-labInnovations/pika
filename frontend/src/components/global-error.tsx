@@ -30,7 +30,7 @@ const GlobalError = ({
 
         <div className="text-foreground mb-2 text-xl font-semibold">{title}</div>
 
-        <div className="text-muted-foreground mb-6 max-w-md text-sm">{message}</div>
+        <div className="text-muted-foreground mb-6 max-w-md text-sm">{message.replace(/<[^>]*>/g, '')}</div>
 
         {onButtonClick && (
           <Button onClick={onButtonClick} variant="outline" size="lg" className="gap-2">

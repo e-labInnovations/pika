@@ -16,7 +16,7 @@ const GlobalErrorDialog = () => {
           </DialogTitle>
         </DialogHeader>
 
-        <div className="text-muted-foreground text-sm">{message}</div>
+        <div className="text-muted-foreground text-sm">{message?.replace(/<[^>]*>/g, '')}</div>
 
         <DialogFooter>
           <Button onClick={close}>OK</Button>
