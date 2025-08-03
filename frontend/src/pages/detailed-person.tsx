@@ -172,22 +172,42 @@ const DetailedPerson = () => {
                   <CardTitle>Financial Summary</CardTitle>
                 </CardHeader>
                 <CardContent className="gap-4">
-                  <div className="grid grid-cols-3 gap-4 text-center">
-                    <div>
-                      <p className="text-2xl font-bold text-slate-900 dark:text-white">{person.totalTransactions}</p>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">Transactions</p>
+                  <div className="space-y-4">
+                    {/* Transactions Count */}
+                    <div className="flex items-center justify-between rounded-lg bg-slate-50 p-3 dark:bg-slate-800">
+                      <div className="flex items-center space-x-2">
+                        <DynamicIcon name="list" className="h-4 w-4 text-slate-500" />
+                        <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                          Total Transactions
+                        </span>
+                      </div>
+                      <span className="text-lg font-bold text-slate-900 dark:text-white">
+                        {person.totalTransactions}
+                      </span>
                     </div>
-                    <div>
-                      <p className="text-2xl font-bold text-red-500 dark:text-red-400">
+
+                    {/* Total Spent */}
+                    <div className="flex items-center justify-between rounded-lg bg-red-50 p-3 dark:bg-red-900/20">
+                      <div className="flex items-center space-x-2">
+                        <DynamicIcon name="trending-down" className="h-4 w-4 text-red-500" />
+                        <span className="text-sm font-medium text-red-700 dark:text-red-300">Total Spent</span>
+                      </div>
+                      <span className="text-lg font-bold text-red-600 dark:text-red-400">
                         {currencyUtils.formatAmount(person.totalSummary.totalSpent || 0, user?.settings?.currency)}
-                      </p>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">Total Spent</p>
+                      </span>
                     </div>
-                    <div>
-                      <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+
+                    {/* Total Received */}
+                    <div className="flex items-center justify-between rounded-lg bg-emerald-50 p-3 dark:bg-emerald-900/20">
+                      <div className="flex items-center space-x-2">
+                        <DynamicIcon name="trending-up" className="h-4 w-4 text-emerald-500" />
+                        <span className="text-sm font-medium text-emerald-700 dark:text-emerald-300">
+                          Total Received
+                        </span>
+                      </div>
+                      <span className="text-lg font-bold text-emerald-600 dark:text-emerald-400">
                         {currencyUtils.formatAmount(person.totalSummary.totalReceived || 0, user?.settings?.currency)}
-                      </p>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">Total Received</p>
+                      </span>
                     </div>
                   </div>
                 </CardContent>

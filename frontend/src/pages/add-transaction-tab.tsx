@@ -20,15 +20,17 @@ import {
   type UploadResponse,
 } from '@/services/api';
 import { toast } from 'sonner';
-import { queryUtils } from '@/hooks/query-utils';
+import { queryUtils, invalidateTxRelatedQueries } from '@/hooks/query-utils';
 import { useCategories } from '@/hooks/queries';
 import { runWithLoaderAndError } from '@/lib/utils';
+import { useQueryClient } from '@tanstack/react-query';
 
 const AddTransactionTab = () => {
   const { data: categories = [] } = useCategories();
   const [openAiReceiptScanner, setOpenAiReceiptScanner] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const queryClient = useQueryClient();
 
   const [formData, setFormData] = useState<TransactionFormData>({
     title: '',
@@ -129,6 +131,9 @@ const AddTransactionTab = () => {
         successMessage: 'Transaction saved successfully!',
         finally: () => {
           setIsSubmitting(false);
+        },
+        onSuccess: () => {
+          invalidateTxRelatedQueries(queryClient);
         },
       },
     );

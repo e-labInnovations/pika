@@ -3,10 +3,11 @@ import { Calendar, CalendarDayButton } from '@/components/ui/calendar';
 import transactionUtils from '@/lib/transaction-utils';
 import { currencyUtils } from '@/lib/currency-utils';
 import { useAuth } from '@/hooks/use-auth';
-import { analyticsService, type DailySummaries, type DailySummary } from '@/services/api';
+import { type DailySummaries, type DailySummary } from '@/services/api';
 import AsyncStateWrapper from '../async-state-wrapper';
 import DayPopover from './day-popover';
 import { DynamicIcon } from '@/components/lucide';
+import { useDailySummaries } from '@/hooks/queries';
 
 interface DailyCalendarProps {
   selectedDate: Date;
@@ -14,31 +15,22 @@ interface DailyCalendarProps {
 
 const DailyCalendar = ({ selectedDate }: DailyCalendarProps) => {
   const { user } = useAuth();
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<unknown | null>(null);
   const [dailySummaries, setDailySummaries] = useState<DailySummaries | null>(null);
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
 
-  useEffect(() => {
-    getDailyExpenses();
-  }, [selectedDate]);
+  const {
+    data: dailySummariesData,
+    isLoading,
+    error,
+    refetch,
+  } = useDailySummaries(selectedDate.getMonth() + 1, selectedDate.getFullYear());
 
-  const getDailyExpenses = async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const response = await analyticsService.getDailySummaries(
-        selectedDate.getMonth() + 1,
-        selectedDate.getFullYear(),
-      );
-      setDailySummaries(response.data);
-    } catch (error) {
-      setError(error);
-    } finally {
-      setIsLoading(false);
+  useEffect(() => {
+    if (dailySummariesData) {
+      setDailySummaries(dailySummariesData);
     }
-  };
+  }, [dailySummariesData]);
 
   const getDaySummary = (date: Date) => {
     // Format date as YYYY-MM-DD in local timezone to avoid UTC conversion issues
@@ -90,7 +82,7 @@ const DailyCalendar = ({ selectedDate }: DailyCalendarProps) => {
     <AsyncStateWrapper
       isLoading={isLoading}
       error={error}
-      onRetry={getDailyExpenses}
+      onRetry={refetch}
       className="min-h-[430px] w-full rounded-md border"
     >
       <Calendar

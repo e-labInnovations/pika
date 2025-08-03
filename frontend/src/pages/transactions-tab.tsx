@@ -13,13 +13,12 @@ import { defaultSort, type Sort } from '@/components/transactions-tab/sort/types
 import FilterSortBar from '@/components/transactions-tab/filter-sort-bar';
 import SearchBar from '@/components/search-bar';
 import HeaderRightActions from '@/components/transactions-tab/header-right-actions';
-import { transactionsService, type Transaction } from '@/services/api';
 import { useSearchParams } from 'react-router-dom';
 import AsyncStateWrapper from '@/components/async-state-wrapper';
 import { type TransactionType } from '@/lib/transaction-utils';
+import { useTransactions } from '@/hooks/queries';
 
 const TransactionsTab = () => {
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [showTransactionSearch, setShowTransactionSearch] = useState(false);
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [showSortModal, setShowSortModal] = useState(false);
@@ -33,8 +32,7 @@ const TransactionsTab = () => {
   const linkBackward = personId ? `/people/${personId}` : undefined;
   const [description, setDescription] = useState('Your financial transactions');
   const [activeFilterCount, setActiveFilterCount] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<unknown | null>(null);
+  const { data: transactions, isLoading, error, refetch } = useTransactions();
 
   // Extract all filter values from URL on component mount
   useEffect(() => {
@@ -45,6 +43,7 @@ const TransactionsTab = () => {
     const categories = searchParams.get('categories')?.split(',').filter(Boolean) || [];
     const tags = searchParams.get('tags')?.split(',').filter(Boolean) || [];
     const people = searchParams.get('people')?.split(',').filter(Boolean) || [];
+    const personId = searchParams.get('personId');
     const accounts = searchParams.get('accounts')?.split(',').filter(Boolean) || [];
 
     // Extract date range filters - epoch timestamps
@@ -65,6 +64,7 @@ const TransactionsTab = () => {
     if (tags.length > 0) urlFilters.tags = tags;
     if (people.length > 0) urlFilters.people = people;
     if (accounts.length > 0) urlFilters.accounts = accounts;
+    if (personId) urlFilters.people = [...people, personId];
 
     // Handle date filtering
     if (dateFrom || dateTo) {
@@ -89,67 +89,35 @@ const TransactionsTab = () => {
   }, [searchParams]);
 
   useEffect(() => {
-    fetchTransactions();
-  }, [source]);
-
-  useEffect(() => {
     let count = 0;
 
     // Count array filters that have items
-    if (filters.types.length > 0) count++;
-    if (filters.categories.length > 0) count++;
-    if (filters.tags.length > 0) count++;
-    if (filters.people.length > 0) count++;
-    if (filters.accounts.length > 0) count++;
+    if (filters.types.length > 0) count += 1;
+    if (filters.categories.length > 0) count += 1;
+    if (filters.tags.length > 0) count += 1;
+    if (filters.people.length > 0) count += 1;
+    if (filters.accounts.length > 0) count += 1;
 
     // Count date range filter if either from or to is set
-    if (filters.dateRange.from || filters.dateRange.to) count++;
+    if (filters.dateRange.from || filters.dateRange.to) count += 1;
 
     // Count amount filter if value1 is set
-    if (filters.amount.value1) count++;
+    if (filters.amount.value1) count += 1;
 
     setActiveFilterCount(count);
   }, [filters]);
 
-  useEffect(() => {}, [sort]);
-
-  const fetchTransactions = () => {
-    setIsLoading(true);
-    setError(null);
-
+  useEffect(() => {
     if (source === 'person' && personId) {
-      transactionsService
-        .list({
-          personId: personId ?? undefined,
-        })
-        .then((response) => {
-          setTransactions(response.data);
-          if (response.data.length > 0) {
-            setDescription(`Transactions with ${response.data[0].person.name}`);
-          } else {
-            setDescription('Transactions with person');
-          }
-        })
-        .catch((error) => {
-          setError(error);
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
+      if (transactions && transactions[0] && transactions[0].person) {
+        setDescription(`Transactions with ${transactions[0].person.name}`);
+      } else {
+        setDescription('Transactions with Person');
+      }
     } else {
-      transactionsService
-        .list()
-        .then((response) => {
-          setTransactions(response.data);
-        })
-        .catch((error) => {
-          setError(error);
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
+      setDescription('Transactions');
     }
-  };
+  }, [transactions, personId, source]);
 
   const clearSearchAndFilters = () => {
     setSearchTerm('');
@@ -217,12 +185,12 @@ const TransactionsTab = () => {
         )}
 
         <TransactionsList
-          transactions={transactions}
+          transactions={transactions ?? []}
           searchTerm={searchTerm}
           onClearSearchAndFilters={clearSearchAndFilters}
           filters={filters}
           sort={sort}
-          refreshTransactions={fetchTransactions}
+          refreshTransactions={refetch}
         />
 
         <TransactionsFilter

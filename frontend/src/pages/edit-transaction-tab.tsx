@@ -21,10 +21,11 @@ import {
   type UploadResponse,
 } from '@/services/api';
 import { toast } from 'sonner';
-import { queryUtils } from '@/hooks/query-utils';
+import { invalidateTxRelatedQueries, queryUtils } from '@/hooks/query-utils';
 import { useCategories } from '@/hooks/queries';
 import { runWithLoaderAndError } from '@/lib/utils';
 import AsyncStateWrapper from '@/components/async-state-wrapper';
+import { useQueryClient } from '@tanstack/react-query';
 
 const EditTransactionTab = () => {
   const navigate = useNavigate();
@@ -32,7 +33,7 @@ const EditTransactionTab = () => {
   const { data: categories = [] } = useCategories();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<unknown | null>(null);
-
+  const queryClient = useQueryClient();
   const [openAiReceiptScanner, setOpenAiReceiptScanner] = useState(false);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
@@ -151,6 +152,9 @@ const EditTransactionTab = () => {
       {
         loaderMessage: 'Updating transaction...',
         successMessage: 'Transaction updated successfully',
+        onSuccess: () => {
+          invalidateTxRelatedQueries(queryClient);
+        },
       },
     );
   };

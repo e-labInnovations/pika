@@ -8,6 +8,7 @@ import AsyncStateWrapper from '../async-state-wrapper';
 import { cn, getColorFromName, getInitials } from '@/lib/utils';
 import PeopleActivityPopover from './people-activity-popover';
 import transactionUtils from '@/lib/transaction-utils';
+import { useQuery } from '@tanstack/react-query';
 
 interface PeopleActivityProps {
   selectedDate: Date;
@@ -22,13 +23,6 @@ interface PersonItemProps {
 
 const PersonItem = ({ person, popoverOpen, onPopoverOpenChange, date }: PersonItemProps) => {
   const { user } = useAuth();
-
-  const formatAmount = (amount: number) => {
-    return currencyUtils.formatAmount(Math.abs(amount), user?.settings?.currency, {
-      showSymbol: true,
-      showDecimal: true,
-    });
-  };
 
   // Calculate total transactions and percentages for the progress border
   const totalTransactions = person.expenseAmount + person.incomeAmount;
@@ -82,7 +76,7 @@ const PersonItem = ({ person, popoverOpen, onPopoverOpenChange, date }: PersonIt
             {/* Balance Information */}
             <div className="mx-2 flex-1 text-right">
               <div className={cn('text-sm font-bold', transactionUtils.getBalanceColor(person.balance, true))}>
-                {person.balance === 0 ? 'Even' : formatAmount(person.balance)}
+                {person.balance === 0 ? 'Even' : currencyUtils.formatAmount(person.balance, user?.settings?.currency)}
               </div>
               <div className="text-xs text-slate-500 dark:text-slate-400">
                 {person.balance === 0 ? 'Settled' : person.balance >= 0 ? 'You owe' : 'Owes you'}
@@ -96,31 +90,25 @@ const PersonItem = ({ person, popoverOpen, onPopoverOpenChange, date }: PersonIt
 };
 
 const PeopleActivityView = ({ selectedDate }: PeopleActivityProps) => {
-  const [peopleActivityData, setPeopleActivityData] = useState<MonthlyPersonActivity | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<unknown | null>(null);
+  const [peopleActivity, setPeopleActivity] = useState<MonthlyPersonActivity | null>(null);
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [selectedPerson, setSelectedPerson] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchPeopleActivity();
-  }, [selectedDate]);
+  const {
+    data: peopleActivityData,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ['people-activity', selectedDate.getMonth() + 1, selectedDate.getFullYear()],
+    queryFn: () => analyticsService.getPeopleActivity(selectedDate.getMonth() + 1, selectedDate.getFullYear()),
+  });
 
-  const fetchPeopleActivity = async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const response = await analyticsService.getPeopleActivity(
-        selectedDate.getMonth() + 1,
-        selectedDate.getFullYear(),
-      );
-      setPeopleActivityData(response.data);
-    } catch (error) {
-      setError(error);
-    } finally {
-      setIsLoading(false);
+  useEffect(() => {
+    if (peopleActivityData) {
+      setPeopleActivity(peopleActivityData.data);
     }
-  };
+  }, [peopleActivityData]);
 
   const handlePopoverOpenChange = (personId: string, open: boolean) => {
     if (open) {
@@ -134,9 +122,8 @@ const PeopleActivityView = ({ selectedDate }: PeopleActivityProps) => {
 
   // Filter out people with zero transactions and sort by balance amount (descending)
   const peopleWithTransactions =
-    peopleActivityData?.data
-      .filter((person) => person.totalTransactionCount > 0)
-      .sort((a, b) => a.balance - b.balance) || [];
+    peopleActivity?.data.filter((person) => person.totalTransactionCount > 0).sort((a, b) => a.balance - b.balance) ||
+    [];
   const totalPeople = peopleWithTransactions.length;
 
   return (
@@ -148,7 +135,7 @@ const PeopleActivityView = ({ selectedDate }: PeopleActivityProps) => {
       </CardHeader>
 
       <CardContent>
-        <AsyncStateWrapper isLoading={isLoading} error={error} onRetry={fetchPeopleActivity}>
+        <AsyncStateWrapper isLoading={isLoading} error={error} onRetry={refetch}>
           <div className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4">
             {peopleWithTransactions.map((person) => (
               <PersonItem

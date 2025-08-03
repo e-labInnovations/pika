@@ -4,9 +4,10 @@ import { useState, useEffect } from 'react';
 import { currencyUtils } from '@/lib/currency-utils';
 import { useAuth } from '@/hooks/use-auth';
 import SummaryCard from './summary-card';
-import { analyticsService, type MonthlySummary } from '@/services/api';
+import { type MonthlySummary } from '@/services/api';
 import transactionUtils from '@/lib/transaction-utils';
 import AsyncStateWrapper from '../async-state-wrapper';
+import { useMonthlySummary } from '@/hooks/queries';
 
 interface MonthlySummaryViewProps {
   selectedDate: Date;
@@ -14,32 +15,20 @@ interface MonthlySummaryViewProps {
 
 const MonthlySummaryView = ({ selectedDate }: MonthlySummaryViewProps) => {
   const { user } = useAuth();
-  const [monthlySummaryData, setMonthlySummaryData] = useState<MonthlySummary | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<unknown | null>(null);
+  const [monthlySummary, setMonthlySummary] = useState<MonthlySummary | null>(null);
+
+  const {
+    data: monthlySummaryData,
+    isLoading,
+    error,
+    refetch,
+  } = useMonthlySummary(selectedDate.getMonth() + 1, selectedDate.getFullYear());
 
   useEffect(() => {
-    fetchMonthlyData();
-  }, [selectedDate]);
-
-  const fetchMonthlyData = () => {
-    const month = selectedDate.getMonth() + 1;
-    const year = selectedDate.getFullYear();
-
-    setIsLoading(true);
-    setError(null);
-    analyticsService
-      .getMonthlySummary(month, year)
-      .then((response) => {
-        setMonthlySummaryData(response.data);
-      })
-      .catch((error) => {
-        setError(error);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  };
+    if (monthlySummaryData) {
+      setMonthlySummary(monthlySummaryData);
+    }
+  }, [monthlySummaryData]);
 
   const formatCurrency = (amount: number) => {
     return currencyUtils.formatAmount(amount, user?.settings?.currency);
@@ -61,20 +50,15 @@ const MonthlySummaryView = ({ selectedDate }: MonthlySummaryViewProps) => {
     <div className="flex flex-col gap-4">
       <h3 className="text-md font-semibold text-slate-900 dark:text-white">Monthly Summary</h3>
 
-      <AsyncStateWrapper
-        isLoading={isLoading}
-        error={error}
-        onRetry={fetchMonthlyData}
-        className="w-full rounded-md border"
-      >
-        {monthlySummaryData && (
+      <AsyncStateWrapper isLoading={isLoading} error={error} onRetry={refetch} className="w-full rounded-md border">
+        {monthlySummary && (
           <div className="space-y-4">
             {/* Summary Cards Grid */}
             <div className="grid grid-cols-3 gap-3">
               <SummaryCard
                 title="Income"
-                subtitle={transactionUtils.getCountLabel(monthlySummaryData.incomeTransactionCount)}
-                amount={monthlySummaryData.income}
+                subtitle={transactionUtils.getCountLabel(monthlySummary.incomeTransactionCount)}
+                amount={monthlySummary.income}
                 iconName="trending-up"
                 iconBgColor="bg-emerald-500"
                 amountColor="text-emerald-600 dark:text-emerald-400"
@@ -82,8 +66,8 @@ const MonthlySummaryView = ({ selectedDate }: MonthlySummaryViewProps) => {
 
               <SummaryCard
                 title="Expenses"
-                subtitle={transactionUtils.getCountLabel(monthlySummaryData.expenseTransactionCount)}
-                amount={monthlySummaryData.expenses}
+                subtitle={transactionUtils.getCountLabel(monthlySummary.expenseTransactionCount)}
+                amount={monthlySummary.expenses}
                 iconName="trending-down"
                 iconBgColor="bg-red-500"
                 amountColor="text-red-500 dark:text-red-400"
@@ -91,13 +75,11 @@ const MonthlySummaryView = ({ selectedDate }: MonthlySummaryViewProps) => {
 
               <SummaryCard
                 title="Balance"
-                subtitle={
-                  monthlySummaryData.balance > 0 ? 'Surplus' : monthlySummaryData.balance < 0 ? 'Deficit' : 'Even'
-                }
-                amount={monthlySummaryData.balance}
-                iconName={getBalanceIcon(monthlySummaryData.balance)}
-                iconBgColor={getBalanceBgColor(monthlySummaryData.balance)}
-                amountColor={transactionUtils.getBalanceColor(monthlySummaryData.balance)}
+                subtitle={monthlySummary.balance > 0 ? 'Surplus' : monthlySummary.balance < 0 ? 'Deficit' : 'Even'}
+                amount={monthlySummary.balance}
+                iconName={getBalanceIcon(monthlySummary.balance)}
+                iconBgColor={getBalanceBgColor(monthlySummary.balance)}
+                amountColor={transactionUtils.getBalanceColor(monthlySummary.balance)}
               />
             </div>
 
@@ -114,19 +96,19 @@ const MonthlySummaryView = ({ selectedDate }: MonthlySummaryViewProps) => {
                   <div className="flex grow flex-col items-center">
                     <p className="text-xs text-blue-700 dark:text-blue-300">Savings Rate</p>
                     <p className="text-sm font-semibold text-blue-900 dark:text-blue-100">
-                      {monthlySummaryData.savingsRate}%
+                      {monthlySummary.savingsRate}%
                     </p>
                   </div>
                   <div className="flex grow flex-col items-center">
                     <p className="text-xs text-blue-700 dark:text-blue-300">Avg. Daily</p>
                     <p className="text-sm font-semibold text-blue-900 dark:text-blue-100">
-                      {formatCurrency(monthlySummaryData.avgDaily)}
+                      {formatCurrency(monthlySummary.avgDaily)}
                     </p>
                   </div>
                   <div className="flex grow flex-col items-center">
                     <p className="text-xs text-blue-700 dark:text-blue-300">Total Txns</p>
                     <p className="text-sm font-semibold text-blue-900 dark:text-blue-100">
-                      {monthlySummaryData.transactionCount}
+                      {monthlySummary.transactionCount}
                     </p>
                   </div>
                 </div>

@@ -2,13 +2,14 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { currencyUtils } from '@/lib/currency-utils';
 import { useAuth } from '@/hooks/use-auth';
-import { analyticsService, type TagActivity, type MonthlyTagActivity } from '@/services/api';
+import { type TagActivity, type MonthlyTagActivity } from '@/services/api';
 import AsyncStateWrapper from '../async-state-wrapper';
 import TagActivityPopover from './tag-activity-popover';
 import { IconRenderer } from '../icon-renderer';
 import { cn } from '@/lib/utils';
 import { TagChip } from '../tag-chip';
 import transactionUtils from '@/lib/transaction-utils';
+import { useTagActivity } from '@/hooks/queries';
 
 interface TagActivityProps {
   selectedDate: Date;
@@ -88,8 +89,6 @@ const TagActivityBar = ({ tag, percentage, popoverOpen, onPopoverOpenChange, dat
 };
 
 const TagActivityView = ({ selectedDate }: TagActivityProps) => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<unknown | null>(null);
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [meta, setMeta] = useState<{
@@ -97,22 +96,18 @@ const TagActivityView = ({ selectedDate }: TagActivityProps) => {
     maxAbsoluteAmount: number;
   } | null>(null);
 
-  useEffect(() => {
-    fetchTagActivity();
-  }, [selectedDate]);
+  const {
+    data: tagActivityData,
+    isLoading,
+    error,
+    refetch,
+  } = useTagActivity(selectedDate.getMonth() + 1, selectedDate.getFullYear());
 
-  const fetchTagActivity = async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const response = await analyticsService.getTagActivity(selectedDate.getMonth() + 1, selectedDate.getFullYear());
-      setMeta(getMeta(response.data));
-    } catch (error) {
-      setError(error);
-    } finally {
-      setIsLoading(false);
+  useEffect(() => {
+    if (tagActivityData) {
+      setMeta(getMeta(tagActivityData));
     }
-  };
+  }, [tagActivityData]);
 
   const handlePopoverOpenChange = (tagId: string, open: boolean) => {
     if (open) {
@@ -151,7 +146,7 @@ const TagActivityView = ({ selectedDate }: TagActivityProps) => {
       </CardHeader>
 
       <CardContent>
-        <AsyncStateWrapper isLoading={isLoading} error={error} onRetry={fetchTagActivity}>
+        <AsyncStateWrapper isLoading={isLoading} error={error} onRetry={refetch}>
           <div className="space-y-2">
             {meta?.tagsWithTransactions.map((tag) => {
               const percentage =

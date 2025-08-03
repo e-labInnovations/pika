@@ -1,5 +1,20 @@
 import type { Category, Account, Person, Tag } from '@/services/api';
 import type { TransactionType } from '@/lib/transaction-utils';
+import type { QueryClient } from '@tanstack/react-query';
+
+export const queryKeys = {
+  categories: 'categories',
+  accounts: 'accounts',
+  people: 'people',
+  tags: 'tags',
+  transactions: 'transactions',
+  tagActivity: 'tag-activity',
+  categorySpending: 'category-spending',
+  peopleActivity: 'people-activity',
+  monthlySummary: 'monthly-summary',
+  dailySummaries: 'daily-summaries',
+  weeklyExpenses: 'weekly-expenses',
+} as const;
 
 export const queryUtils = {
   getCategoryById(categories: Category[], categoryId: string): Category | null {
@@ -28,4 +43,71 @@ export const queryUtils = {
   getTagById(tags: Tag[], tagId: string): Tag | null {
     return tags.find((tag) => tag.id === tagId) || null;
   },
+};
+
+export const invalidateTxRelatedQueries = (queryClient: QueryClient) => {
+  const date = new Date();
+  const currentMonth = date.getMonth() + 1;
+  const currentYear = date.getFullYear();
+
+  const queriesWithMonth = [
+    queryKeys.tagActivity,
+    queryKeys.categorySpending,
+    queryKeys.peopleActivity,
+    queryKeys.monthlySummary,
+    queryKeys.dailySummaries,
+  ];
+
+  const otherQueries = [queryKeys.transactions, queryKeys.weeklyExpenses];
+
+  const queries = [...queriesWithMonth, ...otherQueries];
+
+  // Optional: Invalidate active queries (for fast UI response)
+  queries.forEach((query) => {
+    queryClient.invalidateQueries({ queryKey: [query], refetchType: 'active' });
+  });
+
+  // Force refetch of specific queries with month/year immediately
+  queriesWithMonth.forEach((key) => {
+    queryClient.refetchQueries({
+      queryKey: [key, currentMonth, currentYear],
+      type: 'all', // active + inactive
+    });
+  });
+
+  // Force refetch of some flat queries immediately
+  otherQueries.forEach((key) => {
+    queryClient.refetchQueries({
+      queryKey: [key],
+      type: 'all', // active + inactive
+    });
+  });
+};
+
+export const invalidatePeopleRelatedQueries = (queryClient: QueryClient) => {
+  const queries = [queryKeys.peopleActivity, queryKeys.transactions];
+  queries.forEach((query) => {
+    queryClient.invalidateQueries({ queryKey: [query] });
+  });
+};
+
+export const invalidateCategoryRelatedQueries = (queryClient: QueryClient) => {
+  const queries = [queryKeys.categorySpending, queryKeys.transactions];
+  queries.forEach((query) => {
+    queryClient.invalidateQueries({ queryKey: [query] });
+  });
+};
+
+export const invalidateTagRelatedQueries = (queryClient: QueryClient) => {
+  const queries = [queryKeys.tagActivity, queryKeys.transactions];
+  queries.forEach((query) => {
+    queryClient.invalidateQueries({ queryKey: [query] });
+  });
+};
+
+export const invalidateAccountRelatedQueries = (queryClient: QueryClient) => {
+  const queries = [queryKeys.transactions];
+  queries.forEach((query) => {
+    queryClient.invalidateQueries({ queryKey: [query] });
+  });
 };

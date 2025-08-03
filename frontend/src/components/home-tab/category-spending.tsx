@@ -4,11 +4,12 @@ import { Button } from '@/components/ui/button';
 import { DynamicIcon } from '@/components/lucide';
 import { currencyUtils } from '@/lib/currency-utils';
 import { useAuth } from '@/hooks/use-auth';
-import { analyticsService, type CategorySpending, type MonthlyCategorySpending } from '@/services/api';
+import { type CategorySpending, type MonthlyCategorySpending } from '@/services/api';
 import AsyncStateWrapper from '../async-state-wrapper';
 import { IconRenderer } from '../icon-renderer';
 import CategoryPopover from './category-popover';
 import { cn } from '@/lib/utils';
+import { useCategorySpending } from '@/hooks/queries';
 
 interface CategorySpendingProps {
   selectedDate: Date;
@@ -104,9 +105,7 @@ const CategorySpendingBar = ({
 };
 
 const CategorySpendingView = ({ selectedDate }: CategorySpendingProps) => {
-  const [categorySpendingData, setCategorySpendingData] = useState<MonthlyCategorySpending | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<unknown | null>(null);
+  const [categorySpending, setCategorySpending] = useState<MonthlyCategorySpending | null>(null);
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -116,32 +115,25 @@ const CategorySpendingView = ({ selectedDate }: CategorySpendingProps) => {
     maxAmount: number;
   } | null>(null);
 
-  useEffect(() => {
-    fetchCategorySpending();
-  }, [selectedDate]);
+  const {
+    data: categorySpendingData,
+    isLoading,
+    error,
+    refetch,
+  } = useCategorySpending(selectedDate.getMonth() + 1, selectedDate.getFullYear());
 
-  const fetchCategorySpending = async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const response = await analyticsService.getCategorySpending(
-        selectedDate.getMonth() + 1,
-        selectedDate.getFullYear(),
-      );
-      setCategorySpendingData(response.data);
-      setMeta(getMeta(response.data));
-    } catch (error) {
-      setError(error);
-    } finally {
-      setIsLoading(false);
+  useEffect(() => {
+    if (categorySpendingData) {
+      setCategorySpending(categorySpendingData);
+      setMeta(getMeta(categorySpendingData));
     }
-  };
+  }, [categorySpendingData]);
 
   const toggleExpanded = () => {
     if (expandedCategories.size === 0) {
       // Expand all parent categories
       const parentIds = new Set(
-        categorySpendingData?.data.filter((cat) => cat.isParent).map((cat) => cat.categoryId) || [],
+        categorySpending?.data.filter((cat) => cat.isParent).map((cat) => cat.categoryId) || [],
       );
       setExpandedCategories(parentIds);
     } else {
@@ -202,7 +194,7 @@ const CategorySpendingView = ({ selectedDate }: CategorySpendingProps) => {
       </CardHeader>
 
       <CardContent>
-        <AsyncStateWrapper isLoading={isLoading} error={error} onRetry={fetchCategorySpending}>
+        <AsyncStateWrapper isLoading={isLoading} error={error} onRetry={refetch}>
           <div className="space-y-2">
             {meta?.parentCategories.map((parentCategory) => {
               const isExpanded = expandedCategories.has(parentCategory.categoryId);

@@ -179,11 +179,11 @@ export function TransactionsList({
         runWithLoaderAndError(
           async () => {
             await transactionsService.delete(transaction.id);
-            refreshTransactions();
           },
           {
             loaderMessage: 'Deleting transaction...',
             successMessage: 'Transaction deleted successfully',
+            onSuccess: refreshTransactions,
           },
         );
       },
@@ -215,83 +215,83 @@ export function TransactionsList({
           >
             <Card className="p-0 transition-all duration-200">
               <CardContent className="p-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex flex-1 items-center space-x-3">
-                    <CategoryTransactionIcon
-                      transactionType={transaction.type}
-                      iconName={transaction.category.icon}
-                      size="md"
-                      bgColor={transaction.category.bgColor}
-                      color={transaction.category.color}
-                    />
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center justify-between">
-                        <h4 className="truncate font-medium text-slate-900 dark:text-white">{transaction.title}</h4>
-                        <span className={`font-semibold ${transactionUtils.getAmountColor(transaction.type)}`}>
-                          {currencyUtils.formatAmount(transaction.amount, user?.settings?.currency)}
-                        </span>
-                      </div>
+                <div className="flex w-full items-center gap-2">
+                  <CategoryTransactionIcon
+                    transactionType={transaction.type}
+                    iconName={transaction.category.icon}
+                    size="md"
+                    bgColor={transaction.category.bgColor}
+                    color={transaction.category.color}
+                  />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-1 items-center gap-2">
+                      <h4 className="grow truncate pr-2 font-medium text-ellipsis text-slate-900 dark:text-white">
+                        {transaction.title}
+                      </h4>
+                      <span className={cn('shrink-0 font-semibold', transactionUtils.getAmountColor(transaction.type))}>
+                        {currencyUtils.formatAmount(transaction.amount, user?.settings?.currency)}
+                      </span>
+                    </div>
 
-                      <div className="flex items-center gap-2">
-                        <div className="flex grow flex-col gap-2">
-                          <div className="mt-1 flex items-center space-x-2">
-                            <span className="text-sm text-slate-500 dark:text-slate-400">
-                              {transactionUtils.formatDateTime(transaction.date)}
+                    <div className="flex items-center gap-2">
+                      <div className="flex grow flex-col gap-2">
+                        <div className="mt-1 flex items-center space-x-2">
+                          <span className="text-sm text-slate-500 dark:text-slate-400">
+                            {transactionUtils.formatDateTime(transaction.date)}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2">
+                            <AccountAvatar account={transaction.account} size="xs" />
+                            <span className="text-xs text-slate-500 dark:text-slate-400">
+                              {transaction.account.name}
                             </span>
                           </div>
-
-                          <div className="flex items-center gap-2">
-                            <div className="flex items-center gap-2">
-                              <AccountAvatar account={transaction.account} size="xs" />
-                              <span className="text-xs text-slate-500 dark:text-slate-400">
-                                {transaction.account.name}
-                              </span>
-                            </div>
-                            {transaction.toAccount && (
-                              <>
-                                <DynamicIcon
-                                  name="arrow-big-right-dash"
-                                  className="h-4 w-4 text-slate-500 dark:text-slate-400"
-                                />
-                                <div className="flex items-center gap-2">
-                                  <AccountAvatar account={transaction.toAccount} size="xs" />
-                                  <span className="text-xs text-slate-500 dark:text-slate-400">
-                                    {transaction.toAccount.name}
-                                  </span>
-                                </div>
-                              </>
-                            )}
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          {transaction.person && (
-                            <Avatar className="h-8 w-8 border-1 border-slate-300 dark:border-slate-600">
-                              <AvatarImage src={transaction.person?.avatar?.url} alt={transaction.person?.name} />
-                              <AvatarFallback
-                                className={cn(
-                                  'text-xs font-semibold text-white',
-                                  getColorFromName(transaction.person?.name),
-                                )}
-                              >
-                                {getInitials(transaction.person?.name)}
-                              </AvatarFallback>
-                            </Avatar>
+                          {transaction.toAccount && (
+                            <>
+                              <DynamicIcon
+                                name="arrow-big-right-dash"
+                                className="h-4 w-4 text-slate-500 dark:text-slate-400"
+                              />
+                              <div className="flex items-center gap-2">
+                                <AccountAvatar account={transaction.toAccount} size="xs" />
+                                <span className="text-xs text-slate-500 dark:text-slate-400">
+                                  {transaction.toAccount.name}
+                                </span>
+                              </div>
+                            </>
                           )}
                         </div>
                       </div>
-
-                      <div className="mt-2 flex flex-wrap gap-1">
-                        {transaction.tags.map((tag) => (
-                          <TagChip
-                            name={tag.name}
-                            iconName={tag.icon}
-                            bgColor={tag.bgColor}
-                            color={tag.color}
-                            size="xs"
-                            key={tag.id}
-                          />
-                        ))}
+                      <div className="flex items-center gap-2">
+                        {transaction.person && (
+                          <Avatar className="h-8 w-8 border-1 border-slate-300 dark:border-slate-600">
+                            <AvatarImage src={transaction.person?.avatar?.url} alt={transaction.person?.name} />
+                            <AvatarFallback
+                              className={cn(
+                                'text-xs font-semibold text-white',
+                                getColorFromName(transaction.person?.name),
+                              )}
+                            >
+                              {getInitials(transaction.person?.name)}
+                            </AvatarFallback>
+                          </Avatar>
+                        )}
                       </div>
+                    </div>
+
+                    <div className="mt-2 flex flex-wrap gap-1">
+                      {transaction.tags.map((tag) => (
+                        <TagChip
+                          name={tag.name}
+                          iconName={tag.icon}
+                          bgColor={tag.bgColor}
+                          color={tag.color}
+                          size="xs"
+                          key={tag.id}
+                        />
+                      ))}
                     </div>
                   </div>
                 </div>

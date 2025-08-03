@@ -4,29 +4,24 @@ import {
   accountService,
   peopleService,
   tagsService,
-  type Category,
-  type Account,
-  type Person,
-  type Tag,
   type CategoryInput,
+  transactionsService,
+  analyticsService,
 } from '@/services/api';
-import type { TransactionType } from '@/lib/transaction-utils';
+import {
+  invalidateAccountRelatedQueries,
+  invalidateCategoryRelatedQueries,
+  invalidatePeopleRelatedQueries,
+  invalidateTagRelatedQueries,
+  queryKeys,
+} from './query-utils';
 
-// Query Keys
-export const queryKeys = {
-  categories: ['categories'] as const,
-  accounts: ['accounts'] as const,
-  people: ['people'] as const,
-  tags: ['tags'] as const,
-  // For future use
-  transactions: ['transactions'] as const,
-  analytics: ['analytics'] as const,
-};
-
-// Categories
+/** ***************************************************************************
+ *                                  Categories
+ *************************************************************************** */
 export function useCategories() {
   return useQuery({
-    queryKey: queryKeys.categories,
+    queryKey: [queryKeys.categories],
     queryFn: async () => {
       const response = await categoryService.list();
       return response.data;
@@ -40,21 +35,21 @@ export function useCategoryMutations() {
   const createCategory = useMutation({
     mutationFn: (data: CategoryInput) => categoryService.create(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.categories });
+      invalidateCategoryRelatedQueries(queryClient);
     },
   });
 
   const updateCategory = useMutation({
     mutationFn: ({ id, data }: { id: string; data: CategoryInput }) => categoryService.update(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.categories });
+      invalidateCategoryRelatedQueries(queryClient);
     },
   });
 
   const deleteCategory = useMutation({
     mutationFn: (id: string) => categoryService.delete(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.categories });
+      invalidateCategoryRelatedQueries(queryClient);
     },
   });
 
@@ -65,10 +60,12 @@ export function useCategoryMutations() {
   };
 }
 
-// Accounts
+/** ***************************************************************************
+ *                                  Accounts
+ *************************************************************************** */
 export function useAccounts() {
   return useQuery({
-    queryKey: queryKeys.accounts,
+    queryKey: [queryKeys.accounts],
     queryFn: async () => {
       const response = await accountService.list();
       return response.data;
@@ -82,21 +79,21 @@ export function useAccountMutations() {
   const createAccount = useMutation({
     mutationFn: (data: unknown) => accountService.create(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.accounts });
+      invalidateAccountRelatedQueries(queryClient);
     },
   });
 
   const updateAccount = useMutation({
     mutationFn: ({ id, data }: { id: string; data: unknown }) => accountService.update(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.accounts });
+      invalidateAccountRelatedQueries(queryClient);
     },
   });
 
   const deleteAccount = useMutation({
     mutationFn: (id: string) => accountService.delete(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.accounts });
+      invalidateAccountRelatedQueries(queryClient);
     },
   });
 
@@ -107,10 +104,12 @@ export function useAccountMutations() {
   };
 }
 
-// People
+/** ***************************************************************************
+ *                                  People
+ *************************************************************************** */
 export function usePeople() {
   return useQuery({
-    queryKey: queryKeys.people,
+    queryKey: [queryKeys.people],
     queryFn: async () => {
       const response = await peopleService.list();
       return response.data;
@@ -124,21 +123,21 @@ export function usePeopleMutations() {
   const createPerson = useMutation({
     mutationFn: (data: unknown) => peopleService.create(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.people });
+      invalidatePeopleRelatedQueries(queryClient);
     },
   });
 
   const updatePerson = useMutation({
     mutationFn: ({ id, data }: { id: string; data: unknown }) => peopleService.update(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.people });
+      invalidatePeopleRelatedQueries(queryClient);
     },
   });
 
   const deletePerson = useMutation({
     mutationFn: (id: string) => peopleService.delete(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.people });
+      invalidatePeopleRelatedQueries(queryClient);
     },
   });
 
@@ -149,10 +148,12 @@ export function usePeopleMutations() {
   };
 }
 
-// Tags
+/** ***************************************************************************
+ *                                  Tags
+ *************************************************************************** */
 export function useTags() {
   return useQuery({
-    queryKey: queryKeys.tags,
+    queryKey: [queryKeys.tags],
     queryFn: async () => {
       const response = await tagsService.list();
       return response.data;
@@ -166,21 +167,21 @@ export function useTagMutations() {
   const createTag = useMutation({
     mutationFn: (data: unknown) => tagsService.create(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.tags });
+      invalidateTagRelatedQueries(queryClient);
     },
   });
 
   const updateTag = useMutation({
     mutationFn: ({ id, data }: { id: string; data: unknown }) => tagsService.update(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.tags });
+      invalidateTagRelatedQueries(queryClient);
     },
   });
 
   const deleteTag = useMutation({
     mutationFn: (id: string) => tagsService.delete(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.tags });
+      invalidateTagRelatedQueries(queryClient);
     },
   });
 
@@ -191,32 +192,83 @@ export function useTagMutations() {
   };
 }
 
-// Utility functions (similar to storeUtils from useLookupStore)
-export const queryUtils = {
-  getCategoryById(categories: Category[], categoryId: string): Category | null {
-    const allChildren = categories.flatMap((category) => category.children || []);
-    return allChildren.find((child) => child.id === categoryId) || null;
-  },
+/** ***************************************************************************
+ *                                  Transactions
+ *************************************************************************** */
+export function useTransactions() {
+  return useQuery({
+    queryKey: [queryKeys.transactions],
+    queryFn: async () => {
+      const response = await transactionsService.list();
+      return response.data;
+    },
+  });
+}
 
-  getParentCategoryById(categories: Category[], categoryId: string): Category | null {
-    const parent = categories.find((category) => category.children?.some((child) => child.id === categoryId));
-    return parent || null;
-  },
+/** ***************************************************************************
+ *                                  Analytics
+ *************************************************************************** */
+export const useCategorySpending = (month: number, year: number) => {
+  return useQuery({
+    queryKey: [queryKeys.categorySpending, month, year],
+    queryFn: async () => {
+      const response = await analyticsService.getCategorySpending(month, year);
+      return response.data;
+    },
+    enabled: month > 0 && year > 2000 && month <= 12,
+  });
+};
 
-  getDefaultCategory(categories: Category[], type: TransactionType): Category | null {
-    const allChildren = categories.flatMap((category) => category.children || []);
-    return allChildren.find((category) => category.type === type) || null;
-  },
+export const usePeopleActivity = (month: number, year: number) => {
+  return useQuery({
+    queryKey: [queryKeys.peopleActivity, month, year],
+    queryFn: async () => {
+      const response = await analyticsService.getPeopleActivity(month, year);
+      return response.data;
+    },
+    enabled: month > 0 && year > 2000 && month <= 12,
+  });
+};
 
-  getAccountById(accounts: Account[], accountId: string): Account | null {
-    return accounts.find((account) => account.id === accountId) || null;
-  },
+export const useTagActivity = (month: number, year: number) => {
+  return useQuery({
+    queryKey: [queryKeys.tagActivity, month, year],
+    queryFn: async () => {
+      const response = await analyticsService.getTagActivity(month, year);
+      return response.data;
+    },
+    enabled: month > 0 && year > 2000 && month <= 12,
+  });
+};
 
-  getPersonById(people: Person[], personId: string): Person | null {
-    return people.find((person) => person.id === personId) || null;
-  },
+export const useMonthlySummary = (month: number, year: number) => {
+  return useQuery({
+    queryKey: [queryKeys.monthlySummary, month, year],
+    queryFn: async () => {
+      const response = await analyticsService.getMonthlySummary(month, year);
+      return response.data;
+    },
+    enabled: month > 0 && year > 2000 && month <= 12,
+  });
+};
 
-  getTagById(tags: Tag[], tagId: string): Tag | null {
-    return tags.find((tag) => tag.id === tagId) || null;
-  },
+export const useDailySummaries = (month: number, year: number) => {
+  return useQuery({
+    queryKey: [queryKeys.dailySummaries, month, year],
+    queryFn: async () => {
+      const response = await analyticsService.getDailySummaries(month, year);
+      return response.data;
+    },
+    enabled: month > 0 && year > 2000 && month <= 12,
+  });
+};
+
+export const useWeeklyExpenses = () => {
+  return useQuery({
+    queryKey: [queryKeys.weeklyExpenses],
+    queryFn: async () => {
+      const response = await analyticsService.getWeeklyExpenses();
+      return response.data;
+    },
+  });
 };

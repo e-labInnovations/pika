@@ -36,7 +36,7 @@ const AsyncStateWrapper = ({
     const errorTitle = isNetworkError(error) ? 'Network Error' : 'Error';
     const errorButtonText = isNetworkError(error) ? 'Retry' : 'Go Back';
     const goBack = () => navigate(linkBackward || '/', { replace: true });
-    const errorButtonClick = isNetworkError(error) ? onRetry : goBack;
+    const errorButtonClick = isNetworkError(error) ? onRetry : linkBackward ? goBack : undefined;
     const errorButtonIcon = isNetworkError(error) ? (
       <DynamicIcon name="refresh-cw" className="h-4 w-4" />
     ) : (

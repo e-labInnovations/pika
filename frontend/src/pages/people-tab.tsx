@@ -5,9 +5,10 @@ import TabsLayout from '@/layouts/tabs';
 
 import { useState } from 'react';
 import { usePeople } from '@/hooks/queries';
+import AsyncStateWrapper from '@/components/async-state-wrapper';
 
 const PeopleTab = () => {
-  const { data: people = [] } = usePeople();
+  const { data: people = [], isLoading, error } = usePeople();
   const [showPeopleSearch, setShowPeopleSearch] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -30,7 +31,9 @@ const PeopleTab = () => {
         />
       )}
 
-      <PeopleList people={people} searchTerm={searchTerm} />
+      <AsyncStateWrapper isLoading={isLoading} error={error}>
+        <PeopleList people={people} searchTerm={searchTerm} />
+      </AsyncStateWrapper>
     </TabsLayout>
   );
 };

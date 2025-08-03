@@ -11,11 +11,13 @@ import { transactionsService } from '@/services/api';
 import { useConfirmDialog } from '@/store/useConfirmDialog';
 import { DynamicIcon } from '@/components/lucide';
 import { useNavigate, useParams } from 'react-router-dom';
+import { invalidateTxRelatedQueries } from '@/hooks/query-utils';
+import { useQueryClient } from '@tanstack/react-query';
 
 const HeaderDropdownMenu = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-
+  const queryClient = useQueryClient();
   const handleEdit = () => {
     if (id) {
       navigate(`/transactions/${id}/edit`);
@@ -45,6 +47,9 @@ const HeaderDropdownMenu = () => {
           {
             loaderMessage: 'Deleting transaction...',
             successMessage: 'Transaction deleted successfully',
+            onSuccess: () => {
+              invalidateTxRelatedQueries(queryClient);
+            },
           },
         );
       },
