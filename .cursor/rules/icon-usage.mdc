@@ -1,0 +1,71 @@
+---
+description: Icon Usage Rules - Use DynamicIcon instead of direct Lucide React imports
+globs: ["frontend/src/**/*.tsx", "frontend/src/**/*.ts"]
+alwaysApply: false
+---
+
+# Icon Usage Rules
+
+## ❌ AVOID: Direct Lucide React Imports
+
+Never import icons directly from `lucide-react`:
+
+```tsx
+// ❌ DON'T DO THIS
+import { Search, User, Settings } from "lucide-react";
+import { CheckIcon } from "lucide-react";
+```
+
+## ✅ PREFER: DynamicIcon Component
+
+Always use the `DynamicIcon` component from our local components:
+
+```tsx
+// ✅ DO THIS INSTEAD
+import { DynamicIcon } from "@/components/lucide";
+
+// Usage examples:
+<DynamicIcon name="search" size={24} />
+<DynamicIcon name="user" color="#3b82f6" strokeWidth={1.5} />
+<DynamicIcon name="settings" size={20} className="text-muted-foreground" />
+```
+
+## Icon Name Conversion
+
+When converting from direct imports to DynamicIcon, use kebab-case names:
+
+- `Search` → `"search"`
+- `UserCheck` → `"user-check"`
+- `ArrowDownUp` → `"arrow-down-up"`
+- `CheckIcon` → `"check"`
+- `XIcon` → `"x"`
+- `ChevronRightIcon` → `"chevron-right"`
+- `FilterIcon` → `"filter"`
+- `SearchX` → `"search-x"`
+- `Sparkles` → `"sparkles"`
+
+## Why Use DynamicIcon?
+
+- **Performance**: Uses SVG sprites instead of individual components
+- **Bundle Size**: Reduces bundle size by not importing unused icons
+- **Consistency**: Ensures consistent icon styling across the app
+- **Flexibility**: Easy to customize size, color, and stroke width
+
+## Exception Cases
+
+Only use direct Lucide imports if:
+
+- The icon name is not available in our `IconName` type
+- You're working on a temporary/experimental feature
+
+## Migration Pattern
+
+When you encounter direct Lucide imports:
+
+1. Remove the import from `lucide-react`
+2. Add `import { DynamicIcon } from "@/components/lucide"`
+3. Replace `<IconName />` with `<DynamicIcon name="icon-name" />`
+4. Convert PascalCase icon names to kebab-case strings
+5. Adjust any additional props (size, color, etc.)
+
+@dynamic-icon.tsx
