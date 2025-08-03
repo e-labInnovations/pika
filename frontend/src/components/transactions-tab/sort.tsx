@@ -1,7 +1,7 @@
 import { Drawer, DrawerTitle, DrawerHeader, DrawerContent, DrawerClose, DrawerFooter } from '@/components/ui/drawer';
 import { Button, buttonVariants } from '@/components/ui/button';
 import * as RadioGroup from '@radix-ui/react-radio-group';
-import { X } from 'lucide-react';
+import { DynamicIcon } from '@/components/lucide';
 import { useState } from 'react';
 import SortRadioItem from './sort/sort-radio-item';
 import { defaultSort, type Sort, type SortDirection, sortOptions } from './sort/types';
@@ -44,7 +44,7 @@ const TransactionsSort = ({ open, setOpen, sort, setSort }: TransactionsSortProp
           <DrawerTitle className="flex w-full items-center gap-2">
             <span className="grow text-left">Sort Transactions</span>
             <Button variant="outline" className="flex-none rounded-full" onClick={handleResetSort}>
-              <X /> Reset
+              <DynamicIcon name="x" /> Reset
             </Button>
           </DrawerTitle>
         </DrawerHeader>

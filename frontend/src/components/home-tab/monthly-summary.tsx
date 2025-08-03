@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { DollarSign, TrendingDown, TrendingUp, BarChart3 } from 'lucide-react';
+import { DynamicIcon, type IconName } from '@/components/lucide';
 import { useState, useEffect } from 'react';
 import { currencyUtils } from '@/lib/currency-utils';
 import { useAuth } from '@/hooks/use-auth';
@@ -45,10 +45,10 @@ const MonthlySummaryView = ({ selectedDate }: MonthlySummaryViewProps) => {
     return currencyUtils.formatAmount(amount, user?.settings?.currency);
   };
 
-  const getBalanceIcon = (balance: number) => {
-    if (balance > 0) return TrendingUp;
-    if (balance < 0) return TrendingDown;
-    return DollarSign;
+  const getBalanceIcon = (balance: number): IconName => {
+    if (balance > 0) return 'trending-up';
+    if (balance < 0) return 'trending-down';
+    return 'dollar-sign';
   };
 
   const getBalanceBgColor = (balance: number) => {
@@ -75,7 +75,7 @@ const MonthlySummaryView = ({ selectedDate }: MonthlySummaryViewProps) => {
                 title="Income"
                 subtitle={transactionUtils.getCountLabel(monthlySummaryData.incomeTransactionCount)}
                 amount={monthlySummaryData.income}
-                icon={TrendingUp}
+                iconName="trending-up"
                 iconBgColor="bg-emerald-500"
                 amountColor="text-emerald-600 dark:text-emerald-400"
               />
@@ -84,7 +84,7 @@ const MonthlySummaryView = ({ selectedDate }: MonthlySummaryViewProps) => {
                 title="Expenses"
                 subtitle={transactionUtils.getCountLabel(monthlySummaryData.expenseTransactionCount)}
                 amount={monthlySummaryData.expenses}
-                icon={TrendingDown}
+                iconName="trending-down"
                 iconBgColor="bg-red-500"
                 amountColor="text-red-500 dark:text-red-400"
               />
@@ -95,7 +95,7 @@ const MonthlySummaryView = ({ selectedDate }: MonthlySummaryViewProps) => {
                   monthlySummaryData.balance > 0 ? 'Surplus' : monthlySummaryData.balance < 0 ? 'Deficit' : 'Even'
                 }
                 amount={monthlySummaryData.balance}
-                icon={getBalanceIcon(monthlySummaryData.balance)}
+                iconName={getBalanceIcon(monthlySummaryData.balance)}
                 iconBgColor={getBalanceBgColor(monthlySummaryData.balance)}
                 amountColor={transactionUtils.getBalanceColor(monthlySummaryData.balance)}
               />
@@ -105,7 +105,7 @@ const MonthlySummaryView = ({ selectedDate }: MonthlySummaryViewProps) => {
             <Card className="gap-2 border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50 py-3 dark:border-blue-800 dark:from-blue-950/20 dark:to-indigo-950/20">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <BarChart3 className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  <DynamicIcon name="bar-chart-3" className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                   <span className="text-sm font-medium text-blue-900 dark:text-blue-100">Monthly Overview</span>
                 </CardTitle>
               </CardHeader>

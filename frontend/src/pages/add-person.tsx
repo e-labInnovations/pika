@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import TabsLayout from '@/layouts/tabs';
-import { Save } from 'lucide-react';
+import { DynamicIcon } from '@/components/lucide';
 import AvatarUpload from '@/components/people-tab/avatar-upload';
 import PersonFormFields from '@/components/people-tab/person-form-fields';
 import PersonPreview from '@/components/people-tab/person-preview';
@@ -98,7 +98,7 @@ const AddPerson = () => {
         </Card>
 
         <Button className="w-full" onClick={handleSubmit} disabled={!formData.name.trim()}>
-          <Save className="mr-2 h-4 w-4" />
+          <DynamicIcon name="save" className="mr-2 h-4 w-4" />
           Save
         </Button>
       </div>

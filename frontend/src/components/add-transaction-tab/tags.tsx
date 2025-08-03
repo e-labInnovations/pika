@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Tag as TagIcon } from 'lucide-react';
+import { DynamicIcon } from '@/components/lucide';
 import type { TransactionFormData } from './types';
 import { TagChip } from '@/components/tag-chip';
 import { IconRenderer } from '@/components/icon-renderer';
@@ -67,7 +67,7 @@ const Tags = ({ formData, setFormData }: TagsProps) => {
     <Card className="gap-0 p-0">
       <CardHeader className="p-4 pb-0">
         <CardTitle className="flex items-center text-lg">
-          <TagIcon className="mr-2 h-5 w-5" />
+          <DynamicIcon name="tag" className="mr-2 h-5 w-5" />
           Tags
         </CardTitle>
       </CardHeader>

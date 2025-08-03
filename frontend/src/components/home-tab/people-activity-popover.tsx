@@ -1,4 +1,4 @@
-import { Eye, TrendingUp, TrendingDown, User } from 'lucide-react';
+import { DynamicIcon } from '@/components/lucide';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
@@ -103,7 +103,7 @@ const PeopleActivityPopover = ({ children, personData, open, onOpenChange, date 
             {personData.incomeAmount > 0 && (
               <div className="flex items-center justify-between gap-4">
                 <div className="flex items-center space-x-1.5">
-                  <TrendingUp className="h-3 w-3 text-green-600 dark:text-green-400" />
+                  <DynamicIcon name="trending-up" className="h-3 w-3 text-green-600 dark:text-green-400" />
                   <span className="text-muted-foreground text-xs">Income</span>
                 </div>
                 <div className="flex items-center gap-1">
@@ -118,7 +118,7 @@ const PeopleActivityPopover = ({ children, personData, open, onOpenChange, date 
             {personData.expenseAmount > 0 && (
               <div className="flex items-center justify-between gap-4">
                 <div className="flex items-center space-x-1.5">
-                  <TrendingDown className="h-3 w-3 text-red-600 dark:text-red-400" />
+                  <DynamicIcon name="trending-down" className="h-3 w-3 text-red-600 dark:text-red-400" />
                   <span className="text-muted-foreground text-xs">Expenses</span>
                 </div>
                 <div className="flex items-center gap-1">
@@ -163,12 +163,12 @@ const PeopleActivityPopover = ({ children, personData, open, onOpenChange, date 
               variant="outline"
               size="sm"
             >
-              <Eye className="mr-1.5 h-3 w-3" />
+              <DynamicIcon name="eye" className="mr-1.5 h-3 w-3" />
               <span className="text-xs">View All</span>
             </Button>
 
             <Button onClick={() => handleViewProfile(personData.id)} className="h-8 flex-1" variant="outline" size="sm">
-              <User className="mr-1.5 h-3 w-3" />
+              <DynamicIcon name="user" className="mr-1.5 h-3 w-3" />
               <span className="text-xs">Profile</span>
             </Button>
           </div>

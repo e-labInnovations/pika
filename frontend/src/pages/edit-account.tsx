@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import TabsLayout from '@/layouts/tabs';
-import { Save, Trash2 } from 'lucide-react';
+import { DynamicIcon } from '@/components/lucide';
 import { type IconName } from '@/components/ui/icon-picker';
 import { AccountFormFields, AccountIconSelector, AccountPreview } from '@/components/accounts-settings';
 import { accountService, type Account, type AccountInput } from '@/services/api';
@@ -164,11 +164,11 @@ const EditAccount = () => {
 
           <div className="flex justify-end gap-2">
             <Button variant="destructive" onClick={handleDelete} className="w-1/2">
-              <Trash2 className="mr-2 h-4 w-4" />
+              <DynamicIcon name="trash-2" className="mr-2 h-4 w-4" />
               Delete
             </Button>
             <Button onClick={handleSubmit} disabled={!formData.name.trim()} className="w-1/2">
-              <Save className="mr-2 h-4 w-4" />
+              <DynamicIcon name="save" className="mr-2 h-4 w-4" />
               Save
             </Button>
           </div>

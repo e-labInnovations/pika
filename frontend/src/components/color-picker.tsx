@@ -1,6 +1,6 @@
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { ChevronDown, InfoIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import { DynamicIcon } from '@/components/lucide';
 
 interface ColorPickerProps {
   color: string;
@@ -99,7 +99,7 @@ const ColorPicker = ({ color, setColor, label = '' }: ColorPickerProps) => {
             />
             <span className="text-slate-700 dark:text-slate-200">{label}</span>
           </div>
-          <ChevronDown className="h-4 w-4 text-slate-400 dark:text-slate-500" />
+          <DynamicIcon name="chevron-down" className="h-4 w-4 text-slate-400 dark:text-slate-500" />
         </button>
       </PopoverTrigger>
       <PopoverContent
@@ -147,7 +147,7 @@ const ColorPicker = ({ color, setColor, label = '' }: ColorPickerProps) => {
           </div>
           {hexError && (
             <div className="flex items-center gap-1">
-              <InfoIcon className="h-4 w-4 text-red-600 dark:text-red-400" />
+              <DynamicIcon name="info" className="h-4 w-4 text-red-600 dark:text-red-400" />
               <p className="text-xs text-red-600 dark:text-red-400">{hexError}</p>
             </div>
           )}

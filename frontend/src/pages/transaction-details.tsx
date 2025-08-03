@@ -1,6 +1,6 @@
 import TabsLayout from '@/layouts/tabs';
 import { Card, CardContent } from '@/components/ui/card';
-import { Calendar, Clock, Tag, Wallet, User, FileText, Paperclip, Eye } from 'lucide-react';
+import { DynamicIcon } from '@/components/lucide';
 import { IconRenderer } from '@/components/icon-renderer';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -118,7 +118,7 @@ const TransactionDetails = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1.5">
                     <div className="flex items-center space-x-2 text-sm text-slate-500 dark:text-slate-400">
-                      <Calendar className="h-4 w-4" />
+                      <DynamicIcon name="calendar" className="h-4 w-4" />
                       <span>Date</span>
                     </div>
                     <p className="font-medium text-slate-900 dark:text-white">
@@ -128,7 +128,7 @@ const TransactionDetails = () => {
 
                   <div className="space-y-1.5">
                     <div className="flex items-center space-x-2 text-sm text-slate-500 dark:text-slate-400">
-                      <Clock className="h-4 w-4" />
+                      <DynamicIcon name="clock" className="h-4 w-4" />
                       <span>Time</span>
                     </div>
                     <p className="font-medium text-slate-900 dark:text-white">
@@ -140,7 +140,7 @@ const TransactionDetails = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1.5">
                     <div className="flex items-center space-x-2 text-sm text-slate-500 dark:text-slate-400">
-                      <Tag className="h-4 w-4" />
+                      <DynamicIcon name="tag" className="h-4 w-4" />
                       <span>Category</span>
                     </div>
                     <div className="flex items-center space-x-2">
@@ -159,7 +159,7 @@ const TransactionDetails = () => {
                   {transaction.type !== 'transfer' && (
                     <div className="space-y-1.5">
                       <div className="flex items-center space-x-2 text-sm text-slate-500 dark:text-slate-400">
-                        <Wallet className="h-4 w-4" />
+                        <DynamicIcon name="wallet" className="h-4 w-4" />
                         <span>Account</span>
                       </div>
                       <div className="flex items-center space-x-2">
@@ -177,7 +177,7 @@ const TransactionDetails = () => {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1.5">
                       <div className="flex items-center space-x-2 text-sm text-slate-500 dark:text-slate-400">
-                        <Wallet className="h-4 w-4" />
+                        <DynamicIcon name="wallet" className="h-4 w-4" />
                         <span>From</span>
                       </div>
                       <div className="flex items-center space-x-2">
@@ -190,7 +190,7 @@ const TransactionDetails = () => {
 
                     <div className="space-y-1.5">
                       <div className="flex items-center space-x-2 text-sm text-slate-500 dark:text-slate-400">
-                        <Wallet className="h-4 w-4" />
+                        <DynamicIcon name="wallet" className="h-4 w-4" />
                         <span>To</span>
                       </div>
                       <div className="flex items-center space-x-2">
@@ -206,7 +206,7 @@ const TransactionDetails = () => {
                 {transaction.person?.name && (
                   <div className="space-y-1.5">
                     <div className="flex items-center space-x-2 text-sm text-slate-500 dark:text-slate-400">
-                      <User className="h-4 w-4" />
+                      <DynamicIcon name="user" className="h-4 w-4" />
                       <span>Person</span>
                     </div>
                     <div className="flex items-center justify-start gap-3">
@@ -228,7 +228,7 @@ const TransactionDetails = () => {
                         className="h-8 w-8 rounded-full border border-slate-200 bg-white/70 p-2 dark:border-slate-700 dark:bg-slate-800/70"
                         onClick={() => navigate(`/people/${transaction.person?.id}`)}
                       >
-                        <Eye className="h-4 w-4" />
+                        <DynamicIcon name="eye" className="h-4 w-4" />
                       </Button>
                     </div>
                   </div>
@@ -236,7 +236,7 @@ const TransactionDetails = () => {
 
                 <div className="space-y-1.5">
                   <div className="flex items-center space-x-2 text-sm text-slate-500 dark:text-slate-400">
-                    <Tag className="h-4 w-4" />
+                    <DynamicIcon name="tag" className="h-4 w-4" />
                     <span>Tags</span>
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -263,7 +263,7 @@ const TransactionDetails = () => {
 
                 <div className="flex flex-col gap-1.5">
                   <div className="flex items-center space-x-2 text-sm text-slate-500 dark:text-slate-400">
-                    <FileText className="h-4 w-4" />
+                    <DynamicIcon name="file-text" className="h-4 w-4" />
                     <span>Note</span>
                   </div>
                   {transaction.note && (
@@ -277,7 +277,7 @@ const TransactionDetails = () => {
                 <div className="flex flex-col gap-1.5">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2 text-sm text-slate-500 dark:text-slate-400">
-                      <Paperclip className="h-4 w-4" />
+                      <DynamicIcon name="paperclip" className="h-4 w-4" />
                       <span>Attachments</span>
                     </div>
                   </div>
@@ -315,7 +315,7 @@ const TransactionDetails = () => {
                         ) : (
                           <div className="flex h-full flex-col items-center justify-center gap-2">
                             <div className="flex h-20 w-20 items-center justify-center rounded bg-red-100 dark:bg-red-900">
-                              <FileText className="h-4 w-4 text-red-600 dark:text-red-400" />
+                              <DynamicIcon name="file-text" className="h-4 w-4 text-red-600 dark:text-red-400" />
                             </div>
                             <div className="flex max-w-full flex-col items-center gap-1 overflow-hidden">
                               <Tooltip>

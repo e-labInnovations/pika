@@ -1,8 +1,8 @@
 import { Button } from '@/components/ui/button';
-import { Pencil } from 'lucide-react';
 import AccountAvatar from '@/components/account-avatar';
 import type { Account } from '@/services/api';
 import { cn } from '@/lib/utils';
+import { DynamicIcon } from '@/components/lucide';
 
 interface SelectedAccountProps {
   account: Account;
@@ -37,7 +37,7 @@ const SelectedAccount = ({ account, onEdit, showBalance = true, className = '' }
         </div>
       </div>
       <Button variant="ghost" size="sm" onClick={onEdit} className="h-8 w-8 p-0">
-        <Pencil className="h-4 w-4" />
+        <DynamicIcon name="pencil" className="h-4 w-4" />
       </Button>
     </div>
   );

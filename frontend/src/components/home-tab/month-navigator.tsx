@@ -1,6 +1,6 @@
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { DynamicIcon } from '@/components/lucide';
 import { Button } from '@/components/ui/button';
-import { MonthYearPicker } from '../ui/month-year-picker';
+import { MonthYearPicker } from '@/components/ui/month-year-picker';
 
 interface MonthNavigatorProps {
   selectedDate: Date;
@@ -26,7 +26,7 @@ const MonthNavigator = ({ selectedDate, onChangeDate }: MonthNavigatorProps) => 
         className="relative top-0 left-0 size-8 translate-x-0 translate-y-0 rounded-full"
         onClick={() => handleChangeMonth('prev')}
       >
-        <ArrowLeft />
+        <DynamicIcon name="arrow-left" />
       </Button>
 
       <MonthYearPicker value={selectedDate} onChange={onChangeDate} />
@@ -37,7 +37,7 @@ const MonthNavigator = ({ selectedDate, onChangeDate }: MonthNavigatorProps) => 
         className="relative top-0 right-0 size-8 translate-x-0 translate-y-0 rounded-full"
         onClick={() => handleChangeMonth('next')}
       >
-        <ArrowRight />
+        <DynamicIcon name="arrow-right" />
       </Button>
     </div>
   );

@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import TabsLayout from '@/layouts/tabs';
-import { Save } from 'lucide-react';
+import { DynamicIcon } from '@/components/lucide';
 import TransactionTypeView from '@/components/transaction-type-view';
 import CategoryItemView from '@/components/category-item-view';
 import IconColorsFields from '@/components/categories/icon-colors-fields';
@@ -177,7 +177,7 @@ const AddChildCategory = () => {
 
             <div className="flex justify-end">
               <Button onClick={handleSubmit} disabled={!formData.name.trim()} className="w-full">
-                <Save className="mr-2 h-4 w-4" />
+                <DynamicIcon name="save" className="mr-2 h-4 w-4" />
                 Save
               </Button>
             </div>

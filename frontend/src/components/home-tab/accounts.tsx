@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { EyeIcon, EyeOff, Wallet } from 'lucide-react';
+import { DynamicIcon } from '@/components/lucide';
 import { useState } from 'react';
 import AccountAvatar from '../account-avatar';
 import { currencyUtils } from '@/lib/currency-utils';
@@ -21,7 +21,7 @@ const Accounts = ({ accounts }: AccountsProps) => {
       <div className="mb-4 flex items-center justify-between">
         <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Accounts</h3>
         <Button size="icon" variant="outline" className="rounded-full" onClick={() => setShowMoney(!showMoney)}>
-          {showMoney ? <EyeOff /> : <EyeIcon />}
+          {showMoney ? <DynamicIcon name="eye-off" /> : <DynamicIcon name="eye" />}
         </Button>
       </div>
 
@@ -51,7 +51,7 @@ const Accounts = ({ accounts }: AccountsProps) => {
         <CardContent className="p-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Wallet className="h-4 w-4" />
+              <DynamicIcon name="wallet" className="h-4 w-4" />
               <span className="text-sm font-medium">Total Balance</span>
             </div>
             <span className="text-lg font-bold tracking-tight">

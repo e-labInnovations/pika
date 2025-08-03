@@ -1,4 +1,4 @@
-import { Eye, TrendingDown, Edit } from 'lucide-react';
+import { DynamicIcon } from '@/components/lucide';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
@@ -86,7 +86,7 @@ const CategoryPopover = ({ children, categoryData, open, onOpenChange, date }: C
             {/* Average per Transaction */}
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center space-x-1.5">
-                <TrendingDown className="h-3 w-3 text-blue-600 dark:text-blue-400" />
+                <DynamicIcon name="trending-down" className="h-3 w-3 text-blue-600 dark:text-blue-400" />
                 <span className="text-muted-foreground text-xs">Average</span>
               </div>
               <span className="text-xs font-medium text-blue-600 dark:text-blue-400">
@@ -118,7 +118,7 @@ const CategoryPopover = ({ children, categoryData, open, onOpenChange, date }: C
               variant="outline"
               size="sm"
             >
-              <Eye className="mr-1.5 h-3 w-3" />
+              <DynamicIcon name="eye" className="mr-1.5 h-3 w-3" />
               <span className="text-xs">View All</span>
             </Button>
 
@@ -129,7 +129,7 @@ const CategoryPopover = ({ children, categoryData, open, onOpenChange, date }: C
                 variant="outline"
                 size="sm"
               >
-                <Edit className="mr-1.5 h-3 w-3" />
+                <DynamicIcon name="pencil" className="mr-1.5 h-3 w-3" />
                 <span className="text-xs">Edit Category</span>
               </Button>
             )}

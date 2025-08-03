@@ -9,7 +9,7 @@ import {
 import { runWithLoaderAndError } from '@/lib/utils';
 import { transactionsService } from '@/services/api';
 import { useConfirmDialog } from '@/store/useConfirmDialog';
-import { EllipsisVertical, Edit, Copy, Share, Trash2 } from 'lucide-react';
+import { DynamicIcon } from '@/components/lucide';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const HeaderDropdownMenu = () => {
@@ -55,25 +55,25 @@ const HeaderDropdownMenu = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="icon" className="rounded-full">
-          <EllipsisVertical />
+          <DynamicIcon name="ellipsis-vertical" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="">
         <DropdownMenuItem onClick={handleEdit}>
-          <Edit className="mr-2 h-4 w-4" />
+          <DynamicIcon name="edit" className="mr-2 h-4 w-4" />
           Edit
         </DropdownMenuItem>
         <DropdownMenuItem onClick={handleDuplicate}>
-          <Copy className="mr-2 h-4 w-4" />
+          <DynamicIcon name="copy" className="mr-2 h-4 w-4" />
           Duplicate
         </DropdownMenuItem>
         <DropdownMenuItem onClick={handleShare}>
-          <Share className="mr-2 h-4 w-4" />
+          <DynamicIcon name="share" className="mr-2 h-4 w-4" />
           Share
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleDelete} className="text-red-600 dark:text-red-400">
-          <Trash2 className="mr-2 h-4 w-4" />
+          <DynamicIcon name="trash-2" className="mr-2 h-4 w-4" />
           Delete
         </DropdownMenuItem>
       </DropdownMenuContent>

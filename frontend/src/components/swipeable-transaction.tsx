@@ -1,7 +1,7 @@
 import type React from 'react';
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { Edit, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { DynamicIcon } from '@/components/lucide';
 
 type SwipeAction = {
   label: string;
@@ -50,7 +50,7 @@ export function SwipeableTransaction({
       label: 'Edit',
       onClick: onEdit,
       className: 'bg-blue-500 hover:bg-blue-600',
-      icon: <Edit className="h-4 w-4" />,
+      icon: <DynamicIcon name="pencil" className="h-4 w-4" />,
     },
   ];
 
@@ -59,7 +59,7 @@ export function SwipeableTransaction({
       label: 'Delete',
       onClick: onDelete,
       className: 'bg-red-500 hover:bg-red-600',
-      icon: <Trash2 className="h-4 w-4" />,
+      icon: <DynamicIcon name="trash-2" className="h-4 w-4" />,
     },
   ];
 

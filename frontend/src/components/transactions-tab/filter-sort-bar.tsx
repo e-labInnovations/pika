@@ -1,8 +1,8 @@
 import { amountOperators, defaultFilterValues, type Filter, type FilterTab } from './filter/types';
 import FilterChip from './filter/filter-chip';
-import { Badge } from '../ui/badge';
-import { ArrowDown, ArrowUp } from 'lucide-react';
-import { Button } from '../ui/button';
+import { Badge } from '@/components/ui/badge';
+import { DynamicIcon } from '@/components/lucide';
+import { Button } from '@/components/ui/button';
 import { defaultSort, type Sort, sortOptions } from './sort/types';
 import TransactionUtils from '@/lib/transaction-utils';
 import { useLookupStore } from '@/store/useLookupStore';
@@ -252,7 +252,11 @@ const FilterSortBar = ({
           className="flex-shrink-0 cursor-pointer px-2 py-1 text-xs hover:bg-slate-100 dark:hover:bg-slate-800"
           onClick={onSortClick}
         >
-          {sort.direction === 'asc' ? <ArrowUp className="mr-1 h-2 w-2" /> : <ArrowDown className="mr-1 h-2 w-2" />}
+          {sort.direction === 'asc' ? (
+            <DynamicIcon name="arrow-up" className="mr-1 h-2 w-2" />
+          ) : (
+            <DynamicIcon name="arrow-down" className="mr-1 h-2 w-2" />
+          )}
           {getSortLabel()}
         </Badge>
       )}

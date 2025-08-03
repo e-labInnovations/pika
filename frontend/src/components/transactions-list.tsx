@@ -1,6 +1,6 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowBigRightDash } from 'lucide-react';
+import { DynamicIcon } from '@/components/lucide';
 import { SwipeableTransaction } from '@/components/swipeable-transaction';
 import { transactionsService, type Transaction } from '@/services/api';
 import type { Filter } from './transactions-tab/filter/types';
@@ -249,7 +249,10 @@ export function TransactionsList({
                             </div>
                             {transaction.toAccount && (
                               <>
-                                <ArrowBigRightDash className="h-4 w-4 text-slate-500 dark:text-slate-400" />
+                                <DynamicIcon
+                                  name="arrow-big-right-dash"
+                                  className="h-4 w-4 text-slate-500 dark:text-slate-400"
+                                />
                                 <div className="flex items-center gap-2">
                                   <AccountAvatar account={transaction.toAccount} size="xs" />
                                   <span className="text-xs text-slate-500 dark:text-slate-400">

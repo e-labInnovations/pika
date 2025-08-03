@@ -1,8 +1,8 @@
 import { Card, CardContent } from '../ui/card';
-import { ChevronRight } from 'lucide-react';
+import { DynamicIcon } from '@/components/lucide';
 import type { SettingSection } from '@/data/settings';
 import { useNavigate } from 'react-router-dom';
-import { IconRenderer } from '../icon-renderer';
+import { IconRenderer } from '@/components/icon-renderer';
 
 const SectionsItem = ({ section }: { section: SettingSection }) => {
   const navigate = useNavigate();
@@ -17,7 +17,10 @@ const SectionsItem = ({ section }: { section: SettingSection }) => {
           <p className="line-clamp-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
             {section.description}
           </p>
-          <ChevronRight className="h-4 w-4 text-slate-400 transition-colors group-hover:text-emerald-500" />
+          <DynamicIcon
+            name="chevron-right"
+            className="h-4 w-4 text-slate-400 transition-colors group-hover:text-emerald-500"
+          />
         </div>
       </CardContent>
     </Card>

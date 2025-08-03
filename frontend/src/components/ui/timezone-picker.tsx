@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Globe, Check, ChevronsUpDown } from 'lucide-react';
+import { DynamicIcon } from '@/components/lucide';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
@@ -87,10 +87,10 @@ export function TimezonePicker({ value, onValueChange, placeholder = 'Select tim
       <PopoverTrigger asChild>
         <Button variant="outline" role="combobox" aria-expanded={open} className="w-full justify-between">
           <div className="flex items-center gap-2">
-            <Globe className="h-4 w-4 shrink-0 opacity-50" />
+            <DynamicIcon name="globe" className="h-4 w-4 shrink-0 opacity-50" />
             <span className="truncate">{selectedTimezone ? formatTimezone(selectedTimezone) : placeholder}</span>
           </div>
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          <DynamicIcon name="chevrons-up-down" className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-full p-0" align="start">
@@ -108,10 +108,11 @@ export function TimezonePicker({ value, onValueChange, placeholder = 'Select tim
                   setOpen(false);
                 }}
               >
-                <Check
+                <DynamicIcon
+                  name="check"
                   className={cn('mr-2 h-4 w-4', selectedTimezone === currentTimezone ? 'opacity-100' : 'opacity-0')}
                 />
-                <Globe className="mr-2 h-4 w-4 opacity-50" />
+                <DynamicIcon name="globe" className="mr-2 h-4 w-4 opacity-50" />
                 <div className="flex flex-col">
                   <span className="font-medium">{formatTimezone(currentTimezone)}</span>
                   <span className="text-muted-foreground text-xs">{currentTimezone}</span>
@@ -131,7 +132,10 @@ export function TimezonePicker({ value, onValueChange, placeholder = 'Select tim
                       setOpen(false);
                     }}
                   >
-                    <Check className={cn('mr-2 h-4 w-4', selectedTimezone === tz.id ? 'opacity-100' : 'opacity-0')} />
+                    <DynamicIcon
+                      name="check"
+                      className={cn('mr-2 h-4 w-4', selectedTimezone === tz.id ? 'opacity-100' : 'opacity-0')}
+                    />
                     <div className="flex flex-col">
                       <div className="flex items-center gap-2">
                         <span className="font-medium">{tz.displayName}</span>

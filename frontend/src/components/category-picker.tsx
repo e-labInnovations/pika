@@ -2,15 +2,15 @@ import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Drawer, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from '@/components/ui/drawer';
 import { Button } from '@/components/ui/button';
-import { Check } from 'lucide-react';
 import SearchBar from './search-bar';
 import type { TransactionType } from '@/lib/transaction-utils';
 import { IconRenderer } from './icon-renderer';
 import { type Category } from '@/services/api';
 import { useLookupStore } from '@/store/useLookupStore';
 import { useMediaQuery } from '@/hooks/use-media-query';
-import { Card, CardContent } from './ui/card';
-import { Separator } from './ui/separator';
+import { Card, CardContent } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import { DynamicIcon } from '@/components/lucide';
 
 interface CategoryPickerProps {
   isOpen: boolean;
@@ -117,7 +117,7 @@ const CategoryPicker = ({ isOpen, onClose, onSelect, transactionType, selectedCa
                           </p>
                         </div>
                         {selectedCategoryId === childCategory.id && (
-                          <Check className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                          <DynamicIcon name="check" className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                         )}
                       </div>
                     </div>

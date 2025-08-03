@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Calendar as CalendarIcon, ChevronLeft, ChevronRight } from 'lucide-react';
+import { DynamicIcon } from '@/components/lucide';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
@@ -76,7 +76,7 @@ export function MonthYearPicker({ value, onChange, disabled, className }: MonthY
           )}
           disabled={disabled}
         >
-          <CalendarIcon className="mr-1 h-4 w-4" />
+          <DynamicIcon name="calendar" className="mr-1 h-4 w-4" />
           {value.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
         </Button>
       </PopoverTrigger>
@@ -88,7 +88,7 @@ export function MonthYearPicker({ value, onChange, disabled, className }: MonthY
               {/* Year selector header */}
               <div className="mb-3 flex items-center justify-between">
                 <Button variant="outline" size="sm" onClick={() => handleYearChange('prev')} className="h-8 w-8 p-0">
-                  <ChevronLeft className="h-4 w-4" />
+                  <DynamicIcon name="chevron-left" className="h-4 w-4" />
                 </Button>
 
                 <Button
@@ -101,7 +101,7 @@ export function MonthYearPicker({ value, onChange, disabled, className }: MonthY
                 </Button>
 
                 <Button variant="outline" size="sm" onClick={() => handleYearChange('next')} className="h-8 w-8 p-0">
-                  <ChevronRight className="h-4 w-4" />
+                  <DynamicIcon name="chevron-right" className="h-4 w-4" />
                 </Button>
               </div>
 

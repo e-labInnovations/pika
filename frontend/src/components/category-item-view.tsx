@@ -2,8 +2,8 @@ import { IconRenderer, iconRendererVariants } from './icon-renderer';
 import { type Category } from '@/data/dummy-data';
 import { cn } from '@/lib/utils';
 import type { VariantProps } from 'class-variance-authority';
-import { Lock } from 'lucide-react';
-import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { DynamicIcon } from '@/components/lucide';
 
 interface CategoryItemViewProps extends VariantProps<typeof iconRendererVariants> {
   category: Category;
@@ -28,7 +28,7 @@ const CategoryItemView = ({ category, className, size, variant }: CategoryItemVi
         <Tooltip>
           <TooltipTrigger asChild>
             <div className="flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 bg-slate-100 dark:border-slate-700 dark:bg-slate-800">
-              <Lock className="h-4 w-4 text-slate-500 dark:text-slate-400" />
+              <DynamicIcon name="lock" className="h-4 w-4 text-slate-500 dark:text-slate-400" />
             </div>
           </TooltipTrigger>
           <TooltipContent>

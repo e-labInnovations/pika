@@ -1,8 +1,8 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Edit2, Trash2, Plus } from 'lucide-react';
+import { DynamicIcon } from '@/components/lucide';
 import type { Category } from '@/services/api';
-import { IconRenderer } from '../icon-renderer';
+import { IconRenderer } from '@/components/icon-renderer';
 
 interface CategoryItemProps {
   category: Category;
@@ -37,7 +37,7 @@ const CategoryItem = ({
             {!category.isSystem && (
               <>
                 <Button variant="ghost" size="sm" onClick={() => onEditCategory(category.id)}>
-                  <Edit2 className="h-4 w-4 text-slate-600 dark:text-slate-400" />
+                  <DynamicIcon name="edit-2" className="h-4 w-4 text-slate-600 dark:text-slate-400" />
                 </Button>
                 <Button
                   variant="ghost"
@@ -46,7 +46,7 @@ const CategoryItem = ({
                     onDeleteCategory(category);
                   }}
                 >
-                  <Trash2 className="h-4 w-4 text-red-500" />
+                  <DynamicIcon name="trash-2" className="h-4 w-4 text-red-500" />
                 </Button>
               </>
             )}
@@ -71,7 +71,7 @@ const CategoryItem = ({
                 {!child.isSystem && (
                   <>
                     <Button variant="ghost" size="sm" onClick={() => onEditChildCategory(category.id, child.id)}>
-                      <Edit2 className="h-3 w-3 text-slate-600 dark:text-slate-400" />
+                      <DynamicIcon name="edit-2" className="h-3 w-3 text-slate-600 dark:text-slate-400" />
                     </Button>
                     <Button
                       variant="ghost"
@@ -80,7 +80,7 @@ const CategoryItem = ({
                         onDeleteChildCategory(child);
                       }}
                     >
-                      <Trash2 className="h-3 w-3 text-red-500" />
+                      <DynamicIcon name="trash-2" className="h-3 w-3 text-red-500" />
                     </Button>
                   </>
                 )}
@@ -94,7 +94,7 @@ const CategoryItem = ({
             className="flex w-full items-center justify-center gap-2 text-slate-600 hover:text-emerald-600 dark:text-slate-400 dark:hover:text-emerald-400"
             onClick={() => onAddChildCategory(category.id)}
           >
-            <Plus className="h-4 w-4" />
+            <DynamicIcon name="plus" className="h-4 w-4" />
             <span>Add Subcategory</span>
           </Button>
         </div>

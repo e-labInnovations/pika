@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import TabsLayout from '@/layouts/tabs';
-import { Edit2, Plus, Trash2 } from 'lucide-react';
+import { DynamicIcon } from '@/components/lucide';
 import AccountAvatar from '@/components/account-avatar';
 import { useNavigate } from 'react-router-dom';
 import { cn, runWithLoaderAndError } from '@/lib/utils';
@@ -48,7 +48,7 @@ const AccountsSettings = () => {
             className="rounded-full"
             onClick={() => navigate('/settings/accounts/add')}
           >
-            <Plus className="h-4 w-4" />
+            <DynamicIcon name="plus" className="h-4 w-4" />
           </Button>
         ),
         linkBackward: '/settings',
@@ -71,7 +71,7 @@ const AccountsSettings = () => {
                 </div>
                 <div className="flex items-center gap-2">
                   <Button variant="ghost" size="sm" onClick={() => navigate(`/settings/accounts/${account.id}/edit`)}>
-                    <Edit2 className="h-4 w-4" />
+                    <DynamicIcon name="edit-2" className="h-4 w-4" />
                   </Button>
                   <Button
                     variant="ghost"
@@ -80,7 +80,7 @@ const AccountsSettings = () => {
                       handleDeleteAccount(account);
                     }}
                   >
-                    <Trash2 className="h-4 w-4 text-red-500" />
+                    <DynamicIcon name="trash-2" className="h-4 w-4 text-red-500" />
                   </Button>
                 </div>
               </div>

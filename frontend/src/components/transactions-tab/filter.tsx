@@ -3,7 +3,7 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from '@/components/ui/drawer';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
-import { Banknote, Calculator, Calendar, DollarSign, Folder, Tag, User, X } from 'lucide-react';
+import { DynamicIcon, type IconName } from '@/components/lucide';
 import TypesTabContent from './filter/types-tab-content';
 import CategoriesTabContent from './filter/categories-tab-content';
 import TagsTabContent from './filter/tags-tab-content';
@@ -14,27 +14,34 @@ import { defaultFilterValues, type Filter } from './filter/types';
 import { useEffect, useState } from 'react';
 import AccountTabContent from './filter/account-tab-content';
 
-const tabs = [
-  { id: 'types', label: 'Type', icon: DollarSign, content: TypesTabContent },
-  {
-    id: 'categories',
-    label: 'Categories',
-    icon: Folder,
-    content: CategoriesTabContent,
-  },
-  { id: 'tags', label: 'Tags', icon: Tag, content: TagsTabContent },
-  { id: 'people', label: 'People', icon: User, content: PeopleTabContent },
-  { id: 'date', label: 'Date', icon: Calendar, content: DateTabContent },
+type Tab = {
+  id: string;
+  label: string;
+  icon: IconName;
+  content: React.ComponentType<{ filters: Filter; setFilters: (filters: Filter | ((prev: Filter) => Filter)) => void }>;
+};
+
+const tabs: Tab[] = [
+  { id: 'date', label: 'Date', icon: 'calendar', content: DateTabContent },
   {
     id: 'amount',
     label: 'Amount',
-    icon: Calculator,
+    icon: 'calculator',
     content: AmountTabContent,
   },
+  { id: 'types', label: 'Type', icon: 'dollar-sign', content: TypesTabContent },
+  {
+    id: 'categories',
+    label: 'Categories',
+    icon: 'folder',
+    content: CategoriesTabContent,
+  },
+  { id: 'tags', label: 'Tags', icon: 'tag', content: TagsTabContent },
+  { id: 'people', label: 'People', icon: 'user', content: PeopleTabContent },
   {
     id: 'account',
     label: 'Account',
-    icon: Banknote,
+    icon: 'banknote',
     content: AccountTabContent,
   },
 ];
@@ -84,7 +91,7 @@ const TransactionsFilter = ({ open, setOpen, filters, setFilters, defaultTab }: 
               )}
             </div>
             <Button variant="outline" className="flex-none rounded-full" onClick={handleClearFilters}>
-              <X /> Clear
+              <DynamicIcon name="x" /> Clear
             </Button>
           </DrawerTitle>
         </DrawerHeader>
@@ -104,7 +111,7 @@ const TransactionsFilter = ({ open, setOpen, filters, setFilters, defaultTab }: 
                   'data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-primary',
                 )}
               >
-                <item.icon className="h-4 w-4" />
+                <DynamicIcon name={item.icon} className="h-4 w-4" />
                 <span className="text-center text-[8px]">{item.label}</span>
               </TabsTrigger>
             ))}

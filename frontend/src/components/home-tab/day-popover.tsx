@@ -1,4 +1,4 @@
-import { Calendar, Eye } from 'lucide-react';
+import { DynamicIcon } from '@/components/lucide';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
@@ -8,7 +8,6 @@ import type { DailySummary } from '@/services/api/analytics.service';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import transactionUtils from '@/lib/transaction-utils';
-import { DynamicIcon } from '@/components/lucide';
 
 interface DayPopoverProps {
   children: React.ReactNode;
@@ -48,7 +47,7 @@ const DayPopover = ({ children, dayData, date, open, onOpenChange }: DayPopoverP
         <PopoverContent className="w-fit" align="center">
           <div className="space-y-3">
             <div className="flex items-center space-x-2">
-              <Calendar className="text-muted-foreground h-4 w-4" />
+              <DynamicIcon name="calendar" className="text-muted-foreground h-4 w-4" />
               <h4 className="text-sm font-medium">
                 {date.toLocaleDateString('en-US', {
                   weekday: 'short',
@@ -72,7 +71,7 @@ const DayPopover = ({ children, dayData, date, open, onOpenChange }: DayPopoverP
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Calendar className="text-muted-foreground h-4 w-4" />
+              <DynamicIcon name="calendar" className="text-muted-foreground h-4 w-4" />
               <h4 className="text-sm font-medium">
                 {date.toLocaleDateString('en-US', {
                   weekday: 'short',
@@ -150,7 +149,7 @@ const DayPopover = ({ children, dayData, date, open, onOpenChange }: DayPopoverP
           </div>
 
           <Button onClick={() => handleViewTransactions(date)} className="h-8 w-full" variant="outline" size="sm">
-            <Eye className="mr-1.5 h-3 w-3" />
+            <DynamicIcon name="eye" className="mr-1.5 h-3 w-3" />
             <span className="text-xs">View All</span>
           </Button>
         </div>

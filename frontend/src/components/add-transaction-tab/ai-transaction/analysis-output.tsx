@@ -4,11 +4,10 @@ import type { AnalyzedTransactionData } from '@/services/api/ai.service';
 import transactionUtils from '@/lib/transaction-utils';
 import { currencyUtils } from '@/lib/currency-utils';
 import AccountAvatar from '@/components/account-avatar';
-import { ArrowBigRightDash } from 'lucide-react';
+import { DynamicIcon } from '@/components/lucide';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { TagChip } from '@/components/tag-chip';
 import { cn, getColorFromName, getInitials } from '@/lib/utils';
-import { CheckCircle2, RotateCcw } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
 import { Button } from '@/components/ui/button';
 
@@ -58,7 +57,10 @@ const AnalysisOutput = ({ analysisOutput, onRetryAnalysis }: AnalysisOutputProps
                       )}
                       {analysisOutput.toAccount && (
                         <>
-                          <ArrowBigRightDash className="h-4 w-4 text-slate-500 dark:text-slate-400" />
+                          <DynamicIcon
+                            name="arrow-big-right-dash"
+                            className="h-4 w-4 text-slate-500 dark:text-slate-400"
+                          />
                           <AccountAvatar account={analysisOutput.toAccount} size="xs" />
                           <span className="text-xs text-slate-500 dark:text-slate-400">
                             {analysisOutput.toAccount.name}
@@ -103,12 +105,12 @@ const AnalysisOutput = ({ analysisOutput, onRetryAnalysis }: AnalysisOutputProps
       )}
       <div className={cn('flex items-center justify-between', !onRetryAnalysis && 'justify-center')}>
         <div className="text-muted-foreground flex items-center gap-2 text-sm">
-          <CheckCircle2 className="h-4 w-4 text-green-500" />
+          <DynamicIcon name="check-circle-2" className="h-4 w-4 text-green-500" />
           <span>AI Analysis Complete</span>
         </div>
         {onRetryAnalysis && (
           <Button variant="outline" size="sm" onClick={onRetryAnalysis} className="gap-2">
-            <RotateCcw className="h-4 w-4" />
+            <DynamicIcon name="rotate-ccw" className="h-4 w-4" />
             Re-analyze
           </Button>
         )}

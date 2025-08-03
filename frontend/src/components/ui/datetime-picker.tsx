@@ -7,7 +7,6 @@
 
 import * as React from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { CalendarIcon } from 'lucide-react';
 import {
   endOfHour,
   endOfMinute,
@@ -34,15 +33,7 @@ import {
   startOfDay,
   endOfDay,
 } from 'date-fns';
-import {
-  CheckIcon,
-  ChevronDownIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  ChevronUpIcon,
-  Clock,
-  XCircle,
-} from 'lucide-react';
+import { DynamicIcon } from '@/components/lucide';
 import { DayPicker, type Matcher, TZDate } from 'react-day-picker';
 
 import { cn } from '@/lib/utils';
@@ -238,7 +229,7 @@ export function DateTimePicker({
             tabIndex={0}
           >
             <div className="flex flex-grow items-center">
-              <CalendarIcon className="mr-2 size-4" />
+              <DynamicIcon name="calendar" className="mr-2 size-4" />
               {dislayFormat}
             </div>
             {clearable && value && (
@@ -256,7 +247,7 @@ export function DateTimePicker({
                   setOpen(false);
                 }}
               >
-                <XCircle className="size-4" />
+                <DynamicIcon name="x-circle" className="size-4" />
               </Button>
             )}
           </div>
@@ -274,15 +265,15 @@ export function DateTimePicker({
               </span>
             </div>
             <Button variant="ghost" size="icon" onClick={() => setMonthYearPicker(monthYearPicker ? false : 'year')}>
-              {monthYearPicker ? <ChevronUpIcon /> : <ChevronDownIcon />}
+              {monthYearPicker ? <DynamicIcon name="chevron-up" /> : <DynamicIcon name="chevron-down" />}
             </Button>
           </div>
           <div className={cn('flex space-x-2', monthYearPicker ? 'hidden' : '')}>
             <Button variant="ghost" size="icon" onClick={onPrevMonth}>
-              <ChevronLeftIcon />
+              <DynamicIcon name="chevron-left" />
             </Button>
             <Button variant="ghost" size="icon" onClick={onNextMonth}>
-              <ChevronRightIcon />
+              <DynamicIcon name="chevron-right" />
             </Button>
           </div>
         </div>
@@ -675,9 +666,9 @@ function TimePicker({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button variant="outline" role="combobox" aria-expanded={open} className="justify-between">
-          <Clock className="mr-2 size-4" />
+          <DynamicIcon name="clock" className="mr-2 size-4" />
           {display}
-          <ChevronDownIcon className="ml-2 size-4 shrink-0 opacity-50" />
+          <DynamicIcon name="chevron-down" className="ml-2 size-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="p-0" side="top">
@@ -777,7 +768,7 @@ const TimeItem = ({
       onClick={() => onSelect(option)}
       disabled={disabled}
     >
-      <div className="w-4">{selected && <CheckIcon className="my-auto size-4" />}</div>
+      <div className="w-4">{selected && <DynamicIcon name="check" className="my-auto size-4" />}</div>
       <span className="ms-2">{option.label}</span>
     </Button>
   );

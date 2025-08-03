@@ -9,7 +9,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { authService, type User } from '@/services/api';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AlertCircle } from 'lucide-react';
+import { DynamicIcon } from '@/components/lucide';
 import Logo from '@/components/logo';
 import type { AxiosResponse } from 'axios';
 import { useTitle } from '@/hooks/use-title';
@@ -141,35 +141,13 @@ export default function Login() {
                 required
                 onBlur={handleBlur}
               />
-              {/* <div className="relative">
-                <Input
-                  id="appPassword"
-                  name="appPassword"
-                  type="password"
-                  autoComplete="current-password"
-                  value={form.appPassword}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  placeholder="Enter your application password"
-                  aria-invalid={!!errors.appPassword && touched.appPassword}
-                  required
-                />
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="absolute top-1/2 right-1 h-7 w-7 -translate-y-1/2 p-0 duration-200"
-                  onClick={handlePaste}
-                >
-                  <Clipboard className="h-4 w-4" />
-                </Button>
-              </div> */}
               {touched.appPassword && errors.appPassword && (
                 <div className="mt-1 text-xs text-red-500">{errors.appPassword}</div>
               )}
             </div>
             {error && (
               <Alert variant="destructive">
-                <AlertCircle className="h-4 w-4" />
+                <DynamicIcon name="alert-circle" className="h-4 w-4" />
                 <AlertTitle>Error</AlertTitle>
                 <AlertDescription>{error}</AlertDescription>
               </Alert>

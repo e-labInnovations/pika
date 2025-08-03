@@ -6,7 +6,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { analyticsService, type DailySummaries, type DailySummary } from '@/services/api';
 import AsyncStateWrapper from '../async-state-wrapper';
 import DayPopover from './day-popover';
-import { Minus, Equal } from 'lucide-react';
+import { DynamicIcon } from '@/components/lucide';
 
 interface DailyCalendarProps {
   selectedDate: Date;
@@ -73,7 +73,7 @@ const DailyCalendar = ({ selectedDate }: DailyCalendarProps) => {
     if (daySummary && daySummary.transactionCount > 0) {
       return (
         <div className="flex items-center justify-center">
-          <Equal className="text-muted-foreground h-2 w-2" />
+          <DynamicIcon name="equal" className="text-muted-foreground h-2 w-2" />
         </div>
       );
     }
@@ -81,7 +81,7 @@ const DailyCalendar = ({ selectedDate }: DailyCalendarProps) => {
     // If balance is zero and no transactions, show no activity indicator
     return (
       <div className="flex items-center justify-center">
-        <Minus className="text-muted-foreground/40 h-1.5 w-1.5" />
+        <DynamicIcon name="minus" className="text-muted-foreground/40 h-1.5 w-1.5" />
       </div>
     );
   };

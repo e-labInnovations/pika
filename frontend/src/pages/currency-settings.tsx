@@ -3,7 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import TabsLayout from '@/layouts/tabs';
-import { CircleCheck, Globe } from 'lucide-react';
+import { DynamicIcon } from '@/components/lucide';
 import { currencyUtils, type Currency, type CurrencyCode } from '@/lib/currency-utils';
 import * as RadioGroup from '@radix-ui/react-radio-group';
 import { cn, runWithLoaderAndError } from '@/lib/utils';
@@ -99,7 +99,7 @@ const CurrencySettings = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900">
-                      <Globe className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+                      <DynamicIcon name="globe" className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
                     </div>
                     <div>
                       <h3 className="font-medium text-slate-900 dark:text-white">Current Default</h3>
@@ -154,7 +154,7 @@ const CurrencySettings = () => {
                       </Badge>
                     </div>
                     <RadioGroup.Indicator className="absolute top-2 right-2">
-                      <CircleCheck className="fill-primary text-primary-foreground" />
+                      <DynamicIcon name="circle-check" className="fill-primary text-primary-foreground" />
                     </RadioGroup.Indicator>
                   </RadioGroup.Item>
                 ))}

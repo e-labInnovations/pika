@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import TabsLayout from '@/layouts/tabs';
-import { Download, Upload } from 'lucide-react';
+import { DynamicIcon } from '@/components/lucide';
 
 const SecuritySettings = () => {
   return (
@@ -24,11 +24,11 @@ const SecuritySettings = () => {
       </div>
       <div className="space-y-2">
         <Button variant="outline" className="w-full justify-start">
-          <Download className="mr-2 h-4 w-4" />
+          <DynamicIcon name="download" className="mr-2 h-4 w-4" />
           Export Data
         </Button>
         <Button variant="outline" className="w-full justify-start">
-          <Upload className="mr-2 h-4 w-4" />
+          <DynamicIcon name="upload" className="mr-2 h-4 w-4" />
           Import Data
         </Button>
       </div>

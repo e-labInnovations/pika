@@ -1,19 +1,19 @@
 import { Card, CardContent } from '@/components/ui/card';
-import type { LucideIcon } from 'lucide-react';
 import { currencyUtils } from '@/lib/currency-utils';
 import { useAuth } from '@/hooks/use-auth';
+import { DynamicIcon, type IconName } from '@/components/lucide';
 
 interface SummaryCardProps {
   title: string;
   subtitle?: string;
   amount: number;
-  icon: LucideIcon;
+  iconName: IconName;
   iconBgColor: string;
   amountColor: string;
   currency?: string;
 }
 
-const SummaryCard = ({ title, subtitle, amount, icon: Icon, iconBgColor, amountColor, currency }: SummaryCardProps) => {
+const SummaryCard = ({ title, subtitle, amount, iconName, iconBgColor, amountColor, currency }: SummaryCardProps) => {
   const { user } = useAuth();
 
   const formatCurrency = (amount: number) => {
@@ -25,7 +25,7 @@ const SummaryCard = ({ title, subtitle, amount, icon: Icon, iconBgColor, amountC
       <CardContent className="p-2">
         <div className="flex flex-col items-center space-y-2 text-center">
           <div className={`flex h-8 w-8 items-center justify-center rounded-full shadow-sm ${iconBgColor}`}>
-            <Icon className="h-4 w-4 text-white" />
+            <DynamicIcon name={iconName} className="h-4 w-4 text-white" />
           </div>
           <div>
             <span className="text-sm font-medium text-slate-900 dark:text-white">{title}</span>

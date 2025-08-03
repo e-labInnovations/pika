@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Textarea } from '../ui/textarea';
-import { NotebookPen } from 'lucide-react';
+import { DynamicIcon } from '@/components/lucide';
 import { type TransactionFormData } from './types';
 
 interface NoteProps {
@@ -12,7 +12,7 @@ const Note = ({ formData, setFormData }: NoteProps) => {
     <Card className="gap-0 p-0">
       <CardHeader className="p-4 pb-0">
         <CardTitle className="flex items-center text-lg">
-          <NotebookPen className="mr-2 h-5 w-5" />
+          <DynamicIcon name="notebook-pen" className="mr-2 h-5 w-5" />
           Note
         </CardTitle>
       </CardHeader>

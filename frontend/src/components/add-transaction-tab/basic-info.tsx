@@ -1,4 +1,4 @@
-import { DollarSign } from 'lucide-react';
+import { DynamicIcon } from '@/components/lucide';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -16,7 +16,7 @@ const BasicInfo = ({ formData, setFormData }: BasicInfoProps) => {
     <Card className="gap-0 p-0">
       <CardHeader className="p-4 pb-0">
         <CardTitle className="flex items-center text-lg">
-          <DollarSign className="mr-2 h-5 w-5" />
+          <DynamicIcon name="dollar-sign" className="mr-2 h-5 w-5" />
           Basic Information
         </CardTitle>
       </CardHeader>

@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Pen, Wallet } from 'lucide-react';
+import { DynamicIcon } from '@/components/lucide';
 import type { TransactionFormData } from './types';
 import { useEffect, useState } from 'react';
 import AccountPicker from '../account-picker';
@@ -62,7 +62,7 @@ const CategoryAccount = ({ formData, setFormData }: CategoryAccountProps) => {
       <Card className="gap-0 p-0">
         <CardHeader className="p-4 pb-0">
           <CardTitle className="flex items-center text-lg">
-            <Wallet className="mr-2 h-5 w-5" />
+            <DynamicIcon name="wallet" className="mr-2 h-5 w-5" />
             Category & Account
           </CardTitle>
         </CardHeader>
@@ -78,7 +78,7 @@ const CategoryAccount = ({ formData, setFormData }: CategoryAccountProps) => {
                 </div>
               </div>
               <Button variant="ghost" size="sm" onClick={() => setShowCategoryPicker(true)}>
-                <Pen className="h-4 w-4" />
+                <DynamicIcon name="pencil" className="h-4 w-4" />
               </Button>
             </div>
           </div>

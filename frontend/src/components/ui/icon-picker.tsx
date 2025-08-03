@@ -7,7 +7,6 @@ import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerT
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
-import { type LucideProps, type LucideIcon } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { iconsData } from './icons-data';
 import { useVirtualizer, type VirtualItem } from '@tanstack/react-virtual';
@@ -16,6 +15,7 @@ import Fuse from 'fuse.js';
 import { useDebounceValue } from 'usehooks-ts';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { DynamicIcon, type IconName } from '@/components/lucide';
+import type { DynamicIconProps } from '../lucide/dynamic-icon';
 
 export type IconData = (typeof iconsData)[number];
 
@@ -468,11 +468,11 @@ const IconPicker = React.forwardRef<React.ComponentRef<typeof PopoverTrigger>, I
 );
 IconPicker.displayName = 'IconPicker';
 
-interface IconProps extends Omit<LucideProps, 'ref'> {
+interface IconProps extends Omit<DynamicIconProps, 'ref'> {
   name: IconName;
 }
 
-const Icon = React.forwardRef<React.ComponentRef<LucideIcon>, IconProps>(({ name, ...props }, ref) => {
+const Icon = React.forwardRef<React.ComponentRef<typeof DynamicIcon>, IconProps>(({ name, ...props }, ref) => {
   return <DynamicIcon name={name} {...props} ref={ref} />;
 });
 Icon.displayName = 'Icon';

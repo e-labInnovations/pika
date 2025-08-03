@@ -1,12 +1,12 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Calendar } from 'lucide-react';
 import type { Person } from '@/services/api';
 import { useNavigate } from 'react-router-dom';
 import { currencyUtils } from '@/lib/currency-utils';
 import { useAuth } from '@/hooks/use-auth';
 import transactionUtils from '@/lib/transaction-utils';
 import { cn, getColorFromName, getInitials } from '@/lib/utils';
+import { DynamicIcon } from '@/components/lucide';
 
 interface PeopleListProps {
   people: Person[];
@@ -65,7 +65,7 @@ export function PeopleList({ people, searchTerm }: PeopleListProps) {
                     <p className="truncate text-sm text-slate-500 dark:text-slate-400">{person.description}</p>
                     <div className="mt-1 flex items-center justify-between space-x-4">
                       <span className="flex items-center text-xs text-slate-500 dark:text-slate-400">
-                        <Calendar className="mr-1 h-3 w-3" />
+                        <DynamicIcon name="calendar" className="mr-1 h-3 w-3" />
                         Last:{' '}
                         {person.lastTransactionAt ? transactionUtils.formatDateTime(person.lastTransactionAt) : '-'}
                       </span>

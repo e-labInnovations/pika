@@ -3,7 +3,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Camera, X, RotateCcw } from 'lucide-react';
+import { DynamicIcon } from '@/components/lucide';
 import { cn, getColorFromName } from '@/lib/utils';
 import { useState, useCallback } from 'react';
 import Cropper from 'react-easy-crop';
@@ -143,7 +143,7 @@ const AvatarUpload = ({ avatar, name, onAvatarChange }: AvatarUploadProps) => {
                 asChild
               >
                 <span>
-                  <Camera className="h-4 w-4" />
+                  <DynamicIcon name="camera" className="h-4 w-4" />
                 </span>
               </Button>
             </Label>
@@ -158,7 +158,7 @@ const AvatarUpload = ({ avatar, name, onAvatarChange }: AvatarUploadProps) => {
                 className="absolute -bottom-1 -left-1 h-8 w-8 rounded-full"
                 onClick={handleRemoveAvatar}
               >
-                <X className="h-4 w-4" />
+                <DynamicIcon name="x" className="h-4 w-4" />
               </Button>
             )}
           </div>
@@ -222,7 +222,7 @@ const AvatarUpload = ({ avatar, name, onAvatarChange }: AvatarUploadProps) => {
                 }}
                 className="gap-2"
               >
-                <RotateCcw className="h-4 w-4" />
+                <DynamicIcon name="rotate-ccw" className="h-4 w-4" />
                 Reset
               </Button>
 

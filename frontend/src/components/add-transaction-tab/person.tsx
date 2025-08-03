@@ -1,4 +1,4 @@
-import { Pencil, User } from 'lucide-react';
+import { DynamicIcon } from '@/components/lucide';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import type { TransactionFormData } from './types';
@@ -32,7 +32,7 @@ const PersonView = ({ formData, setFormData }: PersonProps) => {
       <Card className="gap-0 p-0">
         <CardHeader className="p-4 pb-0">
           <CardTitle className="flex items-center text-lg">
-            <User className="mr-2 h-5 w-5" />
+            <DynamicIcon name="user" className="mr-2 h-5 w-5" />
             Person
           </CardTitle>
         </CardHeader>
@@ -54,7 +54,7 @@ const PersonView = ({ formData, setFormData }: PersonProps) => {
                 </div>
               </div>
               <Button variant="ghost" size="sm" onClick={() => setShowPeoplePicker(true)}>
-                <Pencil className="h-4 w-4" />
+                <DynamicIcon name="pencil" className="h-4 w-4" />
               </Button>
             </div>
           ) : (

@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { CalendarIcon, Clock, ChevronDownIcon } from 'lucide-react';
 import { format } from 'date-fns';
-
+import { DynamicIcon } from '@/components/lucide';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -96,9 +95,9 @@ export function DateTimePicker({ value, onChange, disabled, className }: DateTim
             disabled={disabled}
             className={cn('w-fit justify-between font-normal', !value && 'text-muted-foreground')}
           >
-            <CalendarIcon className="mr-2 h-4 w-4" />
+            <DynamicIcon name="calendar" className="mr-2 h-4 w-4" />
             {formatDate(value)}
-            <ChevronDownIcon className="ml-2 h-4 w-4 opacity-50" />
+            <DynamicIcon name="chevron-down" className="ml-2 h-4 w-4 opacity-50" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">
@@ -119,9 +118,9 @@ export function DateTimePicker({ value, onChange, disabled, className }: DateTim
             disabled={disabled}
             className={cn('w-fit justify-between font-normal', !value && 'text-muted-foreground')}
           >
-            <Clock className="mr-2 h-4 w-4" />
+            <DynamicIcon name="clock" className="mr-2 h-4 w-4" />
             {formatTime(value)}
-            <ChevronDownIcon className="ml-2 h-4 w-4 opacity-50" />
+            <DynamicIcon name="chevron-down" className="ml-2 h-4 w-4 opacity-50" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">

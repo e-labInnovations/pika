@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CircleCheck } from 'lucide-react';
+import { DynamicIcon } from '@/components/lucide';
 import SearchItem from './search-item';
 import FilterTabHeader from './filter-tab-header';
 import { getInitials } from '@/lib/utils';
@@ -75,7 +75,7 @@ const PeopleTabContent = ({ filters, setFilters }: PeopleTabContentProps) => {
                 </div>
               </div>
               <CheckboxPrimitive.Indicator className="absolute top-2 right-2">
-                <CircleCheck className="fill-primary text-primary-foreground" />
+                <DynamicIcon name="circle-check" className="fill-primary text-primary-foreground" />
               </CheckboxPrimitive.Indicator>
             </CheckboxPrimitive.Root>
           );

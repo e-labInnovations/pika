@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import TabsLayout from '@/layouts/tabs';
-import { Save, Trash2 } from 'lucide-react';
+import { DynamicIcon } from '@/components/lucide';
 import { IconRenderer } from '@/components/icon-renderer';
 import { TagChip } from '@/components/tag-chip';
 import { type IconName } from '@/components/ui/icon-picker';
@@ -187,11 +187,11 @@ const EditTag = () => {
 
           <div className="flex justify-end space-x-2">
             <Button variant="destructive" onClick={handleDelete} className="w-1/2">
-              <Trash2 className="mr-2 h-4 w-4" />
+              <DynamicIcon name="trash-2" className="mr-2 h-4 w-4" />
               Delete
             </Button>
             <Button onClick={handleSubmit} disabled={!formData.name.trim()} className="w-1/2">
-              <Save className="mr-2 h-4 w-4" />
+              <DynamicIcon name="save" className="mr-2 h-4 w-4" />
               Save
             </Button>
           </div>

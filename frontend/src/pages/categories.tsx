@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
+import { DynamicIcon } from '@/components/lucide';
 import TabsLayout from '@/layouts/tabs';
 import CategoryItem from '@/components/categories/category-item';
 import CategoriesTabs from '@/components/categories/categories-tabs';
@@ -109,7 +109,7 @@ const Categories = () => {
         description: 'Manage your categories',
         rightActions: (
           <Button variant="outline" size="icon" className="rounded-full" onClick={() => onAddCategory(undefined)}>
-            <Plus className="h-4 w-4" />
+            <DynamicIcon name="plus" className="h-4 w-4" />
           </Button>
         ),
         linkBackward: '/settings',

@@ -1,8 +1,8 @@
-import { ChevronLeft } from 'lucide-react';
-import { Button } from './ui/button';
+import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
-import PikaIcon from './pika-icon';
+import PikaIcon from '@/components/pika-icon';
 import { useTitle } from '@/hooks/use-title';
+import { DynamicIcon } from '@/components/lucide';
 
 interface MainHeaderProps {
   linkBackward?: string;
@@ -27,7 +27,7 @@ const MainHeader = ({ linkBackward, title, pageTitle, description, rightActions 
                 onClick={() => navigate(linkBackward, { replace: true })}
                 className="text-muted-foreground mr-2"
               >
-                <ChevronLeft className="size-8" />
+                <DynamicIcon name="chevron-left" className="size-8" />
               </Button>
             )}
             <div className="flex items-center space-x-3">

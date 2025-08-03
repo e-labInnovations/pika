@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
-import { Paperclip, Upload, X, File } from 'lucide-react';
+import { DynamicIcon } from '@/components/lucide';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 import { uploadService, type UploadResponse } from '@/services/api';
 import { toast } from 'sonner';
@@ -51,7 +51,7 @@ const Attachments = ({ attachments, setAttachments }: AttachmentsProps) => {
     <Card className="gap-0 p-0">
       <CardHeader className="p-4 pb-0">
         <CardTitle className="flex items-center text-lg">
-          <Paperclip className="mr-2 h-5 w-5" />
+          <DynamicIcon name="paperclip" className="mr-2 h-5 w-5" />
           Attachments
         </CardTitle>
       </CardHeader>
@@ -74,7 +74,7 @@ const Attachments = ({ attachments, setAttachments }: AttachmentsProps) => {
               asChild
             >
               <div>
-                <Upload className="mr-2 h-4 w-4" />
+                <DynamicIcon name="upload" className="mr-2 h-4 w-4" />
                 Upload Images or PDFs
               </div>
             </Button>
@@ -99,7 +99,7 @@ const Attachments = ({ attachments, setAttachments }: AttachmentsProps) => {
                     className="absolute top-1 right-1 h-6 w-6 p-0 text-red-500 hover:bg-red-100 hover:text-red-700"
                     onClick={() => removeAttachment(attachment.id)}
                   >
-                    <X className="h-3 w-3" />
+                    <DynamicIcon name="x" className="h-3 w-3" />
                   </Button>
 
                   {attachment.type === 'image' ? (
@@ -124,7 +124,7 @@ const Attachments = ({ attachments, setAttachments }: AttachmentsProps) => {
                   ) : (
                     <div className="flex h-full flex-col items-center gap-2">
                       <div className="my-auto flex h-16 w-16 items-center justify-center rounded bg-red-100 dark:bg-red-900">
-                        <File className="h-4 w-4 text-red-600 dark:text-red-400" />
+                        <DynamicIcon name="file" className="h-4 w-4 text-red-600 dark:text-red-400" />
                       </div>
                       <div className="flex max-w-full flex-col items-center gap-1 overflow-hidden">
                         <Tooltip>

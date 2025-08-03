@@ -2,7 +2,7 @@ import TabsLayout from '@/layouts/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Plus, DollarSign, Mail, Phone } from 'lucide-react';
+import { DynamicIcon } from '@/components/lucide';
 import { useNavigate, useParams } from 'react-router-dom';
 import DetailedPersonActions from '@/components/people-tab/detailed-person-actions';
 import transactionUtils from '@/lib/transaction-utils';
@@ -132,11 +132,11 @@ const DetailedPerson = () => {
             {/* Quick Actions */}
             <div className="grid grid-cols-2 gap-3">
               <Button className="bg-primary hover:bg-primary/90">
-                <Plus className="mr-2 h-4 w-4" />
+                <DynamicIcon name="plus" className="mr-2 h-4 w-4" />
                 Add Transaction
               </Button>
               <Button variant="outline">
-                <DollarSign className="mr-2 h-4 w-4" />
+                <DynamicIcon name="dollar-sign" className="mr-2 h-4 w-4" />
                 Settle Up
               </Button>
             </div>
@@ -151,14 +151,14 @@ const DetailedPerson = () => {
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
-                        <Mail className="h-4 w-4 text-slate-400" />
+                        <DynamicIcon name="mail" className="h-4 w-4 text-slate-400" />
                         <span className="text-slate-600 dark:text-slate-400">{person.email}</span>
                       </div>
                     </div>
 
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
-                        <Phone className="h-4 w-4 text-slate-400" />
+                        <DynamicIcon name="phone" className="h-4 w-4 text-slate-400" />
                         <span className="text-slate-600 dark:text-slate-400">{person.phone}</span>
                       </div>
                     </div>

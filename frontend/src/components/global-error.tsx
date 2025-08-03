@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { AlertTriangle, RefreshCw } from 'lucide-react';
+import { DynamicIcon } from '@/components/lucide';
 
 interface GlobalErrorProps {
   className?: string;
@@ -19,13 +19,13 @@ const GlobalError = ({
   icon,
   onButtonClick,
   buttonText = 'Retry',
-  buttonIcon = <RefreshCw className="h-4 w-4" />,
+  buttonIcon = <DynamicIcon name="refresh-cw" className="h-4 w-4" />,
 }: GlobalErrorProps) => {
   return (
     <div className={cn('flex w-full items-center justify-center', className)}>
       <div className="flex w-full flex-col items-center justify-center p-4 text-center">
         <div className="mb-4 flex items-center justify-center">
-          {icon || <AlertTriangle className="text-destructive h-16 w-16" />}
+          {icon || <DynamicIcon name="alert-triangle" className="text-destructive h-16 w-16" />}
         </div>
 
         <div className="text-foreground mb-2 text-xl font-semibold">{title}</div>

@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import TabsLayout from '@/layouts/tabs';
-import { Save } from 'lucide-react';
+import { DynamicIcon } from '@/components/lucide';
 import { type TransactionType } from '@/lib/transaction-utils';
 import { IconRenderer } from '@/components/icon-renderer';
 import { type IconName } from '@/components/ui/icon-picker';
@@ -141,7 +141,7 @@ const AddCategory = () => {
         </Card>
 
         <Button className="w-full" onClick={handleSubmit} disabled={!formData.name.trim()}>
-          <Save className="mr-2 h-4 w-4" />
+          <DynamicIcon name="save" className="mr-2 h-4 w-4" />
           Save
         </Button>
       </div>

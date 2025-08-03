@@ -1,11 +1,11 @@
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/ui/drawer';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { FileText, Download, Loader2, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import transactionUtils from '@/lib/transaction-utils';
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { DynamicIcon } from '@/components/lucide';
 
 interface Attachment {
   name: string;
@@ -337,10 +337,10 @@ const AttachmentViewer = ({ isOpen, onClose, attachment }: AttachmentViewerProps
             {/* Zoom Controls */}
             <div className="absolute top-2 right-2 z-10 flex flex-col gap-1 rounded-lg bg-white/90 p-1 shadow-lg backdrop-blur-sm dark:bg-slate-800/90">
               <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={handleZoomIn} disabled={scale >= 5}>
-                <ZoomIn className="h-4 w-4" />
+                <DynamicIcon name="zoom-in" className="h-4 w-4" />
               </Button>
               <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={handleZoomOut} disabled={scale <= 0.5}>
-                <ZoomOut className="h-4 w-4" />
+                <DynamicIcon name="zoom-out" className="h-4 w-4" />
               </Button>
               <Button
                 variant="ghost"
@@ -349,7 +349,7 @@ const AttachmentViewer = ({ isOpen, onClose, attachment }: AttachmentViewerProps
                 onClick={handleResetZoom}
                 disabled={scale === 1 && translateX === 0 && translateY === 0}
               >
-                <RotateCcw className="h-4 w-4" />
+                <DynamicIcon name="rotate-ccw" className="h-4 w-4" />
               </Button>
             </div>
 
@@ -396,7 +396,7 @@ const AttachmentViewer = ({ isOpen, onClose, attachment }: AttachmentViewerProps
         ) : (
           <div className="flex flex-col items-center justify-center gap-4 p-8">
             <div className="flex h-24 w-24 items-center justify-center rounded-full bg-slate-200 dark:bg-slate-700">
-              <FileText className="h-12 w-12 text-slate-600 dark:text-slate-400" />
+              <DynamicIcon name="file-text" className="h-12 w-12 text-slate-600 dark:text-slate-400" />
             </div>
             <div className="text-center">
               <p className="text-sm text-slate-600 dark:text-slate-300">File preview not available</p>
@@ -411,12 +411,12 @@ const AttachmentViewer = ({ isOpen, onClose, attachment }: AttachmentViewerProps
         <Button onClick={handleDownload} disabled={isDownloading} className="flex-1 gap-2">
           {isDownloading ? (
             <>
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <DynamicIcon name="loader-2" className="h-4 w-4 animate-spin" />
               Downloading...
             </>
           ) : (
             <>
-              <Download className="h-4 w-4" />
+              <DynamicIcon name="download" className="h-4 w-4" />
               Download
             </>
           )}

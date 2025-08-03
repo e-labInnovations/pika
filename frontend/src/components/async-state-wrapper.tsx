@@ -2,9 +2,9 @@ import React from 'react';
 import GlobalLoader from './global-loader';
 import GlobalError from './global-error';
 import { getErrorMessage, isNetworkError } from '@/lib/error-utils';
-import { ArrowLeft, Globe, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
+import { DynamicIcon } from '@/components/lucide';
 
 interface AsyncStateWrapperProps {
   isLoading: boolean;
@@ -30,15 +30,17 @@ const AsyncStateWrapper = ({
 
   if (error) {
     const errorMessage = error ? getErrorMessage(error) : undefined;
-    const errorIcon = isNetworkError(error) ? <Globe className="text-destructive h-16 w-16" /> : null;
+    const errorIcon = isNetworkError(error) ? (
+      <DynamicIcon name="globe" className="text-destructive h-16 w-16" />
+    ) : null;
     const errorTitle = isNetworkError(error) ? 'Network Error' : 'Error';
     const errorButtonText = isNetworkError(error) ? 'Retry' : 'Go Back';
     const goBack = () => navigate(linkBackward || '/', { replace: true });
     const errorButtonClick = isNetworkError(error) ? onRetry : goBack;
     const errorButtonIcon = isNetworkError(error) ? (
-      <RefreshCw className="h-4 w-4" />
+      <DynamicIcon name="refresh-cw" className="h-4 w-4" />
     ) : (
-      <ArrowLeft className="h-4 w-4" />
+      <DynamicIcon name="arrow-left" className="h-4 w-4" />
     );
 
     return (

@@ -1,4 +1,4 @@
-import { ImageIcon, Sparkles, X } from 'lucide-react';
+import { DynamicIcon } from '@/components/lucide';
 import { Drawer, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from '@/components/ui/drawer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '../ui/card';
@@ -111,7 +111,7 @@ const ScanReceipt = ({ open, setOpen, handleTransactionDetails }: ScanReceiptPro
       <DrawerContent className="h-[60%]">
         <DrawerHeader className="items-start">
           <DrawerTitle className="flex w-full items-center gap-2">
-            <Sparkles className="mr-2 h-5 w-5 text-purple-500" />
+            <DynamicIcon name="sparkles" className="mr-2 h-5 w-5 text-purple-500" />
             AI Transaction Extractor
           </DrawerTitle>
         </DrawerHeader>
@@ -158,7 +158,7 @@ const ScanReceipt = ({ open, setOpen, handleTransactionDetails }: ScanReceiptPro
               <label htmlFor="image-upload">
                 <Card className="border-border hover:border-primary cursor-pointer border-2 border-dashed transition-all duration-200 hover:shadow-md">
                   <CardContent className="p-6 text-center">
-                    <ImageIcon className="text-muted-foreground mx-auto mb-3 h-8 w-8" />
+                    <DynamicIcon name="image" className="text-muted-foreground mx-auto mb-3 h-8 w-8" />
                     <h3 className="font-medium">Select Image</h3>
                     <p className="text-muted-foreground mt-1 text-sm">Choose a receipt image from your device</p>
                   </CardContent>
@@ -185,7 +185,7 @@ const ScanReceipt = ({ open, setOpen, handleTransactionDetails }: ScanReceiptPro
                     setPreviewUrl(null);
                   }}
                 >
-                  <X className="h-4 w-4" />
+                  <DynamicIcon name="x" className="h-4 w-4" />
                 </Button>
               </div>
               <div className="text-center">

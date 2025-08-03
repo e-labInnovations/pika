@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Eye, EyeOff, Clipboard, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { DynamicIcon } from '@/components/lucide';
 import { cn } from '@/lib/utils';
 
 interface ApiInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
@@ -58,11 +58,11 @@ const ApiInput = ({ value, onChange, placeholder, className, ...props }: ApiInpu
       <div className="-ml-20 flex items-center gap-1">
         {value && (
           <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={clearInput} tabIndex={-1} type="button">
-            <X className="h-4 w-4" />
+            <DynamicIcon name="x" className="h-4 w-4" />
           </Button>
         )}
         <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={handlePaste} tabIndex={-1} type="button">
-          <Clipboard className="h-4 w-4" />
+          <DynamicIcon name="clipboard" className="h-4 w-4" />
         </Button>
         <Button
           variant="ghost"
@@ -72,7 +72,11 @@ const ApiInput = ({ value, onChange, placeholder, className, ...props }: ApiInpu
           tabIndex={-1}
           type="button"
         >
-          {showKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+          {showKey ? (
+            <DynamicIcon name="eye-off" className="h-4 w-4" />
+          ) : (
+            <DynamicIcon name="eye" className="h-4 w-4" />
+          )}
         </Button>
       </div>
     </div>
