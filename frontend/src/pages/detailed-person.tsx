@@ -12,7 +12,7 @@ import { useState, useEffect } from 'react';
 import { peopleService, type PersonDetailed } from '@/services/api';
 import { useConfirmDialog } from '@/store/useConfirmDialog';
 import { runWithLoaderAndError } from '@/lib/async-handler';
-import { useLookupStore } from '@/store/useLookupStore';
+import { usePeopleMutations } from '@/hooks/queries';
 import { cn, getColorFromName, getInitials } from '@/lib/utils';
 import PersonTransactions from '@/components/people-tab/person-transactions';
 import AsyncStateWrapper from '@/components/async-state-wrapper';
@@ -24,6 +24,7 @@ const DetailedPerson = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { user } = useAuth();
+  const { deletePerson } = usePeopleMutations();
 
   useEffect(() => {
     if (id) {
@@ -65,8 +66,7 @@ const DetailedPerson = () => {
       onConfirm: () => {
         runWithLoaderAndError(
           async () => {
-            await peopleService.delete(id as string);
-            await useLookupStore.getState().fetchPeople();
+            await deletePerson.mutateAsync(id as string);
             navigate('/people');
           },
           {

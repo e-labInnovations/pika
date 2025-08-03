@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import SearchBar from './search-bar';
 import { type Person } from '@/services/api';
-import { useLookupStore } from '@/store/useLookupStore';
+import { usePeople } from '@/hooks/queries';
 import { cn, getColorFromName, getInitials } from '@/lib/utils';
 import { currencyUtils } from '@/lib/currency-utils';
 import { useAuth } from '@/hooks/use-auth';
@@ -21,7 +21,7 @@ interface PeoplePickerProps {
 
 const PeoplePicker = ({ isOpen, onClose, onSelect, selectedPersonId }: PeoplePickerProps) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const people = useLookupStore((state) => state.people);
+  const { data: people = [] } = usePeople();
   const { user } = useAuth();
   const isDesktop = useMediaQuery('(min-width: 768px)');
 

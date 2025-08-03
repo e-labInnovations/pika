@@ -5,7 +5,7 @@ import { DynamicIcon } from '@/components/lucide';
 import { Button } from '@/components/ui/button';
 import { defaultSort, type Sort, sortOptions } from './sort/types';
 import TransactionUtils from '@/lib/transaction-utils';
-import { useLookupStore } from '@/store/useLookupStore';
+import { useAccounts, useCategories, useTags, usePeople } from '@/hooks/queries';
 import { currencyUtils } from '@/lib/currency-utils';
 import { useAuth } from '@/hooks/use-auth';
 
@@ -27,10 +27,10 @@ const FilterSortBar = ({
   activeFilterCount,
 }: FilterSortBarProps) => {
   const { user } = useAuth();
-  const accounts = useLookupStore((state) => state.accounts);
-  const categories = useLookupStore((state) => state.categories);
-  const tags = useLookupStore((state) => state.tags);
-  const people = useLookupStore((state) => state.people);
+  const { data: accounts = [] } = useAccounts();
+  const { data: categories = [] } = useCategories();
+  const { data: tags = [] } = useTags();
+  const { data: people = [] } = usePeople();
 
   const getSortLabel = () => {
     const sortOption = sortOptions.find((opt) => opt.value === sort.field);

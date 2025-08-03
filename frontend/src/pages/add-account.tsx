@@ -11,12 +11,13 @@ import {
   AccountPreview,
   InitialBalanceSection,
 } from '@/components/accounts-settings';
-import { accountService, uploadService, type AccountInput } from '@/services/api';
-import { useLookupStore } from '@/store/useLookupStore';
+import { uploadService, type AccountInput } from '@/services/api';
+import { useAccountMutations } from '@/hooks/queries';
 import { runWithLoaderAndError } from '@/lib/utils';
 
 const AddAccount = () => {
   const navigate = useNavigate();
+  const { createAccount } = useAccountMutations();
 
   const [formData, setFormData] = useState<AccountInput>({
     name: '',
@@ -46,8 +47,7 @@ const AddAccount = () => {
           newFormData.avatarId = response.data.id;
         }
 
-        await accountService.create(newFormData);
-        await useLookupStore.getState().fetchAccounts();
+        await createAccount.mutateAsync(newFormData);
         navigate('/settings/accounts', { replace: true });
       },
       {

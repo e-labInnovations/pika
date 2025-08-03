@@ -9,7 +9,8 @@ import CategoryPicker from '../category-picker';
 import { IconRenderer } from '../icon-renderer';
 import { type Account, type Category } from '@/services/api';
 import SelectedAccount from '../selected-account';
-import { storeUtils } from '@/store/useLookupStore';
+import { queryUtils } from '@/hooks/query-utils';
+import { useCategories, useAccounts } from '@/hooks/queries';
 
 interface CategoryAccountProps {
   formData: TransactionFormData;
@@ -17,6 +18,8 @@ interface CategoryAccountProps {
 }
 
 const CategoryAccount = ({ formData, setFormData }: CategoryAccountProps) => {
+  const { data: categories = [] } = useCategories();
+  const { data: accounts = [] } = useAccounts();
   const [showCategoryPicker, setShowCategoryPicker] = useState(false);
   const [showAccountPicker, setShowAccountPicker] = useState(false);
   const [showToAccountPicker, setShowToAccountPicker] = useState(false);
@@ -26,7 +29,7 @@ const CategoryAccount = ({ formData, setFormData }: CategoryAccountProps) => {
 
   useEffect(() => {
     if (formData.category) {
-      const _category = storeUtils.getCategoryById(formData.category);
+      const _category = queryUtils.getCategoryById(categories, formData.category);
 
       setCategory(_category ?? null);
       setFormData((prev) => ({ ...prev, category: _category?.id ?? '' }));
@@ -35,7 +38,7 @@ const CategoryAccount = ({ formData, setFormData }: CategoryAccountProps) => {
     }
 
     if (formData.account) {
-      const _account = storeUtils.getAccountById(formData.account);
+      const _account = queryUtils.getAccountById(accounts, formData.account);
       setAccount(_account ?? null);
       setFormData((prev) => ({ ...prev, account: _account?.id ?? '' }));
     } else {
@@ -43,7 +46,7 @@ const CategoryAccount = ({ formData, setFormData }: CategoryAccountProps) => {
     }
 
     if (formData.toAccount) {
-      const _toAccount = storeUtils.getAccountById(formData.toAccount);
+      const _toAccount = queryUtils.getAccountById(accounts, formData.toAccount);
       setToAccount(_toAccount ?? null);
       setFormData((prev) => ({ ...prev, toAccount: _toAccount?.id ?? null }));
       if (formData.account === formData.toAccount) {
@@ -53,7 +56,7 @@ const CategoryAccount = ({ formData, setFormData }: CategoryAccountProps) => {
     } else {
       setToAccount(null);
     }
-  }, [formData.category, formData.account, formData.toAccount]);
+  }, [formData.category, formData.account, formData.toAccount, categories, accounts]);
 
   const isTransfer = formData.type === 'transfer';
 

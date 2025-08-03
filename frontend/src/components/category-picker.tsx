@@ -6,7 +6,7 @@ import SearchBar from './search-bar';
 import type { TransactionType } from '@/lib/transaction-utils';
 import { IconRenderer } from './icon-renderer';
 import { type Category } from '@/services/api';
-import { useLookupStore } from '@/store/useLookupStore';
+import { useCategories } from '@/hooks/queries';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -22,7 +22,7 @@ interface CategoryPickerProps {
 
 const CategoryPicker = ({ isOpen, onClose, onSelect, transactionType, selectedCategoryId }: CategoryPickerProps) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const categories = useLookupStore((state) => state.categories);
+  const { data: categories = [] } = useCategories();
   const isDesktop = useMediaQuery('(min-width: 768px)');
 
   const filteredCategories = categories.filter((category) => category.type === transactionType);

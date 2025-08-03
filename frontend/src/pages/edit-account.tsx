@@ -8,7 +8,7 @@ import { type IconName } from '@/components/ui/icon-picker';
 import { AccountFormFields, AccountIconSelector, AccountPreview } from '@/components/accounts-settings';
 import { accountService, type Account, type AccountInput } from '@/services/api';
 import { uploadService } from '@/services/api';
-import { useLookupStore } from '@/store/useLookupStore';
+import { useAccountMutations } from '@/hooks/queries';
 import { runWithLoaderAndError } from '@/lib/utils';
 import { useConfirmDialog } from '@/store/useConfirmDialog';
 import AsyncStateWrapper from '@/components/async-state-wrapper';
@@ -16,6 +16,7 @@ import AsyncStateWrapper from '@/components/async-state-wrapper';
 const EditAccount = () => {
   const navigate = useNavigate();
   const { accountId } = useParams();
+  const { updateAccount, deleteAccount } = useAccountMutations();
   const [account, setAccount] = useState<Account | null>(null);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
@@ -77,8 +78,7 @@ const EditAccount = () => {
         } else if (avatarUrl === null) {
           newFormData.avatarId = null;
         }
-        await accountService.update(accountId!, newFormData);
-        useLookupStore.getState().fetchAccounts();
+        await updateAccount.mutateAsync({ id: accountId!, data: newFormData });
         navigate(`/settings/accounts`, { replace: true });
       },
       {
@@ -95,8 +95,7 @@ const EditAccount = () => {
       onConfirm: () => {
         runWithLoaderAndError(
           async () => {
-            await accountService.delete(accountId!);
-            useLookupStore.getState().fetchAccounts();
+            await deleteAccount.mutateAsync(accountId!);
             navigate('/settings/accounts', { replace: true });
           },
           {

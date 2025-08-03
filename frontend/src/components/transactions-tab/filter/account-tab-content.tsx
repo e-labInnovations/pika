@@ -5,7 +5,7 @@ import SearchItem from './search-item';
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import { DynamicIcon } from '@/components/lucide';
 import AccountAvatar from '@/components/account-avatar';
-import { useLookupStore } from '@/store/useLookupStore';
+import { useAccounts } from '@/hooks/queries';
 
 interface AccountTabContentProps {
   filters: Filter;
@@ -14,7 +14,7 @@ interface AccountTabContentProps {
 
 const AccountTabContent = ({ filters, setFilters }: AccountTabContentProps) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const accounts = useLookupStore((state) => state.accounts);
+  const { data: accounts = [] } = useAccounts();
 
   const getFilteredAccounts = () => {
     return accounts.filter((account) => account.name.toLowerCase().includes(searchTerm));

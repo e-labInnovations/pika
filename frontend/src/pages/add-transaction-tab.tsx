@@ -20,10 +20,12 @@ import {
   type UploadResponse,
 } from '@/services/api';
 import { toast } from 'sonner';
-import { storeUtils, useLookupStore } from '@/store/useLookupStore';
+import { queryUtils } from '@/hooks/query-utils';
+import { useCategories } from '@/hooks/queries';
 import { runWithLoaderAndError } from '@/lib/utils';
 
 const AddTransactionTab = () => {
+  const { data: categories = [] } = useCategories();
   const [openAiReceiptScanner, setOpenAiReceiptScanner] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
@@ -33,7 +35,7 @@ const AddTransactionTab = () => {
     amount: 0,
     date: new Date().toISOString(),
     type: 'expense',
-    category: storeUtils.getDefaultCategory('expense')?.id ?? '',
+    category: queryUtils.getDefaultCategory(categories, 'expense')?.id ?? '',
     account: '',
     toAccount: null,
     person: null,
@@ -66,7 +68,7 @@ const AddTransactionTab = () => {
   };
 
   const handleTypeChange = (type: TransactionType) => {
-    setFormData((prev) => ({ ...prev, type, category: storeUtils.getDefaultCategory(type)?.id ?? '' }));
+    setFormData((prev) => ({ ...prev, type, category: queryUtils.getDefaultCategory(categories, type)?.id ?? '' }));
 
     // TODO: Handle account and person selection
     // if (type === 'expense' || type === 'income') {
@@ -121,7 +123,6 @@ const AddTransactionTab = () => {
           note: '',
         });
         setAttachments([]);
-        await useLookupStore.getState().fetchAll();
       },
       {
         loaderMessage: 'Saving transaction...',

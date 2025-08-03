@@ -7,7 +7,8 @@ import PeoplePicker from '../people-picker';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { type Person } from '@/services/api';
 import { cn, getColorFromName, getInitials } from '@/lib/utils';
-import { storeUtils } from '@/store/useLookupStore';
+import { queryUtils } from '@/hooks/query-utils';
+import { usePeople } from '@/hooks/queries';
 
 interface PersonProps {
   formData: TransactionFormData;
@@ -15,17 +16,18 @@ interface PersonProps {
 }
 
 const PersonView = ({ formData, setFormData }: PersonProps) => {
+  const { data: people = [] } = usePeople();
   const [showPeoplePicker, setShowPeoplePicker] = useState(false);
   const [person, setPerson] = useState<Person | null>(null);
 
   useEffect(() => {
     if (formData.person) {
-      const _person = storeUtils.getPersonById(formData.person);
+      const _person = queryUtils.getPersonById(people, formData.person);
       setPerson(_person ?? null);
     } else {
       setPerson(null);
     }
-  }, [formData.person]);
+  }, [formData.person, people]);
 
   return (
     <>

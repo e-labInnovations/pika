@@ -11,13 +11,14 @@ import { IconRenderer } from '@/components/icon-renderer';
 import { type IconName } from '@/components/ui/icon-picker';
 import TransactionTypeView from '@/components/transaction-type-view';
 import IconColorsFields from '@/components/categories/icon-colors-fields';
-import { categoryService, type CategoryInput } from '@/services/api';
-import { useLookupStore } from '@/store/useLookupStore';
+import { type CategoryInput } from '@/services/api';
+import { useCategoryMutations } from '@/hooks/queries';
 import { runWithLoaderAndError } from '@/lib/utils';
 
 const AddCategory = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { createCategory } = useCategoryMutations();
   const transactionType = (searchParams.get('type') as TransactionType) || 'expense';
 
   const [formData, setFormData] = useState<CategoryInput>({
@@ -35,8 +36,7 @@ const AddCategory = () => {
 
     runWithLoaderAndError(
       async () => {
-        await categoryService.create(formData);
-        await useLookupStore.getState().fetchCategories();
+        await createCategory.mutateAsync(formData);
         navigate(`/settings/categories?type=${transactionType}`, { replace: true });
       },
       {

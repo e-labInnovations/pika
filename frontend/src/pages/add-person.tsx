@@ -7,12 +7,13 @@ import { DynamicIcon } from '@/components/lucide';
 import AvatarUpload from '@/components/people-tab/avatar-upload';
 import PersonFormFields from '@/components/people-tab/person-form-fields';
 import PersonPreview from '@/components/people-tab/person-preview';
-import { peopleService, uploadService, type PersonInput } from '@/services/api';
+import { uploadService, type PersonInput } from '@/services/api';
 import { runWithLoaderAndError } from '@/lib/utils';
-import { useLookupStore } from '@/store/useLookupStore';
+import { usePeopleMutations } from '@/hooks/queries';
 
 const AddPerson = () => {
   const navigate = useNavigate();
+  const { createPerson } = usePeopleMutations();
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
@@ -42,8 +43,7 @@ const AddPerson = () => {
           personInput.avatarId = uploadResponse.data.id;
         }
 
-        await peopleService.create(personInput);
-        await useLookupStore.getState().fetchPeople();
+        await createPerson.mutateAsync(personInput);
         navigate('/people', { replace: true });
       },
       {

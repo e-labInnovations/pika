@@ -9,13 +9,14 @@ import CategorySpendingView from '@/components/home-tab/category-spending';
 import TagActivityView from '@/components/home-tab/tag-activity';
 import PeopleActivityView from '@/components/home-tab/people-activity';
 import { Separator } from '@/components/ui/separator';
-import { useLookupStore } from '@/store/useLookupStore';
+
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useAccounts } from '@/hooks/queries';
 
 const HomeTab = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const accounts = useLookupStore((state) => state.accounts);
+  const { data: accounts = [] } = useAccounts();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const month = Number(searchParams.get('month'));
   const year = Number(searchParams.get('year'));

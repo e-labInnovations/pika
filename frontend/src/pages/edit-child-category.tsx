@@ -11,7 +11,7 @@ import CategoryItemView from '@/components/category-item-view';
 import IconColorsFields from '@/components/categories/icon-colors-fields';
 import type { IconName } from '@/components/ui/icon-picker';
 import { categoryService, type Category, type CategoryInput } from '@/services/api';
-import { useLookupStore } from '@/store/useLookupStore';
+import { useCategoryMutations } from '@/hooks/queries';
 import type { TransactionType } from '@/lib/transaction-utils';
 import { runWithLoaderAndError } from '@/lib/utils';
 import { useConfirmDialog } from '@/store/useConfirmDialog';
@@ -20,6 +20,7 @@ import AsyncStateWrapper from '@/components/async-state-wrapper';
 const EditChildCategory = () => {
   const { parentCategoryId, childCategoryId } = useParams();
   const navigate = useNavigate();
+  const { updateCategory, deleteCategory } = useCategoryMutations();
   const [transactionType, setTransactionType] = useState<TransactionType>('expense');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<unknown | null>(null);
@@ -85,8 +86,7 @@ const EditChildCategory = () => {
 
     runWithLoaderAndError(
       async () => {
-        await categoryService.update(childCategoryId || '', formData);
-        useLookupStore.getState().fetchCategories();
+        await updateCategory.mutateAsync({ id: childCategoryId || '', data: formData });
         navigate(`/settings/categories?type=${transactionType}`, { replace: true });
       },
       {
@@ -103,8 +103,7 @@ const EditChildCategory = () => {
       onConfirm: () => {
         runWithLoaderAndError(
           async () => {
-            await categoryService.delete(childCategoryId || '');
-            useLookupStore.getState().fetchCategories();
+            await deleteCategory.mutateAsync(childCategoryId || '');
             navigate(`/settings/categories?type=${transactionType}`, { replace: true });
           },
           {

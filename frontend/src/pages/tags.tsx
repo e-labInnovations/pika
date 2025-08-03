@@ -4,14 +4,15 @@ import TabsLayout from '@/layouts/tabs';
 import { DynamicIcon } from '@/components/lucide';
 import { IconRenderer } from '@/components/icon-renderer';
 import { useNavigate } from 'react-router-dom';
-import { tagsService, type Tag } from '@/services/api';
-import { useLookupStore } from '@/store/useLookupStore';
+import { type Tag } from '@/services/api';
+import { useTags, useTagMutations } from '@/hooks/queries';
 import { useConfirmDialog } from '@/store/useConfirmDialog';
 import { runWithLoaderAndError } from '@/lib/utils';
 
 const Tags = () => {
   const navigate = useNavigate();
-  const tags = useLookupStore((state) => state.tags);
+  const { data: tags = [] } = useTags();
+  const { deleteTag } = useTagMutations();
 
   const onDeleteTag = (tag: Tag) => {
     useConfirmDialog.getState().open({
@@ -20,8 +21,7 @@ const Tags = () => {
       onConfirm: () => {
         runWithLoaderAndError(
           async () => {
-            await tagsService.delete(tag.id);
-            useLookupStore.getState().fetchTags();
+            await deleteTag.mutateAsync(tag.id);
             navigate('/settings/tags', { replace: true });
           },
           {

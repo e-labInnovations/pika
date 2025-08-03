@@ -6,7 +6,7 @@ import { getInitials } from '@/lib/utils';
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import type { Filter } from './types';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { useLookupStore } from '@/store/useLookupStore';
+import { usePeople } from '@/hooks/queries';
 
 interface PeopleTabContentProps {
   filters: Filter;
@@ -15,7 +15,7 @@ interface PeopleTabContentProps {
 
 const PeopleTabContent = ({ filters, setFilters }: PeopleTabContentProps) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const people = useLookupStore((state) => state.people);
+  const { data: people = [] } = usePeople();
 
   const getFilteredPeople = () => {
     return people.filter((person) => person.name.toLowerCase().includes(searchTerm));

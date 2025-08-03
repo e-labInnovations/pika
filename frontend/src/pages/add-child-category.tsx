@@ -11,13 +11,14 @@ import CategoryItemView from '@/components/category-item-view';
 import IconColorsFields from '@/components/categories/icon-colors-fields';
 import type { IconName } from '@/components/ui/icon-picker';
 import { categoryService, type Category, type CategoryInput } from '@/services/api';
-import { useLookupStore } from '@/store/useLookupStore';
+import { useCategoryMutations } from '@/hooks/queries';
 import { runWithLoaderAndError } from '@/lib/utils';
 import AsyncStateWrapper from '@/components/async-state-wrapper';
 
 const AddChildCategory = () => {
   const navigate = useNavigate();
   const { parentCategoryId } = useParams();
+  const { createCategory } = useCategoryMutations();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<unknown | null>(null);
 
@@ -62,8 +63,7 @@ const AddChildCategory = () => {
 
     runWithLoaderAndError(
       async () => {
-        await categoryService.create(formData);
-        await useLookupStore.getState().fetchCategories();
+        await createCategory.mutateAsync(formData);
         navigate(`/settings/categories?type=${parentCategory?.type || 'expense'}`, { replace: true });
       },
       {

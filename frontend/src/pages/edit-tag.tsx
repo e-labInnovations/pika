@@ -10,8 +10,9 @@ import { IconRenderer } from '@/components/icon-renderer';
 import { TagChip } from '@/components/tag-chip';
 import { type IconName } from '@/components/ui/icon-picker';
 import IconColorsFields from '@/components/categories/icon-colors-fields';
+
 import { tagsService } from '@/services/api';
-import { useLookupStore } from '@/store/useLookupStore';
+import { useTagMutations } from '@/hooks/queries';
 import { runWithLoaderAndError } from '@/lib/utils';
 import { useConfirmDialog } from '@/store/useConfirmDialog';
 import AsyncStateWrapper from '@/components/async-state-wrapper';
@@ -19,6 +20,7 @@ import AsyncStateWrapper from '@/components/async-state-wrapper';
 const EditTag = () => {
   const navigate = useNavigate();
   const { tagId } = useParams();
+  const { updateTag, deleteTag } = useTagMutations();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<unknown | null>(null);
 
@@ -65,8 +67,7 @@ const EditTag = () => {
 
     runWithLoaderAndError(
       async () => {
-        await tagsService.update(tagId!, formData);
-        useLookupStore.getState().fetchTags();
+        await updateTag.mutateAsync({ id: tagId!, data: formData });
         navigate('/settings/tags', { replace: true });
       },
       {
@@ -83,8 +84,7 @@ const EditTag = () => {
       onConfirm: () => {
         runWithLoaderAndError(
           async () => {
-            await tagsService.delete(tagId!);
-            useLookupStore.getState().fetchTags();
+            await deleteTag.mutateAsync(tagId!);
             navigate('/settings/tags', { replace: true });
           },
           {

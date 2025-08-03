@@ -10,12 +10,13 @@ import { IconRenderer } from '@/components/icon-renderer';
 import { TagChip } from '@/components/tag-chip';
 import { type IconName } from '@/components/ui/icon-picker';
 import IconColorsFields from '@/components/categories/icon-colors-fields';
-import { tagsService } from '@/services/api';
-import { useLookupStore } from '@/store/useLookupStore';
+
+import { useTagMutations } from '@/hooks/queries';
 import { runWithLoaderAndError } from '@/lib/utils';
 
 const AddTag = () => {
   const navigate = useNavigate();
+  const { createTag } = useTagMutations();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -30,8 +31,7 @@ const AddTag = () => {
 
     runWithLoaderAndError(
       async () => {
-        await tagsService.create(formData);
-        await useLookupStore.getState().fetchTags();
+        await createTag.mutateAsync(formData);
         navigate('/settings/tags', { replace: true });
       },
       {

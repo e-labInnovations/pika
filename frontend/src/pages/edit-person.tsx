@@ -9,13 +9,14 @@ import PersonFormFields from '@/components/people-tab/person-form-fields';
 import PersonPreview from '@/components/people-tab/person-preview';
 import { peopleService, uploadService, type PersonDetailed, type PersonInput } from '@/services/api';
 import { runWithLoaderAndError } from '@/lib/async-handler';
-import { useLookupStore } from '@/store/useLookupStore';
+import { usePeopleMutations } from '@/hooks/queries';
 import { useConfirmDialog } from '@/store/useConfirmDialog';
 import AsyncStateWrapper from '@/components/async-state-wrapper';
 
 const EditPerson = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { updatePerson, deletePerson } = usePeopleMutations();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<unknown | null>(null);
 
@@ -87,8 +88,7 @@ const EditPerson = () => {
         } else if (!avatarUrl && !avatarFile) {
           personInput.avatarId = null;
         }
-        await peopleService.update(id as string, personInput);
-        useLookupStore.getState().fetchPeople();
+        await updatePerson.mutateAsync({ id: id as string, data: personInput });
         navigate(`/people/${id}`, { replace: true });
       },
       {
@@ -105,8 +105,7 @@ const EditPerson = () => {
       onConfirm: () => {
         runWithLoaderAndError(
           async () => {
-            await peopleService.delete(id as string);
-            useLookupStore.getState().fetchPeople();
+            await deletePerson.mutateAsync(id as string);
             navigate('/people', { replace: true });
           },
           {

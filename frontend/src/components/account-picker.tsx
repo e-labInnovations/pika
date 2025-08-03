@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import SearchBar from './search-bar';
 import AccountAvatar from './account-avatar';
 import { type Account } from '@/services/api';
-import { useLookupStore } from '@/store/useLookupStore';
+import { useAccounts } from '@/hooks/queries';
 import { useMediaQuery } from '@/hooks/use-media-query';
 
 interface AccountPickerProps {
@@ -18,7 +18,7 @@ interface AccountPickerProps {
 
 const AccountPicker = ({ isOpen, onClose, onSelect, selectedAccountId, filterAccountId }: AccountPickerProps) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const accounts = useLookupStore((state) => state.accounts);
+  const { data: accounts = [] } = useAccounts();
   const isDesktop = useMediaQuery('(min-width: 768px)');
 
   const filteredAccounts = accounts.filter(

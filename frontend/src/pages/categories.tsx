@@ -6,8 +6,8 @@ import CategoryItem from '@/components/categories/category-item';
 import CategoriesTabs from '@/components/categories/categories-tabs';
 import TransactionUtils, { type TransactionType } from '@/lib/transaction-utils';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { categoryService, type Category } from '@/services/api';
-import { useLookupStore } from '@/store/useLookupStore';
+import { type Category } from '@/services/api';
+import { useCategories, useCategoryMutations } from '@/hooks/queries';
 import { useConfirmDialog } from '@/store/useConfirmDialog';
 import { runWithLoaderAndError } from '@/lib/utils';
 
@@ -15,7 +15,8 @@ const Categories = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const transactionType = (searchParams.get('type') as TransactionType) || 'expense';
-  const categories = useLookupStore((state) => state.categories);
+  const { data: categories = [] } = useCategories();
+  const { deleteCategory } = useCategoryMutations();
 
   useEffect(() => {
     navigate(`/settings/categories?type=${transactionType}`);
@@ -28,8 +29,7 @@ const Categories = () => {
       onConfirm: () => {
         runWithLoaderAndError(
           async () => {
-            await categoryService.delete(category.id);
-            await useLookupStore.getState().fetchCategories();
+            await deleteCategory.mutateAsync(category.id);
           },
           {
             loaderMessage: 'Deleting category...',
@@ -59,8 +59,7 @@ const Categories = () => {
       onConfirm: () => {
         runWithLoaderAndError(
           async () => {
-            await categoryService.delete(childCategory.id);
-            await useLookupStore.getState().fetchCategories();
+            await deleteCategory.mutateAsync(childCategory.id);
           },
           {
             loaderMessage: 'Deleting child category...',

@@ -1,19 +1,21 @@
-import { useEffect } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/use-auth';
 import Logo from '@/components/logo';
-import { useLookupStore } from '@/store/useLookupStore';
+import { useCategories, useAccounts, usePeople, useTags } from '@/hooks/queries';
 
 export default function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
-  const dataLoading = useLookupStore((state) => state.loading);
   const location = useLocation();
 
-  useEffect(() => {
-    if (user) {
-      useLookupStore.getState().fetchAll();
-    }
-  }, [user]);
+  // Load all lookup data when user is authenticated
+  const categoriesQuery = useCategories();
+  const accountsQuery = useAccounts();
+  const peopleQuery = usePeople();
+  const tagsQuery = useTags();
+
+  // Check if any of the critical data is still loading
+  const dataLoading =
+    user && (categoriesQuery.isLoading || accountsQuery.isLoading || peopleQuery.isLoading || tagsQuery.isLoading);
 
   if (loading || dataLoading) {
     return (

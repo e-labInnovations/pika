@@ -21,13 +21,15 @@ import {
   type UploadResponse,
 } from '@/services/api';
 import { toast } from 'sonner';
-import { storeUtils, useLookupStore } from '@/store/useLookupStore';
+import { queryUtils } from '@/hooks/query-utils';
+import { useCategories } from '@/hooks/queries';
 import { runWithLoaderAndError } from '@/lib/utils';
 import AsyncStateWrapper from '@/components/async-state-wrapper';
 
 const EditTransactionTab = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { data: categories = [] } = useCategories();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<unknown | null>(null);
 
@@ -39,7 +41,7 @@ const EditTransactionTab = () => {
     amount: 0,
     date: new Date().toISOString(),
     type: 'expense',
-    category: storeUtils.getDefaultCategory('expense')?.id ?? '',
+    category: queryUtils.getDefaultCategory(categories, 'expense')?.id ?? '',
     account: '',
     toAccount: null,
     person: null,
@@ -106,7 +108,7 @@ const EditTransactionTab = () => {
   };
 
   const handleTypeChange = (type: TransactionType) => {
-    setFormData((prev) => ({ ...prev, type, category: storeUtils.getDefaultCategory(type)?.id ?? '' }));
+    setFormData((prev) => ({ ...prev, type, category: queryUtils.getDefaultCategory(categories, type)?.id ?? '' }));
 
     // Clear toAccount for non-transfer transactions
     if (type !== 'transfer') {
@@ -144,7 +146,6 @@ const EditTransactionTab = () => {
         };
 
         await transactionsService.update(id || '', transactionInput);
-        useLookupStore.getState().fetchAll();
         navigate(`/transactions/${id}`, { replace: true });
       },
       {

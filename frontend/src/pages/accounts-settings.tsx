@@ -8,14 +8,15 @@ import { cn, runWithLoaderAndError } from '@/lib/utils';
 import transactionUtils from '@/lib/transaction-utils';
 import { currencyUtils } from '@/lib/currency-utils';
 import { useAuth } from '@/hooks/use-auth';
-import { accountService, type Account } from '@/services/api';
-import { useLookupStore } from '@/store/useLookupStore';
+import { type Account } from '@/services/api';
+import { useAccounts, useAccountMutations } from '@/hooks/queries';
 import { useConfirmDialog } from '@/store/useConfirmDialog';
 
 const AccountsSettings = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const accounts = useLookupStore((state) => state.accounts);
+  const { data: accounts = [] } = useAccounts();
+  const { deleteAccount } = useAccountMutations();
 
   const handleDeleteAccount = async (account: Account) => {
     useConfirmDialog.getState().open({
@@ -24,8 +25,7 @@ const AccountsSettings = () => {
       onConfirm: () => {
         runWithLoaderAndError(
           async () => {
-            await accountService.delete(account.id);
-            await useLookupStore.getState().fetchAccounts();
+            await deleteAccount.mutateAsync(account.id);
           },
           {
             loaderMessage: 'Deleting account...',

@@ -2,11 +2,12 @@ import { PeopleList } from '@/components/people-list';
 import HeaderRightActions from '@/components/people-tab/header-right-actions';
 import SearchBar from '@/components/search-bar';
 import TabsLayout from '@/layouts/tabs';
-import { useLookupStore } from '@/store/useLookupStore';
+
 import { useState } from 'react';
+import { usePeople } from '@/hooks/queries';
 
 const PeopleTab = () => {
-  const people = useLookupStore((state) => state.people);
+  const { data: people = [] } = usePeople();
   const [showPeopleSearch, setShowPeopleSearch] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 

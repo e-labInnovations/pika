@@ -3,7 +3,7 @@ import FilterTabHeader from './filter-tab-header';
 import SearchItem from './search-item';
 import type { Filter } from './types';
 import { IconRenderer } from '@/components/icon-renderer';
-import { useLookupStore } from '@/store/useLookupStore';
+import { useCategories } from '@/hooks/queries';
 import type { Category } from '@/services/api';
 
 interface CategoriesTabContentProps {
@@ -13,7 +13,7 @@ interface CategoriesTabContentProps {
 
 const CategoriesTabContent = ({ filters, setFilters }: CategoriesTabContentProps) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const categories = useLookupStore((state) => state.categories);
+  const { data: categories = [] } = useCategories();
 
   const handleSelectAllCategories = () => {
     const allCategoryIds = [

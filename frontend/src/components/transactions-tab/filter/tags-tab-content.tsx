@@ -5,7 +5,7 @@ import FilterTabHeader from './filter-tab-header';
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import type { Filter } from './types';
 import { IconRenderer } from '@/components/icon-renderer';
-import { useLookupStore } from '@/store/useLookupStore';
+import { useTags } from '@/hooks/queries';
 
 interface TagsTabContentProps {
   filters: Filter;
@@ -14,7 +14,7 @@ interface TagsTabContentProps {
 
 const TagsTabContent = ({ filters, setFilters }: TagsTabContentProps) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const tags = useLookupStore((state) => state.tags);
+  const { data: tags = [] } = useTags();
 
   const getFilteredTags = () => {
     return tags.filter((tag) => tag.name.toLowerCase().includes(searchTerm.toLowerCase()));

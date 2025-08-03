@@ -5,7 +5,7 @@ import { DynamicIcon } from '@/components/lucide';
 import type { TransactionFormData } from './types';
 import { TagChip } from '@/components/tag-chip';
 import { IconRenderer } from '@/components/icon-renderer';
-import { useLookupStore } from '@/store/useLookupStore';
+import { useTags } from '@/hooks/queries';
 
 interface TagsProps {
   formData: TransactionFormData;
@@ -15,7 +15,7 @@ interface TagsProps {
 const Tags = ({ formData, setFormData }: TagsProps) => {
   const [tagInput, setTagInput] = useState('');
   const [showTagSuggestions, setShowTagSuggestions] = useState(false);
-  const tags = useLookupStore((state) => state.tags);
+  const { data: tags = [] } = useTags();
 
   const filteredTagSuggestions = tags.filter(
     (tag) =>
