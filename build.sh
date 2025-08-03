@@ -5,6 +5,7 @@ set -euo pipefail
 # Global variables
 PLUGIN_NAME="pika"
 PLUGIN_FILE="pika.php"
+FRONTEND_BUILD_DIR="frontend-build"
 
 # Colors for output
 RED='\033[0;31m'
@@ -52,6 +53,7 @@ if [ -f "$ZIP_NAME" ]; then
         exit 1
     else
         rm -f "$ZIP_NAME"
+        rm -rf "$FRONTEND_BUILD_DIR"
         echo -e "${GREEN}Old zip file removed. Continuing build...${NC}"
     fi
 fi
