@@ -49,6 +49,7 @@ const AddChildCategory = () => {
       .get(parentCategoryId!)
       .then((response) => {
         setParentCategory(response.data);
+        setFormData((prev) => ({ ...prev, type: response.data.type }));
       })
       .catch((error) => {
         setError(error);

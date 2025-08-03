@@ -52,6 +52,7 @@ const EditChildCategory = () => {
       .then((response) => {
         setParentCategory(response.data);
         setTransactionType(response.data.type);
+        setFormData((prev) => ({ ...prev, type: response.data.type }));
         categoryService
           .get(childCategoryId!)
           .then((response) => {
@@ -62,7 +63,6 @@ const EditChildCategory = () => {
               icon: response.data.icon,
               bgColor: response.data.bgColor,
               color: response.data.color,
-              type: response.data.type,
               parentId: response.data.parentId,
             }));
           })

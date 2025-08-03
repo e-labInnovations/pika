@@ -127,6 +127,9 @@ const AddTransactionTab = () => {
       {
         loaderMessage: 'Saving transaction...',
         successMessage: 'Transaction saved successfully!',
+        finally: () => {
+          setIsSubmitting(false);
+        },
       },
     );
   };
