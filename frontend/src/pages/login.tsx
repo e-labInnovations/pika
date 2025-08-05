@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { z } from 'zod';
 import { useAuth } from '@/hooks/use-auth';
-import { authService, type User } from '@/services/api';
+import { authKey, authService, type User } from '@/services/api';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { DynamicIcon } from '@/components/lucide';
@@ -55,7 +55,7 @@ export default function Login() {
     if (!loginSchema.safeParse(form).success) return;
     setLoading(true);
     const token = btoa(`${form.username}:${form.appPassword}`);
-    localStorage.setItem('token', token);
+    localStorage.setItem(authKey, token);
 
     authService
       .getMe()

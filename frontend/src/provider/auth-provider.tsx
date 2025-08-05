@@ -1,5 +1,5 @@
 import { createContext, useEffect, useMemo, useReducer, type PropsWithChildren } from 'react';
-import { type User, authService } from '@/services/api';
+import { type User, authKey, authService } from '@/services/api';
 
 interface AuthContextType {
   user: User | null;
@@ -59,7 +59,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem(authKey);
     if (token) {
       const fetchUserData = async () => {
         try {
@@ -82,12 +82,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const signIn = async (token: string, user: User) => {
     dispatch({ type: 'SIGN_IN', payload: { user, token } });
-    localStorage.setItem('token', token);
+    localStorage.setItem(authKey, token);
   };
 
   const signOut = () => {
     dispatch({ type: 'SIGN_OUT' });
-    localStorage.removeItem('token');
+    localStorage.removeItem(authKey);
   };
 
   const contextValue = useMemo(

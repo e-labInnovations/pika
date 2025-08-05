@@ -8,14 +8,17 @@ export interface User {
   avatar_url: string;
   settings: {
     currency: string;
+    is_api_key_set: boolean;
   };
 }
+
+export const authKey = 'pika-auth-token';
 
 class AuthService {
   getMe() {
     return api.get('/auth/me', {
       headers: {
-        Authorization: `Basic ${localStorage.getItem('api_key')}`,
+        Authorization: `Basic ${localStorage.getItem(authKey)}`,
       },
     });
   }

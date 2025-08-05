@@ -106,7 +106,7 @@ export function DateTimePicker({ value, onChange, disabled, className }: DateTim
               Set Now
             </Button>
           </div>
-          <Calendar mode="single" className="pt-0" selected={value} onSelect={handleDateChange} month={value} />
+          <Calendar mode="single" className="pt-0" selected={value} onSelect={handleDateChange} defaultMonth={value} />
         </PopoverContent>
       </Popover>
 

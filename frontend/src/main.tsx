@@ -28,7 +28,7 @@ createRoot(document.getElementById('root')!).render(
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
       <StrictMode>
-        <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+        <ThemeProvider defaultTheme="dark" storageKey="pika-ui-theme">
           <App />
           <ReactQueryDevtools initialIsOpen={false} />
         </ThemeProvider>

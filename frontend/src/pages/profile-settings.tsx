@@ -6,10 +6,10 @@ import { useAuth } from '@/hooks/use-auth';
 
 const ProfileSettings = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    signOut();
     navigate('/login');
   };
 
