@@ -4,6 +4,7 @@
 docs/
 frontend/
 package.json
+node_modules
 
 # Build process files
 .buildignore
