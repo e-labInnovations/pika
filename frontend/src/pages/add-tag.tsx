@@ -48,6 +48,14 @@ const AddTag = () => {
         description: 'Create a new tag for your transactions',
         linkBackward: '/settings/tags',
       }}
+      bottom={{
+        child: (
+          <Button className="w-full" onClick={handleSubmit} disabled={!formData.name.trim()}>
+            <DynamicIcon name="save" className="mr-2 h-4 w-4" />
+            Save
+          </Button>
+        ),
+      }}
     >
       <div className="flex flex-col gap-6">
         <Card>
@@ -128,11 +136,6 @@ const AddTag = () => {
             </form>
           </CardContent>
         </Card>
-
-        <Button className="w-full" onClick={handleSubmit} disabled={!formData.name.trim()}>
-          <DynamicIcon name="save" className="mr-2 h-4 w-4" />
-          Save
-        </Button>
       </div>
     </TabsLayout>
   );

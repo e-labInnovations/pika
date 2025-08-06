@@ -24,6 +24,7 @@ import { queryUtils, invalidateTxRelatedQueries } from '@/hooks/query-utils';
 import { useCategories } from '@/hooks/queries';
 import { runWithLoaderAndError } from '@/lib/utils';
 import { useQueryClient } from '@tanstack/react-query';
+import { DynamicIcon } from '@/components/lucide';
 
 const AddTransactionTab = () => {
   const { data: categories = [] } = useCategories();
@@ -146,6 +147,14 @@ const AddTransactionTab = () => {
         description: 'Add a new transaction',
         rightActions: <HeaderRightActions handleScanReceipt={() => setOpenAiReceiptScanner(true)} />,
       }}
+      bottom={{
+        child: (
+          <Button className="w-full" onClick={handleSubmit} disabled={isSubmitting}>
+            <DynamicIcon name="save" className="mr-2 h-4 w-4" />
+            {isSubmitting ? 'Saving...' : 'Save Transaction'}
+          </Button>
+        ),
+      }}
     >
       <TransactionTypeSelector value={formData.type} onChange={handleTypeChange} />
       <BasicInfo formData={formData} setFormData={setFormData} />
@@ -168,10 +177,6 @@ const AddTransactionTab = () => {
           </ul>
         </div>
       )}
-
-      <Button className="w-full" onClick={handleSubmit} disabled={isSubmitting}>
-        {isSubmitting ? 'Saving...' : 'Save Transaction'}
-      </Button>
 
       <ScanReceipt
         open={openAiReceiptScanner}

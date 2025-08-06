@@ -119,6 +119,20 @@ const EditAccount = () => {
         description: 'Update account information',
         linkBackward: '/settings/accounts',
       }}
+      bottom={{
+        child: (
+          <div className="flex w-full flex-row gap-2">
+            <Button variant="destructive" disabled={isLoading} onClick={handleDelete} className="flex-1">
+              <DynamicIcon name="trash-2" className="mr-2 h-4 w-4" />
+              Delete
+            </Button>
+            <Button onClick={handleSubmit} disabled={!formData.name.trim() || isLoading} className="flex-1">
+              <DynamicIcon name="save" className="mr-2 h-4 w-4" />
+              Save
+            </Button>
+          </div>
+        ),
+      }}
     >
       <AsyncStateWrapper isLoading={isLoading} error={error} linkBackward="/settings/accounts">
         <div className="flex flex-col gap-6">
@@ -160,17 +174,6 @@ const EditAccount = () => {
               </form>
             </CardContent>
           </Card>
-
-          <div className="flex justify-end gap-2">
-            <Button variant="destructive" onClick={handleDelete} className="w-1/2">
-              <DynamicIcon name="trash-2" className="mr-2 h-4 w-4" />
-              Delete
-            </Button>
-            <Button onClick={handleSubmit} disabled={!formData.name.trim()} className="w-1/2">
-              <DynamicIcon name="save" className="mr-2 h-4 w-4" />
-              Save
-            </Button>
-          </div>
         </div>
       </AsyncStateWrapper>
     </TabsLayout>

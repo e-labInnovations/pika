@@ -26,6 +26,7 @@ import { useCategories } from '@/hooks/queries';
 import { runWithLoaderAndError } from '@/lib/utils';
 import AsyncStateWrapper from '@/components/async-state-wrapper';
 import { useQueryClient } from '@tanstack/react-query';
+import { DynamicIcon } from '@/components/lucide';
 
 const EditTransactionTab = () => {
   const navigate = useNavigate();
@@ -167,6 +168,14 @@ const EditTransactionTab = () => {
         linkBackward: `/transactions/${id}`,
         rightActions: <HeaderRightActions handleScanReceipt={() => setOpenAiReceiptScanner(true)} />,
       }}
+      bottom={{
+        child: (
+          <Button onClick={handleSubmit} className="w-full">
+            <DynamicIcon name="save" className="mr-2 h-4 w-4" />
+            Update Transaction
+          </Button>
+        ),
+      }}
     >
       <AsyncStateWrapper isLoading={isLoading} error={error} linkBackward="/transactions" onRetry={fetchTransaction}>
         <TransactionTypeSelector value={formData.type} onChange={handleTypeChange} />
@@ -192,12 +201,6 @@ const EditTransactionTab = () => {
             </ul>
           </div>
         )}
-
-        <div className="flex space-x-2">
-          <Button onClick={handleSubmit} className="flex-1">
-            Update Transaction
-          </Button>
-        </div>
 
         <ScanReceipt
           open={openAiReceiptScanner}

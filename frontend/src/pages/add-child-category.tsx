@@ -81,6 +81,14 @@ const AddChildCategory = () => {
         description: `Create a subcategory under ${parentCategory?.name || ''}`,
         linkBackward: `/settings/categories?type=${parentCategory?.type || 'expense'}`,
       }}
+      bottom={{
+        child: (
+          <Button onClick={handleSubmit} disabled={!formData.name.trim() || isLoading} className="w-full">
+            <DynamicIcon name="save" className="mr-2 h-4 w-4" />
+            Save
+          </Button>
+        ),
+      }}
     >
       <AsyncStateWrapper
         isLoading={isLoading}
@@ -175,13 +183,6 @@ const AddChildCategory = () => {
                 </form>
               </CardContent>
             </Card>
-
-            <div className="flex justify-end">
-              <Button onClick={handleSubmit} disabled={!formData.name.trim()} className="w-full">
-                <DynamicIcon name="save" className="mr-2 h-4 w-4" />
-                Save
-              </Button>
-            </div>
           </div>
         )}
       </AsyncStateWrapper>

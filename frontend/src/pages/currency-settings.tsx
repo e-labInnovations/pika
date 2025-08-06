@@ -84,6 +84,26 @@ const CurrencySettings = () => {
         description: 'Select your currency',
         linkBackward: '/settings',
       }}
+      bottom={{
+        child: (
+          <div className="flex w-full flex-row gap-2">
+            <Button
+              variant="outline"
+              className="w-1/2"
+              onClick={() => setSelectedCurrency(currentCurrency)}
+              disabled={selectedCurrency?.code === currentCurrency?.code}
+            >
+              <DynamicIcon name="refresh-cw" className="mr-2 h-4 w-4" />
+              Reset
+            </Button>
+
+            <Button onClick={handleSave} className="w-1/2" disabled={selectedCurrency?.code === currentCurrency?.code}>
+              <DynamicIcon name="save" className="mr-2 h-4 w-4" />
+              {selectedCurrency?.code === currentCurrency?.code ? 'No Changes' : 'Save'}
+            </Button>
+          </div>
+        ),
+      }}
     >
       <AsyncStateWrapper isLoading={isLoading} error={error} linkBackward="/settings" onRetry={fetchSettings}>
         {selectedCurrency && currentCurrency && (
@@ -159,23 +179,6 @@ const CurrencySettings = () => {
                   </RadioGroup.Item>
                 ))}
               </RadioGroup.Root>
-            </div>
-
-            <div className="flex items-center justify-between gap-2">
-              {/* Reset Button */}
-              <Button
-                variant="outline"
-                className="w-1/2"
-                onClick={() => setSelectedCurrency(currentCurrency)}
-                disabled={selectedCurrency.code === currentCurrency.code}
-              >
-                Reset
-              </Button>
-
-              {/* Save Button */}
-              <Button onClick={handleSave} className="w-1/2" disabled={selectedCurrency.code === currentCurrency.code}>
-                {selectedCurrency.code === currentCurrency.code ? 'No Changes' : 'Save'}
-              </Button>
             </div>
           </>
         )}

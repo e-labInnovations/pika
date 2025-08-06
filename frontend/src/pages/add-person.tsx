@@ -65,6 +65,14 @@ const AddPerson = () => {
         description: 'Add a new person to your contacts',
         linkBackward: '/people',
       }}
+      bottom={{
+        child: (
+          <Button className="w-full" onClick={handleSubmit} disabled={!formData.name.trim()}>
+            <DynamicIcon name="save" className="mr-2 h-4 w-4" />
+            Save
+          </Button>
+        ),
+      }}
     >
       <div className="flex flex-col gap-6">
         <Card>
@@ -96,11 +104,6 @@ const AddPerson = () => {
             </form>
           </CardContent>
         </Card>
-
-        <Button className="w-full" onClick={handleSubmit} disabled={!formData.name.trim()}>
-          <DynamicIcon name="save" className="mr-2 h-4 w-4" />
-          Save
-        </Button>
       </div>
     </TabsLayout>
   );

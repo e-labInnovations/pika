@@ -66,6 +66,14 @@ const AddCategory = () => {
         description: 'Create a new category for your transactions',
         linkBackward: `/settings/categories?type=${transactionType}`,
       }}
+      bottom={{
+        child: (
+          <Button className="w-full" onClick={handleSubmit} disabled={!formData.name.trim()}>
+            <DynamicIcon name="save" className="mr-2 h-4 w-4" />
+            Save
+          </Button>
+        ),
+      }}
     >
       <div className="flex flex-col gap-6">
         <Card>
@@ -139,11 +147,6 @@ const AddCategory = () => {
             </form>
           </CardContent>
         </Card>
-
-        <Button className="w-full" onClick={handleSubmit} disabled={!formData.name.trim()}>
-          <DynamicIcon name="save" className="mr-2 h-4 w-4" />
-          Save
-        </Button>
       </div>
     </TabsLayout>
   );
