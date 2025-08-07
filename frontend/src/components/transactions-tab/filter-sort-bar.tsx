@@ -92,7 +92,7 @@ const FilterSortBar = ({
   };
 
   return (
-    <div className="flex w-full items-center gap-2">
+    <div className="bg-background sticky top-[74px] z-30 flex w-full items-center gap-2 py-1">
       {/* Active Filters */}
       <div className="flex grow items-center gap-2 overflow-x-auto">
         {activeFilterCount > 0 && (

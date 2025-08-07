@@ -26,7 +26,7 @@ const CategoriesTabs = ({ tabContents, onTabChange, tabValue }: CategoriesTabsPr
 
   return (
     <Tabs defaultValue={tabValue} className="w-full" onValueChange={(value) => onTabChange(value as TransactionType)}>
-      <TabsList className="w-full p-1">
+      <TabsList className="sticky top-19 w-full p-1">
         {TransactionUtils.types.map((transactionType) => (
           <TabsTrigger
             key={transactionType.id}

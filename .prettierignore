@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+frontend/node_modules/
+
+# Production builds
+dist/
+build/
+frontend-build/
+frontend/dist/
+frontend/build/
+
+# Development builds
+dev-dist/
+frontend/dev-dist/
+
+# UI components (generated/auto-formatted)
+frontend/src/components/ui/
+
+# Editor directories and files
+.vscode/
+.idea/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db 

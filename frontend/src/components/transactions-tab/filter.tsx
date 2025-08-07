@@ -10,12 +10,12 @@ import TagsTabContent from './filter/tags-tab-content';
 import PeopleTabContent from './filter/people-tab-content';
 import DateTabContent from './filter/date-tab-content';
 import AmountTabContent from './filter/amount-tab-content';
-import { defaultFilterValues, type Filter } from './filter/types';
+import { defaultFilterValues, type Filter, type FilterTab } from './filter/types';
 import { useEffect, useState } from 'react';
 import AccountTabContent from './filter/account-tab-content';
 
 type Tab = {
-  id: string;
+  id: FilterTab;
   label: string;
   icon: IconName;
   content: React.ComponentType<{ filters: Filter; setFilters: (filters: Filter | ((prev: Filter) => Filter)) => void }>;
@@ -39,7 +39,7 @@ const tabs: Tab[] = [
   { id: 'tags', label: 'Tags', icon: 'tag', content: TagsTabContent },
   { id: 'people', label: 'People', icon: 'user', content: PeopleTabContent },
   {
-    id: 'account',
+    id: 'accounts',
     label: 'Account',
     icon: 'banknote',
     content: AccountTabContent,

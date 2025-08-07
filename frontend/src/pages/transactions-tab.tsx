@@ -157,7 +157,7 @@ const TransactionsTab = () => {
             showTransactionSearch={showTransactionSearch}
             setShowTransactionSearch={setShowTransactionSearch}
             showFilterModal={showFilterModal}
-            handleFilterOpen={() => handleFilterClick('open', 'types', '')}
+            handleFilterOpen={() => handleFilterClick('open', 'date', '')}
             showSortModal={showSortModal}
             setShowSortModal={setShowSortModal}
             filterCount={activeFilterCount}

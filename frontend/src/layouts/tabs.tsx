@@ -14,10 +14,14 @@ interface TabsLayoutProps {
     child?: React.ReactNode;
     className?: string;
   };
+  top?: {
+    child?: React.ReactNode;
+    className?: string;
+  };
   children: React.ReactNode;
 }
 
-const TabsLayout = ({ header, children, bottom }: TabsLayoutProps) => {
+const TabsLayout = ({ header, children, bottom, top }: TabsLayoutProps) => {
   const isDesktop = useMediaQuery('(min-width: 1024px)');
 
   return (
@@ -42,6 +46,9 @@ const TabsLayout = ({ header, children, bottom }: TabsLayoutProps) => {
 
           {/* Content */}
           <div className="flex w-full flex-1 flex-col lg:max-w-[calc(100vw-17rem)]">
+            {top && top.child && (
+              <div className={cn('sticky top-20 z-30 h-12 px-4 lg:px-6', top.className)}>{top.child}</div>
+            )}
             <div className="flex w-full flex-1 flex-col space-y-2 px-4 py-2 lg:py-4">{children}</div>
           </div>
 
