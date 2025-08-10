@@ -3,6 +3,9 @@ import AccountAvatar from '@/components/account-avatar';
 import type { Account } from '@/services/api';
 import { cn } from '@/lib/utils';
 import { DynamicIcon } from '@/components/lucide';
+import transactionUtils from '@/lib/transaction-utils';
+import { currencyUtils } from '@/lib/currency-utils';
+import { useAuth } from '@/hooks/use-auth';
 
 interface SelectedAccountProps {
   account: Account;
@@ -12,10 +15,7 @@ interface SelectedAccountProps {
 }
 
 const SelectedAccount = ({ account, onEdit, showBalance = true, className = '' }: SelectedAccountProps) => {
-  const getBalanceColor = (balance: number) => {
-    if (balance >= 0) return 'text-emerald-600 dark:text-emerald-400';
-    return 'text-red-500 dark:text-red-400';
-  };
+  const { user } = useAuth();
 
   return (
     <div
@@ -29,8 +29,8 @@ const SelectedAccount = ({ account, onEdit, showBalance = true, className = '' }
         <div>
           <span className="font-medium text-slate-900 dark:text-white">{account.name}</span>
           {showBalance && (
-            <p className={`text-sm font-semibold ${getBalanceColor(account.balance)}`}>
-              ${Math.abs(account.balance).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+            <p className={cn('text-sm font-semibold', transactionUtils.getBalanceColor(account.balance))}>
+              {currencyUtils.formatAmount(account.balance, user?.settings?.currency)}
             </p>
           )}
           {account.description && <p className="text-xs text-slate-500 dark:text-slate-400">{account.description}</p>}

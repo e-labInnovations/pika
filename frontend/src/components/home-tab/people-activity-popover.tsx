@@ -83,7 +83,7 @@ const PeopleActivityPopover = ({ children, personData, open, onOpenChange, date 
                 <span
                   className={cn('text-sm font-semibold', transactionUtils.getBalanceColor(personData.balance, true))}
                 >
-                  {personData.balance === 0 ? 'Even' : formatAmount(Math.abs(personData.balance), false)}
+                  {personData.balance === 0 ? 'Even' : formatAmount(personData.balance, false)}
                 </span>
                 {personData.balance !== 0 && (
                   <p className="text-muted-foreground text-xs">{personData.balance > 0 ? 'You owe' : 'Owes you'}</p>

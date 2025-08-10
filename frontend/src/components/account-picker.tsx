@@ -7,6 +7,9 @@ import AccountAvatar from './account-avatar';
 import { type Account } from '@/services/api';
 import { useAccounts } from '@/hooks/queries';
 import { useMediaQuery } from '@/hooks/use-media-query';
+import { cn } from '@/lib/utils';
+import { currencyUtils } from '@/lib/currency-utils';
+import { useAuth } from '@/hooks/use-auth';
 
 interface AccountPickerProps {
   isOpen: boolean;
@@ -20,6 +23,7 @@ const AccountPicker = ({ isOpen, onClose, onSelect, selectedAccountId, filterAcc
   const [searchTerm, setSearchTerm] = useState('');
   const { data: accounts = [] } = useAccounts();
   const isDesktop = useMediaQuery('(min-width: 768px)');
+  const { user } = useAuth();
 
   const filteredAccounts = accounts.filter(
     (account) =>
@@ -70,8 +74,8 @@ const AccountPicker = ({ isOpen, onClose, onSelect, selectedAccountId, filterAcc
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between">
                     <p className="truncate font-medium">{account.name}</p>
-                    <span className={`text-sm font-semibold ${getBalanceColor(account.balance)}`}>
-                      ${Math.abs(account.balance).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                    <span className={cn('text-sm font-semibold', getBalanceColor(account.balance))}>
+                      {currencyUtils.formatAmount(account.balance, user?.settings?.currency)}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">

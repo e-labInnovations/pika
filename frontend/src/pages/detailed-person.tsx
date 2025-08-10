@@ -116,7 +116,9 @@ const DetailedPerson = () => {
                       >
                         {person.balance === 0
                           ? 'All settled up'
-                          : currencyUtils.formatAmount(Math.abs(person.balance), user?.settings?.currency)}
+                          : currencyUtils.formatAmount(person.balance, user?.settings?.currency, {
+                              showNegative: false,
+                            })}
                       </span>
                       {person.balance !== 0 && (
                         <p className="text-sm text-slate-500 dark:text-slate-400">

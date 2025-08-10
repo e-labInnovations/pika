@@ -4,6 +4,8 @@ import { IconRenderer } from '@/components/icon-renderer';
 import { type IconName } from '@/components/ui/icon-picker';
 import { currencyUtils } from '@/lib/currency-utils';
 import { useAuth } from '@/hooks/use-auth';
+import { cn } from '@/lib/utils';
+import transactionUtils from '@/lib/transaction-utils';
 
 interface AccountPreviewProps {
   name: string;
@@ -44,7 +46,7 @@ const AccountPreview = ({
           <div>
             <p className="font-medium">{name || 'Account Name'}</p>
             <p className="text-sm text-slate-500 dark:text-slate-400">{description || 'Account description'}</p>
-            <p className="text-sm font-medium text-slate-900 dark:text-white">
+            <p className={cn('text-sm font-medium', transactionUtils.getBalanceColor(balance))}>
               {currencyUtils.formatAmount(balance, user?.settings?.currency)}
             </p>
           </div>
