@@ -179,46 +179,58 @@ WHERE
     }
 
     /**
-     * Get the weekly expenses
+     * Get the last 7 days of expenses ending with today in user's timezone
      * 
-     * @return array|WP_Error
+     * @return object|WP_Error
      */
     public function get_weekly_expenses() {
         $transactions_table = $this->get_table_name($this->transaction_table_name);
         $user_id = get_current_user_id();
+        $user_timezone = $this->settings_manager->get_settings_item($user_id, 'timezone') ?: 'UTC';
 
+        // Current date/time in user's timezone
+        $now_user_tz = new DateTime('now', new DateTimeZone($user_timezone));
+
+        // Start: 6 days ago at 00:00:00
+        $start_user_tz = (clone $now_user_tz)->modify('-6 days')->setTime(0, 0, 0);
+        // End: today at 23:59:59
+        $end_user_tz = (clone $now_user_tz)->setTime(23, 59, 59);
+
+        // Convert to UTC for DB query
+        $start_utc = (clone $start_user_tz)->setTimezone(new DateTimeZone('UTC'));
+        $end_utc = (clone $end_user_tz)->setTimezone(new DateTimeZone('UTC'));
+
+        // Query totals per local day
         $sql = $this->db()->prepare("
-SELECT
-    COALESCE(SUM(CASE WHEN DAYOFWEEK(date) = 1 THEN amount END), 0) AS sun,
-    COALESCE(SUM(CASE WHEN DAYOFWEEK(date) = 2 THEN amount END), 0) AS mon,
-    COALESCE(SUM(CASE WHEN DAYOFWEEK(date) = 3 THEN amount END), 0) AS tue,
-    COALESCE(SUM(CASE WHEN DAYOFWEEK(date) = 4 THEN amount END), 0) AS wed,
-    COALESCE(SUM(CASE WHEN DAYOFWEEK(date) = 5 THEN amount END), 0) AS thu,
-    COALESCE(SUM(CASE WHEN DAYOFWEEK(date) = 6 THEN amount END), 0) AS fri,
-    COALESCE(SUM(CASE WHEN DAYOFWEEK(date) = 7 THEN amount END), 0) AS sat
-FROM 
-    {$transactions_table}
-WHERE 
-    user_id = %d
-    AND is_active = 1
-    AND type = 'expense'
-    AND DATE(date) BETWEEN CURDATE() - INTERVAL (WEEKDAY(CURDATE()) + 6) DAY
-                         AND CURDATE() + INTERVAL (6 - WEEKDAY(CURDATE())) DAY;", $user_id);
-        $weekly_expenses_data = $this->db()->get_row($sql);
-        if (is_wp_error($weekly_expenses_data)) {
+            SELECT 
+                DATE(CONVERT_TZ(date, '+00:00', %s)) AS day_local,
+                COALESCE(SUM(amount), 0) AS total
+            FROM {$transactions_table}
+            WHERE user_id = %d
+            AND is_active = 1
+            AND type = 'expense'
+            AND date BETWEEN %s AND %s
+            GROUP BY day_local
+        ", $this->utils->get_gmt_offset_str($user_timezone), $user_id, $start_utc->format('Y-m-d H:i:s'), $end_utc->format('Y-m-d H:i:s'));
+
+        $results = $this->db()->get_results($sql, OBJECT_K);
+        if (is_wp_error($results)) {
             return $this->get_error('db_error');
         }
 
-        $weekly_expenses = [
-            'sun' => $weekly_expenses_data->sun,
-            'mon' => $weekly_expenses_data->mon,
-            'tue' => $weekly_expenses_data->tue,
-            'wed' => $weekly_expenses_data->wed,
-            'thu' => $weekly_expenses_data->thu,
-            'fri' => $weekly_expenses_data->fri,
-            'sat' => $weekly_expenses_data->sat,
-        ];
-        return $weekly_expenses;
+        // Map: Sun, Mon, ...
+        $days_map = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+
+        // Build final object in chronological order (6 days ago → today)
+        $final = [];
+        for ($i = 0; $i < 7; $i++) {
+            $date_str = (clone $start_user_tz)->modify("+{$i} days")->format('Y-m-d');
+            $weekday_index = (int) (new DateTime($date_str, new DateTimeZone($user_timezone)))->format('w');
+            $day_key = $days_map[$weekday_index];
+            $final[$day_key] = isset($results[$date_str]) ? (float) $results[$date_str]->total : 0.0;
+        }
+
+        return (object) $final;
     }
 
     /**
@@ -325,7 +337,7 @@ WHERE
 
     public function get_monthly_summary($month, $year) {
         $date_boundaries = $this->get_month_utc_boundaries($year, $month);
-        if(is_null($date_boundaries)) {
+        if (is_null($date_boundaries)) {
             return $this->get_error('unknown');
         }
 
@@ -385,7 +397,7 @@ WHERE
         $user_id = get_current_user_id();
         $user_timezone = $this->settings_manager->get_settings_item($user_id, 'timezone');
         $date_boundaries = $this->get_month_utc_boundaries($year, $month);
-        if(is_null($date_boundaries)) {
+        if (is_null($date_boundaries)) {
             return $this->get_error('unknown');
         }
 
@@ -422,11 +434,11 @@ WHERE
         $data = [];
         try {
             $tz = new DateTimeZone($user_timezone);
-            
+
             // Create DatePeriod directly for the requested month (avoid double timezone conversion)
             $start_local = new DateTimeImmutable("{$year}-{$month}-01 00:00:00", $tz);
             $end_boundary = $start_local->modify('first day of next month'); // Start of next month
-            
+
             $period = new DatePeriod(
                 $start_local,
                 new DateInterval('P1D'),
@@ -453,12 +465,12 @@ WHERE
 
         foreach ($results as $row) {
             $key = $row['local_date'];
-            
+
             // Guard against duplicate dates (defensive programming)
             if (isset($data[$key]) && $data[$key]['transactionCount'] > 0) {
                 error_log("Warning: Duplicate date entry found for: $key - this should not happen with GROUP BY");
             }
-            
+
             $data[$key] = [
                 'date' => $key,
                 'income' => floatval($row['income']),
@@ -493,10 +505,10 @@ WHERE
      */
     public function get_monthly_category_spending($month, $year) {
         $date_boundaries = $this->get_month_utc_boundaries($year, $month);
-        if(is_null($date_boundaries)) {
+        if (is_null($date_boundaries)) {
             return $this->get_error('unknown');
         }
-        
+
         $transactions_table = $this->get_table_name($this->transaction_table_name);
         $categories_table = $this->get_table_name($this->category_table_name);
         $user_id = get_current_user_id();
@@ -609,10 +621,10 @@ WHERE
 
     public function get_monthly_tag_activity($month, $year) {
         $date_boundaries = $this->get_month_utc_boundaries($year, $month);
-        if(is_null($date_boundaries)) {
+        if (is_null($date_boundaries)) {
             return $this->get_error('unknown');
         }
-        
+
         $transactions_table = $this->get_table_name($this->transaction_table_name);
         $tags_table = $this->get_table_name($this->tags_table_name);
         $transaction_tags_table = $this->get_table_name($this->transaction_tags_table_name);
@@ -712,10 +724,10 @@ WHERE
 
     public function get_monthly_person_activity($month, $year) {
         $date_boundaries = $this->get_month_utc_boundaries($year, $month);
-        if(is_null($date_boundaries)) {
+        if (is_null($date_boundaries)) {
             return $this->get_error('unknown');
         }
-        
+
         $people_table = $this->get_table_name($this->people_table_name);
         $transactions_table = $this->get_table_name($this->transaction_table_name);
         $user_id = get_current_user_id();

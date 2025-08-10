@@ -269,4 +269,14 @@ class Pika_Utils {
         }
     }
 
+    /**
+     * Convert PHP timezone to MySQL format for CONVERT_TZ
+     */
+    public static function get_gmt_offset_str($timezone) {
+        $tz = new DateTimeZone($timezone);
+        $offset = $tz->getOffset(new DateTime('now', $tz));
+        $hours = floor($offset / 3600);
+        $minutes = abs(($offset % 3600) / 60);
+        return sprintf('%+03d:%02d', $hours, $minutes);
+    }
 }
