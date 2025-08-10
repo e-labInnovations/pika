@@ -393,56 +393,66 @@ WHERE
         return rest_ensure_response($result);
     }
 
+    /**
+     * Get the daily summaries for a given month
+     * 
+     * @param int $month
+     * @param int $year
+     * @return array|WP_Error
+     */
     public function get_daily_summaries($month, $year) {
         $user_id = get_current_user_id();
         $user_timezone = $this->settings_manager->get_settings_item($user_id, 'timezone');
+
+        // Get UTC boundaries for the month
         $date_boundaries = $this->get_month_utc_boundaries($year, $month);
         if (is_null($date_boundaries)) {
             return $this->get_error('unknown');
         }
+
+        // Convert timezone name to numeric offset (+HH:MM or -HH:MM)
+        $user_offset = $this->utils->get_gmt_offset_str($user_timezone);
 
         $transactions_table = $this->get_table_name($this->transaction_table_name);
         $start_date_utc = $date_boundaries['start'];
         $end_date_utc = $date_boundaries['end'];
 
         $sql = $this->db()->prepare("
-        SELECT 
-            DATE(CONVERT_TZ(`date`, '+00:00', %s)) AS local_date,
-            SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END) AS income,
-            SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END) AS expenses,
-            SUM(CASE WHEN type = 'transfer' THEN amount ELSE 0 END) AS transfers,
-            SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END) - 
-            SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END) AS balance,
-            COUNT(*) AS transactionCount,
-            COUNT(CASE WHEN type = 'income' THEN 1 END) AS incomeTransactionCount,
-            COUNT(CASE WHEN type = 'expense' THEN 1 END) AS expenseTransactionCount,
-            COUNT(CASE WHEN type = 'transfer' THEN 1 END) AS transferTransactionCount
-        FROM {$transactions_table}
-        WHERE user_id = %d
-            AND is_active = 1
-            AND `date` >= %s AND `date` < %s
-        GROUP BY local_date
-        ORDER BY local_date ASC
-        ", $user_timezone, $user_id, $start_date_utc, $end_date_utc, $user_timezone, $user_timezone);
+            SELECT 
+                DATE(CONVERT_TZ(`date`, '+00:00', %s)) AS local_date,
+                SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END) AS income,
+                SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END) AS expenses,
+                SUM(CASE WHEN type = 'transfer' THEN amount ELSE 0 END) AS transfers,
+                SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END) - 
+                SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END) AS balance,
+                COUNT(*) AS transactionCount,
+                COUNT(CASE WHEN type = 'income' THEN 1 END) AS incomeTransactionCount,
+                COUNT(CASE WHEN type = 'expense' THEN 1 END) AS expenseTransactionCount,
+                COUNT(CASE WHEN type = 'transfer' THEN 1 END) AS transferTransactionCount
+            FROM {$transactions_table}
+            WHERE user_id = %d
+                AND is_active = 1
+                AND `date` >= %s AND `date` < %s
+            GROUP BY local_date
+            ORDER BY local_date ASC
+        ", $user_offset, $user_id, $start_date_utc, $end_date_utc);
 
         $results = $this->db()->get_results($sql, ARRAY_A);
         if (is_wp_error($results)) {
             return $this->get_error('db_error');
         }
 
-        // Build zero-filled summary for each day of the month in user's timezone
+        // Prepare zero-filled summary for each day
         $data = [];
         try {
             $tz = new DateTimeZone($user_timezone);
-
-            // Create DatePeriod directly for the requested month (avoid double timezone conversion)
             $start_local = new DateTimeImmutable("{$year}-{$month}-01 00:00:00", $tz);
-            $end_boundary = $start_local->modify('first day of next month'); // Start of next month
+            $end_boundary = $start_local->modify('first day of next month');
 
             $period = new DatePeriod(
                 $start_local,
                 new DateInterval('P1D'),
-                $end_boundary // DatePeriod excludes this end date
+                $end_boundary
             );
 
             foreach ($period as $date) {
@@ -463,13 +473,10 @@ WHERE
             return $this->get_error('unknown');
         }
 
+        // Merge results
         foreach ($results as $row) {
             $key = $row['local_date'];
-
-            // Guard against duplicate dates (defensive programming)
-            if (isset($data[$key]) && $data[$key]['transactionCount'] > 0) {
-                error_log("Warning: Duplicate date entry found for: $key - this should not happen with GROUP BY");
-            }
+            if (!$key) continue; // Skip null dates
 
             $data[$key] = [
                 'date' => $key,
