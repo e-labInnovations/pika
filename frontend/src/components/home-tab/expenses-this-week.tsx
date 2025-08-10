@@ -27,7 +27,8 @@ const ExpensesThisWeek = () => {
         <AsyncStateWrapper isLoading={isLoading} error={error} onRetry={refetch}>
           <div className="flex justify-center gap-4 sm:gap-6 md:gap-8 lg:gap-10">
             {Object.entries(weeklyExpenses || {}).map(([day, amount]) => {
-              const barHeight = (amount / maxExpense) * 100;
+              let barHeight = (amount / maxExpense) * 100;
+              barHeight = barHeight ? (barHeight < 2 ? 2 : barHeight) : 0; // minimum bar height of 2% for non-zero values to avoid it being too small
 
               return (
                 <DayExpenseBar
