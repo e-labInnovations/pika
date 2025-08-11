@@ -19,7 +19,7 @@ class Pika_Loader {
         $this->load_dependencies();
         $this->check_db_upgrade();
         $this->set_locale();
-        // $this->define_admin_hooks();
+        $this->define_admin_hooks();
         $this->define_public_hooks();
         $this->define_api_hooks();
     }
@@ -44,7 +44,7 @@ class Pika_Loader {
         require_once PIKA_PLUGIN_PATH . 'backend/frontend-loader.php';
 
         // Load admin page
-        // require_once PIKA_PLUGIN_PATH . 'backend/admin/admin-page.php';
+        require_once PIKA_PLUGIN_PATH . 'backend/admin/admin-page.php';
     }
 
     /**
@@ -76,12 +76,51 @@ class Pika_Loader {
     /**
      * Register admin hooks
      */
-    // private function define_admin_hooks() {
-    //     $admin_page = new Pika_Admin_Page();
+    private function define_admin_hooks() {
+        $admin_page = new Pika_Admin_Page();
 
-    //     add_action('admin_menu', array($admin_page, 'add_admin_menu'));
-    //     add_action('admin_enqueue_scripts', array($admin_page, 'enqueue_admin_scripts'));
-    // }
+        add_action('admin_menu', array($admin_page, 'add_admin_menu'));
+        add_action('admin_notices', array($this, 'admin_notices'));
+        add_action('admin_init', array($this, 'admin_init'));
+    }
+
+    /**
+     * Initialize admin functionality
+     */
+    public function admin_init() {
+        // Check if plugin was just activated
+        if (get_option('pika_activated', false)) {
+            delete_option('pika_activated');
+            wp_redirect(admin_url('admin.php?page=pika&activated=true'));
+            exit;
+        }
+    }
+
+    /**
+     * Display admin notices
+     */
+    public function admin_notices() {
+        // Show activation notice
+        if (isset($_GET['page']) && $_GET['page'] === 'pika' && isset($_GET['activated'])) {
+            ?>
+            <div class="notice notice-success is-dismissible">
+                <p><strong>Pika Financial</strong> plugin has been activated successfully!</p>
+            </div>
+            <?php
+        }
+
+        // Show database upgrade notice
+        if (defined('PIKA_DB_VERSION')) {
+            $installed_version = get_option('pika_db_version', '0.0.0');
+            if (version_compare($installed_version, PIKA_DB_VERSION, '<')) {
+                ?>
+                <div class="notice notice-warning is-dismissible">
+                    <p><strong>Pika Financial</strong> database needs to be upgraded. Please deactivate and reactivate the plugin to run the upgrade.</p>
+                </div>
+                <?php
+            }
+        }
+    }
 
     /**
      * Register public hooks
