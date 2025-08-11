@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Plugin Name: Pika Financial Management
+ * Plugin Name: Pika Finance
  * Plugin URI: https://pika.elabins.com
  * Description: Complete financial management solution for WordPress
  * Version: 1.0.0
