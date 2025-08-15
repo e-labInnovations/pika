@@ -138,7 +138,8 @@ class Pika_Accounts_Manager extends Pika_Base_Manager {
    */
   public function get_all_accounts() {
     $table_name = $this->get_table_name();
-    $sql = $this->db()->prepare("SELECT * FROM {$table_name}");
+    $user_id = get_current_user_id();
+    $sql = $this->db()->prepare("SELECT * FROM {$table_name} WHERE user_id = %d ORDER BY name ASC", $user_id);
     $accounts = $this->db()->get_results($sql);
 
     if (is_wp_error($accounts)) {

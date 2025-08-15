@@ -37,9 +37,9 @@ class Pika_People_Manager extends Pika_Base_Manager {
    */
   public function format_person($person) {
     $avatar = is_null($person->avatar_id) ? null : $this->upload_manager->get_file_by_id($person->avatar_id, true);
-    $last_transaction_at = date('Y-m-d H:i:s');
+    $last_transaction_at = null;
     $total_transactions = 0;
-    $balance = 'error';
+    $balance = 0;
     $person_summary = $this->analytics_manager->get_person_summary($person->id);
     if (!is_wp_error($person_summary)) {
       $balance = $person_summary->balance;
@@ -152,14 +152,14 @@ class Pika_People_Manager extends Pika_Base_Manager {
   }
 
   /**
-   * Gel all people
+   * Get all people
    * 
    * @return array|WP_Error People data on success, WP_Error on failure
    */
   public function get_all_people() {
     $table_name = $this->get_table_name();
     $user_id = get_current_user_id();
-    $sql = $this->db()->prepare("SELECT * FROM {$table_name} WHERE user_id = %d", $user_id);
+    $sql = $this->db()->prepare("SELECT * FROM {$table_name} WHERE user_id = %d ORDER BY name ASC", $user_id);
     $people = $this->db()->get_results($sql);
     if (is_wp_error($people)) {
       return $this->get_error('db_error');
