@@ -22,12 +22,14 @@ import {
 import { toast } from 'sonner';
 import { queryUtils, invalidateTxRelatedQueries } from '@/hooks/query-utils';
 import { useCategories } from '@/hooks/queries';
+import { useWebShareTarget } from '@/hooks/use-web-share-target';
 import { runWithLoaderAndError } from '@/lib/utils';
 import { useQueryClient } from '@tanstack/react-query';
 import { DynamicIcon } from '@/components/lucide';
 
 const AddTransactionTab = () => {
   const { data: categories = [] } = useCategories();
+  const { sharedData, clearSharedData } = useWebShareTarget();
   const [openAiAssistant, setOpenAiAssistant] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
@@ -49,8 +51,6 @@ const AddTransactionTab = () => {
   const [attachments, setAttachments] = useState<UploadResponse[]>([]);
 
   const handleTransactionDetails = (transaction: AnalyzedTransactionData) => {
-    console.log('AI Analysis Result:', transaction);
-
     // Populate form data with AI analysis results
     setFormData((prev) => ({
       ...prev,
@@ -182,6 +182,8 @@ const AddTransactionTab = () => {
         open={openAiAssistant}
         setOpen={setOpenAiAssistant}
         handleTransactionDetails={handleTransactionDetails}
+        sharedData={sharedData}
+        onClearSharedData={clearSharedData}
       />
     </TabsLayout>
   );

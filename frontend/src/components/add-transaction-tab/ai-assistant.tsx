@@ -2,10 +2,10 @@ import { DynamicIcon } from '@/components/lucide';
 import { Drawer, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from '@/components/ui/drawer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '../ui/card';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { aiService, type AnalyzedTransactionData } from '@/services/api';
 import AnalysisOutput from './ai-transaction/analysis-output';
-import { runWithLoaderAndError } from '@/lib/utils';
+import { cn, runWithLoaderAndError } from '@/lib/utils';
 import { toast } from 'sonner';
 import { Textarea } from '@/components/ui/textarea';
 
@@ -18,9 +18,16 @@ interface AIAssistantProps {
   open: boolean;
   setOpen: (open: boolean) => void;
   handleTransactionDetails: (transaction: AnalyzedTransactionData) => void;
+  sharedData?: {
+    title?: string;
+    text?: string;
+    url?: string;
+    images?: File[];
+  } | null;
+  onClearSharedData?: () => void;
 }
 
-const AIAssistant = ({ open, setOpen, handleTransactionDetails }: AIAssistantProps) => {
+const AIAssistant = ({ open, setOpen, handleTransactionDetails, sharedData, onClearSharedData }: AIAssistantProps) => {
   const [selectedTab, setSelectedTab] = useState<'text' | 'receipt'>('text');
   const [selectedReceipt, setSelectedReceipt] = useState<File | null>(null);
   const [isScanning, setIsScanning] = useState(false);
@@ -28,6 +35,44 @@ const AIAssistant = ({ open, setOpen, handleTransactionDetails }: AIAssistantPro
   const [analysisOutput, setAnalysisOutput] = useState<AnalyzedTransactionData | null>(null);
   const [textInput, setTextInput] = useState('');
   const [isSending, setIsSending] = useState(false);
+
+  // Handle shared data when component mounts or sharedData changes
+  useEffect(() => {
+    if (sharedData?.text || sharedData?.images) {
+      // Reset state first
+      setAnalysisOutput(null);
+      setSelectedReceipt(null);
+      setPreviewUrl(null);
+      setTextInput('');
+      setIsSending(false);
+      setIsScanning(false);
+
+      // Handle shared text
+      if (sharedData.text) {
+        setTextInput(sharedData.text);
+        setSelectedTab('text');
+      }
+
+      // Handle shared images
+      if (sharedData.images && sharedData.images.length > 0) {
+        setSelectedReceipt(sharedData.images[0]); // Use first image
+        setSelectedTab('receipt');
+        // Create preview URL for the first image
+        const url = URL.createObjectURL(sharedData.images[0]);
+        setPreviewUrl(url);
+      }
+
+      // Always open the AI assistant when shared data is received
+      setOpen(true);
+    } else if (!sharedData && open) {
+      // If shared data is cleared but drawer is open, reset to default state
+      setSelectedTab('text');
+      setTextInput('');
+      setSelectedReceipt(null);
+      setPreviewUrl(null);
+      setAnalysisOutput(null);
+    }
+  }, [sharedData, setOpen, open]);
 
   const handleClose = () => {
     setSelectedReceipt(null);
@@ -38,6 +83,19 @@ const AIAssistant = ({ open, setOpen, handleTransactionDetails }: AIAssistantPro
     setIsSending(false);
     setSelectedTab('text');
     setOpen(false);
+
+    // Clean up shared data if it exists
+    if (sharedData) {
+      // Revoke object URLs to free memory
+      if (sharedData.images && previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    }
+
+    // Call onClearSharedData if provided
+    if (onClearSharedData) {
+      onClearSharedData();
+    }
   };
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -109,6 +167,21 @@ const AIAssistant = ({ open, setOpen, handleTransactionDetails }: AIAssistantPro
     setAnalysisOutput(null);
   };
 
+  const handleNextImage = () => {
+    if (sharedData?.images && sharedData.images.length > 1) {
+      const currentIndex = sharedData.images.findIndex((img) => img === selectedReceipt);
+      const nextIndex = (currentIndex + 1) % sharedData.images.length;
+      const nextImage = sharedData.images[nextIndex];
+
+      setSelectedReceipt(nextImage);
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+      const newPreviewUrl = URL.createObjectURL(nextImage);
+      setPreviewUrl(newPreviewUrl);
+    }
+  };
+
   const handleRetryAnalysis = () => {
     setAnalysisOutput(null);
     if (selectedTab === 'text') {
@@ -121,10 +194,17 @@ const AIAssistant = ({ open, setOpen, handleTransactionDetails }: AIAssistantPro
   return (
     <Drawer open={open} onOpenChange={handleClose}>
       <DrawerContent className="h-[60%]">
-        <DrawerHeader className="items-start">
-          <DrawerTitle className="flex w-full items-center gap-2">
-            <DynamicIcon name="sparkles" className="mr-2 h-5 w-5 text-purple-500" />
-            AI Transaction Extractor
+        <DrawerHeader className="items-start gap-3 pb-0">
+          <DrawerTitle className="flex w-full items-center gap-3">
+            <span className="rounded-full bg-purple-100 p-3 dark:bg-purple-900/30">
+              <DynamicIcon name="sparkles" className="h-4 w-4 text-purple-500" />
+            </span>
+            <div className="flex flex-col text-left">
+              <span className="text-base leading-tight font-semibold">AI Transaction Assistant</span>
+              <span className="text-muted-foreground text-xs leading-snug font-light">
+                Paste or share text/images from other apps to quickly extract transaction details.
+              </span>
+            </div>
           </DrawerTitle>
         </DrawerHeader>
 
@@ -134,13 +214,24 @@ const AIAssistant = ({ open, setOpen, handleTransactionDetails }: AIAssistantPro
             {TABS.map((tab) => (
               <button
                 key={tab.id}
-                className={`px-4 py-2 font-medium transition-colors ${selectedTab === tab.id ? 'border-b-2 border-purple-500 text-purple-600' : 'text-muted-foreground'}`}
+                className={cn(
+                  'flex-1 px-4 py-2 font-medium transition-colors',
+                  selectedTab === tab.id ? 'border-b-2 border-purple-500 text-purple-500' : 'text-muted-foreground',
+                )}
                 onClick={() => {
                   setSelectedTab(tab.id as 'text' | 'receipt');
                   setAnalysisOutput(null);
-                  setSelectedReceipt(null);
-                  setPreviewUrl(null);
-                  setTextInput('');
+
+                  // Clear receipt-related state when switching to text tab
+                  if (tab.id === 'text') {
+                    setSelectedReceipt(null);
+                    setPreviewUrl(null);
+                  }
+
+                  // Clear text input when switching to receipt tab
+                  if (tab.id === 'receipt') {
+                    setTextInput('');
+                  }
                 }}
               >
                 {tab.label}
@@ -154,7 +245,11 @@ const AIAssistant = ({ open, setOpen, handleTransactionDetails }: AIAssistantPro
               <Textarea
                 id="text-input"
                 className="h-[75%] max-h-[350px] resize-none"
-                placeholder="Paste or type receipt text here..."
+                placeholder={
+                  sharedData?.text
+                    ? 'Shared text loaded automatically. You can edit it here...'
+                    : 'Paste SMS, receipt text, or share from other apps...'
+                }
                 value={textInput}
                 onChange={(e) => setTextInput(e.target.value)}
                 disabled={isSending}
@@ -172,7 +267,9 @@ const AIAssistant = ({ open, setOpen, handleTransactionDetails }: AIAssistantPro
                   <CardContent className="p-6 text-center">
                     <DynamicIcon name="image" className="text-muted-foreground mx-auto mb-3 h-8 w-8" />
                     <h3 className="font-medium">Select Image</h3>
-                    <p className="text-muted-foreground mt-1 text-sm">Choose a receipt image from your device</p>
+                    <p className="text-muted-foreground mt-1 text-sm">
+                      Choose a receipt image from your device or share from other apps
+                    </p>
                   </CardContent>
                 </Card>
               </label>
@@ -202,6 +299,17 @@ const AIAssistant = ({ open, setOpen, handleTransactionDetails }: AIAssistantPro
               </div>
               <div className="text-center">
                 <p className="text-muted-foreground text-sm">{selectedReceipt.name}</p>
+                {sharedData?.images && sharedData.images.length > 1 && (
+                  <div className="mt-2 flex flex-col items-center gap-2">
+                    <p className="text-muted-foreground text-xs">
+                      📷 {sharedData.images.length} images shared • Using first image
+                    </p>
+                    <Button variant="outline" size="sm" onClick={handleNextImage} className="text-xs">
+                      <DynamicIcon name="arrow-right" className="mr-1 h-3 w-3" />
+                      Next Image
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
           )}

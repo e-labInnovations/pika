@@ -23,6 +23,7 @@ import {
 import { toast } from 'sonner';
 import { invalidateTxRelatedQueries, queryUtils } from '@/hooks/query-utils';
 import { useCategories } from '@/hooks/queries';
+import { useWebShareTarget } from '@/hooks/use-web-share-target';
 import { runWithLoaderAndError } from '@/lib/utils';
 import AsyncStateWrapper from '@/components/async-state-wrapper';
 import { useQueryClient } from '@tanstack/react-query';
@@ -35,6 +36,7 @@ const EditTransactionTab = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<unknown | null>(null);
   const queryClient = useQueryClient();
+  const { sharedData, clearSharedData } = useWebShareTarget();
   const [openAiAssistant, setOpenAiAssistant] = useState(false);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
@@ -206,6 +208,8 @@ const EditTransactionTab = () => {
           open={openAiAssistant}
           setOpen={setOpenAiAssistant}
           handleTransactionDetails={handleTransactionDetails}
+          sharedData={sharedData}
+          onClearSharedData={clearSharedData}
         />
       </AsyncStateWrapper>
     </TabsLayout>

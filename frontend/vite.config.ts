@@ -13,6 +13,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       devOptions: { enabled: true },
       includeAssets: ['/pika/lucide.svg'],
+      strategies: 'injectManifest',
+      srcDir: 'src',
+      filename: 'service-worker.ts',
       workbox: {
         runtimeCaching: [
           {
@@ -42,6 +45,22 @@ export default defineConfig({
         start_url: '/pika',
         orientation: 'portrait',
         lang: 'en-US',
+        share_target: {
+          action: '/pika/share',
+          method: 'POST',
+          enctype: 'multipart/form-data',
+          params: {
+            title: 'title',
+            text: 'text',
+            url: 'url',
+            files: [
+              {
+                name: 'images',
+                accept: ['image/*'],
+              },
+            ],
+          },
+        },
         categories: [
           'finance',
           'accounting',
