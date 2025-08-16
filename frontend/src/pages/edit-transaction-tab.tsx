@@ -1,5 +1,5 @@
 import HeaderRightActions from '@/components/add-transaction-tab/header-right-actions';
-import ScanReceipt from '@/components/add-transaction-tab/scan-receipt';
+import AIAssistant from '@/components/add-transaction-tab/ai-assistant';
 import TransactionTypeSelector from '@/components/add-transaction-tab/transaction-type-selector';
 import type { TransactionFormData } from '@/components/add-transaction-tab/types';
 import TabsLayout from '@/layouts/tabs';
@@ -35,7 +35,7 @@ const EditTransactionTab = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<unknown | null>(null);
   const queryClient = useQueryClient();
-  const [openAiReceiptScanner, setOpenAiReceiptScanner] = useState(false);
+  const [openAiAssistant, setOpenAiAssistant] = useState(false);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
   const [formData, setFormData] = useState<TransactionFormData>({
@@ -166,7 +166,7 @@ const EditTransactionTab = () => {
         title: 'Edit Transaction',
         description: 'Update transaction details',
         linkBackward: `/transactions/${id}`,
-        rightActions: <HeaderRightActions handleScanReceipt={() => setOpenAiReceiptScanner(true)} />,
+        rightActions: <HeaderRightActions handleOpenAIAssistant={() => setOpenAiAssistant(true)} />,
       }}
       bottom={{
         child: (
@@ -202,9 +202,9 @@ const EditTransactionTab = () => {
           </div>
         )}
 
-        <ScanReceipt
-          open={openAiReceiptScanner}
-          setOpen={setOpenAiReceiptScanner}
+        <AIAssistant
+          open={openAiAssistant}
+          setOpen={setOpenAiAssistant}
           handleTransactionDetails={handleTransactionDetails}
         />
       </AsyncStateWrapper>

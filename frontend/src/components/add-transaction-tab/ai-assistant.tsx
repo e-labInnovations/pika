@@ -5,7 +5,7 @@ import { Card, CardContent } from '../ui/card';
 import { useState } from 'react';
 import { aiService, type AnalyzedTransactionData } from '@/services/api';
 import AnalysisOutput from './ai-transaction/analysis-output';
-import { cn, runWithLoaderAndError } from '@/lib/utils';
+import { runWithLoaderAndError } from '@/lib/utils';
 import { toast } from 'sonner';
 import { Textarea } from '@/components/ui/textarea';
 
@@ -14,13 +14,13 @@ const TABS = [
   { id: 'receipt', label: 'Receipt' },
 ];
 
-interface ScanReceiptProps {
+interface AIAssistantProps {
   open: boolean;
   setOpen: (open: boolean) => void;
   handleTransactionDetails: (transaction: AnalyzedTransactionData) => void;
 }
 
-const ScanReceipt = ({ open, setOpen, handleTransactionDetails }: ScanReceiptProps) => {
+const AIAssistant = ({ open, setOpen, handleTransactionDetails }: AIAssistantProps) => {
   const [selectedTab, setSelectedTab] = useState<'text' | 'receipt'>('text');
   const [selectedReceipt, setSelectedReceipt] = useState<File | null>(null);
   const [isScanning, setIsScanning] = useState(false);
@@ -83,11 +83,19 @@ const ScanReceipt = ({ open, setOpen, handleTransactionDetails }: ScanReceiptPro
   };
 
   const handleSendText = () => {
-    setIsSending(true);
-    aiService.analyzeText(textInput).then((response) => {
-      setIsSending(false);
-      setAnalysisOutput(response.data);
-    });
+    runWithLoaderAndError(
+      async () => {
+        const response = await aiService.analyzeText(textInput);
+        setAnalysisOutput(response.data);
+      },
+      {
+        loaderMessage: 'Analyzing text...',
+        successMessage: 'Text analyzed successfully',
+        finally: () => {
+          setIsSending(false);
+        },
+      },
+    );
   };
 
   const handleUseDetails = () => {
@@ -209,11 +217,7 @@ const ScanReceipt = ({ open, setOpen, handleTransactionDetails }: ScanReceiptPro
             </Button>
           )}
           {!analysisOutput && (
-            <Button
-              variant="outline"
-              className={cn('w-1/2', selectedTab === 'receipt' && !selectedReceipt && 'w-full')}
-              onClick={handleClose}
-            >
+            <Button variant="outline" className="w-1/2" onClick={handleClose}>
               Cancel
             </Button>
           )}
@@ -224,17 +228,17 @@ const ScanReceipt = ({ open, setOpen, handleTransactionDetails }: ScanReceiptPro
               onClick={handleSendText}
               disabled={!textInput.trim() || isSending}
             >
-              {isSending ? 'Analyzing...' : 'Send'}
+              {isSending ? 'Analyzing...' : 'Analyze'}
             </Button>
           )}
           {/* Receipt Tab Analyze Button (footer) */}
-          {selectedTab === 'receipt' && selectedReceipt && !analysisOutput && (
+          {selectedTab === 'receipt' && !analysisOutput && (
             <Button
               className="w-1/2 border-none bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600"
               onClick={handleAnalyze}
-              disabled={isScanning}
+              disabled={isScanning || !selectedReceipt}
             >
-              {isScanning ? 'Analyzing...' : 'Analyze Receipt'}
+              {isScanning ? 'Analyzing...' : 'Analyze'}
             </Button>
           )}
           {/* Use Details Button (footer) */}
@@ -252,4 +256,4 @@ const ScanReceipt = ({ open, setOpen, handleTransactionDetails }: ScanReceiptPro
   );
 };
 
-export default ScanReceipt;
+export default AIAssistant;

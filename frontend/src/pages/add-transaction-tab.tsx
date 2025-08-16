@@ -1,5 +1,5 @@
 import HeaderRightActions from '@/components/add-transaction-tab/header-right-actions';
-import ScanReceipt from '@/components/add-transaction-tab/scan-receipt';
+import AIAssistant from '@/components/add-transaction-tab/ai-assistant';
 import TransactionTypeSelector from '@/components/add-transaction-tab/transaction-type-selector';
 import type { TransactionFormData } from '@/components/add-transaction-tab/types';
 import TabsLayout from '@/layouts/tabs';
@@ -28,7 +28,7 @@ import { DynamicIcon } from '@/components/lucide';
 
 const AddTransactionTab = () => {
   const { data: categories = [] } = useCategories();
-  const [openAiReceiptScanner, setOpenAiReceiptScanner] = useState(false);
+  const [openAiAssistant, setOpenAiAssistant] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const queryClient = useQueryClient();
@@ -145,7 +145,7 @@ const AddTransactionTab = () => {
       header={{
         title: 'Add Transaction',
         description: 'Add a new transaction',
-        rightActions: <HeaderRightActions handleScanReceipt={() => setOpenAiReceiptScanner(true)} />,
+        rightActions: <HeaderRightActions handleOpenAIAssistant={() => setOpenAiAssistant(true)} />,
       }}
       bottom={{
         child: (
@@ -178,9 +178,9 @@ const AddTransactionTab = () => {
         </div>
       )}
 
-      <ScanReceipt
-        open={openAiReceiptScanner}
-        setOpen={setOpenAiReceiptScanner}
+      <AIAssistant
+        open={openAiAssistant}
+        setOpen={setOpenAiAssistant}
         handleTransactionDetails={handleTransactionDetails}
       />
     </TabsLayout>
