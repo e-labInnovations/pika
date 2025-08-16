@@ -49,14 +49,19 @@ class Pika_AI_Controller extends Pika_Base_Controller {
    * Convert receipt to transaction
    */
   public function receipt_to_transaction($request) {
-    $base64_image = $request->get_param('base64_image');
-
-    $image_data = $this->ai_manager->pika_sanitize_base64_image($base64_image);
-    if (!$image_data) {
+    // Check if file was uploaded
+    if (!isset($_FILES['receipt'])) {
       return $this->get_error('invalid_image');
     }
 
-    $result = $this->ai_manager->get_receipt_to_transaction_response($base64_image, $image_data['mime']);
+    $file = $_FILES['receipt'];
+    $image_data = $this->ai_manager->pika_validate_image_file($file);
+
+    if (is_wp_error($image_data)) {
+      return $image_data;
+    }
+
+    $result = $this->ai_manager->get_receipt_to_transaction_response($image_data['base64'], $image_data['mime']);
 
     return $result;
   }

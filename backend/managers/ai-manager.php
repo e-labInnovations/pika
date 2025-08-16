@@ -28,7 +28,9 @@ class Pika_AI_Manager extends Pika_Base_Manager {
     'ai_invalid_response' => ['message' => 'Invalid response from AI service.', 'status' => 500],
     'insufficient_data' => ['message' => 'Insufficient data for AI analysis.', 'status' => 400],
     'ai_disabled' => ['message' => 'AI features are currently disabled.', 'status' => 403],
-    'invalid_image' => ['message' => 'Invalid image.', 'status' => 400],
+    'invalid_image' => ['message' => 'Invalid image file. Please upload a valid image (PNG, JPEG, GIF, WebP) under 10MB.', 'status' => 400],
+    'file_too_large' => ['message' => 'File is too large. Maximum size is 10MB.', 'status' => 400],
+    'wrong_file_type' => ['message' => 'Wrong file type. Please upload an image file (PNG, JPEG, GIF, WebP).', 'status' => 400],
   ];
 
   /**
@@ -46,41 +48,47 @@ class Pika_AI_Manager extends Pika_Base_Manager {
     $this->settings_manager = new Pika_Settings_Manager();
   }
 
-  function pika_sanitize_base64_image($base64) {
-    // Check if it matches a base64 image pattern
-    if (
-      preg_match('/^data:image\/(png|jpeg|jpg|gif|webp);base64,/', $base64, $matches)
-    ) {
-      $mime_type = $matches[1];
-
-      // Strip out the mime-type header
-      $base64_clean = substr($base64, strpos($base64, ',') + 1);
-
-      // Decode and validate
-      $decoded = base64_decode($base64_clean, true);
-      if ($decoded === false) {
-        return false;
-      }
-
-      // Optional: check if it's a valid image
-      $finfo = finfo_open();
-      $detected_type = finfo_buffer($finfo, $decoded, FILEINFO_MIME_TYPE);
-      finfo_close($finfo);
-
-      $allowed_types = ['image/png', 'image/jpeg', 'image/gif', 'image/webp'];
-      if (!in_array($detected_type, $allowed_types, true)) {
-        return false;
-      }
-
-      // Return sanitized base64 (or return decoded if needed)
-      return [
-        'mime' => $detected_type,
-        'data' => $decoded,
-        'ext' => $mime_type,
-      ];
+  /**
+   * Validate and process uploaded image file
+   * 
+   * @param array $file $_FILES array element
+   * @return array|WP_Error
+   */
+  function pika_validate_image_file($file) {
+    // Check if file was uploaded successfully
+    if (!isset($file['tmp_name']) || !is_uploaded_file($file['tmp_name'])) {
+      return $this->get_error('invalid_image');
     }
 
-    return false;
+    // Check file size (max 10MB)
+    if ($file['size'] > 10 * 1024 * 1024) {
+      return $this->get_error('file_too_large');
+    }
+
+    // Check file type
+    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+    $mime_type = finfo_file($finfo, $file['tmp_name']);
+    finfo_close($finfo);
+
+    $allowed_types = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/webp'];
+    if (!in_array($mime_type, $allowed_types, true)) {
+      return $this->get_error('wrong_file_type');
+    }
+
+    // Convert to base64 for AI processing
+    $file_content = file_get_contents($file['tmp_name']);
+    if ($file_content === false) {
+      return $this->get_error('invalid_image');
+    }
+
+    $base64 = base64_encode($file_content);
+
+    return [
+      'mime' => $mime_type,
+      'data' => $file_content,
+      'base64' => $base64,
+      'ext' => pathinfo($file['name'], PATHINFO_EXTENSION),
+    ];
   }
 
 
@@ -117,10 +125,45 @@ class Pika_AI_Manager extends Pika_Base_Manager {
    */
   private function get_pika_data() {
     $user_id = get_current_user_id();
+
+    // Get data from managers with error checking
     $categories = $this->categories_manager->get_all_child_categories();
+    if (is_wp_error($categories)) {
+      $this->utils->log('AI Manager Error: Categories failed', $categories->get_error_message(), 'error');
+      $categories = [];
+    }
+
     $tags = $this->tags_manager->get_all_tags($user_id);
+    if (is_wp_error($tags)) {
+      $this->utils->log('AI Manager Error: Tags failed', $tags->get_error_message(), 'error');
+      $tags = [];
+    }
+
     $accounts = $this->accounts_manager->get_all_accounts();
+    if (is_wp_error($accounts)) {
+      $this->utils->log('AI Manager Error: Accounts failed', $accounts->get_error_message(), 'error');
+      $accounts = [];
+    }
+
     $people = $this->people_manager->get_all_people();
+    if (is_wp_error($people)) {
+      $this->utils->log('AI Manager Error: People failed', $people->get_error_message(), 'error');
+      $people = [];
+    }
+
+    // Ensure we have arrays to work with
+    if (!is_array($categories)) {
+      $categories = [];
+    }
+    if (!is_array($tags)) {
+      $tags = [];
+    }
+    if (!is_array($accounts)) {
+      $accounts = [];
+    }
+    if (!is_array($people)) {
+      $people = [];
+    }
 
     $categories = array_map(function ($category) {
       return [
@@ -155,11 +198,17 @@ class Pika_AI_Manager extends Pika_Base_Manager {
       ];
     }, $people);
 
+    // Get user timezone for date formatting
+    $user_timezone = $this->settings_manager->get_settings_item($user_id, 'timezone') ?: 'UTC';
+    $current_user_datetime = new DateTime('now', new DateTimeZone($user_timezone));
+
     return [
       'categories' => $categories,
       'tags' => $tags,
       'accounts' => $accounts,
       'people' => $people,
+      'user_timezone' => $user_timezone,
+      'current_user_datetime' => $current_user_datetime->format('Y-m-d H:i:s'),
     ];
   }
 
@@ -181,11 +230,26 @@ class Pika_AI_Manager extends Pika_Base_Manager {
     }
 
     if (!isset($transaction_data['date']) || is_null($transaction_data['date'])) {
-      $transaction_data['date'] = date('Y-m-d H:i:s');
+      // Use user timezone for default date
+      $user_timezone = $this->settings_manager->get_settings_item(get_current_user_id(), 'timezone') ?: 'UTC';
+      $current_user_datetime = new DateTime('now', new DateTimeZone($user_timezone));
+      $transaction_data['date'] = $current_user_datetime->format('Y-m-d H:i:s');
     }
 
     if (!isset($transaction_data['amount']) || is_null($transaction_data['amount'])) {
       $transaction_data['amount'] = 0;
+    }
+
+    if (is_wp_error($transaction_data['person'])) {
+      $transaction_data['person'] = null;
+    }
+
+    if (is_wp_error($transaction_data['toAccount'])) {
+      $transaction_data['toAccount'] = null;
+    }
+
+    if (is_wp_error($transaction_data['account'])) {
+      $transaction_data['account'] = null;
     }
 
     return $transaction_data;
@@ -199,15 +263,29 @@ class Pika_AI_Manager extends Pika_Base_Manager {
    */
   public function get_text_to_transaction_response($text) {
     $pika_data = $this->get_pika_data();
-    $prompt_data = $this->ai_prompt_utils->get_text_to_transaction_data($text, $pika_data['categories'], $pika_data['tags'], $pika_data['accounts'], $pika_data['people']);
-    $this->utils->log('prompt_data', $prompt_data, 'json');
+
+    $prompt_data = $this->ai_prompt_utils->get_text_to_transaction_data(
+      $text,
+      $pika_data['categories'],
+      $pika_data['tags'],
+      $pika_data['accounts'],
+      $pika_data['people'],
+      $pika_data['user_timezone'],
+      $pika_data['current_user_datetime']
+    );
+
+
+
     $client = $this->gemini_client($prompt_data);
-    $this->utils->log('client', $client, 'debug');
+    if (is_wp_error($client)) {
+      $this->utils->log('AI Manager Error: gemini_client failed', $client->get_error_message(), 'error');
+      return $client;
+    }
+
     $response = json_decode($client['body'], true);
     if (isset($response['candidates']) && isset($response['candidates'][0]['content']['parts'][0]['text'])) {
       $transaction_data = json_decode($response['candidates'][0]['content']['parts'][0]['text'], true);
       $transaction_data = $this->format_transaction_data($transaction_data);
-      // $this->utils->log('transaction_data', $transaction_data, 'json');
       return $transaction_data;
     } else {
       return $this->get_error('ai_invalid_response');
@@ -218,20 +296,35 @@ class Pika_AI_Manager extends Pika_Base_Manager {
    * Get receipt to transaction response
    * 
    * @param string $base64_image
+   * @param string $mime_type
    * @return array|WP_Error
    */
   public function get_receipt_to_transaction_response($base64_image, $mime_type) {
     $pika_data = $this->get_pika_data();
-    $prompt_data = $this->ai_prompt_utils->get_receipt_to_transaction_data($base64_image, $mime_type, $pika_data['categories'], $pika_data['tags'], $pika_data['accounts'], $pika_data['people']);
-    $this->utils->log('prompt_data', $prompt_data, 'json');
+
+    $prompt_data = $this->ai_prompt_utils->get_receipt_to_transaction_data(
+      $base64_image,
+      $mime_type,
+      $pika_data['categories'],
+      $pika_data['tags'],
+      $pika_data['accounts'],
+      $pika_data['people'],
+      $pika_data['user_timezone'],
+      $pika_data['current_user_datetime']
+    );
+
+
+
     $client = $this->gemini_client($prompt_data);
-    $this->utils->log('client', $client, 'debug');
+    if (is_wp_error($client)) {
+      $this->utils->log('AI Manager Error: gemini_client failed', $client->get_error_message(), 'error');
+      return $this->get_error('ai_invalid_response');
+    }
+
     $response = json_decode($client['body'], true);
-    $this->utils->log('response', $response, 'debug');
     if (isset($response['candidates']) && isset($response['candidates'][0]['content']['parts'][0]['text'])) {
       $transaction_data = json_decode($response['candidates'][0]['content']['parts'][0]['text'], true);
       $transaction_data = $this->format_transaction_data($transaction_data);
-      // $this->utils->log('transaction_data', $transaction_data, 'json');
       return $transaction_data;
     } else {
       return $this->get_error('ai_invalid_response');
