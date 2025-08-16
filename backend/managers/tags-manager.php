@@ -45,7 +45,7 @@ class Pika_Tags_Manager extends Pika_Base_Manager {
    */
   public function get_all_tags($user_id) {
     $table_name = $this->get_table_name();
-    $sql = $this->db()->prepare("SELECT * FROM $table_name WHERE user_id = %d OR user_id = 0 ORDER BY name ASC", $user_id);
+    $sql = $this->db()->prepare("SELECT * FROM $table_name WHERE user_id = %d OR user_id = 0 ORDER BY user_id ASC, name ASC", $user_id);
     $tags = $this->db()->get_results($sql);
 
     if (is_wp_error($tags)) {

@@ -219,7 +219,7 @@ class Pika_Categories_Manager extends Pika_Base_Manager {
     if (!$exclude_system_categories) {
       $sql .= " OR user_id = 0";
     }
-    $sql .= " ORDER BY name ASC";
+    $sql .= " ORDER BY user_id ASC, name ASC";
     $categories = $this->db()->get_results($sql);
     if (is_wp_error($categories)) {
       return $this->get_error('db_error');
