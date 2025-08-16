@@ -34,8 +34,7 @@ class Pika_Loader {
         // Load ai utils
         require_once PIKA_PLUGIN_PATH . 'backend/data/ai-prompts.php';
 
-        // Load upgrader (needed for version checks)
-        require_once PIKA_PLUGIN_PATH . 'backend/upgrader.php';
+
 
         // Load API loader
         require_once PIKA_PLUGIN_PATH . 'backend/api-loader.php';
@@ -51,14 +50,13 @@ class Pika_Loader {
      * Check if database upgrade is needed and run it
      */
     private function check_db_upgrade() {
-        // Only check for upgrades if PIKA_DB_VERSION is defined (from activator.php)
-        if (defined('PIKA_DB_VERSION')) {
-            $installed_version = get_option('pika_db_version', '0.0.0');
+        require_once PIKA_PLUGIN_PATH . 'backend/database/class-database-manager.php';
 
-            // Run upgrade if needed
-            if (version_compare($installed_version, PIKA_DB_VERSION, '<')) {
-                Pika_Upgrader::check_upgrade();
-            }
+        $db_manager = new Pika_Database_Manager();
+
+        // Run upgrade if needed
+        if ($db_manager->needs_upgrade()) {
+            $db_manager->upgrade();
         }
     }
 
@@ -102,23 +100,24 @@ class Pika_Loader {
     public function admin_notices() {
         // Show activation notice
         if (isset($_GET['page']) && $_GET['page'] === 'pika' && isset($_GET['activated'])) {
-            ?>
+?>
             <div class="notice notice-success is-dismissible">
                 <p><strong>Pika Financial</strong> plugin has been activated successfully!</p>
             </div>
-            <?php
+        <?php
         }
 
-        // Show database upgrade notice
-        if (defined('PIKA_DB_VERSION')) {
-            $installed_version = get_option('pika_db_version', '0.0.0');
-            if (version_compare($installed_version, PIKA_DB_VERSION, '<')) {
-                ?>
-                <div class="notice notice-warning is-dismissible">
-                    <p><strong>Pika Financial</strong> database needs to be upgraded. Please deactivate and reactivate the plugin to run the upgrade.</p>
-                </div>
-                <?php
-            }
+        // Show database upgrade notice (now handled by Database Manager)
+        require_once PIKA_PLUGIN_PATH . 'backend/database/class-database-manager.php';
+        $db_manager = new Pika_Database_Manager();
+
+        if ($db_manager->needs_upgrade()) {
+        ?>
+            <div class="notice notice-warning is-dismissible">
+                <p><strong>Pika Financial</strong> database needs to be upgraded. Please deactivate and reactivate the plugin to run
+                    the upgrade.</p>
+            </div>
+<?php
         }
     }
 

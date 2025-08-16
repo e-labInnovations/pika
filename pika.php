@@ -24,7 +24,7 @@ define('PIKA_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('PIKA_PLUGIN_PATH', plugin_dir_path(__FILE__));
 define('PIKA_PLUGIN_VERSION', '1.0.0');
 define('PIKA_PLUGIN_BASENAME', plugin_basename(__FILE__));
-define('PIKA_DB_VERSION', '1.1.0');
+define('PIKA_DB_VERSION', '1.1.0'); // This is now managed by Pika_Database_Manager
 define('PIKA_APP_URL', get_site_url() . '/pika');
 
 // Include the main plugin class
