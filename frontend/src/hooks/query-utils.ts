@@ -89,12 +89,22 @@ export const invalidatePeopleRelatedQueries = (queryClient: QueryClient) => {
   queries.forEach((query) => {
     queryClient.invalidateQueries({ queryKey: [query] });
   });
+
+  queryClient.refetchQueries({
+    queryKey: [queryKeys.people],
+    type: 'all', // active + inactive
+  });
 };
 
 export const invalidateCategoryRelatedQueries = (queryClient: QueryClient) => {
   const queries = [queryKeys.categorySpending, queryKeys.transactions];
   queries.forEach((query) => {
     queryClient.invalidateQueries({ queryKey: [query] });
+  });
+
+  queryClient.refetchQueries({
+    queryKey: [queryKeys.categories],
+    type: 'all', // active + inactive
   });
 };
 
@@ -103,11 +113,21 @@ export const invalidateTagRelatedQueries = (queryClient: QueryClient) => {
   queries.forEach((query) => {
     queryClient.invalidateQueries({ queryKey: [query] });
   });
+
+  queryClient.refetchQueries({
+    queryKey: [queryKeys.tags],
+    type: 'all', // active + inactive
+  });
 };
 
 export const invalidateAccountRelatedQueries = (queryClient: QueryClient) => {
   const queries = [queryKeys.transactions];
   queries.forEach((query) => {
     queryClient.invalidateQueries({ queryKey: [query] });
+  });
+
+  queryClient.refetchQueries({
+    queryKey: [queryKeys.accounts],
+    type: 'all', // active + inactive
   });
 };
