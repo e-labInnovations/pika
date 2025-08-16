@@ -25,7 +25,6 @@ const ScanReceipt = ({ open, setOpen, handleTransactionDetails }: ScanReceiptPro
   const [selectedReceipt, setSelectedReceipt] = useState<File | null>(null);
   const [isScanning, setIsScanning] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [base64Image, setBase64Image] = useState<string | null>(null);
   const [analysisOutput, setAnalysisOutput] = useState<AnalyzedTransactionData | null>(null);
   const [textInput, setTextInput] = useState('');
   const [isSending, setIsSending] = useState(false);
@@ -44,25 +43,30 @@ const ScanReceipt = ({ open, setOpen, handleTransactionDetails }: ScanReceiptPro
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        toast.error('Please select a valid image file');
+        return;
+      }
+
+      // Validate file size (10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        toast.error('File size must be less than 10MB');
+        return;
+      }
+
       setSelectedReceipt(file);
       const url = URL.createObjectURL(file);
       setPreviewUrl(url);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setBase64Image(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    } else {
-      setBase64Image(null);
     }
   };
 
   const handleAnalyze = () => {
     setIsScanning(true);
-    if (base64Image) {
+    if (selectedReceipt) {
       runWithLoaderAndError(
         async () => {
-          const response = await aiService.analyzeReceipt(base64Image);
+          const response = await aiService.analyzeReceipt(selectedReceipt);
           setAnalysisOutput(response.data);
         },
         {

@@ -61,8 +61,14 @@ class AiService {
     return api.post('/ai/text-to-transaction', { text });
   }
 
-  analyzeReceipt(base64Image: string): Promise<AxiosResponse<AnalyzedTransactionData>> {
-    return api.post('/ai/receipt-to-transaction', { base64_image: base64Image });
+  analyzeReceipt(file: File): Promise<AxiosResponse<AnalyzedTransactionData>> {
+    const formData = new FormData();
+    formData.append('receipt', file);
+    return api.post('/ai/receipt-to-transaction', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
   }
 }
 
