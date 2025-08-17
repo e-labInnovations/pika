@@ -179,16 +179,74 @@ class Pika_Push_Notifications_Manager extends Pika_Base_Manager {
   }
 
   /**
-   * Get user push subscription (backward compatibility)
+   * Get all device subscriptions for a specific user
    */
-  public function get_subscription() {
-    $subscriptions = $this->get_subscriptions();
+  public function get_user_subscriptions($user_id) {
+    $device_subscription_table = $this->get_table_name($this->device_subscriptions_table_name);
+
+    $sql = $this->db()->prepare(
+      "SELECT * FROM $device_subscription_table WHERE user_id = %d AND is_active = 1",
+      $user_id
+    );
+    $subscriptions = $this->db()->get_results($sql);
 
     if (is_wp_error($subscriptions)) {
-      return $subscriptions;
+      return $this->get_error('db_error');
     }
 
-    return !empty($subscriptions) ? $subscriptions[0]['subscription'] : false;
+    $result = [];
+    foreach ($subscriptions as $sub) {
+      $result[] = [
+        'id' => $sub->id,
+        'device_id' => $sub->device_id,
+        'device_name' => $sub->device_name,
+        'device_type' => $sub->device_type,
+        'subscription' => json_decode($sub->subscription_data, true)
+      ];
+    }
+
+    return $result;
+  }
+
+  /**
+   * Get user push subscription (backward compatibility)
+   */
+  public function get_subscription($user_id = null) {
+    if ($user_id) {
+      // Get subscriptions for specific user
+      $device_subscription_table = $this->get_table_name($this->device_subscriptions_table_name);
+      $sql = $this->db()->prepare(
+        "SELECT * FROM $device_subscription_table WHERE user_id = %d AND is_active = 1",
+        $user_id
+      );
+      $subscriptions = $this->db()->get_results($sql);
+
+      if (is_wp_error($subscriptions)) {
+        return $subscriptions;
+      }
+
+      $result = [];
+      foreach ($subscriptions as $sub) {
+        $result[] = [
+          'id' => $sub->id,
+          'device_id' => $sub->device_id,
+          'device_name' => $sub->device_name,
+          'device_type' => $sub->device_type,
+          'subscription' => json_decode($sub->subscription_data, true)
+        ];
+      }
+
+      return !empty($result) ? $result[0]['subscription'] : false;
+    } else {
+      // Get subscriptions for current user (backward compatibility)
+      $subscriptions = $this->get_subscriptions();
+
+      if (is_wp_error($subscriptions)) {
+        return $subscriptions;
+      }
+
+      return !empty($subscriptions) ? $subscriptions[0]['subscription'] : false;
+    }
   }
 
   /**
@@ -222,13 +280,40 @@ class Pika_Push_Notifications_Manager extends Pika_Base_Manager {
    * Send push notification to a specific user
    */
   public function send_notification_to_user($user_id, $notification_data) {
-    $subscription = $this->get_subscription($user_id);
+    // Get all active device subscriptions for the user
+    $device_subscription_table = $this->get_table_name($this->device_subscriptions_table_name);
 
-    if (!$subscription || is_wp_error($subscription)) {
+    $sql = $this->db()->prepare(
+      "SELECT subscription_data FROM $device_subscription_table WHERE user_id = %d AND is_active = 1",
+      $user_id
+    );
+    $subscriptions = $this->db()->get_results($sql);
+
+    if (is_wp_error($subscriptions)) {
       return false;
     }
 
-    return $this->send_notification($subscription, $notification_data);
+    if (empty($subscriptions)) {
+      return false; // No active subscriptions for this user
+    }
+
+    $results = [];
+    $success_count = 0;
+
+    // Send notification to all devices of the user
+    foreach ($subscriptions as $sub) {
+      $subscription_data = json_decode($sub->subscription_data, true);
+      $result = $this->send_notification($subscription_data, $notification_data);
+
+      if ($result) {
+        $success_count++;
+      }
+
+      $results[] = $result;
+    }
+
+    // Return true if at least one notification was sent successfully
+    return $success_count > 0;
   }
 
   /**
@@ -238,7 +323,47 @@ class Pika_Push_Notifications_Manager extends Pika_Base_Manager {
     $results = [];
 
     foreach ($user_ids as $user_id) {
-      $results[$user_id] = $this->send_notification_to_user($user_id, $notification_data);
+      $device_subscription_table = $this->get_table_name($this->device_subscriptions_table_name);
+
+      // Get all active device subscriptions for this user
+      $sql = $this->db()->prepare(
+        "SELECT subscription_data FROM $device_subscription_table WHERE user_id = %d AND is_active = 1",
+        $user_id
+      );
+      $subscriptions = $this->db()->get_results($sql);
+
+      if (is_wp_error($subscriptions)) {
+        $results[$user_id] = ['success' => false, 'error' => 'Database error', 'devices_sent' => 0, 'total_devices' => 0];
+        continue;
+      }
+
+      if (empty($subscriptions)) {
+        $results[$user_id] = ['success' => false, 'error' => 'No active subscriptions', 'devices_sent' => 0, 'total_devices' => 0];
+        continue;
+      }
+
+      $total_devices = count($subscriptions);
+      $devices_sent = 0;
+      $device_results = [];
+
+      // Send notification to all devices of this user
+      foreach ($subscriptions as $sub) {
+        $subscription_data = json_decode($sub->subscription_data, true);
+        $result = $this->send_notification($subscription_data, $notification_data);
+
+        if ($result) {
+          $devices_sent++;
+        }
+
+        $device_results[] = $result;
+      }
+
+      $results[$user_id] = [
+        'success' => $devices_sent > 0,
+        'devices_sent' => $devices_sent,
+        'total_devices' => $total_devices,
+        'device_results' => $device_results
+      ];
     }
 
     return $results;
@@ -260,10 +385,24 @@ class Pika_Push_Notifications_Manager extends Pika_Base_Manager {
     }
 
     $results = [];
+    $user_device_counts = [];
 
+    // Group subscriptions by user
     foreach ($subscriptions as $sub) {
-      $subscription_data = json_decode($sub->subscription_data, true);
-      $results[$sub->user_id] = $this->send_notification($subscription_data, $notification_data);
+      $user_id = $sub->user_id;
+      if (!isset($user_device_counts[$user_id])) {
+        $user_device_counts[$user_id] = 0;
+      }
+      $user_device_counts[$user_id]++;
+    }
+
+    // Send notification to each user
+    foreach ($user_device_counts as $user_id => $device_count) {
+      $user_result = $this->send_notification_to_user($user_id, $notification_data);
+      $results[$user_id] = [
+        'success' => $user_result,
+        'total_devices' => $device_count
+      ];
     }
 
     return $results;
@@ -591,5 +730,54 @@ class Pika_Push_Notifications_Manager extends Pika_Base_Manager {
     }
 
     return true;
+  }
+
+  /**
+   * Get device subscription statistics
+   */
+  public function get_device_statistics() {
+    $device_subscription_table = $this->get_table_name($this->device_subscriptions_table_name);
+
+    // Get total active subscriptions
+    $total_sql = "SELECT COUNT(*) FROM $device_subscription_table WHERE is_active = 1";
+    $total_subscriptions = $this->db()->get_var($total_sql);
+
+    if (is_wp_error($total_subscriptions)) {
+      return $this->get_error('db_error');
+    }
+
+    // Get unique users with subscriptions
+    $users_sql = "SELECT COUNT(DISTINCT user_id) FROM $device_subscription_table WHERE is_active = 1";
+    $unique_users = $this->db()->get_var($users_sql);
+
+    if (is_wp_error($unique_users)) {
+      return $this->get_error('db_error');
+    }
+
+    // Get device type breakdown
+    $device_types_sql = "SELECT device_type, COUNT(*) as count FROM $device_subscription_table WHERE is_active = 1 GROUP BY device_type";
+    $device_types = $this->db()->get_results($device_types_sql);
+
+    if (is_wp_error($device_types)) {
+      return $this->get_error('db_error');
+    }
+
+    // Get recent activity (last 7 days)
+    $recent_sql = $this->db()->prepare(
+      "SELECT COUNT(*) FROM $device_subscription_table WHERE is_active = 1 AND last_seen >= DATE_SUB(NOW(), INTERVAL 7 DAY)"
+    );
+    $recent_activity = $this->db()->get_var($recent_sql);
+
+    if (is_wp_error($recent_activity)) {
+      return $this->get_error('db_error');
+    }
+
+    return [
+      'total_subscriptions' => intval($total_subscriptions),
+      'unique_users' => intval($unique_users),
+      'device_types' => $device_types,
+      'recent_activity_7_days' => intval($recent_activity),
+      'average_devices_per_user' => $unique_users > 0 ? round($total_subscriptions / $unique_users, 2) : 0
+    ];
   }
 }

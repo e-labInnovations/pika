@@ -4,6 +4,7 @@ import {
   type PushSubscription,
   type NotificationStatus,
   type NotificationRecord,
+  type DeviceSubscription,
 } from '@/services/api';
 
 export interface UsePushNotificationsReturn {
@@ -31,6 +32,11 @@ export interface UsePushNotificationsReturn {
   dismiss: (id: number) => Promise<void>;
   delete: (id: number) => Promise<void>;
 
+  // Device Management
+  devices: DeviceSubscription[];
+  deleteDevice: (deviceId: string) => Promise<boolean>;
+  refreshDevices: () => Promise<void>;
+
   // Refresh
   refreshStatus: () => Promise<void>;
   refreshNotifications: () => Promise<void>;
@@ -44,29 +50,24 @@ export function usePushNotifications(): UsePushNotificationsReturn {
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<NotificationStatus | null>(null);
   const [notifications, setNotifications] = useState<NotificationRecord[]>([]);
+  const [devices, setDevices] = useState<DeviceSubscription[]>([]);
 
   // Check if push notifications are supported
   useEffect(() => {
     const checkSupport = async () => {
-      console.log('🔍 Checking push notification support...');
       const supported = 'serviceWorker' in navigator && 'PushManager' in window;
-      console.log('✅ Push notifications supported:', supported);
       setIsSupported(supported);
 
       if (supported) {
         // Check service worker registration
         try {
-          console.log('🔍 Checking service worker registration...');
           await navigator.serviceWorker.getRegistration();
-          console.log('✅ Service worker registration check completed');
         } catch (error) {
           console.error('❌ Error checking service worker registration:', error);
         }
 
-        console.log('🔍 Starting subscription status check...');
         checkSubscriptionStatus();
       } else {
-        console.log('❌ Push notifications not supported, setting loading to false');
         setIsLoading(false);
       }
     };
@@ -77,21 +78,17 @@ export function usePushNotifications(): UsePushNotificationsReturn {
   // Check subscription status
   const checkSubscriptionStatus = useCallback(async () => {
     try {
-      console.log('🔍 Starting subscription status check...');
       setError(null);
 
       // Always try to get status from server first
       try {
-        console.log('🌐 Fetching status from server...');
         const statusResponse = await pushNotificationsService.getStatus();
-        console.log('✅ Server status received:', statusResponse.data);
         setStatus(statusResponse.data);
         setIsEnabled(Boolean(statusResponse.data.enabled));
         setIsSubscribed(Boolean(statusResponse.data.has_subscription));
       } catch (statusErr) {
         console.error('❌ Failed to get server status:', statusErr);
         // Fall back to local check if server fails
-        console.log('🔄 Falling back to local subscription check...');
         if (Notification.permission === 'granted') {
           const registration = await navigator.serviceWorker.ready;
           const subscription = await registration.pushManager.getSubscription();
@@ -105,15 +102,15 @@ export function usePushNotifications(): UsePushNotificationsReturn {
       }
 
       // Always load notifications
-      console.log('📱 Loading notifications...');
       await loadNotifications();
-      console.log('✅ Notifications loaded');
+
+      // Load user devices
+      await refreshDevices();
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to check subscription status';
       console.error('❌ Subscription status check failed:', err);
       setError(errorMessage);
     } finally {
-      console.log('🏁 Setting loading to false');
       setIsLoading(false);
     }
   }, []);
@@ -121,17 +118,25 @@ export function usePushNotifications(): UsePushNotificationsReturn {
   // Load notifications
   const loadNotifications = useCallback(async () => {
     try {
-      console.log('📱 Calling getNotifications API...');
       const response = await pushNotificationsService.getNotifications();
-      console.log('✅ Notifications API response:', response);
       const notificationsData = response.data.notifications || [];
-      console.log('📋 Notifications data:', notificationsData);
       setNotifications(Array.isArray(notificationsData) ? notificationsData : []);
     } catch (err) {
       console.error('❌ Failed to load notifications:', err);
       // Set empty array on error to prevent UI issues
       setNotifications([]);
       // Don't set global error for notifications loading failure
+    }
+  }, []);
+
+  // Refresh devices
+  const refreshDevices = useCallback(async () => {
+    try {
+      const response = await pushNotificationsService.getUserDevices();
+      setDevices(response.data.devices || []);
+    } catch (err) {
+      console.error('Failed to refresh devices:', err);
+      setDevices([]);
     }
   }, []);
 
@@ -384,12 +389,15 @@ export function usePushNotifications(): UsePushNotificationsReturn {
       setStatus(statusResponse.data);
       setIsEnabled(Boolean(statusResponse.data.enabled));
       setIsSubscribed(Boolean(statusResponse.data.has_subscription));
+
+      // Also refresh devices when status changes
+      await refreshDevices();
     } catch (err) {
       console.error('Failed to refresh status:', err);
       // Don't set global error for status refresh failure
       // Just log it and keep current state
     }
-  }, []);
+  }, [refreshDevices]);
 
   // Refresh notifications
   const refreshNotifications = useCallback(async () => {
@@ -420,6 +428,21 @@ export function usePushNotifications(): UsePushNotificationsReturn {
     }
   }, []);
 
+  // Delete device
+  const deleteDevice = useCallback(
+    async (deviceId: string): Promise<boolean> => {
+      try {
+        await pushNotificationsService.deleteUserDevice(deviceId);
+        await refreshDevices();
+        return true;
+      } catch (err) {
+        console.error('Failed to delete device:', err);
+        return false;
+      }
+    },
+    [refreshDevices],
+  );
+
   return {
     // State
     isSupported,
@@ -444,6 +467,11 @@ export function usePushNotifications(): UsePushNotificationsReturn {
     markAsClicked,
     dismiss,
     delete: deleteNotification,
+
+    // Device Management
+    devices,
+    deleteDevice,
+    refreshDevices,
 
     // Refresh
     refreshStatus,

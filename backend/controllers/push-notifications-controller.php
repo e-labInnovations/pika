@@ -102,6 +102,31 @@ class Pika_Push_Notifications_Controller extends Pika_Base_Controller {
         ]
       ]
     ]);
+
+    register_rest_route('pika/v1', '/push/devices', [
+      'methods' => 'GET',
+      'callback' => [$this, 'get_user_devices'],
+      'permission_callback' => [$this, 'check_auth'],
+    ]);
+
+    register_rest_route('pika/v1', '/push/devices/(?P<device_id>[a-zA-Z0-9]+)', [
+      'methods' => 'DELETE',
+      'callback' => [$this, 'delete_user_device'],
+      'permission_callback' => [$this, 'check_auth'],
+      'args' => [
+        'device_id' => [
+          'validate_callback' => function ($param) {
+            return !empty($param);
+          }
+        ]
+      ]
+    ]);
+
+    register_rest_route('pika/v1', '/push/statistics', [
+      'methods' => 'GET',
+      'callback' => [$this, 'get_device_statistics'],
+      'permission_callback' => [$this, 'check_admin_permission'],
+    ]);
   }
 
   /**
@@ -266,9 +291,33 @@ class Pika_Push_Notifications_Controller extends Pika_Base_Controller {
     // Flush notifications
     $this->push_manager->flush_notifications();
 
+    // Calculate summary statistics
+    $total_users = count($result);
+    $successful_users = 0;
+    $total_devices = 0;
+    $successful_devices = 0;
+
+    foreach ($result as $user_result) {
+      if (isset($user_result['success']) && $user_result['success']) {
+        $successful_users++;
+      }
+      if (isset($user_result['total_devices'])) {
+        $total_devices += $user_result['total_devices'];
+      }
+      if (isset($user_result['devices_sent'])) {
+        $successful_devices += $user_result['devices_sent'];
+      }
+    }
+
     return [
       'message' => 'Notification sent successfully',
-      'data' => $result
+      'summary' => [
+        'total_users' => $total_users,
+        'successful_users' => $successful_users,
+        'total_devices' => $total_devices,
+        'successful_devices' => $successful_devices
+      ],
+      'detailed_results' => $result
     ];
   }
 
@@ -369,15 +418,70 @@ class Pika_Push_Notifications_Controller extends Pika_Base_Controller {
 
     $result = $this->push_manager->send_notification_to_users([$user_id], $notification_data);
 
-    if (!$result) {
+    if (!$result || !isset($result[$user_id])) {
       return $this->push_manager->get_error('send_error');
     }
+
+    $user_result = $result[$user_id];
 
     // Flush notifications to ensure they are sent immediately
     $this->push_manager->flush_notifications();
 
     return [
-      'message' => 'Test notification sent successfully'
+      'message' => 'Test notification sent successfully',
+      'devices_sent' => $user_result['devices_sent'],
+      'total_devices' => $user_result['total_devices'],
+      'success' => $user_result['success']
     ];
+  }
+
+  /**
+   * Get user devices
+   */
+  public function get_user_devices($request) {
+    $user_id = get_current_user_id();
+    $devices = $this->push_manager->get_user_subscriptions($user_id);
+
+    if (is_wp_error($devices)) {
+      return $devices;
+    }
+
+    return [
+      'devices' => $devices,
+      'count' => count($devices)
+    ];
+  }
+
+  /**
+   * Delete specific user device
+   */
+  public function delete_user_device($request) {
+    $device_id = $request->get_param('device_id');
+    $result = $this->push_manager->delete_subscription($device_id);
+
+    if (is_wp_error($result)) {
+      return $result;
+    }
+
+    if (!$result) {
+      return $this->push_manager->get_error('delete_error');
+    }
+
+    return [
+      'message' => 'Device removed successfully'
+    ];
+  }
+
+  /**
+   * Get device statistics (admin only)
+   */
+  public function get_device_statistics($request) {
+    $stats = $this->push_manager->get_device_statistics();
+
+    if (is_wp_error($stats)) {
+      return $stats;
+    }
+
+    return $stats;
   }
 }

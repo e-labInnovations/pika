@@ -18,9 +18,28 @@ export interface NotificationStatusResponse {
 
 export interface NotificationSendResponse {
   message: string;
-  data: {
-    [key: string]: boolean;
+  summary: {
+    total_users: number;
+    successful_users: number;
+    total_devices: number;
+    successful_devices: number;
   };
+  detailed_results: {
+    [key: string]: {
+      success: boolean;
+      devices_sent?: number;
+      total_devices?: number;
+      error?: string;
+      device_results?: boolean[];
+    };
+  };
+}
+
+export interface TestNotificationResponse {
+  message: string;
+  devices_sent: number;
+  total_devices: number;
+  success: boolean;
 }
 
 export interface PushSubscription {
@@ -30,6 +49,30 @@ export interface PushSubscription {
     auth: string;
   };
   user_id?: number;
+}
+
+export interface DeviceSubscription {
+  id: number;
+  device_id: string;
+  device_name: string;
+  device_type: string;
+  subscription: PushSubscription;
+}
+
+export interface UserDevicesResponse {
+  devices: DeviceSubscription[];
+  count: number;
+}
+
+export interface DeviceStatisticsResponse {
+  total_subscriptions: number;
+  unique_users: number;
+  device_types: Array<{
+    device_type: string;
+    count: number;
+  }>;
+  recent_activity_7_days: number;
+  average_devices_per_user: number;
 }
 
 export interface NotificationData {
@@ -84,7 +127,14 @@ export interface NotificationsResponse {
 }
 
 class PushNotificationsService extends BaseService<
-  NotificationRecord | NotificationStatus | NotificationsResponse | PushSubscription | string
+  | NotificationRecord
+  | NotificationStatus
+  | NotificationsResponse
+  | PushSubscription
+  | DeviceSubscription
+  | UserDevicesResponse
+  | DeviceStatisticsResponse
+  | string
 > {
   constructor() {
     super('/push');
@@ -195,13 +245,34 @@ class PushNotificationsService extends BaseService<
   /**
    * Send test notification to current user
    */
-  sendTestNotification(): Promise<AxiosResponse<GenericSuccessResponse>> {
+  sendTestNotification(): Promise<AxiosResponse<TestNotificationResponse>> {
     return this.api.post(`${this.endpoint}/test`, {
       title: 'Test Notification',
       body: 'This is a test notification from Pika Finance',
       icon: '/pika/icons/pwa-192x192.png',
       tag: 'test-notification',
     });
+  }
+
+  /**
+   * Get user devices
+   */
+  getUserDevices(): Promise<AxiosResponse<UserDevicesResponse>> {
+    return this.api.get(`${this.endpoint}/devices`);
+  }
+
+  /**
+   * Delete specific user device
+   */
+  deleteUserDevice(deviceId: string): Promise<AxiosResponse<GenericSuccessResponse>> {
+    return this.api.delete(`${this.endpoint}/devices/${deviceId}`);
+  }
+
+  /**
+   * Get device statistics (admin only)
+   */
+  getDeviceStatistics(): Promise<AxiosResponse<DeviceStatisticsResponse>> {
+    return this.api.get(`${this.endpoint}/statistics`);
   }
 }
 
