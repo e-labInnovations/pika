@@ -9,11 +9,17 @@ const path = require("path");
 var indexConfig = Object.assign({}, defaultConfig, {
   name: "index",
   entry: {
-    "main": "./backend-dev/main.js",
+    "main": "./backend-dev/main.tsx",
   },
   output: { 
     path: path.resolve(__dirname, "backend/admin/build"),
     filename: "[name].js",
+  },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'backend-dev'),
+    },
+    extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
   },
   plugins: [
     ...defaultConfig.plugins
