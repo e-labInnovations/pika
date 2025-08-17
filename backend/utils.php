@@ -243,9 +243,9 @@ class Pika_Utils {
     public static function log($message, $data = [], $log_mode = 'json') {
         if (defined('WP_DEBUG') && WP_DEBUG) {
             if ($log_mode === 'json') {
-                error_log('Pika Log: ' . $message . ' - ' . json_encode($data));
+                error_log('Pika Log: ' . $message . ($data != [] ? ' - ' . json_encode($data) : ''));
             } else {
-                error_log('Pika Log: ' . $message . ' - ' . print_r($data, true));
+                error_log('Pika Log: ' . $message . ($data != [] ? ' - ' . print_r($data, true) : ''));
             }
         }
     }

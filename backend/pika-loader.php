@@ -102,21 +102,10 @@ class Pika_Loader {
             <div class="notice notice-success is-dismissible">
                 <p><strong>Pika Financial</strong> plugin has been activated successfully!</p>
             </div>
-        <?php
-        }
-
-        // Show database upgrade notice (now handled by Database Manager)
-        require_once PIKA_PLUGIN_PATH . 'backend/database/class-database-manager.php';
-        $db_manager = new Pika_Database_Manager();
-
-        if ($db_manager->needs_upgrade()) {
-        ?>
-            <div class="notice notice-warning is-dismissible">
-                <p><strong>Pika Financial</strong> database needs to be upgraded. Please deactivate and reactivate the plugin to run
-                    the upgrade.</p>
-            </div>
 <?php
         }
+
+        // Database upgrade notices are now handled by Migration Manager
     }
 
     /**

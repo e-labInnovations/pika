@@ -15,7 +15,7 @@ class Pika_Database_Manager {
   /**
    * Database version
    */
-  const DB_VERSION = '1.1.0';
+  const DB_VERSION = PIKA_DB_VERSION;
 
   /**
    * Table managers
@@ -58,13 +58,13 @@ class Pika_Database_Manager {
       // Create tables
       $this->table_manager->create_all_tables();
 
+      // Run migrations to ensure all tables are created
+      $this->migration_manager->run_all_pending_migrations();
+
       // Check if we need to insert default data
       if ($this->should_insert_default_data()) {
         $this->seed_manager->insert_all_default_data();
       }
-
-      // Update database version
-      update_option('pika_db_version', self::DB_VERSION);
 
       return true;
     } catch (Exception $e) {
@@ -86,15 +86,9 @@ class Pika_Database_Manager {
    */
   public function upgrade() {
     try {
-      $current_version = get_option('pika_db_version', '0.0.0');
-
       if ($this->needs_upgrade()) {
-        $this->migration_manager->run_migrations($current_version, self::DB_VERSION);
-
-        // Update database version
-        update_option('pika_db_version', self::DB_VERSION);
+        $this->migration_manager->run_all_pending_migrations();
         update_option('pika_last_upgrade', current_time('mysql'));
-
         return true;
       }
 
@@ -139,6 +133,19 @@ class Pika_Database_Manager {
    */
   public function check_health() {
     return $this->table_manager->check_tables_exist();
+  }
+
+  /**
+   * Force run migrations (for testing)
+   */
+  public function force_migrations() {
+    try {
+      $this->migration_manager->run_all_pending_migrations();
+      return true;
+    } catch (Exception $e) {
+      error_log('Pika Force Migration Failed: ' . $e->getMessage());
+      return false;
+    }
   }
 
   /**

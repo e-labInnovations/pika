@@ -274,8 +274,6 @@ class Pika_AI_Manager extends Pika_Base_Manager {
       $pika_data['current_user_datetime']
     );
 
-
-
     $client = $this->gemini_client($prompt_data);
     if (is_wp_error($client)) {
       $this->utils->log('AI Manager Error: gemini_client failed', $client->get_error_message(), 'error');
@@ -312,8 +310,6 @@ class Pika_AI_Manager extends Pika_Base_Manager {
       $pika_data['user_timezone'],
       $pika_data['current_user_datetime']
     );
-
-
 
     $client = $this->gemini_client($prompt_data);
     if (is_wp_error($client)) {

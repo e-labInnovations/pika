@@ -787,3 +787,170 @@ Content-Type: application/json
 ------WebKitFormBoundary--
 
 ###
+
+# ========================================
+# PUSH NOTIFICATIONS API ENDPOINTS
+# ========================================
+
+# Get VAPID public key
+GET {{base_url}}/wp-json/pika/v1/push/vapid-key
+Authorization: Basic {{username}}:{{password}}
+
+###
+
+# Subscribe user to push notifications
+POST {{base_url}}/wp-json/pika/v1/push/subscribe
+Authorization: Basic {{username}}:{{password}}
+Content-Type: application/json
+
+{
+  "subscription": {
+    "endpoint": "https://fcm.googleapis.com/fcm/send/example-endpoint",
+    "keys": {
+      "p256dh": "example-p256dh-key",
+      "auth": "example-auth-key"
+    }
+  },
+  "device_id": "device-123"
+}
+
+###
+
+# Unsubscribe user from push notifications
+POST {{base_url}}/wp-json/pika/v1/push/unsubscribe
+Authorization: Basic {{username}}:{{password}}
+
+###
+
+# Enable push notifications for user
+POST {{base_url}}/wp-json/pika/v1/push/enable
+Authorization: Basic {{username}}:{{password}}
+
+###
+
+# Disable push notifications for user
+POST {{base_url}}/wp-json/pika/v1/push/disable
+Authorization: Basic {{username}}:{{password}}
+
+###
+
+# Get notification status for user
+GET {{base_url}}/wp-json/pika/v1/push/status
+Authorization: Basic {{username}}:{{password}}
+
+###
+
+# Send notification to specific users (admin only)
+POST {{base_url}}/wp-json/pika/v1/push/send
+Authorization: Basic {{admin_username}}:{{admin_password}}
+Content-Type: application/json
+
+{
+  "title": "Test Notification",
+  "body": "This is a test push notification",
+  "icon": "https://example.com/icon.png",
+  "badge": "https://example.com/badge.png",
+  "image": "https://example.com/image.jpg",
+  "tag": "test-notification",
+  "data": {
+    "url": "https://example.com/action",
+    "custom_field": "custom_value"
+  },
+  "actions": [
+    {
+      "action": "view",
+      "title": "View Details"
+    },
+    {
+      "action": "dismiss",
+      "title": "Dismiss"
+    }
+  ],
+  "require_interaction": false,
+  "silent": false,
+  "user_ids": [1, 2, 3]
+}
+
+###
+
+# Send notification to all users (admin only)
+POST {{base_url}}/wp-json/pika/v1/push/send
+Authorization: Basic {{admin_username}}:{{admin_password}}
+Content-Type: application/json
+
+{
+  "title": "Global Announcement",
+  "body": "This notification will be sent to all users",
+  "icon": "https://example.com/announcement-icon.png",
+  "tag": "global-announcement",
+  "data": {
+    "type": "announcement",
+    "priority": "high"
+  }
+}
+
+###
+
+# Get user notifications with pagination
+GET {{base_url}}/wp-json/pika/v1/push/notifications?page=1&per_page=20
+Authorization: Basic {{username}}:{{password}}
+
+###
+
+# Get user notifications (default pagination)
+GET {{base_url}}/wp-json/pika/v1/push/notifications
+Authorization: Basic {{username}}:{{password}}
+
+###
+
+# Mark notification as read
+PUT {{base_url}}/wp-json/pika/v1/push/notifications/1
+Authorization: Basic {{username}}:{{password}}
+Content-Type: application/json
+
+{
+  "read_at": true
+}
+
+###
+
+# Mark notification as clicked
+PUT {{base_url}}/wp-json/pika/v1/push/notifications/1
+Authorization: Basic {{username}}:{{password}}
+Content-Type: application/json
+
+{
+  "clicked_at": true
+}
+
+###
+
+# Mark notification as dismissed
+PUT {{base_url}}/wp-json/pika/v1/push/notifications/1
+Authorization: Basic {{username}}:{{password}}
+Content-Type: application/json
+
+{
+  "dismissed_at": true
+}
+
+###
+
+# Update multiple notification status fields
+PUT {{base_url}}/wp-json/pika/v1/push/notifications/1
+Authorization: Basic {{username}}:{{password}}
+Content-Type: application/json
+
+{
+  "read_at": true,
+  "clicked_at": true,
+  "dismissed_at": false
+}
+
+###
+
+# Delete a notification
+DELETE {{base_url}}/wp-json/pika/v1/push/notifications/1
+Authorization: Basic {{username}}:{{password}}
+
+###

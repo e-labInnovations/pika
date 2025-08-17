@@ -22,7 +22,8 @@ class Pika_API_Loader {
         'settings',
         'ai',
         'reminders',
-        'import-export'
+        'import-export',
+        'push-notifications'
     ];
 
     /**

@@ -16,7 +16,8 @@ class Pika_Migration_Manager {
    * Available migrations
    */
   private $migrations = [
-    '1.1.0' => '001_add_reminders_table'
+    '1.1.0' => '001_add_reminders_table',
+    '1.2.0' => '002_add_push_notifications_tables'
   ];
 
   /**
@@ -29,6 +30,9 @@ class Pika_Migration_Manager {
     $wpdb->query('START TRANSACTION');
 
     try {
+      // Show admin notice
+      // add_action('admin_notices', [__CLASS__, 'migration_started_notice']);
+
       // Log upgrade start
       error_log("Pika: Starting database migration from version {$from_version} to {$to_version}");
 
@@ -54,6 +58,31 @@ class Pika_Migration_Manager {
 
       return false;
     }
+  }
+
+  /**
+   * Run all pending migrations (used by database manager)
+   */
+  public function run_all_pending_migrations() {
+    $current_version = get_option('pika_db_version', '0.0.0');
+    $target_version = PIKA_DB_VERSION;
+
+    if (version_compare($current_version, $target_version, '<')) {
+      $result = $this->run_migrations($current_version, $target_version);
+
+      // Only update version if migrations succeeded
+      if ($result) {
+        update_option('pika_db_version', $target_version);
+        error_log("Pika: Database version updated to {$target_version}");
+
+        // Show admin notice
+        // add_action('admin_notices', [__CLASS__, 'migration_completed_notice']);
+      }
+
+      return $result;
+    }
+
+    return true; // No migrations needed
   }
 
   /**
@@ -89,7 +118,7 @@ class Pika_Migration_Manager {
 
     require_once $migration_path;
 
-    $migration_class = 'Pika_Migration_' . str_replace('001_', '', $migration_file);
+    $migration_class = $this->get_migration_class_name($migration_file);
 
     if (!class_exists($migration_class)) {
       throw new Exception("Migration class not found: {$migration_class}");
@@ -120,6 +149,22 @@ class Pika_Migration_Manager {
   }
 
   /**
+   * Get migration class name from filename
+   */
+  private function get_migration_class_name($migration_file) {
+    // Remove starting number up to the first underscore (001_, 002_, etc.)
+    $class_name = preg_replace('/^\d+_/', '', $migration_file);
+
+    // Convert underscores to spaces, uppercase first letter of each word, then remove spaces
+    $class_name = str_replace('_', ' ', $class_name);
+    $class_name = ucwords($class_name);
+    $class_name = str_replace(' ', '_', $class_name);
+
+    // Add Pika_Migration_ prefix
+    return 'Pika_Migration_' . $class_name;
+  }
+
+  /**
    * Get pending migrations for a version
    */
   public function get_pending_migrations($current_version) {
@@ -135,11 +180,29 @@ class Pika_Migration_Manager {
   }
 
   /**
+   * Show admin notice when migration is started
+   */
+  public static function migration_started_notice() {
+    echo '<div class="notice notice-info is-dismissible">';
+    echo '<p><strong>Pika Financial:</strong> Database migration started.</p>';
+    echo '</div>';
+  }
+
+  /**
    * Show admin notice when migration fails
    */
   public static function migration_failed_notice() {
     echo '<div class="notice notice-error is-dismissible">';
     echo '<p><strong>Pika Financial:</strong> Database migration failed. Please check error logs and contact support if the issue persists.</p>';
+    echo '</div>';
+  }
+
+  /**
+   * Show admin notice when migration is completed
+   */
+  public static function migration_completed_notice() {
+    echo '<div class="notice notice-success is-dismissible">';
+    echo '<p><strong>Pika Financial:</strong> Database migration completed successfully.</p>';
     echo '</div>';
   }
 

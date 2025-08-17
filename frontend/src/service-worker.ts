@@ -126,15 +126,27 @@ const sharedDataDB = new SharedDataDB();
 
 // Debug flag - set to false in production
 const DEBUG_WEB_SHARE = false;
+const DEBUG_PUSH = false;
 
 const log = (message: string, ...args: unknown[]) => {
-  if (DEBUG_WEB_SHARE) {
+  if (DEBUG_WEB_SHARE || DEBUG_PUSH) {
     console.log(message, ...args);
   }
 };
 
 // Log service worker initialization (only in debug mode)
-log('Pika Service Worker: Initialized with IndexedDB support');
+log('Pika Service Worker: Initialized with IndexedDB and Push support');
+
+// Test message to verify service worker is working
+self.addEventListener('install', () => {
+  log('Pika Service Worker: Installing...');
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', (event) => {
+  log('Pika Service Worker: Activating...');
+  event.waitUntil(self.clients.claim());
+});
 
 // Catch share POST requests
 self.addEventListener('fetch', (event) => {
@@ -187,6 +199,115 @@ self.addEventListener('fetch', (event) => {
       })(),
     );
   }
+});
+
+// Handle push notifications
+self.addEventListener('push', (event) => {
+  log('Pika Service Worker: Push event received');
+
+  if (event.data) {
+    try {
+      const notificationData = event.data.json();
+      log('Pika Service Worker: Push notification data:', notificationData);
+
+      // Show notification
+      log('Pika Service Worker: Creating notification with data:', {
+        title: notificationData.title,
+        body: notificationData.body,
+        icon: notificationData.icon || '/pika/icons/pwa-192x192.png',
+        tag: notificationData.tag,
+      });
+
+      const notificationPromise = self.registration.showNotification(notificationData.title, {
+        body: notificationData.body,
+        icon: notificationData.icon || '/pika/icons/pwa-192x192.png',
+        badge: notificationData.badge || '/pika/icons/pwa-192x192.png',
+        tag: notificationData.tag,
+        data: notificationData.data,
+        requireInteraction: notificationData.requireInteraction || false,
+        silent: notificationData.silent || false,
+      });
+
+      event.waitUntil(notificationPromise);
+      log('Pika Service Worker: Notification promise created');
+    } catch (error) {
+      log('Pika Service Worker: Error parsing push data:', error);
+
+      // Fallback notification
+      const fallbackPromise = self.registration.showNotification('Pika Finance', {
+        body: 'You have a new notification',
+        icon: '/pika/icons/pwa-192x192.png',
+        badge: '/pika/icons/pwa-192x192.png',
+      });
+
+      event.waitUntil(fallbackPromise);
+    }
+  } else {
+    log('Pika Service Worker: No push data received');
+
+    // Default notification
+    const defaultPromise = self.registration.showNotification('Pika Finance', {
+      body: 'You have a new notification',
+      icon: '/pika/icons/pwa-192x192.png',
+      badge: '/pika/icons/pwa-192x192.png',
+    });
+
+    event.waitUntil(defaultPromise);
+  }
+});
+
+// Handle notification clicks
+self.addEventListener('notificationclick', (event) => {
+  log('Pika Service Worker: Notification clicked:', event.notification.tag);
+
+  event.notification.close();
+
+  // Handle notification actions
+  if (event.action) {
+    log('Pika Service Worker: Action clicked:', event.action);
+
+    // You can handle different actions here
+    switch (event.action) {
+      case 'view':
+        // Navigate to specific page
+        break;
+      case 'dismiss':
+        // Mark as dismissed
+        break;
+      default:
+        break;
+    }
+  } else {
+    // Default click behavior - focus or open the app
+    event.waitUntil(
+      (async () => {
+        const allClients = await self.clients.matchAll({
+          type: 'window',
+          includeUncontrolled: true,
+        });
+
+        // Check if there's already a window/tab open with the target URL
+        const targetUrl = '/pika';
+        const existingClient = allClients.find((client) => client.url.includes(targetUrl));
+
+        if (existingClient) {
+          // If so, just focus it
+          await existingClient.focus();
+        } else {
+          // If not, open a new window/tab
+          await self.clients.openWindow(targetUrl);
+        }
+      })(),
+    );
+  }
+});
+
+// Handle notification close
+self.addEventListener('notificationclose', (event) => {
+  log('Pika Service Worker: Notification closed:', event.notification.tag);
+
+  // You can track notification close events here
+  // For example, mark notifications as dismissed in your backend
 });
 
 // Handle messages from clients to retrieve shared data
