@@ -1,10 +1,10 @@
 <div align="center">
-  <img src="docs/images/logo.svg" width="120" height="120" alt="Pika Icon">
+  <img src="docs/images/icons/full-sized-logo-output.svg" width="120" height="120" alt="Pika Icon">
   <h1>Pika Finance</h1>
 
   <p>
-    <a href="https://wordpress.org/"><img src="https://img.shields.io/badge/WordPress-5.0+-blue.svg" alt="WordPress"></a>
-    <a href="https://php.net/"><img src="https://img.shields.io/badge/PHP-7.4+-green.svg" alt="PHP"></a>
+    <a href="https://wordpress.org/"><img src="https://img.shields.io/badge/WordPress-6.0+-blue.svg" alt="WordPress"></a>
+    <a href="https://php.net/"><img src="https://img.shields.io/badge/PHP-8.1+-green.svg" alt="PHP"></a>
     <a href="https://reactjs.org/"><img src="https://img.shields.io/badge/React-19.1.0-61dafb.svg" alt="React"></a>
     <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-5.8.3-3178c6.svg" alt="TypeScript"></a>
     <a href="https://vitejs.dev/"><img src="https://img.shields.io/badge/Vite-6.3.5-646cff.svg" alt="Vite"></a>
@@ -60,8 +60,8 @@
 
 ## 📋 Requirements
 
-- **WordPress**: 5.0 or higher
-- **PHP**: 7.4 or higher
+- **WordPress**: 6.0 or higher
+- **PHP**: 8.1 or higher
 - **MySQL**: 5.6 or higher
 - **Web Server**: Apache/Nginx with mod_rewrite enabled
 
