@@ -110,6 +110,86 @@
 
 **🎉 You're now ready to use Pika!**
 
+## 🔐 Authentication Flow
+
+Pika uses a secure cookie-based authentication system that integrates seamlessly with WordPress Application Passwords. Here's how the authentication process works:
+
+### Overview
+
+The authentication flow ensures secure access to the PWA while leveraging WordPress's built-in security features. The system uses HTTP-only cookies to store authentication tokens, providing protection against XSS attacks.
+
+### Step-by-Step Process
+
+1. **Initial Login Request**
+   - User visits the Pika login page (`/pika`)
+   - Clicks the "Login" button which redirects to WordPress Application Password generation page
+
+2. **Application Password Generation**
+   - User is redirected to WordPress Admin → Profile → Application Passwords
+   - Generates a new Application Password for Pika
+   - WordPress redirects back to Pika authorization page with credentials
+
+3. **Authorization Process**
+   - Pika authorization page receives username and application password via URL parameters
+   - Frontend calls `/wp-json/pika/v1/auth/login` endpoint with credentials
+   - Backend validates credentials using `wp_authenticate_application_password()`
+
+4. **Cookie Setting**
+   - Upon successful authentication, backend creates a `pika_token` HTTP-only cookie
+   - Token contains base64-encoded `username:application_password`
+   - Cookie is set with secure flags: `httponly`, `secure`, `samesite=Strict`
+
+5. **Middleware Authentication**
+   - All subsequent API requests to `/wp-json/pika/v1/*` include the `pika_token` cookie
+   - WordPress middleware intercepts requests via `determine_current_user` filter
+   - Middleware decodes the cookie and authenticates using `wp_authenticate_application_password()`
+   - Uses `application_password_is_api_request` filter to enable API authentication
+
+6. **Logout Process**
+   - User clicks logout in the PWA
+   - Frontend calls `/wp-json/pika/v1/auth/logout` endpoint
+   - Backend removes the `pika_token` cookie by setting expiration to past time
+
+### Security Features
+
+- **HTTP-Only Cookies**: Prevents JavaScript access to authentication tokens
+- **Secure Flags**: Ensures cookies are only sent over HTTPS
+- **SameSite Protection**: Prevents CSRF attacks
+- **Application Passwords**: WordPress's secure authentication method
+- **Middleware Validation**: Server-side authentication for all API requests
+
+### Authentication Flow Diagram
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant F as Frontend (PWA)
+    participant B as Backend (WordPress)
+    participant W as WordPress Admin
+
+    U->>F: Visit /pika login page
+    F->>W: Redirect to Application Password page
+    U->>W: Generate Application Password
+    W->>F: Redirect with credentials
+    F->>B: POST /auth/login (username, password)
+    B->>B: Validate with wp_authenticate_application_password()
+    B->>F: Set pika_token HTTP-only cookie
+    B->>F: Return user data
+    F->>U: Redirect to dashboard
+
+    Note over F,B: Subsequent API Requests
+    F->>B: API request with pika_token cookie
+    B->>B: Middleware: determine_current_user filter
+    B->>B: Decode cookie & authenticate
+    B->>F: Return authenticated response
+
+    Note over F,B: Logout Process
+    U->>F: Click logout
+    F->>B: POST /auth/logout
+    B->>F: Remove pika_token cookie
+    F->>U: Redirect to login page
+```
+
 ## 🏗️ Architecture
 
 ### WordPress REST API Integration
