@@ -396,5 +396,8 @@ config.json
 !pika.php
 !uninstall.php
 !backend/
+!backend/admin/build/
+!backend/libraries/vendor/
+!backend/libraries/composer.lock
 !frontend/package.json
 !frontend/package-lock.json 
