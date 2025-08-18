@@ -18,10 +18,9 @@ class Pika_Auth_Manager extends Pika_Base_Manager {
   }
 
   /**
-   * Get current user data
+   * Get user data by id 
    */
-  public function get_current_user_data() {
-    $user_id = $this->utils->get_current_user_id();
+  public function get_user_data_by_id($user_id) {
     $user = get_userdata($user_id);
 
     if (!$user) {
@@ -42,5 +41,14 @@ class Pika_Auth_Manager extends Pika_Base_Manager {
       'avatar_url' => get_avatar_url($user->ID, array('size' => 96)),
       'settings' => $modified_settings
     ];
+  }
+
+  /**
+   * Get current user data
+   */
+  public function get_current_user_data() {
+    $user_id = $this->utils->get_current_user_id();
+
+    return $this->get_user_data_by_id($user_id);
   }
 }
