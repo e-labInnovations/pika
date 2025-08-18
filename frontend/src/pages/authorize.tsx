@@ -6,7 +6,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { DynamicIcon } from '@/components/lucide';
 import Logo from '@/components/logo';
 import { useAuth } from '@/hooks/use-auth';
-import { authKey, authService, type User } from '@/services/api';
+import { authService, type User, type LoginCredentials } from '@/services/api';
 import { useTitle } from '@/hooks/use-title';
 import type { AxiosResponse } from 'axios';
 
@@ -31,24 +31,24 @@ export default function Authorize() {
 
       setLoading(true);
 
-      // Store credentials in localStorage as base64 encoded user_login:password
-      const token = btoa(`${userLogin}:${password}`);
-      localStorage.setItem(authKey, token);
+      // Use the login API endpoint
+      const credentials: LoginCredentials = {
+        user_login: userLogin,
+        password: password,
+      };
 
-      // Fetch user data to verify credentials
       authService
-        .getMe()
+        .login(credentials)
         .then((response: AxiosResponse<User>) => {
           const user = response.data;
-          signIn(token, user);
+          // Sign in without token since we're using cookies now
+          signIn(user);
           // Redirect to home page
           navigate('/', { replace: true });
         })
         .catch((error) => {
           console.error('Authorization failed:', error);
           setError('Authentication failed. Please check your credentials and try again.');
-          // Clear invalid token
-          localStorage.removeItem(authKey);
         })
         .finally(() => {
           setLoading(false);

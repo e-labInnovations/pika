@@ -9,8 +9,9 @@ const ProfileSettings = () => {
   const { user, signOut } = useAuth();
 
   const handleLogout = () => {
-    signOut();
-    navigate('/login');
+    signOut().then(() => {
+      navigate('/login');
+    });
   };
 
   return (

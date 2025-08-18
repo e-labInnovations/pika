@@ -12,15 +12,22 @@ export interface User {
   };
 }
 
-export const authKey = 'pika-auth-token';
+export interface LoginCredentials {
+  user_login: string;
+  password: string;
+}
 
 class AuthService {
+  login(credentials: LoginCredentials) {
+    return api.post<User>('/auth/login', credentials);
+  }
+
   getMe() {
-    return api.get('/auth/me', {
-      headers: {
-        Authorization: `Basic ${localStorage.getItem(authKey)}`,
-      },
-    });
+    return api.get<User>('/auth/me');
+  }
+
+  logout() {
+    return api.post<{ message: string }>('/auth/logout');
   }
 }
 

@@ -1,10 +1,10 @@
 import { createContext, useEffect, useMemo, useReducer, type PropsWithChildren } from 'react';
-import { type User, authKey, authService } from '@/services/api';
+import { type User, authService } from '@/services/api';
 
 interface AuthContextType {
   user: User | null;
-  signIn: (token: string, user: User) => Promise<void>;
-  signOut: () => void;
+  signIn: (user: User) => Promise<void>;
+  signOut: () => Promise<void>;
   loading: boolean;
 }
 
@@ -12,7 +12,7 @@ type AuthProviderProps = PropsWithChildren;
 type ReducerAction =
   | {
       type: 'SIGN_IN';
-      payload: { user: User; token: string };
+      payload: { user: User };
     }
   | { type: 'SIGN_OUT' }
   | { type: 'SET_LOADING'; payload: { loading: boolean } };
@@ -20,13 +20,11 @@ type ReducerAction =
 type StateType = {
   user: User | null;
   loading: boolean;
-  token: string | null;
 };
 
 const initialState: StateType = {
   user: null,
   loading: true,
-  token: null,
 };
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -37,13 +35,11 @@ const authReducer = (state: StateType, action: ReducerAction): StateType => {
       return {
         ...state,
         user: action.payload.user,
-        token: action.payload.token,
       };
     case 'SIGN_OUT':
       return {
         ...state,
         user: null,
-        token: null,
       };
     case 'SET_LOADING':
       return {
@@ -59,35 +55,39 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
   useEffect(() => {
-    const token = localStorage.getItem(authKey);
-    if (token) {
-      const fetchUserData = async () => {
-        try {
-          const response = await authService.getMe();
-          dispatch({
-            type: 'SIGN_IN',
-            payload: { user: response.data as User, token: token },
-          });
-        } catch {
-          dispatch({ type: 'SIGN_OUT' });
-        } finally {
-          dispatch({ type: 'SET_LOADING', payload: { loading: false } });
-        }
-      };
-      fetchUserData();
-    } else {
-      dispatch({ type: 'SET_LOADING', payload: { loading: false } });
-    }
+    const fetchUserData = async () => {
+      try {
+        const response = await authService.getMe();
+        dispatch({
+          type: 'SIGN_IN',
+          payload: { user: response.data as User },
+        });
+      } catch {
+        dispatch({ type: 'SIGN_OUT' });
+      } finally {
+        dispatch({ type: 'SET_LOADING', payload: { loading: false } });
+      }
+    };
+
+    // Always try to fetch user data on mount (cookie will be sent automatically)
+    fetchUserData();
   }, []);
 
-  const signIn = async (token: string, user: User) => {
-    dispatch({ type: 'SIGN_IN', payload: { user, token } });
-    localStorage.setItem(authKey, token);
+  const signIn = async (user: User) => {
+    dispatch({ type: 'SIGN_IN', payload: { user } });
   };
 
-  const signOut = () => {
-    dispatch({ type: 'SIGN_OUT' });
-    localStorage.removeItem(authKey);
+  const signOut = async (): Promise<void> => {
+    try {
+      // Call the logout endpoint to remove the cookie
+      await authService.logout();
+    } catch (error) {
+      // Even if the logout API call fails, we still want to clear the local state
+      console.error('Logout API call failed:', error);
+    } finally {
+      // Always clear the local state
+      dispatch({ type: 'SIGN_OUT' });
+    }
   };
 
   const contextValue = useMemo(
