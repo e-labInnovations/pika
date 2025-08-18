@@ -153,6 +153,25 @@ export default defineConfig({
       '/wp-json': {
         target: 'http://localhost:8000',
         changeOrigin: true,
+        configure: (proxy) => {
+          proxy.on('proxyReq', (proxyReq) => {
+            // Remove Cookie header completely or filter it
+            const cookie = proxyReq.getHeader('cookie');
+            if (cookie) {
+              const filtered = cookie
+                .toString()
+                .split(';')
+                .map((c: string) => c.trim())
+                .filter((c: string) => !c.startsWith('wordpress_logged_in_'))
+                .join('; ');
+              if (filtered) {
+                proxyReq.setHeader('cookie', filtered);
+              } else {
+                proxyReq.removeHeader('cookie');
+              }
+            }
+          });
+        },
       },
     },
   },

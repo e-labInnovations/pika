@@ -18,6 +18,8 @@ import SecuritySettings from '@/pages/security-settings';
 import ProfileSettings from '@/pages/profile-settings';
 import NotFound from '@/pages/404';
 import LogoDemo from '@/pages/logo-demo';
+import Authorize from '@/pages/authorize';
+import RejectAuth from '@/pages/reject-auth';
 import AddCategory from '@/pages/add-category';
 import EditCategory from '@/pages/edit-category';
 import AddChildCategory from '@/pages/add-child-category';
@@ -37,6 +39,8 @@ const router = createBrowserRouter(
       {/* Public Routes */}
       <Route path="/login" element={<Login />} />
       <Route path="/logo-demo" element={<LogoDemo />} />
+      <Route path="/authorize" element={<Authorize />} />
+      <Route path="/reject-auth" element={<RejectAuth />} />
 
       {/* Protected Routes */}
       <Route
