@@ -76,6 +76,16 @@ class Pika_API_Loader {
     }
 
     /**
+     * Remove pika_token cookie
+     */
+    protected function remove_pika_token() {
+        if (isset($_COOKIE['pika_token'])) {
+            unset($_COOKIE['pika_token']);
+            setcookie('pika_token', '', time() - 3600, '/');
+        }
+    }
+
+    /**
      * Set up authentication middleware.
      *
      * This middleware authenticates users using the pika_token cookie.
@@ -107,8 +117,9 @@ class Pika_API_Loader {
             if (!$token) {
                 return false; // not authenticated if no token
             }
-            $auth = base64_decode($_COOKIE['pika_token'], true);
+            $auth = base64_decode($token, true);
             if (!$auth || strpos($auth, ':') === false) {
+                $this->remove_pika_token();
                 return false; // not authenticated if no auth
             }
 
@@ -117,6 +128,7 @@ class Pika_API_Loader {
             $pika_user = wp_authenticate_application_password(null, $username, $password);
 
             if (is_wp_error($pika_user) || !$pika_user) {
+                $this->remove_pika_token();
                 return false; // not authenticated if error
             }
 

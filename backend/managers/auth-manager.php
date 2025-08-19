@@ -11,10 +11,40 @@ Pika_Utils::reject_abs_path();
 class Pika_Auth_Manager extends Pika_Base_Manager {
 
   protected $settings_manager;
+  protected $errors = [
+    'invalid_uuid' => ['message' => 'Invalid UUID', 'status' => 400],
+    'session_not_found' => ['message' => 'Session not found', 'status' => 404],
+  ];
 
   public function __construct() {
     parent::__construct();
     $this->settings_manager = new Pika_Settings_Manager();
+  }
+
+  /**
+   * Get app_id
+   */
+  public function get_app_id() {
+    $app_id = get_option('pika_app_id');
+    if (!$app_id) {
+      $app_id = wp_generate_uuid4();
+      update_option('pika_app_id', $app_id);
+    }
+    return $app_id;
+  }
+
+  /**
+   * Get app_details
+   */
+  public function get_app_details() {
+    $plugin_data = get_plugin_data(PIKA_PLUGIN_PATH . 'pika.php');
+    return [
+      'name' => $plugin_data['Name'],
+      'version' => $plugin_data['Version'],
+      'description' => $plugin_data['Description'],
+      'app_id' => $this->get_app_id(),
+      'base_url' => get_site_url(),
+    ];
   }
 
   /**
@@ -47,8 +77,40 @@ class Pika_Auth_Manager extends Pika_Base_Manager {
    * Get current user data
    */
   public function get_current_user_data() {
-    $user_id = $this->utils->get_current_user_id();
+    $user_id = get_current_user_id();
 
     return $this->get_user_data_by_id($user_id);
+  }
+
+  /**
+   * Get all application passwords
+   */
+  public function get_all_application_passwords() {
+    $user_id = get_current_user_id();
+    $passwords = WP_Application_Passwords::get_user_application_passwords($user_id);
+    $currently_using_password_uuid = rest_get_authenticated_app_password();
+    $app_id = $this->get_app_id();
+
+    // Filter passwords by app_id and reindex array to ensure numeric keys
+    $filtered_passwords = [];
+    foreach ($passwords as $password) {
+      if (isset($password['app_id']) && $password['app_id'] === $app_id) {
+        $filtered_passwords[] = $password;
+      }
+    }
+
+    $result = array_map(function($password) use ($currently_using_password_uuid) {
+      return [
+        'uuid' => $password['uuid'],
+        'app_id' => $password['app_id'],
+        'name' => $password['name'],
+        'created' => !empty($password['created']) ? gmdate('Y-m-d\TH:i:s\Z', $password['created']) : null,
+        'last_used' => !empty($password['last_used']) ? gmdate('Y-m-d\TH:i:s\Z', $password['last_used']) : null,
+        'last_ip' => $password['last_ip'],
+        'is_currently_using' => $password['uuid'] === $currently_using_password_uuid,
+      ];
+    }, $filtered_passwords);
+
+    return $result;
   }
 }

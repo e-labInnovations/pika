@@ -45,6 +45,30 @@ class Pika_Auth_Controller extends Pika_Base_Controller {
                 'permission_callback' => '__return_true',
             ],
         ]);
+
+        register_rest_route($this->namespace, '/auth/sessions', [
+            [
+                'methods' => WP_REST_Server::READABLE,
+                'callback' => [$this, 'get_sessions'],
+                'permission_callback' => [$this, 'check_auth'],
+            ],
+        ]);
+
+        register_rest_route($this->namespace, '/auth/app-info', [
+            [
+                'methods' => WP_REST_Server::READABLE,
+                'callback' => [$this, 'get_app_info'],
+                'permission_callback' => '__return_true',
+            ],
+        ]);
+
+        register_rest_route($this->namespace, '/auth/sessions/revoke', [
+            [
+                'methods' => WP_REST_Server::CREATABLE,
+                'callback' => [$this, 'revoke_session'],
+                'permission_callback' => [$this, 'check_auth'],
+            ],
+        ]);
     }
 
     /**
@@ -116,8 +140,56 @@ class Pika_Auth_Controller extends Pika_Base_Controller {
             ]
         );
 
+        // delete current using application password
+        $user_id = get_current_user_id();
+        $currently_using_password_uuid = rest_get_authenticated_app_password();
+        WP_Application_Passwords::delete_application_password($user_id, $currently_using_password_uuid);
+
         return [
             'message' => 'Logged out successfully'
+        ];
+    }
+
+    /**
+     * Get all sessions
+     */
+    public function get_sessions($request) {
+        $sessions = $this->auth_manager->get_all_application_passwords();
+        return $sessions;
+    }
+
+    /**
+     * Get app info
+     */
+    public function get_app_info($request) {
+        return $this->auth_manager->get_app_details();
+    }
+
+    /**
+     * Revoke session
+     */
+    public function revoke_session($request) {
+        $params = $request->get_params();
+        $uuid = $params['uuid'];
+
+        if (!$uuid || !wp_is_uuid($uuid)) {
+            return $this->auth_manager->get_error('invalid_uuid');
+        }
+        $user_id = get_current_user_id();
+        $app_id = $this->auth_manager->get_app_id();
+
+        $application_password = WP_Application_Passwords::get_user_application_password($user_id, $uuid);
+        if (!$application_password || $application_password['app_id'] !== $app_id) {
+            return $this->auth_manager->get_error('session_not_found');
+        }
+
+        $success = WP_Application_Passwords::delete_application_password($user_id, $uuid);
+        if (!$success) {
+            return $this->auth_manager->get_error('unknown');
+        }
+
+        return [
+            'message' => 'Session revoked successfully'
         ];
     }
 }
