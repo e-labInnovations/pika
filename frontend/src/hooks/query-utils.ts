@@ -3,6 +3,7 @@ import type { TransactionType } from '@/lib/transaction-utils';
 import type { QueryClient } from '@tanstack/react-query';
 
 export const queryKeys = {
+  appInfo: 'app-info',
   categories: 'categories',
   accounts: 'accounts',
   people: 'people',

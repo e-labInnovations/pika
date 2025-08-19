@@ -7,6 +7,7 @@ import {
   type CategoryInput,
   transactionsService,
   analyticsService,
+  authService,
 } from '@/services/api';
 import {
   invalidateAccountRelatedQueries,
@@ -15,6 +16,19 @@ import {
   invalidateTagRelatedQueries,
   queryKeys,
 } from './query-utils';
+
+/** ***************************************************************************
+ *                                  Auth
+ *************************************************************************** */
+export function useAppInfo() {
+  return useQuery({
+    queryKey: [queryKeys.appInfo],
+    queryFn: async () => {
+      const response = await authService.getAppInfo();
+      return response.data;
+    },
+  });
+}
 
 /** ***************************************************************************
  *                                  Categories
