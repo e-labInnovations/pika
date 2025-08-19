@@ -1,7 +1,7 @@
 # Variables (replace with your own values)
 @base_url = http://localhost:8000
 @username = testuser
-@password = mBqU EeIw 2aY6 Nxtm sTWu kOSc
+@password = EEmc PH8u kgc4 3WY6 vFY9 y8Zp
 # @password = Bpab m4US BD1A 5QmT E1NX rFPO
 # @password = F623 uYkb EXEI SBXl rNd1 6OMU
 @admin_username = admin
@@ -15,21 +15,62 @@
 
 ###
 
+# Get app info
+GET {{base_url}}/wp-json/pika/v1/auth/app-info
+
+###
+
+# @name login
+POST {{base_url}}/wp-json/pika/v1/auth/login
+Content-Type: application/json
+
+{
+  "user_login": "testuser",
+  "password": "FBwo oMdM SZmH JhSG aA5A YpMJ"
+}
+
+###
+
+@authCookie = {{login.response.headers.set-cookie}}
+
+###
+
+# Logout
+POST {{base_url}}/wp-json/pika/v1/auth/logout
+Cookie: {{authCookie}}
+
+###
 # Get me; pika profile
 GET {{base_url}}/wp-json/pika/v1/auth/me
-Authorization: Basic {{admin_username}}:{{admin_password}}
+Cookie: {{authCookie}}
 
+###
+
+# Get all sessions
+GET {{base_url}}/wp-json/pika/v1/auth/sessions
+Cookie: {{authCookie}}
+
+###
+
+# Revoke one session
+POST {{base_url}}/wp-json/pika/v1/auth/sessions/revoke
+Cookie: {{authCookie}}
+Content-Type: application/json
+
+{
+  "session_id": "<uuid here>"
+}
 ###
 
 # Get settings
 GET {{base_url}}/wp-json/pika/v1/settings
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 
 ###
 
 # Update settings - valid USD currency
 PUT {{base_url}}/wp-json/pika/v1/settings
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 Content-Type: application/json
 
 {
@@ -40,7 +81,7 @@ Content-Type: application/json
 
 # Update settings - valid gemini api key
 PUT {{base_url}}/wp-json/pika/v1/settings
-Authorization: Basic {{admin_username}}:{{admin_password}}
+Cookie: {{authCookie}}
 Content-Type: application/json
 
 {
@@ -51,7 +92,7 @@ Content-Type: application/json
 
 # Update settings - invalid currency
 PUT {{base_url}}/wp-json/pika/v1/settings
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 Content-Type: application/json
 
 {
@@ -62,7 +103,7 @@ Content-Type: application/json
 
 # Update settings - valid EUR currency
 PUT {{base_url}}/wp-json/pika/v1/settings
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 Content-Type: application/json
 
 {
@@ -73,7 +114,7 @@ Content-Type: application/json
 
 # Update settings - invalid key
 PUT {{base_url}}/wp-json/pika/v1/settings
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 Content-Type: application/json
 
 {
@@ -84,13 +125,13 @@ Content-Type: application/json
 
 # Get all tags
 GET {{base_url}}/wp-json/pika/v1/tags
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 
 ###
 
 # Add a new tag
 POST {{base_url}}/wp-json/pika/v1/tags
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 Content-Type: application/json
 
 {
@@ -105,13 +146,13 @@ Content-Type: application/json
 
 # Get a tag by id
 GET {{base_url}}/wp-json/pika/v1/tags/6
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 
 ###
 
 # Update a tag
 PUT {{base_url}}/wp-json/pika/v1/tags/6
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 Content-Type: application/json
 
 {
@@ -124,19 +165,19 @@ Content-Type: application/json
 
 # Delete a tag
 DELETE {{base_url}}/wp-json/pika/v1/tags/7
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 
 ###
 
 # Get all categories
 GET {{base_url}}/wp-json/pika/v1/categories
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 
 ###
 
 # Add a new category
 POST {{base_url}}/wp-json/pika/v1/categories
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 Content-Type: application/json
 
 {
@@ -153,13 +194,13 @@ Content-Type: application/json
 
 # Get a category by id
 GET {{base_url}}/wp-json/pika/v1/categories/1
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 
 ###
 
 # Update a category
 PUT {{base_url}}/wp-json/pika/v1/categories/65
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 Content-Type: application/json
 
 {
@@ -171,13 +212,13 @@ Content-Type: application/json
 
 # Delete a category
 DELETE {{base_url}}/wp-json/pika/v1/categories/61
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 
 ###
 
 # Upload a file - account avatar
 POST {{base_url}}/wp-json/pika/v1/upload/avatar
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
 
 ------WebKitFormBoundary
@@ -195,7 +236,7 @@ Content-Type: image/png
 
 # Upload a file - transaction attachment - image
 POST {{base_url}}/wp-json/pika/v1/upload/attachment
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
 
 ------WebKitFormBoundary
@@ -217,7 +258,7 @@ Content-Type: image/png
 
 # Upload a file - transaction attachment - pdf
 POST {{base_url}}/wp-json/pika/v1/upload/attachment
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
 
 ------WebKitFormBoundary
@@ -239,13 +280,13 @@ Content-Type: application/pdf
 
 # Get all people
 GET {{base_url}}/wp-json/pika/v1/people
-Authorization: Basic {{admin_username}}:{{admin_password}}
+Cookie: {{authCookie}}
 
 ###
 
 # Create a new person
 POST {{base_url}}/wp-json/pika/v1/people
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 Content-Type: application/json
 
 {
@@ -259,13 +300,13 @@ Content-Type: application/json
 
 # Get a person
 GET {{base_url}}/wp-json/pika/v1/people/1
-Authorization: Basic {{admin_username}}:{{admin_password}}
+Cookie: {{authCookie}}
 
 ###
 
 # Update a person
 PUT {{base_url}}/wp-json/pika/v1/people/1
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 Content-Type: application/json
 
 {
@@ -277,19 +318,19 @@ Content-Type: application/json
 
 # Delete a person
 DELETE {{base_url}}/wp-json/pika/v1/people/7
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 
 ###
 
 # Get all accounts
 GET {{base_url}}/wp-json/pika/v1/accounts
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 
 ###
 
 # Create a new account
 POST {{base_url}}/wp-json/pika/v1/accounts
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 Content-Type: application/json
 
 {
@@ -302,7 +343,7 @@ Content-Type: application/json
 
 # Create a new account
 POST {{base_url}}/wp-json/pika/v1/accounts
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 Content-Type: application/json
 
 {
@@ -317,13 +358,13 @@ Content-Type: application/json
 
 # Get an account
 GET {{base_url}}/wp-json/pika/v1/accounts/1
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 
 ###
 
 # Update an account
 PUT {{base_url}}/wp-json/pika/v1/accounts/3
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 Content-Type: application/json
 
 {
@@ -337,19 +378,19 @@ Content-Type: application/json
 
 # Delete an account
 DELETE {{base_url}}/wp-json/pika/v1/accounts/2
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 
 ###
 
 # Get all transactions
 GET {{base_url}}/wp-json/pika/v1/transactions
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 
 ###
 
 # Create a new transaction
 POST {{base_url}}/wp-json/pika/v1/transactions
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 Content-Type: application/json
 
 {
@@ -368,13 +409,13 @@ Content-Type: application/json
 
 # Get a transaction
 GET {{base_url}}/wp-json/pika/v1/transactions/3
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 
 ###
 
 # Update a transaction
 PUT {{base_url}}/wp-json/pika/v1/transactions/3
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 Content-Type: application/json
 
 {
@@ -390,19 +431,19 @@ Content-Type: application/json
 
 # Delete a transaction
 DELETE {{base_url}}/wp-json/pika/v1/transactions/4
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 
 ###
 
 # Get weekly expenses
 GET {{base_url}}/wp-json/pika/v1/analytics/weekly-expenses
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 
 ###
 
 # Get daily summaries
 GET {{base_url}}/wp-json/pika/v1/analytics/daily-summaries
-Authorization: Basic {{admin_username}}:{{admin_password}}
+Cookie: {{authCookie}}
 Content-Type: application/json
 
 {
@@ -414,7 +455,7 @@ Content-Type: application/json
 
 # Get monthly summary
 GET {{base_url}}/wp-json/pika/v1/analytics/monthly-summary
-Authorization: Basic {{admin_username}}:{{admin_password}}
+Cookie: {{authCookie}}
 Content-Type: application/json
 
 {
@@ -426,7 +467,7 @@ Content-Type: application/json
 
 # Get monthly category spending
 GET {{base_url}}/wp-json/pika/v1/analytics/monthly-category-spending
-Authorization: Basic {{admin_username}}:{{admin_password}}
+Cookie: {{authCookie}}
 Content-Type: application/json
 
 {
@@ -437,7 +478,7 @@ Content-Type: application/json
 
 # Get monthly tag spending
 GET {{base_url}}/wp-json/pika/v1/analytics/monthly-tag-activity
-Authorization: Basic {{admin_username}}:{{admin_password}}
+Cookie: {{authCookie}}
 Content-Type: application/json
 
 {
@@ -449,7 +490,7 @@ Content-Type: application/json
 
 # Get monthly person spending
 GET {{base_url}}/wp-json/pika/v1/analytics/monthly-person-activity
-Authorization: Basic {{admin_username}}:{{admin_password}}
+Cookie: {{authCookie}}
 Content-Type: application/json
 
 {
@@ -461,43 +502,43 @@ Content-Type: application/json
 
 # Test gemini response
 GET {{base_url}}/wp-json/pika/v1/ai/test
-Authorization: Basic {{admin_username}}:{{admin_password}}
+Cookie: {{authCookie}}
 
 ###
 
 # Get all reminders
 GET {{base_url}}/wp-json/pika/v1/reminders
-Authorization: Basic {{admin_username}}:{{admin_password}}
+Cookie: {{authCookie}}
 
 ###
 
 # Get all reminders including archived
 GET {{base_url}}/wp-json/pika/v1/reminders?archived=true
-Authorization: Basic {{admin_username}}:{{admin_password}}
+Cookie: {{authCookie}}
 
 ###
 
 # Get due reminders
 GET {{base_url}}/wp-json/pika/v1/reminders/due
-Authorization: Basic {{admin_username}}:{{admin_password}}
+Cookie: {{authCookie}}
 
 ###
 
 # Get due reminders for specific date
 GET {{base_url}}/wp-json/pika/v1/reminders/due?date=2024-01-15
-Authorization: Basic {{admin_username}}:{{admin_password}}
+Cookie: {{authCookie}}
 
 ###
 
 # Get a reminder by id
 GET {{base_url}}/wp-json/pika/v1/reminders/2
-Authorization: Basic {{admin_username}}:{{admin_password}}
+Cookie: {{authCookie}}
 
 ###
 
 # Create a new one-time reminder
 POST {{base_url}}/wp-json/pika/v1/reminders
-Authorization: Basic {{admin_username}}:{{admin_password}}
+Cookie: {{authCookie}}
 Content-Type: application/json
 
 {
@@ -515,7 +556,7 @@ Content-Type: application/json
 
 # Create a new recurring reminder - postpaid (fixed schedule)
 POST {{base_url}}/wp-json/pika/v1/reminders
-Authorization: Basic {{admin_username}}:{{admin_password}}
+Cookie: {{authCookie}}
 Content-Type: application/json
 
 {
@@ -537,7 +578,7 @@ Content-Type: application/json
 
 # Create a new recurring reminder - prepaid (after completion)
 POST {{base_url}}/wp-json/pika/v1/reminders
-Authorization: Basic {{admin_username}}:{{admin_password}}
+Cookie: {{authCookie}}
 Content-Type: application/json
 
 {
@@ -557,7 +598,7 @@ Content-Type: application/json
 
 # Create a transfer reminder
 POST {{base_url}}/wp-json/pika/v1/reminders
-Authorization: Basic {{admin_username}}:{{admin_password}}
+Cookie: {{authCookie}}
 Content-Type: application/json
 
 {
@@ -578,7 +619,7 @@ Content-Type: application/json
 
 # Update a reminder
 PUT {{base_url}}/wp-json/pika/v1/reminders/2
-Authorization: Basic {{admin_username}}:{{admin_password}}
+Cookie: {{authCookie}}
 Content-Type: application/json
 
 {
@@ -592,7 +633,7 @@ Content-Type: application/json
 
 # Update reminder recurrence settings
 PUT {{base_url}}/wp-json/pika/v1/reminders/2
-Authorization: Basic {{admin_username}}:{{admin_password}}
+Cookie: {{authCookie}}
 Content-Type: application/json
 
 {
@@ -606,7 +647,7 @@ Content-Type: application/json
 
 # Mark reminder as completed (with default date - today)
 POST {{base_url}}/wp-json/pika/v1/reminders/2/complete
-Authorization: Basic {{admin_username}}:{{admin_password}}
+Cookie: {{authCookie}}
 Content-Type: application/json
 
 {}
@@ -615,7 +656,7 @@ Content-Type: application/json
 
 # Mark reminder as completed with specific date
 POST {{base_url}}/wp-json/pika/v1/reminders/2/complete
-Authorization: Basic {{admin_username}}:{{admin_password}}
+Cookie: {{authCookie}}
 Content-Type: application/json
 
 {
@@ -626,7 +667,7 @@ Content-Type: application/json
 
 # Convert reminder to transaction (with default date - now)
 POST {{base_url}}/wp-json/pika/v1/reminders/2/convert
-Authorization: Basic {{admin_username}}:{{admin_password}}
+Cookie: {{authCookie}}
 Content-Type: application/json
 
 {}
@@ -635,7 +676,7 @@ Content-Type: application/json
 
 # Convert reminder to transaction with specific date
 POST {{base_url}}/wp-json/pika/v1/reminders/3/convert
-Authorization: Basic {{admin_username}}:{{admin_password}}
+Cookie: {{authCookie}}
 Content-Type: application/json
 
 {
@@ -646,79 +687,79 @@ Content-Type: application/json
 
 # Archive a reminder (soft delete)
 POST {{base_url}}/wp-json/pika/v1/reminders/5/archive
-Authorization: Basic {{admin_username}}:{{admin_password}}
+Cookie: {{authCookie}}
 
 ###
 
 # Get supported import/export formats
 GET {{base_url}}/wp-json/pika/v1/import-export/formats
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 
 ###
 
 # Get import/export operation status
 GET {{base_url}}/wp-json/pika/v1/import-export/status
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 
 ###
 
 # Export categories as JSON (including system categories)
 GET {{base_url}}/wp-json/pika/v1/import-export/export?format=json&include=categories
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 
 ###
 
 # Export categories as JSON (excluding system categories)
 GET {{base_url}}/wp-json/pika/v1/import-export/export?format=json&include=categories&exclude_system_categories=true
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 
 ###
 
 # Export categories as CSV (including system categories)
 GET {{base_url}}/wp-json/pika/v1/import-export/export?format=csv&include=categories
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 
 ###
 
 # Export categories as CSV (excluding system categories)
 GET {{base_url}}/wp-json/pika/v1/import-export/export?format=csv&include=categories&exclude_system_categories=true
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 
 ###
 
 # Download categories as JSON file (triggers file download)
 GET {{base_url}}/wp-json/pika/v1/import-export/export?format=json&include=categories&download=true
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 
 ###
 
 # Download categories as CSV file (triggers file download)
 GET {{base_url}}/wp-json/pika/v1/import-export/export?format=csv&include=categories&download=true
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 
 ###
 
 # Download categories CSV file (excluding system categories)
 GET {{base_url}}/wp-json/pika/v1/import-export/export?format=csv&include=categories&exclude_system_categories=true&download=true
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 
 ###
 
 # Export all data types as JSON
 GET {{base_url}}/wp-json/pika/v1/import-export/export?format=json
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 
 ###
 
 # Export multiple data types as JSON
 GET {{base_url}}/wp-json/pika/v1/import-export/export?format=json&include=categories,accounts,tags
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 
 ###
 
 # Import data from JSON (validation only)
 POST {{base_url}}/wp-json/pika/v1/import-export/import?validate_only=true&format=json
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 Content-Type: application/json
 
 {
@@ -741,7 +782,7 @@ Content-Type: application/json
 
 # Import data from JSON (actual import with merge strategy)
 POST {{base_url}}/wp-json/pika/v1/import-export/import?merge_strategy=merge&format=json
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 Content-Type: application/json
 
 {
@@ -764,7 +805,7 @@ Content-Type: application/json
 
 # Import data from file upload
 POST {{base_url}}/wp-json/pika/v1/import-export/import?format=json&merge_strategy=merge
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
 
 ------WebKitFormBoundary
@@ -794,13 +835,13 @@ Content-Type: application/json
 
 # Get VAPID public key
 GET {{base_url}}/wp-json/pika/v1/push/vapid-key
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 
 ###
 
 # Subscribe user to push notifications
 POST {{base_url}}/wp-json/pika/v1/push/subscribe
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 Content-Type: application/json
 
 {
@@ -818,31 +859,31 @@ Content-Type: application/json
 
 # Unsubscribe user from push notifications
 POST {{base_url}}/wp-json/pika/v1/push/unsubscribe
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 
 ###
 
 # Enable push notifications for user
 POST {{base_url}}/wp-json/pika/v1/push/enable
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 
 ###
 
 # Disable push notifications for user
 POST {{base_url}}/wp-json/pika/v1/push/disable
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 
 ###
 
 # Get notification status for user
 GET {{base_url}}/wp-json/pika/v1/push/status
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 
 ###
 
 # Send notification to specific users (admin only)
 POST {{base_url}}/wp-json/pika/v1/push/send
-Authorization: Basic {{admin_username}}:{{admin_password}}
+Cookie: {{authCookie}}
 Content-Type: application/json
 
 {
@@ -875,7 +916,7 @@ Content-Type: application/json
 
 # Send notification to all users (admin only)
 POST {{base_url}}/wp-json/pika/v1/push/send
-Authorization: Basic {{admin_username}}:{{admin_password}}
+Cookie: {{authCookie}}
 Content-Type: application/json
 
 {
@@ -893,19 +934,19 @@ Content-Type: application/json
 
 # Get user notifications with pagination
 GET {{base_url}}/wp-json/pika/v1/push/notifications?page=1&per_page=20
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 
 ###
 
 # Get user notifications (default pagination)
 GET {{base_url}}/wp-json/pika/v1/push/notifications
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 
 ###
 
 # Mark notification as read
 PUT {{base_url}}/wp-json/pika/v1/push/notifications/1
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 Content-Type: application/json
 
 {
@@ -916,7 +957,7 @@ Content-Type: application/json
 
 # Mark notification as clicked
 PUT {{base_url}}/wp-json/pika/v1/push/notifications/1
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 Content-Type: application/json
 
 {
@@ -927,7 +968,7 @@ Content-Type: application/json
 
 # Mark notification as dismissed
 PUT {{base_url}}/wp-json/pika/v1/push/notifications/1
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 Content-Type: application/json
 
 {
@@ -938,7 +979,7 @@ Content-Type: application/json
 
 # Update multiple notification status fields
 PUT {{base_url}}/wp-json/pika/v1/push/notifications/1
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 Content-Type: application/json
 
 {
@@ -951,6 +992,6 @@ Content-Type: application/json
 
 # Delete a notification
 DELETE {{base_url}}/wp-json/pika/v1/push/notifications/1
-Authorization: Basic {{username}}:{{password}}
+Cookie: {{authCookie}}
 
 ###

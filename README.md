@@ -27,7 +27,7 @@
 - **📱 PWA Interface**: Modern Progressive Web App for mobile and desktop
 - **📈 Analytics**: Monthly summaries, weekly expenses, and account balances
 - **📎 File Attachments**: Upload receipts and documents
-- **🤖 AI Features**: Gemini AI integration for smart financial insights
+- **🤖 AI Features**: Gemini AI integration for creating transactions
 
 ## 📸 Screenshots
 
@@ -58,13 +58,6 @@
   </tr>
 </table>
 
-## 📋 Requirements
-
-- **WordPress**: 6.0 or higher
-- **PHP**: 8.1 or higher
-- **MySQL**: 5.6 or higher
-- **Web Server**: Apache/Nginx with mod_rewrite enabled
-
 ## 🚀 Installation
 
 ### Method 1: WordPress Plugin Directory (Recommended)
@@ -72,12 +65,45 @@
 1. **Search for Pika Finance** in the WordPress plugin section
    > _Note: Currently under development, not yet published_
 
-### Method 2: Manual Installation
+### Method 2: Build from Source (Development)
+
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/e-labInnovations/pika.git
+   cd pika
+   ```
+
+2. **Install Frontend Dependencies**
+   ```bash
+   cd frontend
+   npm install
+   ```
+
+3. **Build the Plugin Package**
+   ```bash
+   # Return to project root
+   cd ..
+   
+   # Make build script executable
+   chmod +x build.sh
+   
+   # Run build to create plugin ZIP
+   ./build.sh
+   ```
+
+4. **Install the Plugin**
+   - Upload the generated ZIP file via WordPress Admin → Plugins → Add New → Upload Plugin
+   - Or extract and copy the `pika` folder to `/wp-content/plugins/`
+
+5. **Activate the Plugin**
+   - Go to WordPress Admin → Plugins
+   - Find "Pika Financial Management" and click "Activate"
+
+### Method 3: Manual Installation (Legacy)
 
 1. **Download the Plugin**
 
    - Download the latest version from the [releases page](https://github.com/e-labInnovations/pika/releases) as a ZIP file
-   - Or clone the repository: `git clone https://github.com/e-labInnovations/pika.git`
 
 2. **Install the Plugin**
 
@@ -97,11 +123,10 @@
 
 2. **Set Up Authentication**
 
-   - All users need WordPress Application Passwords for login
-   - Log in to your WordPress account
-   - Go to Dashboard → Profile section
-   - Generate an Application Password
-   - Return to `/pika` and input your username and application password
+   - On the login page, click the "Login" button.
+   - You will be redirected to the WordPress login page.
+   - After logging in, you will see an option to create an Application Password. You can leave the app name as it is, or edit it to something like "Pika Desktop" or "Pika Mobile App."
+   - Click "Yes, I approve of this connection." You will then be redirected to the Pika app, where you can start using it.
 
 3. **Configure AI Features (Optional)**
    - For AI features, go to [Google Gemini Studio](https://makersuite.google.com/app/apikey) and generate a free API key
@@ -148,7 +173,9 @@ The authentication flow ensures secure access to the PWA while leveraging WordPr
 6. **Logout Process**
    - User clicks logout in the PWA
    - Frontend calls `/wp-json/pika/v1/auth/logout` endpoint
-   - Backend removes the `pika_token` cookie by setting expiration to past time
+   - Backend removes the `pika_token` cookie by setting expiration to a past time
+   - **Additionally, the backend revokes the currently used WordPress Application Password, ensuring the token cannot be reused**
+   - User is redirected to the login page
 
 ### Security Features
 
@@ -157,6 +184,7 @@ The authentication flow ensures secure access to the PWA while leveraging WordPr
 - **SameSite Protection**: Prevents CSRF attacks
 - **Application Passwords**: WordPress's secure authentication method
 - **Middleware Validation**: Server-side authentication for all API requests
+- **Token Revocation on Logout**: The currently used application password is revoked on logout, providing an extra layer of security
 
 ### Authentication Flow Diagram
 
@@ -186,77 +214,48 @@ sequenceDiagram
     Note over F,B: Logout Process
     U->>F: Click logout
     F->>B: POST /auth/logout
-    B->>F: Remove pika_token cookie
+    B->>F: Remove pika_token cookie and revoke application password
     F->>U: Redirect to login page
 ```
 
 ## 🏗️ Architecture
 
-### WordPress REST API Integration
-
-Pika follows WordPress best practices by extending `WP_REST_Controller` for all API endpoints:
-
-- **🔧 Built-in Features**: Schema validation, pagination, response formatting
-- **📚 Automatic Documentation**: WordPress generates API docs at `/wp-json/pika/v1/`
-- **🛡️ Security**: WordPress authentication and permission handling
-- **🔄 Consistency**: Standard HTTP methods and status codes
-
-### Plugin Structure
-
-```
-pika/
-├── pika.php                    # Main plugin file
-├── uninstall.php               # Uninstall script
-├── build.sh                    # Build script
-├── backend/                    # Backend PHP files
-│   ├── pika-loader.php         # Plugin loader
-│   ├── activator.php           # Database setup
-│   ├── deactivator.php         # Deactivation handler
-│   ├── utils.php               # Utility functions
-│   ├── api-loader.php          # REST API registration
-│   ├── frontend-loader.php     # PWA frontend serving
-│   ├── controllers/            # API controllers
-│   ├── managers/               # Business logic managers
-│   ├── admin/                  # Admin interface
-│   └── data/                   # Data files
-├── frontend/                   # React frontend (development)
-│   ├── src/                    # Source code
-│   ├── public/                 # Public assets
-│   └── package.json            # Frontend dependencies
-├── frontend-build/             # Built React app (production)
-└── docs/                       # Documentation
-```
-
 ## 🛠️ Development
 
 ### Prerequisites
 
-- **WordPress**: Development environment
-- **PHP**: 7.4+
+- **WordPress**: Development environment (use docker)
+- **PHP**: 8.1+
 - **MySQL**: 5.6+
 - **Node.js**: 18+ (for frontend development)
 - **Git**: For version control
 
 ### Backend Development
 
-The backend is built with PHP following WordPress standards:
-
-```bash
-# Clone the repository
-git clone https://github.com/e-labInnovations/pika.git
-cd pika
-
-# Set up WordPress locally (XAMPP, Local, etc.)
-# Copy the plugin to /wp-content/plugins/
-# Activate the plugin
-```
+The backend is built with PHP, following WordPress standards:
 
 **Key Backend Files:**
 
-- `backend/controllers/` - REST API controllers
-- `backend/managers/` - Business logic
-- `backend/data/` - Data structures and AI prompts
-- `backend/admin/` - WordPress admin interface
+- `pika.php` – Main plugin file
+- `backend/admin/` – WordPress admin interface
+- `backend/ai/` – AI prompts and helper classes
+- `backend/controllers/` – REST API controllers
+- `backend/data/` – Data structures and AI prompts
+- `backend/libraries/` – Composer-managed libraries
+- `backend/managers/` – Business logic
+- `backend-dev/` – React files for building the admin UI
+
+The backend admin ui is built using react and ShadCn
+```bash
+# Install dependencies
+npm install
+
+# Start development
+npm run start-dev
+
+# Build for production
+npm run build
+```
 
 ### Frontend Development
 
@@ -282,7 +281,7 @@ npm run build
 - **TypeScript 5.8.3** - Type safety
 - **Vite 6.3.5** - Build tool
 - **Tailwind CSS 4.1.8** - Styling
-- **Radix UI** - Accessible components
+- **ShadCn UI** - Accessible components
 - **TanStack Query** - Data fetching
 - **Zustand** - State management
 - **React Router** - Navigation
@@ -306,122 +305,7 @@ The build script will:
 3. Create a ZIP file excluding development files
 4. Clean up temporary files
 
-### Database Schema
-
-The plugin creates 8 custom tables:
-
-- `wp_pika_accounts` - User accounts and balances
-- `wp_pika_people` - Contacts and people management
-- `wp_pika_categories` - Transaction categories (hierarchical)
-- `wp_pika_tags` - Transaction tags
-- `wp_pika_transactions` - Financial transactions
-- `wp_pika_transaction_tags` - Transaction-tag relationships
-- `wp_pika_transaction_attachments` - File attachments
-- `wp_pika_user_settings` - User preferences
-
-## 🔌 API Reference
-
-### Base URL
-
-```
-/wp-json/pika/v1
-```
-
-### Core Endpoints
-
-#### Authentication
-
-- `GET /auth/me` - Get current user information
-
-#### Financial Management
-
-- `GET /accounts` - List user accounts
-- `POST /accounts` - Create new account
-- `GET /accounts/{id}` - Get account details
-- `PUT /accounts/{id}` - Update account
-- `DELETE /accounts/{id}` - Delete account
-
-- `GET /transactions` - List transactions with filtering
-- `POST /transactions` - Create new transaction
-- `GET /transactions/{id}` - Get transaction details
-- `PUT /transactions/{id}` - Update transaction
-- `DELETE /transactions/{id}` - Delete transaction
-
-- `GET /people` - List people/contacts
-- `POST /people` - Create new person
-- `GET /people/{id}` - Get person details
-- `PUT /people/{id}` - Update person
-- `DELETE /people/{id}` - Delete person
-
-#### Categories & Tags
-
-- `GET /categories` - List categories
-- `POST /categories` - Create new category
-- `GET /categories/{id}` - Get category details
-- `PUT /categories/{id}` - Update category
-- `DELETE /categories/{id}` - Delete category
-
-- `GET /tags` - List tags
-- `POST /tags` - Create new tag
-- `GET /tags/{id}` - Get tag details
-- `PUT /tags/{id}` - Update tag
-- `DELETE /tags/{id}` - Delete tag
-
-#### Analytics
-
-- `GET /analytics/weekly-expenses` - Weekly expense breakdown
-- `GET /analytics/monthly-summary` - Monthly financial summary
-- `GET /analytics/daily-summaries` - Daily summaries for a month
-- `GET /analytics/monthly-category-spending` - Category spending by month
-- `GET /analytics/monthly-tag-activity` - Tag activity by month
-- `GET /analytics/monthly-person-activity` - Person activity by month
-
-#### Reminders
-
-- `GET /reminders` - List all reminders
-- `GET /reminders/due` - Get due reminders
-- `GET /reminders/{id}` - Get reminder details
-- `POST /reminders` - Create new reminder
-- `PUT /reminders/{id}` - Update reminder
-- `POST /reminders/{id}/archive` - Archive reminder
-- `POST /reminders/{id}/complete` - Mark reminder as completed
-- `POST /reminders/{id}/convert` - Convert reminder to transaction
-
-#### AI Features
-
-- `POST /ai/text-to-transaction` - Convert text to transaction
-- `POST /ai/receipt-to-transaction` - Convert receipt image to transaction
-
-#### Import/Export
-
-- `GET /import-export/export` - Export user data
-- `POST /import-export/import` - Import user data
-- `GET /import-export/status` - Get import/export status
-- `GET /import-export/formats` - Get available export formats
-
-#### Settings & Upload
-
-- `GET /settings` - Get user settings
-- `PUT /settings` - Update user settings
-- `POST /upload/{type}` - Upload files (avatars/attachments)
-
-### Authentication
-
-All endpoints require WordPress Application Passwords for authentication.
-
 ## 🧪 Testing
-
-### Manual Testing Checklist
-
-- [ ] Plugin activation and database setup
-- [ ] Admin page access and functionality
-- [ ] API endpoint registration
-- [ ] Authentication endpoints
-- [ ] CRUD operations for all entities
-- [ ] File upload functionality
-- [ ] PWA access and routing
-- [ ] AI features with Gemini API
-- [ ] Error handling and validation
 
 ### WordPress Debug Mode
 
@@ -436,26 +320,19 @@ define('WP_DEBUG_LOG', true);
 
 ### Production Deployment
 
-1. **Build Frontend**
-
-   ```bash
-   cd frontend
-   npm run build
-   ```
-
-2. **Create Plugin Package**
+1. **Create Plugin Package**
 
    ```bash
    ./build.sh
    ```
 
-3. **Upload Plugin**
+2. **Upload Plugin**
 
    - Upload the generated ZIP file via WordPress Admin
    - Or extract and copy to `/wp-content/plugins/`
    - Activate the plugin
 
-4. **Configure Server**
+3. **Configure Server**
    - Ensure mod_rewrite is enabled
    - Set proper file permissions
    - Configure SSL for secure API access
@@ -504,30 +381,6 @@ This project is licensed under the GPL v2 or later - see the [LICENSE](LICENSE) 
 
 - **Issues**: [GitHub Issues](https://github.com/e-labInnovations/pika/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/e-labInnovations/pika/discussions)
-- **Email**: support@pika.elabins.com
-
-## 📈 Roadmap
-
-### Version 1.1 (Q2 2025)
-
-- [ ] Advanced analytics and reporting
-- [ ] Budget planning and tracking
-- [ ] Export/import functionality
-- [ ] Multi-currency support
-
-### Version 1.2 (Q3 2025)
-
-- [ ] Mobile app (React Native)
-- [ ] Receipt scanning with AI
-- [ ] Bank account integration
-- [ ] Advanced filtering and search
-
-### Version 2.0 (Q4 2025)
-
-- [ ] Team/family accounts
-- [ ] Advanced permissions
-- [ ] API rate limiting
-- [ ] Webhook support
 
 ---
 
