@@ -40,7 +40,7 @@ abstract class Pika_Base_Controller extends WP_REST_Controller {
     /**
      * Check if user is authenticated
      */
-    public function check_auth() {
+    public function check_auth($request = null) {
         if (!is_user_logged_in()) {
             return $this->manager->get_error('unauthorized');
         }

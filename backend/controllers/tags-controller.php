@@ -56,7 +56,7 @@ class Pika_Tags_Controller extends Pika_Base_Controller {
      * Check if the user can edit the tag
      */
     public function can_edit_tag($request) {
-        if (!$this->check_auth()) {
+        if (!$this->check_auth($request)) {
             return $this->tags_manager->get_error('unauthorized');
         }
 

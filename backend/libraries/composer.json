@@ -1,5 +1,6 @@
 {
     "require": {
-        "minishlink/web-push": "^9.0"
+        "minishlink/web-push": "^9.0",
+        "matomo/device-detector": "^6.4"
     }
 }

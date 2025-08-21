@@ -163,7 +163,8 @@ class Pika_Push_Notifications_Controller extends Pika_Base_Controller {
     }
 
     $device_id = $subscription_data['device_id'] ?? null;
-    $result = $this->push_manager->save_subscription($subscription_data['subscription'], $device_id);
+    $session_uuid = rest_get_authenticated_app_password();
+    $result = $this->push_manager->save_subscription($subscription_data['subscription'], $device_id, $session_uuid);
 
     if (is_wp_error($result)) {
       return $result;
@@ -238,7 +239,9 @@ class Pika_Push_Notifications_Controller extends Pika_Base_Controller {
    */
   public function get_notification_status($request) {
     $enabled = $this->push_manager->is_enabled_for_user();
-    $has_subscription = $this->push_manager->get_subscription();
+    $session = rest_get_authenticated_app_password();
+    $subscription = $this->push_manager->get_subscription_by_session($session);
+    $has_subscription = $subscription !== false && !empty($subscription) && !is_wp_error($subscription);
 
     if (is_wp_error($enabled) || is_wp_error($has_subscription)) {
       return $this->push_manager->get_error('db_error');
@@ -398,8 +401,9 @@ class Pika_Push_Notifications_Controller extends Pika_Base_Controller {
     $user_id = get_current_user_id();
 
     // Check if user has notifications enabled and has a subscription
-    $enabled = $this->push_manager->is_enabled_for_user($user_id);
-    $has_subscription = $this->push_manager->get_subscription($user_id) !== false;
+    $enabled = $this->push_manager->is_enabled_for_user();
+    $subscription = $this->push_manager->get_subscriptions($user_id);
+    $has_subscription = $subscription !== false || !empty($subscription) || !is_wp_error($subscription);
 
     if (!$enabled || !$has_subscription) {
       return $this->push_manager->get_error('not_ready');
@@ -439,16 +443,27 @@ class Pika_Push_Notifications_Controller extends Pika_Base_Controller {
    * Get user devices
    */
   public function get_user_devices($request) {
-    $user_id = get_current_user_id();
-    $devices = $this->push_manager->get_user_subscriptions($user_id);
+    $devices = $this->push_manager->get_subscriptions();
 
     if (is_wp_error($devices)) {
       return $devices;
     }
 
+    // Format devices to include session information
+    $formatted_devices = [];
+    foreach ($devices as $device) {
+      $formatted_devices[] = [
+        'id' => $device['id'],
+        'device_id' => $device['device_id'],
+        'session' => $device['session'],
+        'last_seen' => $device['last_seen'] ?? null,
+        'created_at' => $device['created_at'] ?? null
+      ];
+    }
+
     return [
-      'devices' => $devices,
-      'count' => count($devices)
+      'devices' => $formatted_devices,
+      'count' => count($formatted_devices)
     ];
   }
 
@@ -482,6 +497,15 @@ class Pika_Push_Notifications_Controller extends Pika_Base_Controller {
       return $stats;
     }
 
-    return $stats;
+    // Format statistics to include session information
+    $formatted_stats = [
+      'total_subscriptions' => $stats['total_subscriptions'],
+      'unique_users' => $stats['unique_users'],
+      'sessions' => $stats['sessions'],
+      'recent_activity_7_days' => $stats['recent_activity_7_days'],
+      'average_devices_per_user' => $stats['average_devices_per_user']
+    ];
+
+    return $formatted_stats;
   }
 }

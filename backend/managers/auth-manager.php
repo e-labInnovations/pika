@@ -11,6 +11,7 @@ Pika_Utils::reject_abs_path();
 class Pika_Auth_Manager extends Pika_Base_Manager {
 
   protected $settings_manager;
+  protected $user_session_device_info_key = 'pika_session_device_info';
   protected $errors = [
     'invalid_uuid' => ['message' => 'Invalid UUID', 'status' => 400],
     'session_not_found' => ['message' => 'Session not found', 'status' => 404],
@@ -45,6 +46,45 @@ class Pika_Auth_Manager extends Pika_Base_Manager {
       'app_id' => $this->get_app_id(),
       'base_url' => get_site_url(),
     ];
+  }
+
+  /**
+   * Save user session device info
+   * @param int $user_id
+   * @param string $session_id
+   * @param array $device_info
+   */
+  public function save_user_session_device_info($user_id, $session_id, $device_info) {
+    $session_device_info = get_user_meta($user_id, $this->user_session_device_info_key, true);
+    if (!$session_device_info) {
+      $session_device_info = [];
+    }
+    $session_device_info[$session_id] = $device_info;
+    update_user_meta($user_id, $this->user_session_device_info_key, $session_device_info);
+  }
+
+  /**
+   * Get user session device info
+   * @param int $user_id
+   * @param string $session_id
+   * @return array|null
+   */
+  public function get_user_session_device_info($user_id, $session_id) {
+    $session_device_info = get_user_meta($user_id, $this->user_session_device_info_key, true);
+    return $session_device_info[$session_id] ?? null;
+  }
+
+  /**
+   * Delete user session device info
+   * @param int $user_id
+   * @param string $session_id
+   */
+  public function delete_user_session_device_info($user_id, $session_id) {
+    $session_device_info = get_user_meta($user_id, $this->user_session_device_info_key, true);
+    if ($session_device_info) {
+      unset($session_device_info[$session_id]);
+      update_user_meta($user_id, $this->user_session_device_info_key, $session_device_info);
+    }
   }
 
   /**

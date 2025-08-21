@@ -10,6 +10,8 @@ if (!defined('ABSPATH')) {
  * @package Pika
  */
 
+ use DeviceDetector\DeviceDetector;
+
 class Pika_Utils {
 
     /**
@@ -278,5 +280,44 @@ class Pika_Utils {
         $hours = floor($offset / 3600);
         $minutes = abs(($offset % 3600) / 60);
         return sprintf('%+03d:%02d', $hours, $minutes);
+    }
+
+    /**
+     * Get user device info
+     */
+    public static function get_user_device_info() {
+        if ( empty( $_SERVER['HTTP_USER_AGENT'] ) ) {
+            return [];
+        }
+
+        $dd = new DeviceDetector( $_SERVER['HTTP_USER_AGENT'] );
+        $dd->parse();
+
+        if ( $dd->isBot() ) {
+            // If it's a bot, you may want to handle separately
+            return [
+                'device_type' => 'bot',
+                'brand'       => null,
+                'model'       => null,
+                'client_type' => null,
+                'client_name' => null,
+                'os_name'     => null,
+            ];
+        }
+
+        $deviceType = $dd->getDeviceName(); // e.g. smartphone, desktop, tablet
+        $brand      = $dd->getBrandName();  // e.g. Apple, Samsung
+        $model      = $dd->getModel();      // e.g. iPhone 13
+        $clientInfo = $dd->getClient();     // array with type, name, version, engine
+        $osInfo     = $dd->getOs();         // array with name, short_name, version, platform
+
+        return [
+            'device_type' => $deviceType ?? null,
+            'brand'       => $brand ?? null,
+            'model'       => $model ?? null,
+            'client_type' => $clientInfo['type'] ?? null,
+            'client_name' => $clientInfo['name'] ?? null,
+            'os_name'     => $osInfo['name'] ?? null,
+        ];
     }
 }

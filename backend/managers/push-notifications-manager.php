@@ -38,6 +38,7 @@ class Pika_Push_Notifications_Manager extends Pika_Base_Manager {
     'notifications_error' => ['message' => 'Failed to get notifications', 'status' => 500],
     'not_ready' => ['message' => 'User does not have notifications enabled or no subscription found', 'status' => 400],
     'send_error' => ['message' => 'Failed to send test notification', 'status' => 500],
+    'no_active_subscriptions' => ['message' => 'No active subscriptions for this user', 'status' => 400],
   ];
 
   public function __construct() {
@@ -118,9 +119,23 @@ class Pika_Push_Notifications_Manager extends Pika_Base_Manager {
   }
 
   /**
+   * Format subscription data
+   * @param object $subscription
+   * @return array
+   */
+  private function format_subscription_data($subscription) {
+    return [
+      'id' => $subscription->id,
+      'device_id' => $subscription->device_id,
+      'session' => $subscription->session,
+      'subscription_data' => json_decode($subscription->subscription_data, true)
+    ];
+  }
+
+  /**
    * Save user device subscription
    */
-  public function save_subscription($subscription_data, $device_id = null) {
+  public function save_subscription($subscription_data, $device_id = null, $session_uuid = null) {
     $user_id = get_current_user_id();
     $device_subscription_table = $this->get_table_name($this->device_subscriptions_table_name);
 
@@ -131,8 +146,7 @@ class Pika_Push_Notifications_Manager extends Pika_Base_Manager {
     $result = $this->db()->replace($device_subscription_table, [
       'user_id' => $user_id,
       'device_id' => $device_id,
-      'device_name' => $this->detect_device_name(),
-      'device_type' => $this->detect_device_type(),
+      'session' => $session_uuid,
       'subscription_data' => json_encode($subscription_data),
       'is_active' => 1,
       'last_seen' => current_time('mysql'),
@@ -149,9 +163,14 @@ class Pika_Push_Notifications_Manager extends Pika_Base_Manager {
 
   /**
    * Get user device subscriptions
+   * @param int|null $user_id
+   * @return array|WP_Error
    */
-  public function get_subscriptions() {
-    $user_id = get_current_user_id();
+  public function get_subscriptions($user_id = null) {
+    if (!$user_id) {
+      $user_id = get_current_user_id();
+    }
+
     $device_subscription_table = $this->get_table_name($this->device_subscriptions_table_name);
 
     $sql = $this->db()->prepare(
@@ -166,108 +185,47 @@ class Pika_Push_Notifications_Manager extends Pika_Base_Manager {
 
     $result = [];
     foreach ($subscriptions as $sub) {
-      $result[] = [
-        'id' => $sub->id,
-        'device_id' => $sub->device_id,
-        'device_name' => $sub->device_name,
-        'device_type' => $sub->device_type,
-        'subscription' => json_decode($sub->subscription_data, true)
-      ];
+      $result[] = $this->format_subscription_data($sub);
     }
 
     return $result;
   }
 
   /**
-   * Get all device subscriptions for a specific user
+   * Get user device subscription by session
+   * @param string $session_uuid
+   * @return array|false
    */
-  public function get_user_subscriptions($user_id) {
+  public function get_subscription_by_session($session_uuid = null) {
     $device_subscription_table = $this->get_table_name($this->device_subscriptions_table_name);
-
     $sql = $this->db()->prepare(
-      "SELECT * FROM $device_subscription_table WHERE user_id = %d AND is_active = 1",
-      $user_id
+      "SELECT * FROM $device_subscription_table WHERE session = %s",
+      $session_uuid
     );
-    $subscriptions = $this->db()->get_results($sql);
+    $subscription = $this->db()->get_row($sql);
 
-    if (is_wp_error($subscriptions)) {
-      return $this->get_error('db_error');
+    if (is_wp_error($subscription) || !$subscription) {
+      return false;
     }
 
-    $result = [];
-    foreach ($subscriptions as $sub) {
-      $result[] = [
-        'id' => $sub->id,
-        'device_id' => $sub->device_id,
-        'device_name' => $sub->device_name,
-        'device_type' => $sub->device_type,
-        'subscription' => json_decode($sub->subscription_data, true)
-      ];
+    $subscription = $this->format_subscription_data($subscription);
+    if (!$subscription) {
+      return false;
     }
 
-    return $result;
-  }
-
-  /**
-   * Get user push subscription (backward compatibility)
-   */
-  public function get_subscription($user_id = null) {
-    if ($user_id) {
-      // Get subscriptions for specific user
-      $device_subscription_table = $this->get_table_name($this->device_subscriptions_table_name);
-      $sql = $this->db()->prepare(
-        "SELECT * FROM $device_subscription_table WHERE user_id = %d AND is_active = 1",
-        $user_id
-      );
-      $subscriptions = $this->db()->get_results($sql);
-
-      if (is_wp_error($subscriptions)) {
-        return $subscriptions;
-      }
-
-      $result = [];
-      foreach ($subscriptions as $sub) {
-        $result[] = [
-          'id' => $sub->id,
-          'device_id' => $sub->device_id,
-          'device_name' => $sub->device_name,
-          'device_type' => $sub->device_type,
-          'subscription' => json_decode($sub->subscription_data, true)
-        ];
-      }
-
-      return !empty($result) ? $result[0]['subscription'] : false;
-    } else {
-      // Get subscriptions for current user (backward compatibility)
-      $subscriptions = $this->get_subscriptions();
-
-      if (is_wp_error($subscriptions)) {
-        return $subscriptions;
-      }
-
-      return !empty($subscriptions) ? $subscriptions[0]['subscription'] : false;
-    }
+    return $subscription;
   }
 
   /**
    * Delete user device subscription
+   * @param string $session_uuid
+   * @return bool|WP_Error
    */
-  public function delete_subscription($device_id = null) {
-    $user_id = get_current_user_id();
+  public function delete_subscription($session_uuid) {
     $device_subscription_table = $this->get_table_name($this->device_subscriptions_table_name);
-
-    if ($device_id) {
-      // Delete specific device
-      $result = $this->db()->delete($device_subscription_table, [
-        'user_id' => $user_id,
-        'device_id' => $device_id
-      ]);
-    } else {
-      // Delete all devices for user
-      $result = $this->db()->delete($device_subscription_table, [
-        'user_id' => $user_id
-      ]);
-    }
+    $result = $this->db()->delete($device_subscription_table, [
+      'session' => $session_uuid
+    ]);
 
     if (is_wp_error($result)) {
       return $this->get_error('db_error');
@@ -278,6 +236,9 @@ class Pika_Push_Notifications_Manager extends Pika_Base_Manager {
 
   /**
    * Send push notification to a specific user
+   * @param int $user_id
+   * @param array $notification_data
+   * @return bool
    */
   public function send_notification_to_user($user_id, $notification_data) {
     // Get all active device subscriptions for the user
@@ -294,7 +255,7 @@ class Pika_Push_Notifications_Manager extends Pika_Base_Manager {
     }
 
     if (empty($subscriptions)) {
-      return false; // No active subscriptions for this user
+      return false;
     }
 
     $results = [];
@@ -318,6 +279,9 @@ class Pika_Push_Notifications_Manager extends Pika_Base_Manager {
 
   /**
    * Send push notification to multiple users
+   * @param array $user_ids
+   * @param array $notification_data
+   * @return array
    */
   public function send_notification_to_users($user_ids, $notification_data) {
     $results = [];
@@ -576,44 +540,6 @@ class Pika_Push_Notifications_Manager extends Pika_Base_Manager {
   }
 
   /**
-   * Detect device name
-   */
-  private function detect_device_name() {
-    if (isset($_SERVER['HTTP_USER_AGENT'])) {
-      $user_agent = $_SERVER['HTTP_USER_AGENT'];
-
-      if (strpos($user_agent, 'Mobile') !== false) {
-        return 'Mobile Device';
-      } elseif (strpos($user_agent, 'Tablet') !== false) {
-        return 'Tablet';
-      } elseif (strpos($user_agent, 'Windows') !== false) {
-        return 'Windows Desktop';
-      } elseif (strpos($user_agent, 'Mac') !== false) {
-        return 'Mac Desktop';
-      } elseif (strpos($user_agent, 'Linux') !== false) {
-        return 'Linux Desktop';
-      }
-    }
-
-    return 'Unknown Device';
-  }
-
-  /**
-   * Detect device type
-   */
-  private function detect_device_type() {
-    if (isset($_SERVER['HTTP_USER_AGENT'])) {
-      $user_agent = $_SERVER['HTTP_USER_AGENT'];
-
-      if (strpos($user_agent, 'Mobile') !== false || strpos($user_agent, 'Tablet') !== false) {
-        return 'mobile';
-      }
-    }
-
-    return 'web';
-  }
-
-  /**
    * Get notification
    */
   public function get_notification($notification_id) {
@@ -754,11 +680,11 @@ class Pika_Push_Notifications_Manager extends Pika_Base_Manager {
       return $this->get_error('db_error');
     }
 
-    // Get device type breakdown
-    $device_types_sql = "SELECT device_type, COUNT(*) as count FROM $device_subscription_table WHERE is_active = 1 GROUP BY device_type";
-    $device_types = $this->db()->get_results($device_types_sql);
+    // Get session breakdown
+    $sessions_sql = "SELECT session, COUNT(*) as count FROM $device_subscription_table WHERE is_active = 1 AND session IS NOT NULL GROUP BY session";
+    $sessions = $this->db()->get_results($sessions_sql);
 
-    if (is_wp_error($device_types)) {
+    if (is_wp_error($sessions)) {
       return $this->get_error('db_error');
     }
 
@@ -775,7 +701,7 @@ class Pika_Push_Notifications_Manager extends Pika_Base_Manager {
     return [
       'total_subscriptions' => intval($total_subscriptions),
       'unique_users' => intval($unique_users),
-      'device_types' => $device_types,
+      'sessions' => $sessions,
       'recent_activity_7_days' => intval($recent_activity),
       'average_devices_per_user' => $unique_users > 0 ? round($total_subscriptions / $unique_users, 2) : 0
     ];

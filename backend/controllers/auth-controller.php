@@ -11,11 +11,13 @@ Pika_Utils::reject_abs_path();
 class Pika_Auth_Controller extends Pika_Base_Controller {
 
     private $auth_manager;
+    private $push_manager;
 
     public function __construct() {
         parent::__construct();
 
         $this->auth_manager = new Pika_Auth_Manager();
+        $this->push_manager = new Pika_Push_Notifications_Manager();
     }
 
     /**
@@ -119,6 +121,11 @@ class Pika_Auth_Controller extends Pika_Base_Controller {
             ]
         );
 
+        // Save user session device info
+        $user_id = get_current_user_id();
+        $currently_using_password_uuid = rest_get_authenticated_app_password();
+        $this->auth_manager->save_user_session_device_info($user_id, $currently_using_password_uuid, Pika_Utils::get_user_device_info());
+
         // Return user details
         return $this->auth_manager->get_user_data_by_id($user->ID);
     }
@@ -144,6 +151,12 @@ class Pika_Auth_Controller extends Pika_Base_Controller {
         $user_id = get_current_user_id();
         $currently_using_password_uuid = rest_get_authenticated_app_password();
         WP_Application_Passwords::delete_application_password($user_id, $currently_using_password_uuid);
+
+        // delete user session device info
+        $this->auth_manager->delete_user_session_device_info($user_id, $currently_using_password_uuid);
+
+        // delete device subscription
+        $this->push_manager->delete_subscription($currently_using_password_uuid);
 
         return [
             'message' => 'Logged out successfully'

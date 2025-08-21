@@ -17,7 +17,8 @@ class Pika_Migration_Manager {
    */
   private $migrations = [
     '1.1.0' => '001_add_reminders_table',
-    '1.2.0' => '002_add_push_notifications_tables'
+    '1.2.0' => '002_add_push_notifications_tables',
+    '1.3.0' => '003_modify_device_subscriptions_table'
   ];
 
   /**
