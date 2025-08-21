@@ -11,7 +11,7 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
-      devOptions: { enabled: true },
+      devOptions: { enabled: true, type: 'module' },
       includeAssets: ['/pika/lucide.svg'],
       strategies: 'injectManifest',
       srcDir: 'src',

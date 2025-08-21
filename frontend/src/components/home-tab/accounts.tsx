@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { DynamicIcon } from '@/components/lucide';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import AccountAvatar from '../account-avatar';
 import { currencyUtils } from '@/lib/currency-utils';
 import { useAuth } from '@/hooks/use-auth';
@@ -10,11 +10,14 @@ import type { Account } from '@/services/api';
 interface AccountsProps {
   accounts: Account[];
 }
-const Accounts = ({ accounts }: AccountsProps) => {
+const Accounts = ({ accounts = [] }: AccountsProps) => {
   const { user } = useAuth();
   const [showMoney, setShowMoney] = useState(false);
+  const [totalBalance, setTotalBalance] = useState(0);
 
-  const totalBalance = accounts.reduce((sum, account) => sum + Number(account.balance), 0);
+  useEffect(() => {
+    setTotalBalance(accounts ? accounts.reduce((sum, account) => sum + Number(account.balance), 0) : 0);
+  }, [accounts]);
 
   return (
     <div>

@@ -6,6 +6,9 @@ import { ThemeProvider } from './provider/theme-provider.tsx';
 import { AuthProvider } from './provider/auth-provider.tsx';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { registerSW } from 'virtual:pwa-register';
+
+registerSW();
 
 // Create a client
 const queryClient = new QueryClient({
