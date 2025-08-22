@@ -58,6 +58,22 @@ const ProfileSettings = () => {
     });
   };
 
+  const getDeviceIcon = (deviceType: string) => {
+    switch (deviceType.toLowerCase()) {
+      case 'desktop':
+        return 'monitor';
+      case 'mobile':
+      case 'smartphone':
+        return 'smartphone';
+      case 'tablet':
+        return 'tablet';
+      case 'bot':
+        return 'bot';
+      default:
+        return 'monitor';
+    }
+  };
+
   return (
     <TabsLayout
       header={{
@@ -106,57 +122,148 @@ const ProfileSettings = () => {
           <h4 className="mb-4 font-semibold text-slate-900 dark:text-white">Sessions</h4>
           <AsyncStateWrapper isLoading={isLoading} error={error} onRetry={() => refetch()} className="min-h-[200px]">
             {sessions && sessions.data && sessions.data.length > 0 ? (
-              <div className="space-y-3">
+              <div className="grid gap-3 sm:grid-cols-1 lg:grid-cols-2">
                 {sessions.data.map((session: Session) => (
                   <div
                     key={session.uuid}
-                    className={`flex items-center justify-between rounded-lg border p-3 ${
+                    className={`group relative overflow-hidden rounded-xl border transition-all duration-200 hover:shadow-md ${
                       session.is_currently_using
-                        ? 'border-emerald-200 bg-emerald-50 dark:border-emerald-800 dark:bg-emerald-900/20'
-                        : 'border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800/50'
+                        ? 'border-emerald-200 bg-gradient-to-br from-emerald-50 to-emerald-100/50 dark:border-emerald-700 dark:from-emerald-900/20 dark:to-emerald-800/10'
+                        : 'border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-800/50'
                     }`}
                   >
-                    <div className="flex items-center space-x-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-700">
-                        <DynamicIcon name="shield" className="h-5 w-5 text-slate-600 dark:text-slate-400" />
+                    {/* Current Session Badge */}
+                    {session.is_currently_using && (
+                      <div className="absolute -top-2 -right-2 z-10 rounded-full bg-emerald-500 px-2 py-1 pt-2 pr-4 text-xs font-semibold text-white shadow-lg">
+                        Active
                       </div>
-                      <div>
-                        <p className="font-medium text-slate-900 dark:text-white">
-                          {session.name}
-                          {session.is_currently_using && (
-                            <span className="ml-2 inline-flex items-center rounded-full bg-emerald-100 px-2 py-1 text-xs font-medium text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-200">
-                              Current Session
-                            </span>
-                          )}
-                        </p>
-                        <p className="text-sm text-slate-500 dark:text-slate-400">IP: {session.last_ip}</p>
-                        <p className="text-xs text-slate-400 dark:text-slate-500">
-                          Last used: {formatDate(session.last_used)}
-                        </p>
+                    )}
+
+                    {/* Header */}
+                    <div className="flex items-start justify-between p-4 pb-3">
+                      <div className="flex items-center space-x-3">
+                        <div
+                          className={`flex h-10 w-10 items-center justify-center rounded-full ${
+                            session.is_currently_using
+                              ? 'bg-emerald-100 dark:bg-emerald-800/30'
+                              : 'bg-slate-100 dark:bg-slate-700'
+                          }`}
+                        >
+                          <DynamicIcon
+                            name={getDeviceIcon(session.device_info.device_type)}
+                            className={`h-5 w-5 ${
+                              session.is_currently_using
+                                ? 'text-emerald-600 dark:text-emerald-400'
+                                : 'text-slate-600 dark:text-slate-400'
+                            }`}
+                          />
+                        </div>
+                        <div className="min-w-0">
+                          <h5 className="truncate font-semibold text-slate-900 dark:text-white">{session.name}</h5>
+                          <p className="text-xs text-slate-500 dark:text-slate-400">
+                            {session.device_info.device_type} • {session.device_info.brand || 'Unknown'}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex flex-col items-end space-y-2">
-                      <p className="text-xs text-slate-400 dark:text-slate-500">
-                        Created: {formatDate(session.created)}
-                      </p>
+
+                      {/* Action Button */}
                       {!session.is_currently_using && (
                         <Button
-                          variant="outline"
+                          variant="ghost"
                           size="sm"
-                          className="h-8 px-3 text-xs"
+                          className="h-8 w-8 p-0 opacity-0 transition-opacity group-hover:opacity-100"
                           onClick={() => handleRevokeSession(session.uuid)}
                         >
-                          Revoke
+                          <DynamicIcon name="x" className="h-4 w-4" />
                         </Button>
                       )}
                     </div>
+
+                    {/* Device Details */}
+                    <div className="px-4 pb-3">
+                      <div className="space-y-2">
+                        {/* Device Info Row */}
+                        {(session.device_info.model || session.device_info.os_name) && (
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="text-slate-500 dark:text-slate-400">Device</span>
+                            <span className="text-slate-700 dark:text-slate-300">
+                              {session.device_info.model && (
+                                <span className="truncate">{session.device_info.model}</span>
+                              )}
+                              {session.device_info.model && session.device_info.os_name && (
+                                <span className="mx-1">•</span>
+                              )}
+                              {session.device_info.os_name && (
+                                <span className="truncate">{session.device_info.os_name}</span>
+                              )}
+                            </span>
+                          </div>
+                        )}
+
+                        {/* Client Info Row */}
+                        {(session.device_info.client_type || session.device_info.client_name) && (
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="text-slate-500 dark:text-slate-400">Client</span>
+                            <span className="text-slate-700 dark:text-slate-300">
+                              {session.device_info.client_type && (
+                                <span className="capitalize">{session.device_info.client_type}</span>
+                              )}
+                              {session.device_info.client_type && session.device_info.client_name && (
+                                <span className="mx-1">•</span>
+                              )}
+                              {session.device_info.client_name && (
+                                <span className="truncate">{session.device_info.client_name}</span>
+                              )}
+                            </span>
+                          </div>
+                        )}
+
+                        {/* IP Address Row */}
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="text-slate-500 dark:text-slate-400">IP Address</span>
+                          <span className="font-mono text-slate-700 dark:text-slate-300">{session.last_ip}</span>
+                        </div>
+
+                        {/* Last Used Row */}
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="text-slate-500 dark:text-slate-400">Last Used</span>
+                          <span className="text-slate-700 dark:text-slate-300">
+                            {session.last_used ? formatDate(session.last_used) : 'Never'}
+                          </span>
+                        </div>
+
+                        {/* Created Date Row */}
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="text-slate-500 dark:text-slate-400">Created</span>
+                          <span className="text-slate-700 dark:text-slate-300">{formatDate(session.created)}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Footer with Revoke Button for Non-Current Sessions */}
+                    {!session.is_currently_using && (
+                      <div className="border-t border-slate-200 bg-slate-50/50 px-4 py-3 dark:border-slate-700 dark:bg-slate-800/30">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="w-full border-red-200 text-red-600 hover:border-red-300 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/20"
+                          onClick={() => handleRevokeSession(session.uuid)}
+                        >
+                          <DynamicIcon name="shield-x" className="mr-2 h-3 w-3" />
+                          Revoke Session
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="py-8 text-center">
-                <DynamicIcon name="shield" className="mx-auto mb-3 h-12 w-12 text-slate-400" />
-                <p className="text-slate-500 dark:text-slate-400">No active sessions found</p>
+              <div className="py-12 text-center">
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800">
+                  <DynamicIcon name="shield" className="h-8 w-8 text-slate-400" />
+                </div>
+                <h3 className="mb-2 text-lg font-medium text-slate-900 dark:text-white">No Active Sessions</h3>
+                <p className="text-slate-500 dark:text-slate-400">You don't have any active sessions at the moment.</p>
               </div>
             )}
           </AsyncStateWrapper>

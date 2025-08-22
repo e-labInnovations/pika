@@ -312,7 +312,7 @@ class Pika_Utils {
         $osInfo     = $dd->getOs();         // array with name, short_name, version, platform
 
         return [
-            'device_type' => $deviceType ?? null,
+            'device_type' => $deviceType ?? 'unknown',
             'brand'       => $brand ?? null,
             'model'       => $model ?? null,
             'client_type' => $clientInfo['type'] ?? null,

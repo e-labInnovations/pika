@@ -264,7 +264,7 @@ class Pika_Push_Notifications_Manager extends Pika_Base_Manager {
     // Send notification to all devices of the user
     foreach ($subscriptions as $sub) {
       $subscription_data = json_decode($sub->subscription_data, true);
-      $result = $this->send_notification($subscription_data, $notification_data);
+      $result = $this->send_notification($user_id, $subscription_data, $notification_data);
 
       if ($result) {
         $success_count++;
@@ -272,6 +272,9 @@ class Pika_Push_Notifications_Manager extends Pika_Base_Manager {
 
       $results[] = $result;
     }
+
+    // Store notification in database
+    $this->store_notification($user_id, $notification_data);
 
     // Return true if at least one notification was sent successfully
     return $success_count > 0;
@@ -313,7 +316,7 @@ class Pika_Push_Notifications_Manager extends Pika_Base_Manager {
       // Send notification to all devices of this user
       foreach ($subscriptions as $sub) {
         $subscription_data = json_decode($sub->subscription_data, true);
-        $result = $this->send_notification($subscription_data, $notification_data);
+        $result = $this->send_notification($user_id, $subscription_data, $notification_data);
 
         if ($result) {
           $devices_sent++;
@@ -321,6 +324,9 @@ class Pika_Push_Notifications_Manager extends Pika_Base_Manager {
 
         $device_results[] = $result;
       }
+
+      // Store notification in database
+      $this->store_notification($user_id, $notification_data);
 
       $results[$user_id] = [
         'success' => $devices_sent > 0,
@@ -375,7 +381,7 @@ class Pika_Push_Notifications_Manager extends Pika_Base_Manager {
   /**
    * Send push notification using WebPush
    */
-  private function send_notification($subscription_data, $notification_data) {
+  private function send_notification($user_id, $subscription_data, $notification_data) {
     try {
       // Validate subscription data has required fields
       if (!isset($subscription_data['endpoint']) || !isset($subscription_data['keys']['p256dh']) || !isset($subscription_data['keys']['auth'])) {
@@ -399,9 +405,6 @@ class Pika_Push_Notifications_Manager extends Pika_Base_Manager {
       ]);
 
       $this->web_push->queueNotification($subscription, $payload);
-
-      // Store notification in database
-      $this->store_notification($subscription_data['user_id'] ?? 0, $notification_data);
 
       return true;
     } catch (Exception $e) {

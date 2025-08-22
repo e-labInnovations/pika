@@ -71,7 +71,15 @@ class Pika_Auth_Manager extends Pika_Base_Manager {
    */
   public function get_user_session_device_info($user_id, $session_id) {
     $session_device_info = get_user_meta($user_id, $this->user_session_device_info_key, true);
-    return $session_device_info[$session_id] ?? null;
+    $default_value = [
+      'device_type' => 'unknown',
+      'brand' => null,
+      'model' => null,
+      'client_type' => null,
+      'client_name' => null,
+      'os_name' => null,
+    ];
+    return $session_device_info[$session_id] ?? $default_value;
   }
 
   /**
@@ -139,7 +147,8 @@ class Pika_Auth_Manager extends Pika_Base_Manager {
       }
     }
 
-    $result = array_map(function($password) use ($currently_using_password_uuid) {
+    $result = array_map(function($password) use ($currently_using_password_uuid, $user_id) {
+      $device_info = $this->get_user_session_device_info($user_id, $password['uuid']);
       return [
         'uuid' => $password['uuid'],
         'app_id' => $password['app_id'],
@@ -148,6 +157,7 @@ class Pika_Auth_Manager extends Pika_Base_Manager {
         'last_used' => !empty($password['last_used']) ? gmdate('Y-m-d\TH:i:s\Z', $password['last_used']) : null,
         'last_ip' => $password['last_ip'],
         'is_currently_using' => $password['uuid'] === $currently_using_password_uuid,
+        'device_info' => $device_info,
       ];
     }, $filtered_passwords);
 

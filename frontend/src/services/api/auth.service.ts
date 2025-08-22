@@ -17,9 +17,17 @@ export interface Session {
   app_id: string;
   name: string;
   created: string;
-  last_used: string;
-  last_ip: string;
+  last_used?: string;
+  last_ip?: string;
   is_currently_using: boolean;
+  device_info: {
+    device_type: string; // smartphone, desktop, tablet, bot, unknown etc
+    brand?: string; // Apple, Samsung, Google, etc
+    model?: string; // iPhone 13, Galaxy S20, etc
+    client_type?: string; // browser, app, etc
+    client_name?: string; // Chrome, Safari, Firefox, etc
+    os_name?: string; // iOS, Android, Windows, etc
+  };
 }
 
 export interface AppInfo {
