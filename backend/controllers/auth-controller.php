@@ -56,14 +56,6 @@ class Pika_Auth_Controller extends Pika_Base_Controller {
             ],
         ]);
 
-        register_rest_route($this->namespace, '/auth/app-info', [
-            [
-                'methods' => WP_REST_Server::READABLE,
-                'callback' => [$this, 'get_app_info'],
-                'permission_callback' => '__return_true',
-            ],
-        ]);
-
         register_rest_route($this->namespace, '/auth/sessions/revoke', [
             [
                 'methods' => WP_REST_Server::CREATABLE,
@@ -169,13 +161,6 @@ class Pika_Auth_Controller extends Pika_Base_Controller {
     public function get_sessions($request) {
         $sessions = $this->auth_manager->get_all_application_passwords();
         return $sessions;
-    }
-
-    /**
-     * Get app info
-     */
-    public function get_app_info($request) {
-        return $this->auth_manager->get_app_details();
     }
 
     /**

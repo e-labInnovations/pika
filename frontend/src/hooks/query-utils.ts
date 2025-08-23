@@ -1,9 +1,10 @@
-import type { Category, Account, Person, Tag } from '@/services/api';
+import type { Category, Account, Person, Tag, AppLists } from '@/services/api';
 import type { TransactionType } from '@/lib/transaction-utils';
 import type { QueryClient } from '@tanstack/react-query';
 
 export const queryKeys = {
   appInfo: 'app-info',
+  appLists: 'app-lists',
   categories: 'categories',
   accounts: 'accounts',
   people: 'people',
@@ -45,6 +46,13 @@ export const queryUtils = {
     return tags.find((tag) => tag.id === tagId) || null;
   },
 };
+
+export function hydrateLists(queryClient: QueryClient, data: AppLists) {
+  queryClient.setQueryData([queryKeys.categories], data.categories);
+  queryClient.setQueryData([queryKeys.accounts], data.accounts);
+  queryClient.setQueryData([queryKeys.people], data.people);
+  queryClient.setQueryData([queryKeys.tags], data.tags);
+}
 
 export const invalidateTxRelatedQueries = (queryClient: QueryClient) => {
   const date = new Date();

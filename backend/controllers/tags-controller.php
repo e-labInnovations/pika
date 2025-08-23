@@ -77,8 +77,7 @@ class Pika_Tags_Controller extends Pika_Base_Controller {
      * Get tags
      */
     public function get_tags($request) {
-        $user_id = get_current_user_id();
-        $tags = $this->tags_manager->get_all_tags($user_id);
+        $tags = $this->tags_manager->get_all_tags();
         return $tags;
     }
 

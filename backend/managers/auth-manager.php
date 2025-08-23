@@ -35,20 +35,6 @@ class Pika_Auth_Manager extends Pika_Base_Manager {
   }
 
   /**
-   * Get app_details
-   */
-  public function get_app_details() {
-    $plugin_data = get_plugin_data(PIKA_PLUGIN_PATH . 'pika.php');
-    return [
-      'name' => $plugin_data['Name'],
-      'version' => $plugin_data['Version'],
-      'description' => $plugin_data['Description'],
-      'app_id' => $this->get_app_id(),
-      'base_url' => get_site_url(),
-    ];
-  }
-
-  /**
    * Save user session device info
    * @param int $user_id
    * @param string $session_id

@@ -11,19 +11,20 @@ Pika_Utils::reject_abs_path();
 class Pika_API_Loader {
 
     private $controllers = [
-        'auth',
         'accounts',
-        'people',
+        'ai',
+        'analytics',
+        'app',
+        'auth',
         'categories',
+        'import-export',
+        'people',
+        'push-notifications',
+        'reminders',
+        'settings',
         'tags',
         'transactions',
-        'analytics',
-        'upload',
-        'settings',
-        'ai',
-        'reminders',
-        'import-export',
-        'push-notifications'
+        'upload'
     ];
 
     /**

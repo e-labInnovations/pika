@@ -30,24 +30,12 @@ export interface Session {
   };
 }
 
-export interface AppInfo {
-  name: string;
-  version: string;
-  description: string;
-  app_id: string;
-  base_url: string;
-}
-
 export interface LoginCredentials {
   user_login: string;
   password: string;
 }
 
 class AuthService {
-  getAppInfo() {
-    return api.get<AppInfo>('/auth/app-info');
-  }
-
   login(credentials: LoginCredentials) {
     return api.post<User>('/auth/login', credentials);
   }

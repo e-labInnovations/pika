@@ -133,7 +133,7 @@ class Pika_AI_Manager extends Pika_Base_Manager {
       $categories = [];
     }
 
-    $tags = $this->tags_manager->get_all_tags($user_id);
+    $tags = $this->tags_manager->get_all_tags();
     if (is_wp_error($tags)) {
       $this->utils->log('AI Manager Error: Tags failed', $tags->get_error_message(), 'error');
       $tags = [];

@@ -7,9 +7,11 @@ import {
   type CategoryInput,
   transactionsService,
   analyticsService,
-  authService,
+  appService,
+  type AppLists,
 } from '@/services/api';
 import {
+  hydrateLists,
   invalidateAccountRelatedQueries,
   invalidateCategoryRelatedQueries,
   invalidatePeopleRelatedQueries,
@@ -18,13 +20,33 @@ import {
 } from './query-utils';
 
 /** ***************************************************************************
+ *                                  App
+ *************************************************************************** */
+export function useAppLists() {
+  const queryClient = useQueryClient();
+
+  return useQuery<AppLists>({
+    queryKey: [queryKeys.appLists],
+    queryFn: async (): Promise<AppLists> => {
+      const response = await appService.getLists();
+
+      if (response.data) {
+        hydrateLists(queryClient, response.data);
+      }
+
+      return response.data;
+    },
+  });
+}
+
+/** ***************************************************************************
  *                                  Auth
  *************************************************************************** */
 export function useAppInfo() {
   return useQuery({
     queryKey: [queryKeys.appInfo],
     queryFn: async () => {
-      const response = await authService.getAppInfo();
+      const response = await appService.getInfo();
       return response.data;
     },
   });
