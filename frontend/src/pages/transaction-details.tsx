@@ -111,7 +111,7 @@ const TransactionDetails = () => {
                     iconName={getTransactionType(transaction.type)?.icon || ''}
                     color="#ffffff"
                     size="sm"
-                    className={`rounded-md ${getTransactionType(transaction.type)?.bgColor}`}
+                    className={cn('rounded-md', getTransactionType(transaction.type)?.bgColor)}
                   />
                 </div>
 

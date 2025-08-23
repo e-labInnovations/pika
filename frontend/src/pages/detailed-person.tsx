@@ -78,6 +78,16 @@ const DetailedPerson = () => {
     });
   };
 
+  const handleAddTransaction = () => {
+    navigate(`/add?person=${id}&type=expense`);
+  };
+
+  const handleSettleUp = () => {
+    const amount = Math.abs(person?.balance || 0);
+    const type = person?.balance && person.balance > 0 ? 'expense' : 'income';
+    navigate(`/add?person=${id}&type=${type}&amount=${amount}`);
+  };
+
   return (
     <TabsLayout
       header={{
@@ -133,11 +143,11 @@ const DetailedPerson = () => {
 
             {/* Quick Actions */}
             <div className="grid grid-cols-2 gap-3">
-              <Button className="bg-primary hover:bg-primary/90">
+              <Button className="bg-primary hover:bg-primary/90" onClick={handleAddTransaction}>
                 <DynamicIcon name="plus" className="mr-2 h-4 w-4" />
                 Add Transaction
               </Button>
-              <Button variant="outline">
+              <Button variant="outline" disabled={Number(person.balance) === 0} onClick={handleSettleUp}>
                 <DynamicIcon name="dollar-sign" className="mr-2 h-4 w-4" />
                 Settle Up
               </Button>
@@ -154,14 +164,18 @@ const DetailedPerson = () => {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
                         <DynamicIcon name="mail" className="h-4 w-4 text-slate-400" />
-                        <span className="text-slate-600 dark:text-slate-400">{person.email}</span>
+                        <span className={cn('text-slate-600 dark:text-slate-400', !person.email && 'italic')}>
+                          {person.email || 'No email'}
+                        </span>
                       </div>
                     </div>
 
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
                         <DynamicIcon name="phone" className="h-4 w-4 text-slate-400" />
-                        <span className="text-slate-600 dark:text-slate-400">{person.phone}</span>
+                        <span className={cn('text-slate-600 dark:text-slate-400', !person.phone && 'italic')}>
+                          {person.phone || 'No phone'}
+                        </span>
                       </div>
                     </div>
                   </div>

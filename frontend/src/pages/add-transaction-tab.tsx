@@ -3,7 +3,7 @@ import AIAssistant from '@/components/add-transaction-tab/ai-assistant';
 import TransactionTypeSelector from '@/components/add-transaction-tab/transaction-type-selector';
 import type { TransactionFormData } from '@/components/add-transaction-tab/types';
 import TabsLayout from '@/layouts/tabs';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import BasicInfo from '@/components/add-transaction-tab/basic-info';
 import CategoryAccount from '@/components/add-transaction-tab/category-account';
 import PersonView from '@/components/add-transaction-tab/person';
@@ -26,6 +26,7 @@ import { useWebShareTarget } from '@/hooks/use-web-share-target';
 import { runWithLoaderAndError } from '@/lib/utils';
 import { useQueryClient } from '@tanstack/react-query';
 import { DynamicIcon } from '@/components/lucide';
+import { useSearchParams } from 'react-router-dom';
 
 const AddTransactionTab = () => {
   const { data: categories = [] } = useCategories();
@@ -34,7 +35,8 @@ const AddTransactionTab = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const queryClient = useQueryClient();
-
+  const [searchParams] = useSearchParams();
+  const [attachments, setAttachments] = useState<UploadResponse[]>([]);
   const [formData, setFormData] = useState<TransactionFormData>({
     title: '',
     amount: 0,
@@ -48,7 +50,45 @@ const AddTransactionTab = () => {
     note: '',
   });
 
-  const [attachments, setAttachments] = useState<UploadResponse[]>([]);
+  useEffect(() => {
+    const account = searchParams.get('account');
+    const toAccount = searchParams.get('toAccount');
+    const person = searchParams.get('person');
+    const type = searchParams.get('type');
+    const category = searchParams.get('category');
+    const tags = searchParams.get('tags');
+    const note = searchParams.get('note');
+    const amount = searchParams.get('amount');
+    const date = searchParams.get('date');
+
+    if (account) {
+      setFormData((prev) => ({ ...prev, account }));
+    }
+    if (toAccount && type !== 'transfer') {
+      setFormData((prev) => ({ ...prev, toAccount }));
+    }
+    if (person) {
+      setFormData((prev) => ({ ...prev, person }));
+    }
+    if (type) {
+      setFormData((prev) => ({ ...prev, type: type as TransactionType }));
+    }
+    if (category) {
+      setFormData((prev) => ({ ...prev, category }));
+    }
+    if (tags) {
+      setFormData((prev) => ({ ...prev, tags: tags.split(',') }));
+    }
+    if (note) {
+      setFormData((prev) => ({ ...prev, note }));
+    }
+    if (amount) {
+      setFormData((prev) => ({ ...prev, amount: Number(amount) }));
+    }
+    if (date) {
+      setFormData((prev) => ({ ...prev, date: new Date(Number(date)).toISOString() }));
+    }
+  }, [searchParams]);
 
   const handleTransactionDetails = (transaction: AnalyzedTransactionData) => {
     // Populate form data with AI analysis results
@@ -73,12 +113,8 @@ const AddTransactionTab = () => {
   const handleTypeChange = (type: TransactionType) => {
     setFormData((prev) => ({ ...prev, type, category: queryUtils.getDefaultCategory(categories, type)?.id ?? '' }));
 
-    // TODO: Handle account and person selection
-    // if (type === 'expense' || type === 'income') {
-    //   setFormData((prev) => ({ ...prev, toAccount: null }));
-    // } else {
-    //   setFormData((prev) => ({ ...prev, person: null }));
-    // }
+    // Reset toAccount and person when type changes
+    setFormData((prev) => ({ ...prev, toAccount: null, person: null }));
   };
 
   const handleSubmit = async () => {

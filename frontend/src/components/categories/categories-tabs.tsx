@@ -16,11 +16,11 @@ const CategoriesTabs = ({ tabContents, onTabChange, tabValue }: CategoriesTabsPr
   const getTabColorClasses = (transactionType: TransactionType) => {
     switch (transactionType) {
       case 'income':
-        return 'data-[state=active]:bg-emerald-100 dark:data-[state=active]:bg-emerald-900 data-[state=active]:text-white';
+        return 'data-[state=active]:bg-emerald-500 dark:data-[state=active]:bg-emerald-900 data-[state=active]:text-white';
       case 'expense':
-        return 'data-[state=active]:bg-red-100 dark:data-[state=active]:bg-red-900 data-[state=active]:text-white';
+        return 'data-[state=active]:bg-red-500 dark:data-[state=active]:bg-red-900 data-[state=active]:text-white';
       case 'transfer':
-        return 'data-[state=active]:bg-blue-100 dark:data-[state=active]:bg-blue-900 data-[state=active]:text-white';
+        return 'data-[state=active]:bg-blue-500 dark:data-[state=active]:bg-blue-900 data-[state=active]:text-white';
     }
   };
 

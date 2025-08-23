@@ -48,7 +48,12 @@ const MonthlySummaryView = ({ selectedDate }: MonthlySummaryViewProps) => {
 
   return (
     <div className="flex flex-col gap-4">
-      <h3 className="text-md font-semibold text-slate-900 dark:text-white">Monthly Summary</h3>
+      <h3 className="text-md font-semibold text-slate-900 dark:text-white">
+        Monthly Summary -{' '}
+        <span className="text-slate-500 dark:text-slate-400">
+          {selectedDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+        </span>
+      </h3>
 
       <AsyncStateWrapper isLoading={isLoading} error={error} onRetry={refetch} className="w-full rounded-md border">
         {monthlySummary && (

@@ -25,24 +25,24 @@ class TransactionUtils {
       id: 'income',
       name: 'Income',
       description: 'Money received',
-      color: 'text-emerald-600',
-      bgColor: 'bg-emerald-100 dark:bg-emerald-900',
+      color: 'text-emerald-500 dark:text-emerald-600',
+      bgColor: 'bg-emerald-500 dark:bg-emerald-900',
       icon: 'arrow-down-left',
     },
     expense: {
       id: 'expense',
       name: 'Expense',
       description: 'Money spent',
-      color: 'text-red-600',
-      bgColor: 'bg-red-100 dark:bg-red-900',
+      color: 'text-red-500 dark:text-red-600',
+      bgColor: 'bg-red-500 dark:bg-red-900',
       icon: 'arrow-up-right',
     },
     transfer: {
       id: 'transfer',
       name: 'Transfer',
       description: 'Money moved between accounts',
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-100 dark:bg-blue-900',
+      color: 'text-blue-500 dark:text-blue-600',
+      bgColor: 'bg-blue-500 dark:bg-blue-900',
       icon: 'arrow-right-left',
     },
   });
@@ -50,8 +50,8 @@ class TransactionUtils {
   types: TransactionItemType[] = Object.values(this.typesObject);
 
   getBalanceColor = (balance: number, isPerson: boolean = false) => {
-    const red = 'text-red-400 dark:text-red-400';
-    const green = 'text-emerald-400 dark:text-emerald-400';
+    const red = 'text-red-500 dark:text-red-400';
+    const green = 'text-emerald-600 dark:text-emerald-400';
     const grey = 'text-slate-400 dark:text-slate-400';
     if (isPerson) {
       if (balance > 0) return red; // you owe person

@@ -16,7 +16,7 @@ const TransactionTypeView = ({ type, className, size, variant }: TransactionType
         iconName={transactionType.icon}
         size={size}
         variant={variant}
-        className={`${transactionType.bgColor} ${transactionType.color}`}
+        className={cn(transactionType.bgColor, 'text-white')}
       />
       <div className="flex-1">
         <p className="font-medium">{transactionType.name}</p>

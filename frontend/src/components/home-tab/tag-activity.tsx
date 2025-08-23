@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils';
 import { TagChip } from '../tag-chip';
 import transactionUtils from '@/lib/transaction-utils';
 import { useTagActivity } from '@/hooks/queries';
+import { useTheme } from '@/provider/theme-provider';
 
 interface TagActivityProps {
   selectedDate: Date;
@@ -26,6 +27,7 @@ interface TagActivityBarProps {
 const TagActivityBar = ({ tag, percentage, popoverOpen, onPopoverOpenChange, date }: TagActivityBarProps) => {
   const [animatedPercentage, setAnimatedPercentage] = useState(0);
   const { user } = useAuth();
+  const { isDarkMode } = useTheme();
 
   useEffect(() => {
     setAnimatedPercentage(0);
@@ -54,7 +56,7 @@ const TagActivityBar = ({ tag, percentage, popoverOpen, onPopoverOpenChange, dat
             className="absolute inset-0 rounded-full"
             style={{
               backgroundColor: tag.bgColor,
-              opacity: 0.2,
+              opacity: isDarkMode ? 0.2 : 0.7,
             }}
           />
           {/* Fill with full tag color */}
@@ -142,7 +144,12 @@ const TagActivityView = ({ selectedDate }: TagActivityProps) => {
   return (
     <Card className="gap-4">
       <CardHeader>
-        <CardTitle className="text-md">Tag Activity</CardTitle>
+        <CardTitle className="text-md">
+          Tag Activity -{' '}
+          <span className="text-slate-500 dark:text-slate-400">
+            {selectedDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+          </span>
+        </CardTitle>
       </CardHeader>
 
       <CardContent>

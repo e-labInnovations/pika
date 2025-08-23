@@ -10,6 +10,7 @@ import { IconRenderer } from '../icon-renderer';
 import CategoryPopover from './category-popover';
 import { cn } from '@/lib/utils';
 import { useCategorySpending } from '@/hooks/queries';
+import { useTheme } from '@/provider/theme-provider';
 
 interface CategorySpendingProps {
   selectedDate: Date;
@@ -34,6 +35,7 @@ const CategorySpendingBar = ({
 }: CategorySpendingBarProps) => {
   const [animatedPercentage, setAnimatedPercentage] = useState(0);
   const { user } = useAuth();
+  const { isDarkMode } = useTheme();
 
   useEffect(() => {
     setAnimatedPercentage(0);
@@ -62,7 +64,7 @@ const CategorySpendingBar = ({
             className="absolute inset-0 rounded-full"
             style={{
               backgroundColor: category.categoryBgColor,
-              opacity: 0.2,
+              opacity: isDarkMode ? 0.2 : 0.7,
             }}
           />
           {/* Fill with full category color */}
@@ -182,10 +184,15 @@ const CategorySpendingView = ({ selectedDate }: CategorySpendingProps) => {
     <Card className="gap-4">
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle className="text-md">Category Spending</CardTitle>
+          <CardTitle className="text-md">
+            Category Spending -{' '}
+            <span className="text-slate-500 dark:text-slate-400">
+              {selectedDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+            </span>
+          </CardTitle>
           <Button variant="ghost" size="sm" onClick={toggleExpanded} className="h-8 w-8 p-0">
             {expandedCategories.size === 0 ? (
-              <DynamicIcon name="chevron-right" className="h-4 w-4" />
+              <DynamicIcon name="chevron-up" className="h-4 w-4" />
             ) : (
               <DynamicIcon name="chevron-down" className="h-4 w-4" />
             )}
