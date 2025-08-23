@@ -79,6 +79,15 @@ export function TransactionsList({
       return true;
     })();
 
+    // Account filter
+    const matchesAccount =
+      filters.accounts.length === 0 ||
+      filters.accounts.some((accountId) => {
+        const transactionAccountId = transaction.account?.id?.toString();
+        const transactionToAccountId = transaction.toAccount?.id?.toString();
+        return transactionAccountId === accountId || transactionToAccountId === accountId;
+      });
+
     // Amount filter
     const matchesAmount = (() => {
       if (!filters.amount.value1) return true;
@@ -113,7 +122,8 @@ export function TransactionsList({
       matchesTags &&
       matchesPeople &&
       matchesDateRange &&
-      matchesAmount
+      matchesAmount &&
+      matchesAccount
     );
   });
 
@@ -167,7 +177,8 @@ export function TransactionsList({
       filters.tags.length +
       filters.people.length +
       (filters.dateRange.from || filters.dateRange.to ? 1 : 0) +
-      (filters.amount.value1 ? 1 : 0)
+      (filters.amount.value1 ? 1 : 0) +
+      (filters.accounts.length > 0 ? 1 : 0)
     );
   };
 
