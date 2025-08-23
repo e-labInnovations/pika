@@ -4,7 +4,6 @@ import {
   type PushSubscription,
   type NotificationStatus,
   type NotificationRecord,
-  type DeviceSubscription,
 } from '@/services/api';
 
 export interface UsePushNotificationsReturn {
@@ -24,6 +23,7 @@ export interface UsePushNotificationsReturn {
 
   // Status
   status: NotificationStatus | null;
+  unreadCount: number;
 
   // Notifications
   notifications: NotificationRecord[];
@@ -31,11 +31,6 @@ export interface UsePushNotificationsReturn {
   markAsClicked: (id: number) => Promise<void>;
   dismiss: (id: number) => Promise<void>;
   delete: (id: number) => Promise<void>;
-
-  // Device Management
-  devices: DeviceSubscription[];
-  deleteDevice: (deviceId: string) => Promise<boolean>;
-  refreshDevices: () => Promise<void>;
 
   // Refresh
   refreshStatus: () => Promise<void>;
@@ -50,7 +45,7 @@ export function usePushNotifications(): UsePushNotificationsReturn {
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<NotificationStatus | null>(null);
   const [notifications, setNotifications] = useState<NotificationRecord[]>([]);
-  const [devices, setDevices] = useState<DeviceSubscription[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   // Check if push notifications are supported
   useEffect(() => {
@@ -103,9 +98,6 @@ export function usePushNotifications(): UsePushNotificationsReturn {
 
       // Always load notifications
       await loadNotifications();
-
-      // Load user devices
-      await refreshDevices();
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to check subscription status';
       console.error('❌ Subscription status check failed:', err);
@@ -121,22 +113,12 @@ export function usePushNotifications(): UsePushNotificationsReturn {
       const response = await pushNotificationsService.getNotifications();
       const notificationsData = response.data.notifications || [];
       setNotifications(Array.isArray(notificationsData) ? notificationsData : []);
+      setUnreadCount(response.data.pagination.unread_count);
     } catch (err) {
       console.error('❌ Failed to load notifications:', err);
       // Set empty array on error to prevent UI issues
       setNotifications([]);
       // Don't set global error for notifications loading failure
-    }
-  }, []);
-
-  // Refresh devices
-  const refreshDevices = useCallback(async () => {
-    try {
-      const response = await pushNotificationsService.getUserDevices();
-      setDevices(response.data.devices || []);
-    } catch (err) {
-      console.error('Failed to refresh devices:', err);
-      setDevices([]);
     }
   }, []);
 
@@ -389,15 +371,12 @@ export function usePushNotifications(): UsePushNotificationsReturn {
       setStatus(statusResponse.data);
       setIsEnabled(Boolean(statusResponse.data.enabled));
       setIsSubscribed(Boolean(statusResponse.data.has_subscription));
-
-      // Also refresh devices when status changes
-      await refreshDevices();
     } catch (err) {
       console.error('Failed to refresh status:', err);
       // Don't set global error for status refresh failure
       // Just log it and keep current state
     }
-  }, [refreshDevices]);
+  }, []);
 
   // Refresh notifications
   const refreshNotifications = useCallback(async () => {
@@ -428,21 +407,6 @@ export function usePushNotifications(): UsePushNotificationsReturn {
     }
   }, []);
 
-  // Delete device
-  const deleteDevice = useCallback(
-    async (deviceId: string): Promise<boolean> => {
-      try {
-        await pushNotificationsService.deleteUserDevice(deviceId);
-        await refreshDevices();
-        return true;
-      } catch (err) {
-        console.error('Failed to delete device:', err);
-        return false;
-      }
-    },
-    [refreshDevices],
-  );
-
   return {
     // State
     isSupported,
@@ -460,6 +424,7 @@ export function usePushNotifications(): UsePushNotificationsReturn {
 
     // Status
     status,
+    unreadCount,
 
     // Notifications
     notifications,
@@ -467,11 +432,6 @@ export function usePushNotifications(): UsePushNotificationsReturn {
     markAsClicked,
     dismiss,
     delete: deleteNotification,
-
-    // Device Management
-    devices,
-    deleteDevice,
-    refreshDevices,
 
     // Refresh
     refreshStatus,

@@ -21,9 +21,6 @@ const NotificationsSettings = () => {
     disable,
     sendTestNotification,
     status,
-    notifications,
-    markAsRead,
-    delete: deleteNotification,
     refreshStatus,
     refreshNotifications,
   } = usePushNotifications();
@@ -228,84 +225,6 @@ const NotificationsSettings = () => {
             {showTestNotification && (
               <div className="rounded-md border border-green-200 bg-green-50 p-3 text-sm text-green-600 dark:border-green-800 dark:bg-green-950">
                 Test notification sent! Check your browser notifications.
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Recent Notifications */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Bell className="h-5 w-5" />
-              Recent Notifications
-            </CardTitle>
-            <CardDescription>Your recent notification history</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {!notifications || notifications.length === 0 ? (
-              <p className="text-muted-foreground py-4 text-center text-sm">
-                {isLoading ? 'Loading notifications...' : 'No notifications yet'}
-              </p>
-            ) : (
-              <div className="space-y-3">
-                {notifications.slice(0, 5).map((notification) => (
-                  <div key={notification.id} className="flex items-start justify-between rounded-lg border p-3">
-                    <div className="flex-1 space-y-1">
-                      <div className="flex items-center gap-2">
-                        <h4 className="text-sm font-medium">{notification.title}</h4>
-                        {!notification.read_at && (
-                          <Badge variant="secondary" className="text-xs">
-                            New
-                          </Badge>
-                        )}
-                      </div>
-                      <p className="text-muted-foreground text-xs">{notification.body}</p>
-                      <p className="text-muted-foreground text-xs">
-                        {new Date(notification.timestamp).toLocaleDateString()}
-                      </p>
-                    </div>
-                    <div className="flex gap-1">
-                      {!notification.read_at && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={async () => {
-                            try {
-                              await markAsRead(notification.id);
-                            } catch (err) {
-                              console.error('Failed to mark as read:', err);
-                            }
-                          }}
-                          className="h-6 px-2 text-xs"
-                        >
-                          Mark Read
-                        </Button>
-                      )}
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={async () => {
-                          try {
-                            await deleteNotification(notification.id);
-                          } catch (err) {
-                            console.error('Failed to delete notification:', err);
-                          }
-                        }}
-                        className="text-destructive h-6 px-2 text-xs"
-                      >
-                        Delete
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-                {notifications && notifications.length > 5 && (
-                  <div className="text-center">
-                    <Button variant="outline" size="sm" onClick={refreshNotifications}>
-                      View All ({notifications.length})
-                    </Button>
-                  </div>
-                )}
               </div>
             )}
           </CardContent>

@@ -32,6 +32,7 @@ import AddPerson from '@/pages/add-person';
 import EditPerson from '@/pages/edit-person';
 import CurrencySettings from '@/pages/currency-settings';
 import AccountsSettings from '@/pages/accounts-settings';
+import NotificationsPage from '@/pages/notifications';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -81,6 +82,7 @@ const router = createBrowserRouter(
         <Route path="/settings/currency" element={<CurrencySettings />} />
 
         {/* Other Routes */}
+        <Route path="/notifications" element={<NotificationsPage />} />
         <Route path="/about" element={<div>About Page</div>} />
       </Route>
 

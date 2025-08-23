@@ -582,18 +582,37 @@ class Pika_Push_Notifications_Manager extends Pika_Base_Manager {
 
     $notifications = $this->db()->get_results($sql);
 
-    if (is_wp_error($notifications)) {
-      return $this->get_error('db_error');
-    }
-
     $total = $this->db()->get_var($this->db()->prepare(
       "SELECT COUNT(*) FROM $table_name WHERE user_id = %d",
       $user_id
     ));
 
-    if (is_wp_error($total)) {
+    $unread_count = $this->db()->get_var($this->db()->prepare(
+      "SELECT COUNT(*) FROM $table_name WHERE user_id = %d AND read_at IS NULL",
+      $user_id
+    ));
+
+    if (is_wp_error($notifications) || is_wp_error($total) || is_wp_error($unread_count)) {
       return $this->get_error('db_error');
     }
+
+    $notifications = array_map(function ($notification) {
+      return [
+        'id' => $notification->id,
+        'title' => $notification->title,
+        'body' => $notification->body,
+        'icon' => $notification->icon,
+        'badge' => $notification->badge,
+        'image' => $notification->image,
+        'tag' => $notification->tag,
+        'data' => json_decode($notification->data, true),
+        'actions' => json_decode($notification->actions, true),
+        'require_interaction' => boolval($notification->require_interaction),
+        'silent' => boolval($notification->silent),
+        'timestamp' => $this->utils->to_iso8601_utc($notification->timestamp),
+        'read_at' => $this->utils->to_iso8601_utc($notification->read_at),
+      ];
+    }, $notifications);
 
     return [
       'notifications' => $notifications,
@@ -601,7 +620,8 @@ class Pika_Push_Notifications_Manager extends Pika_Base_Manager {
         'page' => $page,
         'per_page' => $per_page,
         'total' => intval($total),
-        'total_pages' => ceil(intval($total) / $per_page)
+        'total_pages' => ceil(intval($total) / $per_page),
+        'unread_count' => intval($unread_count)
       ]
     ];
   }

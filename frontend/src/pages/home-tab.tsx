@@ -9,6 +9,7 @@ import CategorySpendingView from '@/components/home-tab/category-spending';
 import TagActivityView from '@/components/home-tab/tag-activity';
 import PeopleActivityView from '@/components/home-tab/people-activity';
 import { Separator } from '@/components/ui/separator';
+import NotificationIcon from '@/components/notification-icon';
 
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAccounts } from '@/hooks/queries';
@@ -44,6 +45,7 @@ const HomeTab = () => {
       header={{
         title: 'Home',
         description: 'Your financial overview',
+        rightActions: <NotificationIcon />,
       }}
     >
       <div className="flex flex-col gap-4">

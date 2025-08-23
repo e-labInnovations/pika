@@ -96,7 +96,6 @@ export interface NotificationStatus {
 
 export interface NotificationRecord {
   id: number;
-  user_id: number;
   title: string;
   body: string;
   icon?: string;
@@ -108,12 +107,7 @@ export interface NotificationRecord {
   require_interaction: boolean;
   silent: boolean;
   timestamp: string;
-  read_at?: string;
-  clicked_at?: string;
-  dismissed_at?: string;
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
+  read_at: string | null;
 }
 
 export interface NotificationsResponse {
@@ -123,6 +117,7 @@ export interface NotificationsResponse {
     per_page: number;
     total: number;
     total_pages: number;
+    unread_count: number;
   };
 }
 
@@ -185,21 +180,6 @@ class PushNotificationsService extends BaseService<
   }
 
   /**
-   * Send notification (admin only)
-   */
-  sendNotification(
-    notification: NotificationData,
-    userIds?: number[],
-  ): Promise<AxiosResponse<NotificationSendResponse>> {
-    const payload: NotificationData & { user_ids?: number[] } = { ...notification };
-    if (userIds) {
-      payload.user_ids = userIds;
-    }
-
-    return this.api.post(`${this.endpoint}/send`, payload);
-  }
-
-  /**
    * Get user notifications
    */
   getNotifications(page: number = 1, perPage: number = 20): Promise<AxiosResponse<NotificationsResponse>> {
@@ -252,27 +232,6 @@ class PushNotificationsService extends BaseService<
       icon: '/pika/icons/pwa-192x192.png',
       tag: 'test-notification',
     });
-  }
-
-  /**
-   * Get user devices
-   */
-  getUserDevices(): Promise<AxiosResponse<UserDevicesResponse>> {
-    return this.api.get(`${this.endpoint}/devices`);
-  }
-
-  /**
-   * Delete specific user device
-   */
-  deleteUserDevice(deviceId: string): Promise<AxiosResponse<GenericSuccessResponse>> {
-    return this.api.delete(`${this.endpoint}/devices/${deviceId}`);
-  }
-
-  /**
-   * Get device statistics (admin only)
-   */
-  getDeviceStatistics(): Promise<AxiosResponse<DeviceStatisticsResponse>> {
-    return this.api.get(`${this.endpoint}/statistics`);
   }
 }
 
