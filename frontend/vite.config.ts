@@ -81,14 +81,19 @@ export default defineConfig({
         ],
         shortcuts: [
           {
-            name: 'Home',
-            url: '/pika',
-            icons: [{ src: '/pika/icons/pwa-192x192.png', sizes: '192x192', type: 'image/png' }],
+            name: 'Add Expense',
+            url: '/pika/add?type=expense',
+            icons: [{ src: '/pika/icons/shortcuts/expense.png', sizes: '192x192', type: 'image/png' }],
           },
           {
-            name: 'Add Transaction',
-            url: '/pika/add',
-            icons: [{ src: '/pika/icons/pwa-192x192.png', sizes: '192x192', type: 'image/png' }],
+            name: 'Add Income',
+            url: '/pika/add?type=income',
+            icons: [{ src: '/pika/icons/shortcuts/income.png', sizes: '192x192', type: 'image/png' }],
+          },
+          {
+            name: 'Add Transfer',
+            url: '/pika/add?type=transfer',
+            icons: [{ src: '/pika/icons/shortcuts/transfer.png', sizes: '192x192', type: 'image/png' }],
           },
         ],
         icons: [
