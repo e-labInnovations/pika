@@ -1,5 +1,4 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { DynamicIcon } from '@/components/lucide';
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid, Legend } from 'recharts';
 import { useTheme } from '@/provider/theme-provider';
 import type { Person } from '@/services/api';
@@ -9,6 +8,7 @@ import { useState } from 'react';
 import { currencyUtils } from '@/lib/currency-utils';
 import { useAuth } from '@/hooks/use-auth';
 import ChartNoData from '@/components/ui/chart-no-data';
+import DateRangePicker from '@/components/date-range-picker';
 
 interface PersonFinancialChartProps {
   person: Person;
@@ -36,7 +36,12 @@ const PersonFinancialChart = ({ person }: PersonFinancialChartProps) => {
   const { isDarkMode } = useTheme();
   const { user } = useAuth();
   const [timeBucket, setTimeBucket] = useState<'daily' | 'weekly' | 'monthly' | 'yearly'>('monthly');
-  const { data: personTransactionSummary, isLoading, error } = usePersonTransactionSummary(person.id, timeBucket);
+  const [dateRange, setDateRange] = useState<{ from: string; to: string }>({ from: '', to: '' });
+  const {
+    data: personTransactionSummary,
+    isLoading,
+    error,
+  } = usePersonTransactionSummary(person.id, timeBucket, dateRange.from, dateRange.to);
 
   const formatDate = (date: string, timeBucket: string) => {
     const dateObj = new Date(date);
@@ -72,34 +77,29 @@ const PersonFinancialChart = ({ person }: PersonFinancialChartProps) => {
 
   return (
     <Card>
-      <CardHeader className="pb-3">
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <DynamicIcon name="trending-up" className="h-4 w-4" />
-              Financial Overview
-            </CardTitle>
-            <p className="text-muted-foreground text-xs">
-              Track expenses, income, and balance trends with {person?.name ?? ''}
-            </p>
-          </div>
-        </div>
+      <CardHeader className="gap-2">
+        <CardTitle>Financial Overview</CardTitle>
 
-        {/* Time Bucket Picker */}
-        <div className="bg-background flex w-fit items-center gap-1 rounded-lg border p-1">
-          {(['daily', 'weekly', 'monthly', 'yearly'] as const).map((bucket) => (
-            <button
-              key={bucket}
-              onClick={() => setTimeBucket(bucket)}
-              className={`rounded-md px-3 py-1 text-xs font-medium transition-colors ${
-                timeBucket === bucket
-                  ? 'bg-primary text-primary-foreground shadow-sm'
-                  : 'text-muted-foreground hover:text-foreground hover:bg-muted'
-              }`}
-            >
-              {bucket.charAt(0).toUpperCase() + bucket.slice(1)}
-            </button>
-          ))}
+        <div className="flex flex-col items-center justify-between gap-2 lg:flex-row lg:items-center lg:justify-between">
+          {/* Time Bucket Picker */}
+          <div className="bg-background flex w-fit items-center gap-1 rounded-lg border p-1">
+            {(['daily', 'weekly', 'monthly', 'yearly'] as const).map((bucket) => (
+              <button
+                key={bucket}
+                onClick={() => setTimeBucket(bucket)}
+                className={`rounded-md px-2 py-1 text-xs font-medium transition-colors lg:px-3 lg:py-1 ${
+                  timeBucket === bucket
+                    ? 'bg-primary text-primary-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                }`}
+              >
+                {bucket.charAt(0).toUpperCase() + bucket.slice(1)}
+              </button>
+            ))}
+          </div>
+
+          {/* Date Range Picker */}
+          <DateRangePicker value={dateRange} onChange={setDateRange} title="Select Date Range" className="text-xs" />
         </div>
       </CardHeader>
       <CardContent className="pt-0">

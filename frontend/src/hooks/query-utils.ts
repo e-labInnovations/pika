@@ -3,20 +3,21 @@ import type { TransactionType } from '@/lib/transaction-utils';
 import type { QueryClient } from '@tanstack/react-query';
 
 export const queryKeys = {
+  accounts: 'accounts',
   appInfo: 'app-info',
   appLists: 'app-lists',
   categories: 'categories',
-  accounts: 'accounts',
+  categorySpending: 'category-spending',
+  dailySummaries: 'daily-summaries',
+  monthlySummary: 'monthly-summary',
   people: 'people',
+  peopleActivity: 'people-activity',
+  personTransactionSummary: 'person-transaction-summary',
+  personTransactions: 'person-transactions',
+  tagActivity: 'tag-activity',
   tags: 'tags',
   transactions: 'transactions',
-  tagActivity: 'tag-activity',
-  categorySpending: 'category-spending',
-  peopleActivity: 'people-activity',
-  monthlySummary: 'monthly-summary',
-  dailySummaries: 'daily-summaries',
   weeklyExpenses: 'weekly-expenses',
-  personTransactionSummary: 'person-transaction-summary',
 } as const;
 
 export const queryUtils = {
@@ -66,6 +67,8 @@ export const invalidateTxRelatedQueries = (queryClient: QueryClient) => {
     queryKeys.peopleActivity,
     queryKeys.monthlySummary,
     queryKeys.dailySummaries,
+    queryKeys.personTransactionSummary,
+    queryKeys.personTransactions,
   ];
 
   const otherQueries = [queryKeys.transactions, queryKeys.weeklyExpenses];
@@ -95,7 +98,7 @@ export const invalidateTxRelatedQueries = (queryClient: QueryClient) => {
 };
 
 export const invalidatePeopleRelatedQueries = (queryClient: QueryClient) => {
-  const queries = [queryKeys.peopleActivity, queryKeys.transactions];
+  const queries = [queryKeys.peopleActivity, queryKeys.transactions, queryKeys.personTransactions];
   queries.forEach((query) => {
     queryClient.invalidateQueries({ queryKey: [query] });
   });
@@ -107,7 +110,7 @@ export const invalidatePeopleRelatedQueries = (queryClient: QueryClient) => {
 };
 
 export const invalidateCategoryRelatedQueries = (queryClient: QueryClient) => {
-  const queries = [queryKeys.categorySpending, queryKeys.transactions];
+  const queries = [queryKeys.categorySpending, queryKeys.transactions, queryKeys.personTransactions];
   queries.forEach((query) => {
     queryClient.invalidateQueries({ queryKey: [query] });
   });
@@ -119,7 +122,7 @@ export const invalidateCategoryRelatedQueries = (queryClient: QueryClient) => {
 };
 
 export const invalidateTagRelatedQueries = (queryClient: QueryClient) => {
-  const queries = [queryKeys.tagActivity, queryKeys.transactions];
+  const queries = [queryKeys.tagActivity, queryKeys.transactions, queryKeys.personTransactions];
   queries.forEach((query) => {
     queryClient.invalidateQueries({ queryKey: [query] });
   });
@@ -131,7 +134,7 @@ export const invalidateTagRelatedQueries = (queryClient: QueryClient) => {
 };
 
 export const invalidateAccountRelatedQueries = (queryClient: QueryClient) => {
-  const queries = [queryKeys.transactions];
+  const queries = [queryKeys.transactions, queryKeys.personTransactions];
   queries.forEach((query) => {
     queryClient.invalidateQueries({ queryKey: [query] });
   });

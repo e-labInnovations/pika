@@ -235,7 +235,7 @@ const DetailedPerson = () => {
             <PersonFinancialChart person={person} />
 
             {/* Recent Transactions */}
-            <PersonTransactions personId={id as string} />
+            <PersonTransactions person={person} />
           </div>
         )}
       </AsyncStateWrapper>

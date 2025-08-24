@@ -241,6 +241,16 @@ export function useTransactions() {
   });
 }
 
+export const usePersonTransactions = (personId: string, limit: number, offset: number) => {
+  return useQuery({
+    queryKey: [queryKeys.personTransactions, personId, limit, offset],
+    queryFn: async () => {
+      const response = await transactionsService.getPersonTransactions(personId, limit, offset);
+      return response.data;
+    },
+  });
+};
+
 /** ***************************************************************************
  *                                  Analytics
  *************************************************************************** */

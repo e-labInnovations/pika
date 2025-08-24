@@ -1,43 +1,23 @@
-import { useEffect, useState } from 'react';
 import AsyncStateWrapper from '@/components/async-state-wrapper';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { transactionsService, type Transaction } from '@/services/api';
 import { useNavigate } from 'react-router-dom';
 import { CategoryTransactionIcon } from '@/components/category-transaction-icon';
 import transactionUtils from '@/lib/transaction-utils';
 import { currencyUtils } from '@/lib/currency-utils';
 import { useAuth } from '@/hooks/use-auth';
+import { usePersonTransactions } from '@/hooks/queries';
+import ChartNoData from '../ui/chart-no-data';
+import type { Person } from '@/services/api';
 
 interface PersonTransactionsProps {
-  personId: string | null;
+  person: Person;
 }
 
-const PersonTransactions = ({ personId }: PersonTransactionsProps) => {
-  const [personTransactions, setPersonTransactions] = useState<Transaction[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+const PersonTransactions = ({ person }: PersonTransactionsProps) => {
+  const { data: personTransactions, isLoading, error } = usePersonTransactions(person.id, 10, 0);
   const navigate = useNavigate();
   const { user } = useAuth();
-
-  useEffect(() => {
-    if (!personId) {
-      setError('Something went wrong with the person ID');
-      return;
-    }
-    setIsLoading(true);
-    transactionsService
-      .getPersonTransactions(personId, 10, 0)
-      .then((res) => {
-        setPersonTransactions(res.data);
-      })
-      .catch((err) => {
-        setError(err.message);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  }, [personId]);
 
   return (
     <AsyncStateWrapper isLoading={isLoading} error={error}>
@@ -48,14 +28,14 @@ const PersonTransactions = ({ personId }: PersonTransactionsProps) => {
             variant="ghost"
             size="sm"
             className="text-sm"
-            onClick={() => navigate(`/transactions?personId=${personId}&source=person`)}
+            onClick={() => navigate(`/transactions?personId=${person.id}&source=person`)}
           >
             View All
           </Button>
         </CardHeader>
         <CardContent className="gap-4">
           <div className="space-y-3">
-            {personTransactions.map((transaction) => (
+            {personTransactions?.map((transaction) => (
               <div
                 onClick={() => navigate(`/transactions/${transaction.id}`)}
                 key={transaction.id}
@@ -80,6 +60,14 @@ const PersonTransactions = ({ personId }: PersonTransactionsProps) => {
                 </span>
               </div>
             ))}
+            {personTransactions?.length === 0 && (
+              <ChartNoData
+                title="No Transactions Found"
+                description={`No transaction data found for ${person.name ?? 'this person'}`}
+                icon="list-ordered"
+                className="h-64 sm:h-72 md:h-80"
+              />
+            )}
           </div>
         </CardContent>
       </Card>
