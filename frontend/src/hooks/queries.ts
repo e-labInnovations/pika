@@ -308,3 +308,18 @@ export const useWeeklyExpenses = () => {
     },
   });
 };
+
+export const usePersonTransactionSummary = (
+  personId: string,
+  timeBucket?: string,
+  startDate?: string,
+  endDate?: string,
+) => {
+  return useQuery({
+    queryKey: [queryKeys.personTransactionSummary, personId, timeBucket, startDate, endDate],
+    queryFn: async () => {
+      const response = await analyticsService.getPersonTransactionSummary(personId, timeBucket, startDate, endDate);
+      return response.data;
+    },
+  });
+};

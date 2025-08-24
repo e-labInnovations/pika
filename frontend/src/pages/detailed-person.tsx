@@ -16,6 +16,7 @@ import { usePeopleMutations } from '@/hooks/queries';
 import { cn, getColorFromName, getInitials } from '@/lib/utils';
 import PersonTransactions from '@/components/people-tab/person-transactions';
 import AsyncStateWrapper from '@/components/async-state-wrapper';
+import PersonFinancialChart from '@/components/people-tab/person-financial-chart';
 
 const DetailedPerson = () => {
   const [person, setPerson] = useState<PersonDetailed | null>(null);
@@ -229,6 +230,9 @@ const DetailedPerson = () => {
                 </CardContent>
               </Card>
             </div>
+
+            {/* Monthly Financial Chart */}
+            <PersonFinancialChart person={person} />
 
             {/* Recent Transactions */}
             <PersonTransactions personId={id as string} />

@@ -134,6 +134,22 @@ export interface MonthlyPersonActivity {
   };
 }
 
+export interface PersonTransactionSummaryItem {
+  period: string;
+  expense: number;
+  income: number;
+  balance: number;
+}
+
+export interface PersonTransactionSummary {
+  data: PersonTransactionSummaryItem[];
+  meta: {
+    timeBucket: string;
+    startDate: string;
+    endDate: string;
+  };
+}
+
 class AnalyticsService extends BaseService<unknown> {
   constructor() {
     super('/analytics');
@@ -170,6 +186,17 @@ class AnalyticsService extends BaseService<unknown> {
   getPeopleActivity(month: number, year: number): Promise<AxiosResponse<MonthlyPersonActivity>> {
     return this.api.get<MonthlyPersonActivity>(`${this.endpoint}/monthly-person-activity`, {
       params: { month, year },
+    });
+  }
+
+  getPersonTransactionSummary(
+    personId: string,
+    timeBucket?: string,
+    startDate?: string,
+    endDate?: string,
+  ): Promise<AxiosResponse<PersonTransactionSummary>> {
+    return this.api.get<PersonTransactionSummary>(`${this.endpoint}/person-transaction-summary`, {
+      params: { personId, timeBucket, startDate, endDate },
     });
   }
 }

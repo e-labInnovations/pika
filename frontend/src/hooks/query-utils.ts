@@ -16,6 +16,7 @@ export const queryKeys = {
   monthlySummary: 'monthly-summary',
   dailySummaries: 'daily-summaries',
   weeklyExpenses: 'weekly-expenses',
+  personTransactionSummary: 'person-transaction-summary',
 } as const;
 
 export const queryUtils = {
