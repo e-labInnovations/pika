@@ -11,10 +11,12 @@ Pika_Utils::reject_abs_path();
 class Pika_Analytics_Controller extends Pika_Base_Controller {
 
     public $analytics_manager;
+    public $people_manager;
 
     public function __construct() {
         parent::__construct();
         $this->analytics_manager = new Pika_Analytics_Manager();
+        $this->people_manager = new Pika_People_Manager();
     }
 
     /**
@@ -54,6 +56,12 @@ class Pika_Analytics_Controller extends Pika_Base_Controller {
         register_rest_route($this->namespace, '/analytics/monthly-person-activity', [
             'methods' => 'GET',
             'callback' => [$this, 'get_monthly_person_activity'],
+            'permission_callback' => [$this, 'check_auth']
+        ]);
+
+        register_rest_route($this->namespace, '/analytics/person-transaction-summary', [
+            'methods' => 'GET',
+            'callback' => [$this, 'get_person_transaction_summary'],
             'permission_callback' => [$this, 'check_auth']
         ]);
     }
@@ -161,5 +169,25 @@ class Pika_Analytics_Controller extends Pika_Base_Controller {
 
         $monthly_person_activity = $this->analytics_manager->get_monthly_person_activity($month, $year);
         return $monthly_person_activity;
+    }
+
+    public function get_person_transaction_summary($request) {
+        $params = $request->get_params();
+        $person_id = $params['personId'];
+        $start_date = $params['startDate'] ?? null;
+        $end_date = $params['endDate'] ?? null;
+        $time_bucket = $params['timeBucket'] ?? null;
+
+        $person_id = $this->people_manager->sanitize_person_id($person_id);
+        if (is_null($person_id)) {
+            return $this->people_manager->get_error('invalid_person_id');
+        }
+
+        $start_date = $this->analytics_manager->sanitize_date($start_date);
+        $end_date = $this->analytics_manager->sanitize_date($end_date);
+        $time_bucket = $this->analytics_manager->sanitize_time_bucket($time_bucket);
+
+        $person_transaction_summary = $this->analytics_manager->get_person_transaction_summary($person_id, $start_date, $end_date, $time_bucket);
+        return $person_transaction_summary;
     }
 }

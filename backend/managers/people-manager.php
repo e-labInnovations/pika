@@ -21,6 +21,7 @@ class Pika_People_Manager extends Pika_Base_Manager {
     'invalid_email' => ['message' => 'Invalid email', 'status' => 400],
     'person_already_exists' => ['message' => 'Person with same name and email already exists', 'status' => 400],
     'person_has_transactions' => ['message' => 'Person has transactions. Please delete the transactions first.', 'status' => 400],
+    'invalid_person_id' => ['message' => 'Person id is invalid', 'status' => 400],
   ];
 
   public function __construct() {
@@ -69,6 +70,22 @@ class Pika_People_Manager extends Pika_Base_Manager {
   public function is_valid_avatar_id($id) {
     $avatar = $this->upload_manager->get_file_by_id($id);
     return ($avatar !== null && $avatar->attachment_type === 'image' && $avatar->entity_type === 'person' && $avatar->user_id === strval(get_current_user_id()));
+  }
+
+  /**
+   * Is valid person id
+   * 
+   * @param int $id Person ID
+   * @return int|null Sanitized person id on success, null on failure
+   */
+  public function sanitize_person_id($id) {
+    $id = intval($id);
+    if (!is_numeric($id)) return null;
+
+    $person = $this->get_person($id);
+    if (is_wp_error($person) || $person->user_id !== strval(get_current_user_id())) return null;
+
+    return $id;
   }
 
   /**

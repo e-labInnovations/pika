@@ -18,10 +18,17 @@ class Pika_Analytics_Manager extends Pika_Base_Manager {
 
     protected $upload_manager;
     protected $settings_manager;
+    protected $time_bucket_map = [
+        'daily' => 'daily',
+        'weekly' => 'weekly',
+        'monthly' => 'monthly',
+        'yearly' => 'yearly',
+    ];
 
     protected $errors = [
         'invalid_month' => ['message' => 'Invalid month, month must be a number between 1 and 12.', 'status' => 400],
         'invalid_year' => ['message' => 'Invalid year, year must be a number.', 'status' => 400],
+        'invalid_date' => ['message' => 'Invalid date, date must be a valid date string.', 'status' => 400],
     ];
 
     public function __construct() {
@@ -44,6 +51,26 @@ class Pika_Analytics_Manager extends Pika_Base_Manager {
             return $this->get_error('invalid_year');
         }
         return $year;
+    }
+
+    /**
+     * Sanitize date
+     * 
+     * @param string $date Date string
+     * @return string|null Sanitized date string in Y-m-d H:i:s.0 format, or null if invalid
+     */
+    public function sanitize_date($date) {
+        if (is_null($date)) return null;
+        $timestamp = strtotime($date);
+        if ($timestamp === false) return null;
+        return date('Y-m-d H:i:s.0', $timestamp);
+    }
+
+    public function sanitize_time_bucket($time_bucket) {
+        $default_time_bucket = $this->time_bucket_map['monthly'];
+        if (is_null($time_bucket)) return $default_time_bucket;
+        $time_bucket = strtolower($time_bucket);
+        return isset($this->time_bucket_map[$time_bucket]) ? $this->time_bucket_map[$time_bucket] : $default_time_bucket;
     }
 
     /**
@@ -841,4 +868,89 @@ WHERE
             'meta' => $meta,
         ];
     }
+
+    /**
+     * Get person transaction summary
+     * 
+     * @param int $person_id Person ID
+     * @param string|null $start_date Start date in Y-m-d H:i:s.0 format
+     * @param string|null $end_date End date in Y-m-d H:i:s.0 format
+     * @param string $time_bucket Time bucket: daily | weekly | monthly | yearly
+     * @return array Person transaction summary
+     */
+    public function get_person_transaction_summary($person_id, $start_date, $end_date, $time_bucket) {
+        $user_id = get_current_user_id();
+        $transactions_table = $this->get_table_name($this->transaction_table_name);
+
+        // Choose grouping expression based on bucket
+        switch ($time_bucket) {
+            case 'yearly':
+                $group_expr = "CAST(CONCAT(EXTRACT(YEAR FROM t.date), '-01-01') AS DATE)";
+                break;
+
+            case 'monthly':
+                $group_expr = "CAST(DATE_FORMAT(t.date, '%Y-%m-01') AS DATE)";
+                break;
+
+            case 'weekly':
+                $group_expr = "ADDDATE(CAST(t.date AS DATE), -WEEKDAY(t.date))";
+                break;
+
+            case 'daily':
+            default:
+                $group_expr = "DATE(t.date)";
+                break;
+        }
+
+        // Build query
+        $sql = $this->db()->prepare("
+            SELECT 
+                t.type AS type,
+                {$group_expr} AS period,
+                IFNULL(SUM(t.amount), 0) AS total_amount
+            FROM {$transactions_table} AS t
+            WHERE t.person_id = %d
+            AND t.user_id = %d
+            AND t.is_active = 1", $person_id, $user_id);
+        if (!is_null($start_date)) {
+            $sql = $this->db()->prepare($sql . " AND t.date >= %s", $start_date);
+        }
+        if (!is_null($end_date)) {
+            $sql = $this->db()->prepare($sql . " AND t.date < %s", $end_date);
+        }
+        $sql = $this->db()->prepare($sql . " GROUP BY type, period ORDER BY period ASC");
+        $results = $this->db()->get_results($sql, ARRAY_A);
+
+        if (is_wp_error($results)) {
+            return $this->get_error('db_error');
+        }
+
+        $data = [];
+        foreach ($results as $result) {
+            $data[$result['period']][$result['type']] = $result['total_amount'];
+            $data[$result['period']]['period'] = $result['period'];
+        }
+
+        $final_data = [];
+        foreach ($data as $result) {
+            $final_data[] = [
+                'period' => $this->utils->to_iso8601_utc($result['period']),
+                'expense' => floatval($result['expense'] ?? 0),
+                'income' => floatval($result['income'] ?? 0),
+                'balance' => floatval($result['income'] ?? 0) - floatval($result['expense'] ?? 0),
+            ];
+        }
+
+        $result = [
+            'data' => $final_data,
+            'meta' => [
+                'timeBucket' => $time_bucket,
+                'startDate' => $start_date,
+                'endDate' => $end_date,
+            ],
+        ];
+
+        return $result;
+    }
+
 }

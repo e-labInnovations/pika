@@ -15,10 +15,9 @@
 
 ###
 
-# Get app info
-GET {{base_url}}/wp-json/pika/v1/auth/app-info
-
-###
+# ========================================
+# AUTH API ENDPOINTS
+# ========================================
 
 # @name login
 POST {{base_url}}/wp-json/pika/v1/auth/login
@@ -26,7 +25,7 @@ Content-Type: application/json
 
 {
   "user_login": "testuser",
-  "password": "ZrSu bLlj fzBf V6gf YGqe lxwp"
+  "password": "LibW OzjP URED zVID ADvr kDB1"
 }
 
 ###
@@ -60,7 +59,27 @@ Content-Type: application/json
 {
   "session_id": "<uuid here>"
 }
+
 ###
+
+# ========================================
+# APP API ENDPOINTS
+# ========================================
+
+# Get app info
+GET {{base_url}}/wp-json/pika/v1/app/info
+
+###
+
+# Get all app lists
+GET {{base_url}}/wp-json/pika/v1/app/lists
+Cookie: {{authCookie}}
+
+###
+
+# ========================================
+# SETTINGS API ENDPOINTS
+# ========================================
 
 # Get settings
 GET {{base_url}}/wp-json/pika/v1/settings
@@ -123,6 +142,10 @@ Content-Type: application/json
 
 ###
 
+# ========================================
+# TAGS API ENDPOINTS
+# ========================================
+
 # Get all tags
 GET {{base_url}}/wp-json/pika/v1/tags
 Cookie: {{authCookie}}
@@ -168,6 +191,10 @@ DELETE {{base_url}}/wp-json/pika/v1/tags/7
 Cookie: {{authCookie}}
 
 ###
+
+# ========================================
+# CATEGORIES API ENDPOINTS
+# ========================================
 
 # Get all categories
 GET {{base_url}}/wp-json/pika/v1/categories
@@ -215,6 +242,10 @@ DELETE {{base_url}}/wp-json/pika/v1/categories/61
 Cookie: {{authCookie}}
 
 ###
+
+# ========================================
+# UPLOAD API ENDPOINTS
+# ========================================
 
 # Upload a file - account avatar
 POST {{base_url}}/wp-json/pika/v1/upload/avatar
@@ -278,6 +309,10 @@ Content-Type: application/pdf
 
 ###
 
+# ========================================
+# PEOPLE API ENDPOINTS
+# ========================================
+
 # Get all people
 GET {{base_url}}/wp-json/pika/v1/people
 Cookie: {{authCookie}}
@@ -321,6 +356,10 @@ DELETE {{base_url}}/wp-json/pika/v1/people/7
 Cookie: {{authCookie}}
 
 ###
+
+# ========================================
+# ACCOUNTS API ENDPOINTS
+# ========================================
 
 # Get all accounts
 GET {{base_url}}/wp-json/pika/v1/accounts
@@ -382,6 +421,10 @@ Cookie: {{authCookie}}
 
 ###
 
+# ========================================
+# TRANSACTIONS API ENDPOINTS
+# ========================================
+
 # Get all transactions
 GET {{base_url}}/wp-json/pika/v1/transactions
 Cookie: {{authCookie}}
@@ -434,6 +477,10 @@ DELETE {{base_url}}/wp-json/pika/v1/transactions/4
 Cookie: {{authCookie}}
 
 ###
+
+# ========================================
+# ANALYTICS API ENDPOINTS
+# ========================================
 
 # Get weekly expenses
 GET {{base_url}}/wp-json/pika/v1/analytics/weekly-expenses
@@ -500,11 +547,28 @@ Content-Type: application/json
 
 ###
 
+# Get person transaction summary
+
+GET {{base_url}}/wp-json/pika/v1/analytics/person-transaction-summary?personId=7&timeBucket=monthly
+Cookie: {{authCookie}}
+Content-Type: application/json
+
+
+###
+
+# ========================================
+# AI API ENDPOINTS
+# ========================================
+
 # Test gemini response
 GET {{base_url}}/wp-json/pika/v1/ai/test
 Cookie: {{authCookie}}
 
 ###
+
+# ========================================
+# REMINDERS API ENDPOINTS
+# ========================================
 
 # Get all reminders
 GET {{base_url}}/wp-json/pika/v1/reminders
@@ -690,6 +754,10 @@ POST {{base_url}}/wp-json/pika/v1/reminders/5/archive
 Cookie: {{authCookie}}
 
 ###
+
+# ========================================
+# IMPORT/EXPORT API ENDPOINTS
+# ========================================
 
 # Get supported import/export formats
 GET {{base_url}}/wp-json/pika/v1/import-export/formats
