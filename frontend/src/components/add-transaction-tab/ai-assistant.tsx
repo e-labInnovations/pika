@@ -197,7 +197,7 @@ const AIAssistant = ({ open, setOpen, handleTransactionDetails, sharedData, onCl
         <DrawerHeader className="items-start gap-3 pb-0">
           <DrawerTitle className="flex w-full items-center gap-3">
             <span className="rounded-full bg-purple-100 p-3 dark:bg-purple-900/30">
-              <DynamicIcon name="sparkles" className="h-4 w-4 text-purple-500" />
+              <DynamicIcon name="bot" className="h-4 w-4 text-purple-500" />
             </span>
             <div className="flex flex-col text-left">
               <span className="text-base leading-tight font-semibold">AI Transaction Assistant</span>

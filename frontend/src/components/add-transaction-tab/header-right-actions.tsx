@@ -1,5 +1,5 @@
-import { Sparkles } from 'lucide-react';
-import { Button } from '../ui/button';
+import DynamicIcon from '@/components/lucide/dynamic-icon';
+import { Button } from '@/components/ui/button';
 
 interface HeaderRightActionsProps {
   handleOpenAIAssistant: () => void;
@@ -14,7 +14,7 @@ const HeaderRightActions = ({ handleOpenAIAssistant }: HeaderRightActionsProps) 
         size="icon"
         className="rounded-full border-none bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600"
       >
-        <Sparkles className="h-4 w-4" />
+        <DynamicIcon name="bot" className="h-4 w-4" />
       </Button>
     </div>
   );
