@@ -12,6 +12,7 @@ class Pika_API_Loader {
 
     private $controllers = [
         'accounts',
+        'admin',
         'ai',
         'analytics',
         'app',
@@ -110,6 +111,9 @@ class Pika_API_Loader {
             // Skip if not a Pika route
             $request_uri = $_SERVER['REQUEST_URI'] ?? '';
             if (strpos($request_uri, '/wp-json/pika/') === false) {
+                return $user_id;
+            }
+            if (strpos($request_uri, '/wp-json/pika/v1/admin') !== false) {
                 return $user_id;
             }
 

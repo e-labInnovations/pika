@@ -4,13 +4,13 @@ import React from 'react'
 const Settings = () => {
   return (
     <AdminCard 
-    title="TypeScript Admin Component" 
-    subtitle="This is built with TypeScript and React"
+    title="Settings" 
+    subtitle="This is the settings page"
   >
     <div className="text-red-500">
-      <p>Hello from TypeScript! 🚀</p>
+      <p>This is the settings page</p>
       <p className="text-sm text-gray-600 mt-2">
-        This component demonstrates TypeScript integration with WordPress scripts.
+        This is the settings page.
       </p>
     </div>
   </AdminCard>
