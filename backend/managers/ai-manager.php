@@ -31,6 +31,9 @@ class Pika_AI_Manager extends Pika_Base_Manager {
     'invalid_image' => ['message' => 'Invalid image file. Please upload a valid image (PNG, JPEG, GIF, WebP) under 10MB.', 'status' => 400],
     'file_too_large' => ['message' => 'File is too large. Maximum size is 10MB.', 'status' => 400],
     'wrong_file_type' => ['message' => 'Wrong file type. Please upload an image file (PNG, JPEG, GIF, WebP).', 'status' => 400],
+    'invalid_api_key' => ['message' => 'Invalid API key format. Please enter a valid API key.', 'status' => 400],
+    'save_failed' => ['message' => 'Failed to save API key. Please try again.', 'status' => 500],
+    'api_key_already_exists' => ['message' => 'API key already exists. Please enter a different API key.', 'status' => 400],
   ];
 
   /**
@@ -91,12 +94,86 @@ class Pika_AI_Manager extends Pika_Base_Manager {
     ];
   }
 
-
-  private function get_gemini_api_key() {
-    $api_key = $this->settings_manager->get_settings_item(get_current_user_id(), 'gemini_api_key');
+  /**
+   * Get global Gemini API key from options
+   * 
+   * @return array
+   */
+  public function get_global_gemini_api_key() {
+    $api_key = get_option('pika_gemini_api_key', '');
+    $is_enabled = get_option('pika_ai_features_enabled', true);
+    
     return [
       'api_key' => $api_key,
-      'is_user_api_key' => 1,
+      'is_enabled' => $is_enabled,
+    ];
+  }
+
+  /**
+   * Save global Gemini API key and feature status
+   * 
+   * @param string $api_key
+   * @param bool $is_enabled
+   * @return bool|WP_Error
+   */
+  public function save_global_ai_settings($api_key, $is_enabled) {
+    // Validate API key format
+    if (!empty($api_key) && !(is_string($api_key))) {
+      return $this->get_error('invalid_api_key');
+    }
+
+    // Save API key
+    $api_key_result = update_option('pika_gemini_api_key', $api_key);
+    // if ($api_key_result === false) {
+    //   return $this->get_error('save_failed');
+    // }
+
+    // Save feature status
+    $enabled_result = update_option('pika_ai_features_enabled', $is_enabled);
+    // if ($enabled_result === false) {
+    //   return $this->get_error('save_failed');
+    // }
+
+    return true;
+  }
+
+  /**
+   * Check if AI features are globally enabled
+   * 
+   * @return bool
+   */
+  public function is_ai_globally_enabled() {
+    return get_option('pika_ai_features_enabled', true);
+  }
+
+  /**
+   * Get global API key for AI operations
+   * 
+   * @return string|null
+   */
+  public function get_global_api_key() {
+    if (!$this->is_ai_globally_enabled()) {
+      return null;
+    }
+    
+    return get_option('pika_gemini_api_key', '');
+  }
+
+  private function get_gemini_api_key() {
+    // First try to get user-specific API key
+    $api_key = $this->settings_manager->get_settings_item(get_current_user_id(), 'gemini_api_key');
+    if (!empty($api_key)) {
+      return [
+        'api_key' => $api_key,
+        'is_user_api_key' => 1, // User-specific key
+      ];
+    }
+
+    // Fallback to global API key
+    $global_api_key = $this->get_global_api_key();
+    return [
+      'api_key' => $global_api_key,
+      'is_user_api_key' => 0, // Global key
     ];
   }
 

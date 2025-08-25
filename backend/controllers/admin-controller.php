@@ -44,11 +44,37 @@ class Pika_Admin_Controller extends Pika_Base_Controller {
             'callback' => [$this, 'get_user_growth'],
             'permission_callback' => [$this, 'is_admin']
         ]);
+
+        // AI Settings endpoints
+        register_rest_route($this->namespace, '/admin/ai-settings', [
+            'methods' => 'GET',
+            'callback' => [$this, 'get_ai_settings'],
+            'permission_callback' => [$this, 'is_admin']
+        ]);
+
+        register_rest_route($this->namespace, '/admin/ai-settings', [
+            'methods' => 'POST',
+            'callback' => [$this, 'save_ai_settings'],
+            'permission_callback' => [$this, 'is_admin']
+        ]);
+
+        // AI Usage Statistics endpoint
+        register_rest_route($this->namespace, '/admin/ai-usage-stats', [
+            'methods' => 'GET',
+            'callback' => [$this, 'get_ai_usage_stats'],
+            'permission_callback' => [$this, 'is_admin']
+        ]);
+
+        // AI Usage Chart Data endpoint
+        register_rest_route($this->namespace, '/admin/ai-usage-chart', [
+            'methods' => 'GET',
+            'callback' => [$this, 'get_ai_usage_chart'],
+            'permission_callback' => [$this, 'is_admin']
+        ]);
     }
 
     public function is_admin($request) {
-        return true;
-        // return current_user_can('manage_options');
+        return current_user_can('manage_options');
     }
 
     public function get_stats($request) {
@@ -66,5 +92,49 @@ class Pika_Admin_Controller extends Pika_Base_Controller {
 
     public function get_user_growth($request) {
         return $this->admin_manager->get_user_growth();
+    }
+
+    /**
+     * Get global AI settings
+     * 
+     * @param WP_REST_Request $request
+     * @return array|WP_Error
+     */
+    public function get_ai_settings($request) {
+        return $this->admin_manager->get_ai_settings();
+    }
+
+    /**
+     * Save global AI settings
+     * 
+     * @param WP_REST_Request $request
+     * @return array|WP_Error
+     */
+    public function save_ai_settings($request) {
+        $api_key = sanitize_text_field($request->get_param('api_key'));
+        $is_enabled = (bool) $request->get_param('is_enabled');
+        
+        return $this->admin_manager->save_ai_settings($api_key, $is_enabled);
+    }
+
+    /**
+     * Get AI usage statistics
+     * 
+     * @param WP_REST_Request $request
+     * @return array|WP_Error
+     */
+    public function get_ai_usage_stats($request) {
+        return $this->admin_manager->get_ai_usage_stats();
+    }
+
+    /**
+     * Get AI usage chart data
+     * 
+     * @param WP_REST_Request $request
+     * @return array|WP_Error
+     */
+    public function get_ai_usage_chart($request) {
+        $days = (int) $request->get_param('days') ?: 30;
+        return $this->admin_manager->get_ai_usage_chart($days);
     }
 }

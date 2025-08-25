@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Users, Activity, CreditCard, Database, Bell, Bot } from 'lucide-react';
 import StatsCard from '../components/StatsCard';
-import UserGrowthChart from '../components/UserGrowthChart';
+import UserGrowthChart from '../components/dashboard/UserGrowthChart';
 import SystemStatus from '../components/SystemStatus';
 import ApiUsageCard from '../components/ApiUsageCard';
 import TopUsersTable from '../components/TopUsersTable';
