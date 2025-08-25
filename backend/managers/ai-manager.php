@@ -10,7 +10,7 @@ Pika_Utils::reject_abs_path();
 
 class Pika_AI_Manager extends Pika_Base_Manager {
 
-  protected $table_name = '';
+  protected $table_name = 'ai_usages';
   protected $analytics_manager;
   protected $categories_manager;
   protected $tags_manager;
@@ -93,29 +93,94 @@ class Pika_AI_Manager extends Pika_Base_Manager {
 
 
   private function get_gemini_api_key() {
-    return $this->settings_manager->get_settings_item(get_current_user_id(), 'gemini_api_key');
+    $api_key = $this->settings_manager->get_settings_item(get_current_user_id(), 'gemini_api_key');
+    return [
+      'api_key' => $api_key,
+      'is_user_api_key' => 1,
+    ];
   }
 
   private function get_gemini_endpoint() {
-
     return $this->gemini_endpoint . $this->gemini_model . ':generateContent';
   }
 
-  private function gemini_client($data) {
-    $api_key = $this->get_gemini_api_key();
+  private function save_ai_usage($provider, $rest_client, $total_time_ms, $prompt_type, $is_user_api_key) {
+    $user_id = get_current_user_id();
+    $table_name = $this->get_table_name();
+    
+    if ($provider === 'gemini') {
+      if (is_wp_error($rest_client)) {
+        $data = [
+          'user_id' => $user_id,
+          'provider' => $provider,
+          'is_user_api_key' => $is_user_api_key,
+          'model' => $this->gemini_model,
+          'total_tokens' => 0,
+          'token_details' => null,
+          'cost' => 0.0,
+          'created_at' => current_time('mysql'),
+          'prompt_type' => $prompt_type,
+          'latency_ms' => $total_time_ms,
+          'status' => 'error',
+          'error_message' => $rest_client->get_error_message()
+        ];
+      } else {
+        $response = json_decode($rest_client['body'], true);
+        $total_tokens = $response['usageMetadata']['totalTokenCount'] ?? 0;
+        $token_details = [
+          'promptTokenCount' => $response['usageMetadata']['promptTokenCount'] ?? 0,
+          'candidatesTokenCount' => $response['usageMetadata']['candidatesTokenCount'] ?? 0,
+          'totalTokenCount' => $response['usageMetadata']['totalTokenCount'] ?? 0,
+          'promptTokensDetails' => $response['usageMetadata']['promptTokensDetails'] ?? [],
+          'thoughtsTokenCount' => $response['usageMetadata']['thoughtsTokenCount'] ?? 0,
+        ];
+        $cost = 0;
+        $model = $response['modelVersion'] ?? $this->gemini_model;
 
-    if (empty($api_key) || is_null($api_key)) {
+        $data = [
+          'user_id' => $user_id,
+          'provider' => $provider,
+          'is_user_api_key' => $is_user_api_key,
+          'model' => $model,
+          'total_tokens' => $total_tokens,
+          'token_details' => json_encode($token_details),
+          'cost' => $cost,
+          'created_at' => current_time('mysql'),
+          'prompt_type' => $prompt_type,
+          'latency_ms' => $total_time_ms,
+          'status' => 'success',
+          'error_message' => null
+        ];
+      }
+
+      $result = $this->db()->insert($table_name, $data);
+      if ($result === false || is_wp_error($result)) {
+        $this->utils->log('Failed to save AI usage', $result);
+      }
+    }
+  }
+
+  private function gemini_client($data, $prompt_type) {
+    $api_key_data = $this->get_gemini_api_key();
+
+    if (empty($api_key_data['api_key']) || is_null($api_key_data['api_key'])) {
       return $this->get_error('ai_service_unavailable');
     }
 
-    return wp_remote_post($this->get_gemini_endpoint(), [
+    $start = microtime(true);
+    $response = wp_remote_post($this->get_gemini_endpoint(), [
       'headers' => [
-        'x-goog-api-key' => $api_key,
+        'x-goog-api-key' => $api_key_data['api_key'],
         'Content-Type' => 'application/json'
       ],
       'timeout' => 120, // 2 minutes
       'body' => json_encode($data)
     ]);
+    $latency_ms = (microtime(true) - $start) * 1000;
+
+    $this->save_ai_usage('gemini', $response, $latency_ms, $prompt_type, $api_key_data['is_user_api_key']);
+
+    return $response;
   }
 
   /**
@@ -274,7 +339,7 @@ class Pika_AI_Manager extends Pika_Base_Manager {
       $pika_data['current_user_datetime']
     );
 
-    $client = $this->gemini_client($prompt_data);
+    $client = $this->gemini_client($prompt_data, "TEXT");
     if (is_wp_error($client)) {
       $this->utils->log('AI Manager Error: gemini_client failed', $client->get_error_message(), 'error');
       return $client;
@@ -311,7 +376,7 @@ class Pika_AI_Manager extends Pika_Base_Manager {
       $pika_data['current_user_datetime']
     );
 
-    $client = $this->gemini_client($prompt_data);
+    $client = $this->gemini_client($prompt_data, "IMAGE");
     if (is_wp_error($client)) {
       $this->utils->log('AI Manager Error: gemini_client failed', $client->get_error_message(), 'error');
       return $this->get_error('ai_invalid_response');
