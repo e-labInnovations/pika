@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Users, Activity, CreditCard, Database, Bell, Bot } from 'lucide-react';
-import StatsCard from '../components/StatsCard';
+import StatsCard from '../components/dashboard/StatsCard';
 import UserGrowthChart from '../components/dashboard/UserGrowthChart';
-import SystemStatus from '../components/SystemStatus';
-import ApiUsageCard from '../components/ApiUsageCard';
-import TopUsersTable from '../components/TopUsersTable';
-import RecentActivity from '../components/RecentActivity';
-import QuickActions from '../components/QuickActions';
-import DashboardHeader from '../components/DashboardHeader';
+import SystemStatus from '../components/dashboard/SystemStatus';
+import ApiUsageCard from '../components/dashboard/ApiUsageCard';
+import TopUsersTable from '../components/dashboard/TopUsersTable';
+import RecentActivity from '../components/dashboard/RecentActivity';
+import QuickActions from '../components/dashboard/QuickActions';
+import DashboardHeader from '../components/shared/DashboardHeader';
 import apiFetch from '@wordpress/api-fetch';
 
 interface Stats {
@@ -124,9 +124,9 @@ const Dashboard: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen p-6">
       <div className="max-w-7xl mx-auto">
-        <DashboardHeader />
+        <DashboardHeader title="Dashboard" description="System overview, user management, and API monitoring" />
 
         {/* Admin Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">

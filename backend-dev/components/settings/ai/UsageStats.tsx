@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { BarChart3, Key, Activity, Users, Zap, TrendingUp, Loader2 } from 'lucide-react';
 import AdminCard from '../../AdminCard';
+import { Button } from '../../ui/button';
 import apiFetch from '@wordpress/api-fetch';
 
 interface UsageStatsProps {
@@ -87,12 +88,9 @@ const UsageStats: React.FC<UsageStatsProps> = ({ onStatsChange }) => {
             <p className="text-sm font-medium">Failed to load statistics</p>
           </div>
           <p className="text-gray-500 mb-4">{error || 'Unknown error occurred'}</p>
-          <button
-            onClick={refreshStats}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
+          <Button onClick={refreshStats}>
             Try Again
-          </button>
+          </Button>
         </div>
       </AdminCard>
     );
@@ -168,12 +166,9 @@ const UsageStats: React.FC<UsageStatsProps> = ({ onStatsChange }) => {
               <Zap className="h-4 w-4 mr-2 text-yellow-600" />
               Token Usage Summary
             </h4>
-            <button
-              onClick={refreshStats}
-              className="text-sm text-blue-600 hover:text-blue-800 font-medium"
-            >
+            <Button onClick={refreshStats} variant="ghost" size="sm">
               Refresh
-            </button>
+            </Button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="text-center p-3 bg-white rounded-lg border border-gray-200">

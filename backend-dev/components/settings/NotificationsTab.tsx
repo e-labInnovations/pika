@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Alert, AlertDescription } from '../ui/alert';
 import NotificationForm from './notifications/NotificationForm';
 import NotificationStats from './notifications/NotificationStats';
 import RecentNotificationsTable from './notifications/RecentNotificationsTable';
@@ -107,17 +108,27 @@ const NotificationsTab = () => {
     }
   };
 
+  // Handle stats change from NotificationStats
+  const handleStatsChange = (stats: any) => {
+    // You can use this to update other components or perform additional actions
+    // console.log('Stats updated:', stats);
+  };
+
+  // Handle notification change from RecentNotificationsTable
+  const handleNotificationChange = (notification: any) => {
+    // You can use this to update other components or perform additional actions
+    // console.log('Notification updated:', notification);
+  };
+
   return (
     <div className="space-y-6">
       {/* Message Display */}
       {message && (
-        <div className={`p-4 rounded-md ${
-          message.type === 'success' 
-            ? 'bg-green-50 border border-green-200 text-green-800' 
-            : 'bg-red-50 border border-red-200 text-red-800'
-        }`}>
-          {message.text}
-        </div>
+        <Alert className={message.type === 'success' ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}>
+          <AlertDescription className={message.type === 'success' ? 'text-green-800' : 'text-red-800'}>
+            {message.text}
+          </AlertDescription>
+        </Alert>
       )}
 
       {/* Send Notification Form */}
@@ -129,15 +140,11 @@ const NotificationsTab = () => {
       />
 
       {/* Notification Statistics */}
-      <NotificationStats
-        totalUsers={mockNotificationStats.totalUsers}
-        activeSubscriptions={mockNotificationStats.activeSubscriptions}
-        notificationsSent={mockNotificationStats.notificationsSent}
-      />
+      <NotificationStats />
 
       {/* Recent Notifications Table */}
       <RecentNotificationsTable 
-        recentNotifications={mockNotificationStats.recentNotifications}
+        onNotificationChange={handleNotificationChange}
       />
     </div>
   );

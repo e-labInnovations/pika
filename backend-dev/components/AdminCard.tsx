@@ -20,7 +20,7 @@ export const AdminCard: React.FC<CardProps> = ({
       {title && (
         <div className="flex items-center gap-2">
           <Settings className="w-4 h-4" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+          <h3 className="text-lg font-semibold text-gray-900">
             {title}
           </h3>
         </div>

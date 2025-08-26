@@ -1,6 +1,6 @@
 import React from 'react';
 import { Database, DollarSign, Activity, Bell } from 'lucide-react';
-import { cn } from '../lib/utils';
+import { cn } from '../../lib/utils';
 
 interface ApiUsageCardProps {
   geminiApiCalls: number;

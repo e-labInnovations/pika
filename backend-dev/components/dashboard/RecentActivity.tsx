@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { TrendingDown, TrendingUp, RefreshCw, Settings, Activity } from 'lucide-react';
-import { cn } from '../lib/utils';
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../ui/card';
+import { Button } from '../ui/button';
+import { Badge } from '../ui/badge';
+import { cn } from '../../lib/utils';
 import apiFetch from '@wordpress/api-fetch';
 
 interface ActivityItem {
@@ -41,31 +44,31 @@ const RecentActivity: React.FC<RecentActivityProps> = ({ className = '' }) => {
     }
   };
 
-  const getStatusColor = (status?: string) => {
+  const getStatusBadgeVariant = (status?: string) => {
     switch (status) {
       case 'completed':
-        return 'text-green-600 bg-green-100';
+        return 'default';
       case 'pending':
-        return 'text-yellow-600 bg-yellow-100';
+        return 'secondary';
       case 'failed':
-        return 'text-red-600 bg-red-100';
+        return 'destructive';
       case 'warning':
-        return 'text-orange-600 bg-orange-100';
+        return 'secondary';
       default:
-        return 'text-gray-600 bg-gray-100';
+        return 'outline';
     }
   };
 
   return (
-    <div className={cn("bg-white rounded-lg shadow-sm border border-gray-200", className)}>
-      <div className="p-6 border-b border-gray-200">
-        <h3 className="text-lg font-semibold text-gray-900">Recent Activity</h3>
-        <p className="text-sm text-gray-600 mt-1">Latest transactions and system activities</p>
-      </div>
+    <Card className={className}>
+      <CardHeader>
+        <CardTitle>Recent Activity</CardTitle>
+        <p className="text-sm text-muted-foreground">Latest transactions and system activities</p>
+      </CardHeader>
       
-      <div className="p-6">
+      <CardContent>
         {activities.length === 0 ? (
-          <div className="text-center py-8">
+          <div className="text-center py-8 flex-grow">
             <Activity className="h-12 w-12 mx-auto text-gray-300 mb-3" />
             <p className="text-gray-500">No recent activity</p>
           </div>
@@ -100,9 +103,9 @@ const RecentActivity: React.FC<RecentActivityProps> = ({ className = '' }) => {
                     <div className="flex items-center justify-between mt-2">
                       <span className="text-xs text-gray-500">{activity.timestamp}</span>
                       {activity.status && (
-                        <span className={cn("px-2 py-1 text-xs font-medium rounded-full", getStatusColor(activity.status))}>
+                        <Badge variant={getStatusBadgeVariant(activity.status)}>
                           {activity.status}
-                        </span>
+                        </Badge>
                       )}
                     </div>
                   </div>
@@ -111,16 +114,16 @@ const RecentActivity: React.FC<RecentActivityProps> = ({ className = '' }) => {
             })}
           </div>
         )}
-      </div>
+      </CardContent>
       
       {activities.length > 0 && (
-        <div className="px-6 py-4 border-t border-gray-200 bg-gray-50">
-          <button className="text-sm text-blue-600 hover:text-blue-800 font-medium">
+        <CardFooter className="bg-gray-50">
+          <Button variant="ghost" size="sm">
             View All Activity
-          </button>
-        </div>
+          </Button>
+        </CardFooter>
       )}
-    </div>
+    </Card>
   );
 };
 

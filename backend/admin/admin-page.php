@@ -86,6 +86,16 @@ class Pika_Admin_Page {
         }
 
         $manifest = require PIKA_PLUGIN_PATH . 'backend/admin/build/main.asset.php';
+        
+        // Enqueue CSS first
+        wp_enqueue_style(
+            'pika-admin-style',
+            PIKA_PLUGIN_URL . 'backend/admin/build/main.css',
+            array(),
+            $manifest['version']
+        );
+
+        // Enqueue JavaScript
         wp_enqueue_script(
             'pika-admin-script',
             PIKA_PLUGIN_URL . 'backend/admin/build/main.js',
@@ -93,11 +103,12 @@ class Pika_Admin_Page {
             $manifest['version']
         );
 
-        wp_enqueue_style(
-            'pika-admin-style',
-            PIKA_PLUGIN_URL . 'backend/admin/build/main.css',
-            array(),
-            $manifest['version']
+        wp_localize_script(
+            'pika-admin-script',
+            'pikaAdmin',
+            [
+                'cssUrl' => PIKA_PLUGIN_URL . 'backend/admin/build/main.css',
+            ]
         );
     }
 

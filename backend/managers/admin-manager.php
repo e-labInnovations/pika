@@ -12,6 +12,13 @@ class Pika_Admin_Manager extends Pika_Base_Manager {
 
     public $errors = [
         'not_admin' => ['message' => 'You are not authorized to access this resource', 'status' => 403],
+        'invalid_notification_title' => ['message' => 'Invalid notification title', 'status' => 400],
+        'invalid_notification_body' => ['message' => 'Invalid notification body', 'status' => 400],
+        'not_ready' => ['message' => 'User does not have notifications enabled or no subscription found', 'status' => 400],
+        'send_error' => ['message' => 'Failed to send test notification', 'status' => 500],
+        'notification_not_found' => ['message' => 'Notification not found', 'status' => 404],
+        'delete_error' => ['message' => 'Failed to delete notification', 'status' => 500],
+        'db_error' => ['message' => 'Database error occurred', 'status' => 500],
     ];
 
     public function __construct() {
@@ -536,6 +543,433 @@ class Pika_Admin_Manager extends Pika_Base_Manager {
                     'period_days' => $days
                 ]
             ]
+        ];
+    }
+
+    /**
+     * Send push notification to users
+     * 
+     * @param array $notification_data
+     * @param array|null $user_ids
+     * @return array
+     */
+    public function send_push_notification($notification_data, $user_ids = null) {
+        $push_manager = new Pika_Push_Notifications_Manager();
+        
+        if ($user_ids) {
+            $result = $push_manager->send_notification_to_users($user_ids, $notification_data);
+        } else {
+            $result = $push_manager->send_notification_to_all($notification_data);
+        }
+
+        // Flush notifications to ensure they are sent immediately
+        $push_manager->flush_notifications();
+
+        // Calculate summary statistics
+        $total_users = count($result);
+        $successful_users = 0;
+        $total_devices = 0;
+        $successful_devices = 0;
+
+        foreach ($result as $user_result) {
+            if (isset($user_result['success']) && $user_result['success']) {
+                $successful_users++;
+            }
+            if (isset($user_result['total_devices'])) {
+                $total_devices += $user_result['total_devices'];
+            }
+            if (isset($user_result['devices_sent'])) {
+                $successful_devices += $user_result['devices_sent'];
+            }
+        }
+
+        return [
+            'success' => true,
+            'message' => 'Notification sent successfully',
+            'summary' => [
+                'total_users' => $total_users,
+                'successful_users' => $successful_users,
+                'total_devices' => $total_devices,
+                'successful_devices' => $successful_devices
+            ],
+            'detailed_results' => $result
+        ];
+    }
+
+    /**
+     * Get push notification statistics
+     * 
+     * @return array
+     */
+    public function get_push_statistics() {
+        $push_manager = new Pika_Push_Notifications_Manager();
+        $stats = $push_manager->get_device_statistics();
+        
+        if (is_wp_error($stats)) {
+            return $stats;
+        }
+
+        return [
+            'success' => true,
+            'data' => $stats
+        ];
+    }
+
+    /**
+     * Send test push notification
+     * 
+     * @return array
+     */
+    public function send_test_push_notification() {
+        $push_manager = new Pika_Push_Notifications_Manager();
+        $user_id = get_current_user_id();
+
+        // Check if user has notifications enabled and has a subscription
+        $enabled = $push_manager->is_enabled_for_user();
+        $subscription = $push_manager->get_subscriptions($user_id);
+        $has_subscription = $subscription !== false && !empty($subscription) && !is_wp_error($subscription);
+
+        if (!$enabled || !$has_subscription) {
+            return $this->get_error('not_ready');
+        }
+
+        // Send test notification
+        $notification_data = [
+            'title' => 'Test Notification',
+            'body' => 'This is a test notification from Pika Finance',
+            'icon' => '/pika/icons/pwa-192x192.png',
+            'tag' => 'test-notification',
+            'data' => ['type' => 'test', 'timestamp' => time()],
+            'require_interaction' => false,
+            'silent' => false
+        ];
+
+        $result = $push_manager->send_notification_to_users([$user_id], $notification_data);
+
+        if (!$result || !isset($result[$user_id])) {
+            return $this->get_error('send_error');
+        }
+
+        $user_result = $result[$user_id];
+
+        // Flush notifications to ensure they are sent immediately
+        $push_manager->flush_notifications();
+
+        return [
+            'success' => true,
+            'message' => 'Test notification sent successfully',
+            'devices_sent' => $user_result['devices_sent'],
+            'total_devices' => $user_result['total_devices'],
+            'success' => $user_result['success']
+        ];
+    }
+
+    /**
+     * Get admin notifications with filters and pagination
+     * 
+     * @param int $page
+     * @param int $per_page
+     * @param string $status
+     * @param string $target
+     * @param string $search
+     * @param string $date_range
+     * @return array
+     */
+    public function get_admin_notifications($page, $per_page, $status = 'all', $target = 'all', $search = '', $date_range = 'all') {
+        $notifications_table_name = $this->get_table_name('notifications');
+        $device_subscriptions_table_name = $this->get_table_name('device_subscriptions');
+        
+        // Build WHERE clause based on filters
+        $where_conditions = [];
+        $where_values = [];
+        
+        // Note: notifications table doesn't have a status column, so we'll filter by is_active instead
+        if ($status !== 'all') {
+            if ($status === 'active') {
+                $where_conditions[] = 'n.is_active = 1';
+            } elseif ($status === 'inactive') {
+                $where_conditions[] = 'n.is_active = 0';
+            } elseif ($status === 'delivered') {
+                // Delivered notifications (read, clicked, or dismissed)
+                $where_conditions[] = '(n.read_at IS NOT NULL OR n.clicked_at IS NOT NULL OR n.dismissed_at IS NOT NULL)';
+            } elseif ($status === 'read') {
+                $where_conditions[] = 'n.read_at IS NOT NULL';
+            } elseif ($status === 'clicked') {
+                $where_conditions[] = 'n.clicked_at IS NOT NULL';
+            } elseif ($status === 'dismissed') {
+                $where_conditions[] = 'n.dismissed_at IS NOT NULL';
+            } elseif ($status === 'unread') {
+                // Unread notifications (none of the interaction fields are set)
+                $where_conditions[] = '(n.read_at IS NULL AND n.clicked_at IS NULL AND n.dismissed_at IS NULL)';
+            }
+        }
+        
+        // Target filter - notifications table has user_id (singular), not user_ids
+        if ($target !== 'all') {
+            if ($target === 'all_users') {
+                // For admin notifications, we'll consider them as "all users" if they're system-wide
+                // This is a simplified approach since the current table structure doesn't support multi-user targeting
+                $where_conditions[] = 'n.user_id = 0 OR n.user_id IS NULL';
+            } else {
+                // Specific user notifications
+                $where_conditions[] = 'n.user_id > 0';
+            }
+        }
+        
+        if ($search) {
+            $where_conditions[] = '(n.title LIKE %s OR n.body LIKE %s)';
+            $search_term = '%' . $this->db()->esc_like($search) . '%';
+            $where_values[] = $search_term;
+            $where_values[] = $search_term;
+        }
+        
+        if ($date_range !== 'all') {
+            switch ($date_range) {
+                case 'today':
+                    $where_conditions[] = 'DATE(n.created_at) = CURDATE()';
+                    break;
+                case '7days':
+                    $where_conditions[] = 'n.created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)';
+                    break;
+                case '30days':
+                    $where_conditions[] = 'n.created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)';
+                    break;
+                case '90days':
+                    $where_conditions[] = 'n.created_at >= DATE_SUB(NOW(), INTERVAL 90 DAY)';
+                    break;
+            }
+        }
+        
+        $where_clause = '';
+        if (!empty($where_conditions)) {
+            $where_clause = 'WHERE ' . implode(' AND ', $where_conditions);
+        }
+        
+        // Get total count
+        $count_sql = "SELECT COUNT(*) FROM {$notifications_table_name} n {$where_clause}";
+        if (!empty($where_values)) {
+            $count_sql = $this->db()->prepare($count_sql, $where_values);
+        }
+        $total_count = $this->db()->get_var($count_sql);
+        
+        if (is_wp_error($total_count)) {
+            return $this->get_error('db_error');
+        }
+        
+        // Get notifications with pagination
+        $offset = ($page - 1) * $per_page;
+        $notifications_sql = "
+            SELECT 
+                n.*,
+                COUNT(DISTINCT ds.user_id) as target_users,
+                COUNT(ds.id) as total_devices,
+                CASE 
+                    WHEN n.read_at IS NOT NULL THEN 'read'
+                    WHEN n.clicked_at IS NOT NULL THEN 'clicked'
+                    WHEN n.dismissed_at IS NOT NULL THEN 'dismissed'
+                    ELSE 'unread'
+                END as delivery_status
+            FROM {$notifications_table_name} n
+            LEFT JOIN {$device_subscriptions_table_name} ds ON ds.user_id = n.user_id AND ds.is_active = 1
+            {$where_clause}
+            GROUP BY n.id
+            ORDER BY n.created_at DESC
+            LIMIT %d OFFSET %d
+        ";
+        
+        $sql_values = array_merge($where_values, [$per_page, $offset]);
+        $notifications_sql = $this->db()->prepare($notifications_sql, $sql_values);
+        $notifications = $this->db()->get_results($notifications_sql);
+        
+        if (is_wp_error($notifications)) {
+            return $this->get_error('db_error');
+        }
+        
+        // Format notifications to match the expected interface
+        $formatted_notifications = [];
+        foreach ($notifications as $notification) {
+            // Determine target type based on user_id
+            $target_type = ($notification->user_id == 0 || $notification->user_id === null) ? 'all_users' : 'specific_users';
+            
+            // Determine status based on available fields
+            $status = 'delivered'; // Default status since we don't have a status column
+            if ($notification->dismissed_at) {
+                $status = 'dismissed';
+            } elseif ($notification->clicked_at) {
+                $status = 'clicked';
+            } elseif ($notification->read_at) {
+                $status = 'read';
+            }
+            
+            $formatted_notifications[] = [
+                'id' => (int) $notification->id,
+                'title' => $notification->title,
+                'body' => $notification->body,
+                'status' => $status,
+                'target' => $target_type,
+                'sent_at' => $notification->created_at, // Use created_at as sent_at
+                'delivered_count' => (int) ($notification->total_devices ?: 0), // Simplified delivery count
+                'total_count' => (int) ($notification->total_devices ?: 0),
+                'user_ids' => $notification->user_id > 0 ? [(int) $notification->user_id] : null,
+                'icon' => $notification->icon,
+                'tag' => $notification->tag,
+                'created_at' => $notification->created_at,
+                'updated_at' => $notification->updated_at,
+                'target_users' => (int) ($notification->target_users ?: 0),
+                'total_devices' => (int) ($notification->total_devices ?: 0)
+            ];
+        }
+        
+        return [
+            'success' => true,
+            'data' => [
+                'notifications' => $formatted_notifications,
+                'pagination' => [
+                    'page' => $page,
+                    'per_page' => $per_page,
+                    'total' => (int) $total_count,
+                    'total_pages' => ceil((int) $total_count / $per_page)
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * Get admin notification details
+     * 
+     * @param int $notification_id
+     * @return array
+     */
+    public function get_admin_notification_details($notification_id) {
+        $notifications_table_name = $this->get_table_name('notifications');
+        $device_subscriptions_table_name = $this->get_table_name('device_subscriptions');
+        
+        $sql = $this->db()->prepare("
+            SELECT 
+                n.*,
+                COUNT(DISTINCT ds.user_id) as target_users,
+                COUNT(ds.id) as total_devices
+            FROM {$notifications_table_name} n
+            LEFT JOIN {$device_subscriptions_table_name} ds ON ds.user_id = n.user_id AND ds.is_active = 1
+            WHERE n.id = %d
+            GROUP BY n.id
+        ", $notification_id);
+        
+        $notification = $this->db()->get_row($sql);
+        
+        if (!$notification || is_wp_error($notification)) {
+            return $this->get_error('notification_not_found');
+        }
+        
+        // Determine target type and status
+        $target_type = ($notification->user_id == 0 || $notification->user_id === null) ? 'all_users' : 'specific_users';
+        $status = 'delivered';
+        if ($notification->dismissed_at) {
+            $status = 'dismissed';
+        } elseif ($notification->clicked_at) {
+            $status = 'clicked';
+        } elseif ($notification->read_at) {
+            $status = 'read';
+        }
+        
+        return [
+            'success' => true,
+            'data' => [
+                'id' => (int) $notification->id,
+                'title' => $notification->title,
+                'body' => $notification->body,
+                'status' => $status,
+                'target' => $target_type,
+                'sent_at' => $notification->created_at,
+                'delivered_count' => (int) ($notification->total_devices ?: 0),
+                'total_count' => (int) ($notification->total_devices ?: 0),
+                'user_ids' => $notification->user_id > 0 ? [(int) $notification->user_id] : null,
+                'icon' => $notification->icon,
+                'tag' => $notification->tag,
+                'created_at' => $notification->created_at,
+                'updated_at' => $notification->updated_at,
+                'target_users' => (int) ($notification->target_users ?: 0),
+                'total_devices' => (int) ($notification->total_devices ?: 0),
+                'data' => json_decode($notification->data, true),
+                'actions' => json_decode($notification->actions, true),
+                'require_interaction' => (bool) $notification->require_interaction,
+                'silent' => (bool) $notification->silent,
+                'read_at' => $notification->read_at,
+                'clicked_at' => $notification->clicked_at,
+                'dismissed_at' => $notification->dismissed_at,
+                'is_active' => (bool) $notification->is_active
+            ]
+        ];
+    }
+
+    /**
+     * Delete admin notification
+     * 
+     * @param int $notification_id
+     * @return array
+     */
+    public function delete_admin_notification($notification_id) {
+        $notifications_table_name = $this->get_table_name('notifications');
+        
+        $result = $this->db()->delete(
+            $notifications_table_name,
+            ['id' => $notification_id],
+            ['%d']
+        );
+        
+        if (is_wp_error($result) || $result === false) {
+            return $this->get_error('delete_error');
+        }
+        
+        return [
+            'success' => true,
+            'message' => 'Notification deleted successfully'
+        ];
+    }
+
+    /**
+     * Send broadcast notification to all users
+     * 
+     * @param array $notification_data
+     * @return array
+     */
+    public function send_broadcast_notification($notification_data) {
+        $push_manager = new Pika_Push_Notifications_Manager();
+        
+        // Send to all users
+        $result = $push_manager->send_notification_to_all($notification_data);
+        
+        // Flush notifications to ensure they are sent immediately
+        $push_manager->flush_notifications();
+        
+        // Calculate summary statistics
+        $total_users = count($result);
+        $successful_users = 0;
+        $total_devices = 0;
+        $successful_devices = 0;
+
+        foreach ($result as $user_result) {
+            if (isset($user_result['success']) && $user_result['success']) {
+                $successful_users++;
+            }
+            if (isset($user_result['total_devices'])) {
+                $total_devices += $user_result['total_devices'];
+            }
+            if (isset($user_result['devices_sent'])) {
+                $successful_devices += $user_result['devices_sent'];
+            }
+        }
+
+        return [
+            'success' => true,
+            'message' => 'Broadcast notification sent successfully',
+            'summary' => [
+                'total_users' => $total_users,
+                'successful_users' => $successful_users,
+                'total_devices' => $total_devices,
+                'successful_devices' => $successful_devices
+            ],
+            'detailed_results' => $result
         ];
     }
 }

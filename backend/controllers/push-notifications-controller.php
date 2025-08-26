@@ -65,12 +65,6 @@ class Pika_Push_Notifications_Controller extends Pika_Base_Controller {
       'permission_callback' => [$this, 'check_auth'],
     ]);
 
-    register_rest_route('pika/v1', '/push/send', [
-      'methods' => 'POST',
-      'callback' => [$this, 'send_notification'],
-      'permission_callback' => [$this, 'check_admin_permission'],
-    ]);
-
     register_rest_route('pika/v1', '/push/notifications', [
       'methods' => 'GET',
       'callback' => [$this, 'get_user_notifications'],
@@ -121,19 +115,6 @@ class Pika_Push_Notifications_Controller extends Pika_Base_Controller {
         ]
       ]
     ]);
-
-    register_rest_route('pika/v1', '/push/statistics', [
-      'methods' => 'GET',
-      'callback' => [$this, 'get_device_statistics'],
-      'permission_callback' => [$this, 'check_admin_permission'],
-    ]);
-  }
-
-  /**
-   * Check if user has admin permission
-   */
-  public function check_admin_permission($request) {
-    return current_user_can('manage_options');
   }
 
   /**
@@ -253,74 +234,6 @@ class Pika_Push_Notifications_Controller extends Pika_Base_Controller {
       'enabled' => $enabled,
       'has_subscription' => $has_subscription,
       'can_receive' => $enabled && $has_subscription
-    ];
-  }
-
-  /**
-   * Send notification (admin only)
-   */
-  public function send_notification($request) {
-    $params = $request->get_json_params();
-
-    if (empty($params['title'])) {
-      return $this->push_manager->get_error('invalid_notification_title');
-    }
-
-    if (empty($params['body'])) {
-      return $this->push_manager->get_error('invalid_notification_body');
-    }
-
-    $notification_data = [
-      'title' => sanitize_text_field($params['title']),
-      'body' => sanitize_textarea_field($params['body']),
-      'icon' => isset($params['icon']) ? esc_url_raw($params['icon']) : null,
-      'badge' => isset($params['badge']) ? esc_url_raw($params['badge']) : null,
-      'image' => isset($params['image']) ? esc_url_raw($params['image']) : null,
-      'tag' => isset($params['tag']) ? sanitize_text_field($params['tag']) : null,
-      'data' => isset($params['data']) ? $params['data'] : null,
-      'actions' => isset($params['actions']) ? $params['actions'] : null,
-      'require_interaction' => isset($params['require_interaction']) ? (bool) $params['require_interaction'] : false,
-      'silent' => isset($params['silent']) ? (bool) $params['silent'] : false
-    ];
-
-    $user_ids = isset($params['user_ids']) ? array_map('intval', $params['user_ids']) : null;
-
-    if ($user_ids) {
-      $result = $this->push_manager->send_notification_to_users($user_ids, $notification_data);
-    } else {
-      $result = $this->push_manager->send_notification_to_all($notification_data);
-    }
-
-    // Flush notifications
-    $this->push_manager->flush_notifications();
-
-    // Calculate summary statistics
-    $total_users = count($result);
-    $successful_users = 0;
-    $total_devices = 0;
-    $successful_devices = 0;
-
-    foreach ($result as $user_result) {
-      if (isset($user_result['success']) && $user_result['success']) {
-        $successful_users++;
-      }
-      if (isset($user_result['total_devices'])) {
-        $total_devices += $user_result['total_devices'];
-      }
-      if (isset($user_result['devices_sent'])) {
-        $successful_devices += $user_result['devices_sent'];
-      }
-    }
-
-    return [
-      'message' => 'Notification sent successfully',
-      'summary' => [
-        'total_users' => $total_users,
-        'successful_users' => $successful_users,
-        'total_devices' => $total_devices,
-        'successful_devices' => $successful_devices
-      ],
-      'detailed_results' => $result
     ];
   }
 
@@ -485,27 +398,5 @@ class Pika_Push_Notifications_Controller extends Pika_Base_Controller {
     return [
       'message' => 'Device removed successfully'
     ];
-  }
-
-  /**
-   * Get device statistics (admin only)
-   */
-  public function get_device_statistics($request) {
-    $stats = $this->push_manager->get_device_statistics();
-
-    if (is_wp_error($stats)) {
-      return $stats;
-    }
-
-    // Format statistics to include session information
-    $formatted_stats = [
-      'total_subscriptions' => $stats['total_subscriptions'],
-      'unique_users' => $stats['unique_users'],
-      'sessions' => $stats['sessions'],
-      'recent_activity_7_days' => $stats['recent_activity_7_days'],
-      'average_devices_per_user' => $stats['average_devices_per_user']
-    ];
-
-    return $formatted_stats;
   }
 }

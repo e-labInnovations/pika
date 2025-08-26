@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, LineChart, Line, PieChart, Pie, AreaChart, Area, Legend } from 'recharts';
 import { BarChart3, TrendingUp, Clock, Zap, Loader2, RefreshCw, Calendar } from 'lucide-react';
+import { Button } from '../../ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../ui/tabs';
 import apiFetch from '@wordpress/api-fetch';
 
 interface UsageChartProps {
@@ -132,12 +135,9 @@ const UsageChart: React.FC<UsageChartProps> = ({ onChartDataChange }) => {
             <p className="text-sm font-medium">Failed to load chart data</p>
           </div>
           <p className="text-gray-500 mb-4">{error || 'Unknown error occurred'}</p>
-          <button
-            onClick={refreshChartData}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
+          <Button onClick={refreshChartData}>
             Try Again
-          </button>
+          </Button>
         </div>
       </div>
     );
@@ -155,24 +155,26 @@ const UsageChart: React.FC<UsageChartProps> = ({ onChartDataChange }) => {
           <p className="text-sm text-gray-500">Comprehensive usage statistics and trends</p>
         </div>
         <div className="flex items-center space-x-3">
-          <select
-            value={selectedPeriod}
-            onChange={(e) => setSelectedPeriod(Number(e.target.value))}
-            className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value={7}>Last 7 Days</option>
-            <option value={14}>Last 14 Days</option>
-            <option value={30}>Last 30 Days</option>
-            <option value={60}>Last 60 Days</option>
-            <option value={90}>Last 90 Days</option>
-          </select>
-          <button
+          <Select value={selectedPeriod.toString()} onValueChange={(value) => setSelectedPeriod(Number(value))}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Select period" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="7">Last 7 Days</SelectItem>
+              <SelectItem value="14">Last 14 Days</SelectItem>
+              <SelectItem value="30">Last 30 Days</SelectItem>
+              <SelectItem value="60">Last 60 Days</SelectItem>
+              <SelectItem value="90">Last 90 Days</SelectItem>
+            </SelectContent>
+          </Select>
+          <Button
             onClick={refreshChartData}
-            className="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-md"
+            variant="ghost"
+            size="sm"
             title="Refresh data"
           >
             <RefreshCw className="h-4 w-4" />
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -205,198 +207,175 @@ const UsageChart: React.FC<UsageChartProps> = ({ onChartDataChange }) => {
       </div>
 
       {/* Tab Navigation */}
-      <div className="border-b border-gray-200 mb-6">
-        <nav className="-mb-px flex space-x-8">
-          {[
-            { id: 'daily', label: 'Daily Usage', icon: Calendar },
-            { id: 'hourly', label: 'Hourly Pattern', icon: Clock },
-            { id: 'models', label: 'Model Breakdown', icon: Zap }
-          ].map((tab) => {
-            const Icon = tab.icon;
-            const isActive = activeTab === tab.id;
-            
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center space-x-2 py-2 px-1 border-b-2 font-medium text-sm transition-colors duration-200 ${
-                  isActive
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="daily" className="flex items-center space-x-2">
+            <Calendar className="h-4 w-4" />
+            <span>Daily Usage</span>
+          </TabsTrigger>
+          <TabsTrigger value="hourly" className="flex items-center space-x-2">
+            <Clock className="h-4 w-4" />
+            <span>Hourly Pattern</span>
+          </TabsTrigger>
+          <TabsTrigger value="models" className="flex items-center space-x-2">
+            <Zap className="h-4 w-4" />
+            <span>Model Breakdown</span>
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="daily" className="space-y-4">
+          <h5 className="text-sm font-medium text-gray-900 mb-4">Daily Usage Trends</h5>
+          <div className="h-80 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart
+                data={chartData.daily_usage}
+                margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
               >
-                <Icon className="h-4 w-4" />
-                <span>{tab.label}</span>
-              </button>
-            );
-          })}
-        </nav>
-      </div>
+                <defs>
+                  <linearGradient id="colorTokens" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="#3B82F6" stopOpacity={0.1}/>
+                  </linearGradient>
+                  <linearGradient id="colorCalls" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#10B981" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="#10B981" stopOpacity={0.1}/>
+                  </linearGradient>
+                </defs>
+                
+                <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" strokeOpacity={0.3} />
+                <XAxis 
+                  dataKey="formatted_date" 
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fontSize: 12, fill: '#6B7280' }}
+                />
+                <YAxis 
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fontSize: 12, fill: '#6B7280' }}
+                  yAxisId="left"
+                />
+                <YAxis 
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fontSize: 12, fill: '#6B7280' }}
+                  yAxisId="right"
+                  orientation="right"
+                />
+                <Tooltip content={<CustomTooltip />} />
+                <Legend />
+                
+                <Area
+                  type="monotone"
+                  dataKey="total_tokens"
+                  stroke="#3B82F6"
+                  strokeWidth={2}
+                  fill="url(#colorTokens)"
+                  yAxisId="left"
+                  name="Total Tokens"
+                />
+                <Area
+                  type="monotone"
+                  dataKey="total_calls"
+                  stroke="#10B981"
+                  strokeWidth={2}
+                  fill="url(#colorCalls)"
+                  yAxisId="right"
+                  name="Total Calls"
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </TabsContent>
 
-      {/* Tab Content */}
-      <div className="space-y-6">
-        {/* Daily Usage Chart */}
-        {activeTab === 'daily' && (
-          <div>
-            <h5 className="text-sm font-medium text-gray-900 mb-4">Daily Usage Trends</h5>
+        <TabsContent value="hourly" className="space-y-4">
+          <h5 className="text-sm font-medium text-gray-900 mb-4">Hourly Usage Pattern (Last 7 Days)</h5>
+          <div className="h-80 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                data={chartData.hourly_pattern}
+                margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" strokeOpacity={0.3} />
+                <XAxis 
+                  dataKey="formatted_hour" 
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fontSize: 12, fill: '#6B7280' }}
+                />
+                <YAxis 
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fontSize: 12, fill: '#6B7280' }}
+                />
+                <Tooltip content={<CustomTooltip />} />
+                <Legend />
+                
+                <Bar 
+                  dataKey="call_count" 
+                  fill="#3B82F6"
+                  radius={[4, 4, 0, 0]}
+                  name="API Calls"
+                />
+                <Bar 
+                  dataKey="total_tokens" 
+                  fill="#10B981"
+                  radius={[4, 4, 0, 0]}
+                  name="Total Tokens"
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="models" className="space-y-4">
+          <h5 className="text-sm font-medium text-gray-900 mb-4">Model Usage Breakdown</h5>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Pie Chart */}
             <div className="h-80 w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart
-                  data={chartData.daily_usage}
-                  margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
-                >
-                  <defs>
-                    <linearGradient id="colorTokens" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="#3B82F6" stopOpacity={0.1}/>
-                    </linearGradient>
-                    <linearGradient id="colorCalls" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#10B981" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="#10B981" stopOpacity={0.1}/>
-                    </linearGradient>
-                  </defs>
-                  
-                  <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" strokeOpacity={0.3} />
-                  <XAxis 
-                    dataKey="formatted_date" 
-                    axisLine={false}
-                    tickLine={false}
-                    tick={{ fontSize: 12, fill: '#6B7280' }}
-                  />
-                  <YAxis 
-                    axisLine={false}
-                    tickLine={false}
-                    tick={{ fontSize: 12, fill: '#6B7280' }}
-                    yAxisId="left"
-                  />
-                  <YAxis 
-                    axisLine={false}
-                    tickLine={false}
-                    tick={{ fontSize: 12, fill: '#6B7280' }}
-                    yAxisId="right"
-                    orientation="right"
-                  />
+                <PieChart>
+                  <Pie
+                    data={chartData.model_breakdown}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ model, percentage }) => `${model}: ${percentage}%`}
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="call_count"
+                    nameKey="model"
+                  >
+                    {chartData.model_breakdown.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'][index % 5]} />
+                    ))}
+                  </Pie>
                   <Tooltip content={<CustomTooltip />} />
-                  <Legend />
-                  
-                  <Area
-                    type="monotone"
-                    dataKey="total_tokens"
-                    stroke="#3B82F6"
-                    strokeWidth={2}
-                    fill="url(#colorTokens)"
-                    yAxisId="left"
-                    name="Total Tokens"
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="total_calls"
-                    stroke="#10B981"
-                    strokeWidth={2}
-                    fill="url(#colorCalls)"
-                    yAxisId="right"
-                    name="Total Calls"
-                  />
-                </AreaChart>
+                </PieChart>
               </ResponsiveContainer>
             </div>
-          </div>
-        )}
 
-        {/* Hourly Pattern Chart */}
-        {activeTab === 'hourly' && (
-          <div>
-            <h5 className="text-sm font-medium text-gray-900 mb-4">Hourly Usage Pattern (Last 7 Days)</h5>
-            <div className="h-80 w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-                  data={chartData.hourly_pattern}
-                  margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" strokeOpacity={0.3} />
-                  <XAxis 
-                    dataKey="formatted_hour" 
-                    axisLine={false}
-                    tickLine={false}
-                    tick={{ fontSize: 12, fill: '#6B7280' }}
-                  />
-                  <YAxis 
-                    axisLine={false}
-                    tickLine={false}
-                    tick={{ fontSize: 12, fill: '#6B7280' }}
-                  />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Legend />
-                  
-                  <Bar 
-                    dataKey="call_count" 
-                    fill="#3B82F6"
-                    radius={[4, 4, 0, 0]}
-                    name="API Calls"
-                  />
-                  <Bar 
-                    dataKey="total_tokens" 
-                    fill="#10B981"
-                    radius={[4, 4, 0, 0]}
-                    name="Total Tokens"
-                  />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-        )}
-
-        {/* Model Breakdown Chart */}
-        {activeTab === 'models' && (
-          <div>
-            <h5 className="text-sm font-medium text-gray-900 mb-4">Model Usage Breakdown</h5>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Pie Chart */}
-              <div className="h-80 w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={chartData.model_breakdown}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={false}
-                      label={({ model, percentage }) => `${model}: ${percentage}%`}
-                      outerRadius={80}
-                      fill="#8884d8"
-                      dataKey="call_count"
-                      nameKey="model"
-                    >
-                      {chartData.model_breakdown.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'][index % 5]} />
-                      ))}
-                    </Pie>
-                    <Tooltip content={<CustomTooltip />} />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-
-              {/* Model Details Table */}
-              <div className="space-y-3">
-                <h6 className="text-sm font-medium text-gray-900">Model Performance</h6>
-                <div className="bg-gray-50 rounded-lg p-4 space-y-3">
-                  {chartData.model_breakdown.map((model, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 bg-white rounded border border-gray-200">
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">{model.model}</p>
-                        <p className="text-xs text-gray-500">{model.call_count.toLocaleString()} calls</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-sm font-semibold text-blue-600">{model.percentage}%</p>
-                        <p className="text-xs text-gray-500">{model.total_tokens.toLocaleString()} tokens</p>
-                      </div>
+            {/* Model Details Table */}
+            <div className="space-y-3">
+              <h6 className="text-sm font-medium text-gray-900">Model Performance</h6>
+              <div className="bg-gray-50 rounded-lg p-4 space-y-3">
+                {chartData.model_breakdown.map((model, index) => (
+                  <div key={index} className="flex items-center justify-between p-3 bg-white rounded border border-gray-200">
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">{model.model}</p>
+                      <p className="text-xs text-gray-500">{model.call_count.toLocaleString()} calls</p>
                     </div>
-                  ))}
-                </div>
+                    <div className="text-right">
+                      <p className="text-sm font-semibold text-blue-600">{model.percentage}%</p>
+                      <p className="text-xs text-gray-500">{model.total_tokens.toLocaleString()} tokens</p>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
-        )}
-      </div>
+        </TabsContent>
+      </Tabs>
 
       {/* Additional Metrics */}
       <div className="mt-6 pt-6 border-t border-gray-200">

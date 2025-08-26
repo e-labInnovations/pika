@@ -1,6 +1,6 @@
 import React from 'react';
 import { TrendingUp, TrendingDown } from 'lucide-react';
-import { cn } from '../lib/utils';
+import { cn } from '@/lib/utils';
 
 interface Stats {
   value: number;
@@ -26,7 +26,7 @@ const StatsCard: React.FC<StatsCardProps> = ({
   className = '',
 }) => {
   return (
-    <div className={cn("bg-white rounded-lg shadow-sm border border-gray-200 p-6", className)}>
+    <div className={cn("bg-white rounded-lg shadow-md border border-gray-200 p-6", className)}>
       <div className="flex items-center justify-between">
         <div className="flex-1">
           <p className="text-sm font-medium text-gray-600 mb-1">{title}</p>

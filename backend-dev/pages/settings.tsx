@@ -4,6 +4,7 @@ import TabNavigation from '@/components/shared/TabNavigation';
 import MessageDisplay from '@/components/shared/MessageDisplay';
 import AISettingsTab from '@/components/settings/AISettingsTab';
 import NotificationsTab from '@/components/settings/NotificationsTab';
+import DashboardHeader from '@/components/shared/DashboardHeader';
 
 const Settings = () => {
   const [activeTab, setActiveTab] = useState('ai');
@@ -36,15 +37,9 @@ const Settings = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="min-h-screen p-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
-          <p className="text-gray-600 mt-2">Configure AI settings and notification preferences</p>
-        </div>
-        <SettingsIcon className="h-8 w-8 text-gray-400" />
-      </div>
+      <DashboardHeader title="Settings" description="Configure AI settings and notification preferences" />
 
       {/* Tab Navigation */}
       <TabNavigation
