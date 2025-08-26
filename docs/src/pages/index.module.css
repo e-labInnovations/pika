@@ -1,0 +1,334 @@
+/**
+ * CSS files with the .module.css suffix will be treated as CSS modules
+ * and scoped locally.
+ */
+
+.heroBanner {
+  padding: 4rem 0;
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+}
+
+.heroButtons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+.heroBadges {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+}
+
+.badge {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.heroImage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+
+
+.heroImage img {
+  max-width: 100%;
+  max-height: 70vh;
+  height: auto;
+  border-radius: 16px;
+}
+
+@media screen and (max-width: 996px) {
+  .heroBanner {
+    padding: 2rem;
+    text-align: center;
+  }
+  
+  .heroButtons {
+    justify-content: center;
+  }
+  
+  .heroBadges {
+    justify-content: center;
+  }
+  
+  .heroImage {
+    margin-top: 2rem;
+    padding: 1rem;
+  }
+}
+
+.features {
+  display: flex;
+  align-items: center;
+  padding: 4rem 0;
+  width: 100%;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+}
+
+[data-theme='dark'] .features {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+}
+
+.featureIcon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.screenshots {
+  padding: 4rem 0;
+  background: white;
+}
+
+[data-theme='dark'] .screenshots {
+  background: #0f172a;
+}
+
+.sliderContainer {
+  position: relative;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.sliderWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.sliderButton {
+  background: var(--ifm-color-primary);
+  color: white;
+  border: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.sliderButton:hover {
+  background: var(--ifm-color-primary-dark);
+  transform: scale(1.1);
+}
+
+.sliderContent {
+  flex: 1;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sliderContent img {
+  margin: 0 auto 1rem;
+  max-width: 400px;
+  width: auto;
+  max-height: 50vh;
+  height: auto;
+  border-radius: 16px;
+  transition: transform 0.3s ease;
+  object-fit: contain;
+}
+
+.sliderContent img:hover {
+  transform: scale(1.02);
+}
+
+.slideInfo h3 {
+  margin: 0 0 0.5rem 0;
+  color: var(--ifm-color-primary);
+  font-size: 1.5rem;
+}
+
+.slideInfo p {
+  margin: 0;
+  color: var(--ifm-color-text-secondary);
+  font-size: 1rem;
+}
+
+.sliderDots {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 2rem;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: none;
+  background: #d1d5db;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.dot:hover {
+  background: var(--ifm-color-primary-light);
+}
+
+.activeDot {
+  background: var(--ifm-color-primary);
+  transform: scale(1.2);
+}
+
+.techStack {
+  padding: 4rem 0;
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+}
+
+[data-theme='dark'] .techStack {
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+}
+
+.techCard {
+  text-align: center;
+  padding: 2rem 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.techCard:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(99, 102, 241, 0.2);
+}
+
+.techIcon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.techCard h4 {
+  margin: 0 0 0.5rem 0;
+  color: var(--ifm-color-primary);
+  font-size: 1.25rem;
+}
+
+.techCard p {
+  margin: 0;
+  color: var(--ifm-color-text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.screenshots img {
+  width: 100%;
+  height: auto;
+  margin-bottom: 1rem;
+}
+
+.cta {
+  padding: 4rem 0;
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+}
+
+[data-theme='dark'] .cta {
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+}
+
+.ctaButtons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.ctaInfo {
+  margin-top: 1rem;
+}
+
+.ctaInfo p {
+  color: var(--ifm-color-text-secondary);
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+@media screen and (max-width: 768px) {
+  .heroButtons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .heroBadges {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .ctaButtons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .features {
+    padding: 2rem 0;
+  }
+  
+  .screenshots {
+    padding: 2rem 0;
+  }
+  
+  .techStack {
+    padding: 2rem 0;
+  }
+  
+  .cta {
+    padding: 2rem 0;
+  }
+  
+  .sliderWrapper {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .sliderButton {
+    width: 40px;
+    height: 40px;
+    font-size: 1.25rem;
+  }
+  
+  /* Mobile spacing for feature cards */
+  .feature-card {
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Mobile spacing for tech cards */
+  .techCard {
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Adjust row margins for mobile */
+  .row .col {
+    margin-bottom: 1rem;
+  }
+  
+  .row .col:last-child {
+    margin-bottom: 0;
+  }
+}

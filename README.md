@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="docs/images/icons/full-sized-logo-output.svg" width="120" height="120" alt="Pika Icon">
+  <img src="docs/static/img/icons/full-sized-logo-output.svg" width="120" height="120" alt="Pika Icon">
   <h1>Pika Finance</h1>
 
   <p>
@@ -33,28 +33,28 @@
 
 <table>
   <tr>
-    <td><img src="docs/images/screenshots/ss_1.png" alt="Screenshot 1" width="100%"></td>
-    <td><img src="docs/images/screenshots/ss_2.png" alt="Screenshot 2" width="100%"></td>
-    <td><img src="docs/images/screenshots/ss_3.png" alt="Screenshot 3" width="100%"></td>
-    <td><img src="docs/images/screenshots/ss_4.png" alt="Screenshot 4" width="100%"></td>
+    <td><img src="docs/static/img/screenshots/ss_1.png" alt="Screenshot 1" width="100%"></td>
+    <td><img src="docs/static/img/screenshots/ss_2.png" alt="Screenshot 2" width="100%"></td>
+    <td><img src="docs/static/img/screenshots/ss_3.png" alt="Screenshot 3" width="100%"></td>
+    <td><img src="docs/static/img/screenshots/ss_4.png" alt="Screenshot 4" width="100%"></td>
   </tr>
   <tr>
-    <td><img src="docs/images/screenshots/ss_5.png" alt="Screenshot 5" width="100%"></td>
-    <td><img src="docs/images/screenshots/ss_6.png" alt="Screenshot 6" width="100%"></td>
-    <td><img src="docs/images/screenshots/ss_7.png" alt="Screenshot 7" width="100%"></td>
-    <td><img src="docs/images/screenshots/ss_8.png" alt="Screenshot 8" width="100%"></td>
+    <td><img src="docs/static/img/screenshots/ss_5.png" alt="Screenshot 5" width="100%"></td>
+    <td><img src="docs/static/img/screenshots/ss_6.png" alt="Screenshot 6" width="100%"></td>
+    <td><img src="docs/static/img/screenshots/ss_7.png" alt="Screenshot 7" width="100%"></td>
+    <td><img src="docs/static/img/screenshots/ss_8.png" alt="Screenshot 8" width="100%"></td>
   </tr>
   <tr>
-    <td><img src="docs/images/screenshots/ss_9.png" alt="Screenshot 9" width="100%"></td>
-    <td><img src="docs/images/screenshots/ss_10.png" alt="Screenshot 10" width="100%"></td>
-    <td><img src="docs/images/screenshots/ss_11.png" alt="Screenshot 11" width="100%"></td>
-    <td><img src="docs/images/screenshots/ss_12.png" alt="Screenshot 12" width="100%"></td>
+    <td><img src="docs/static/img/screenshots/ss_9.png" alt="Screenshot 9" width="100%"></td>
+    <td><img src="docs/static/img/screenshots/ss_10.png" alt="Screenshot 10" width="100%"></td>
+    <td><img src="docs/static/img/screenshots/ss_11.png" alt="Screenshot 11" width="100%"></td>
+    <td><img src="docs/static/img/screenshots/ss_12.png" alt="Screenshot 12" width="100%"></td>
   </tr>
   <tr>
-    <td><img src="docs/images/screenshots/ss_13.png" alt="Screenshot 13" width="100%"></td>
-    <td><img src="docs/images/screenshots/ss_14.png" alt="Screenshot 13" width="100%"></td>
-    <td><img src="docs/images/screenshots/ss_15.png" alt="Screenshot 13" width="100%"></td>
-    <td><img src="docs/images/screenshots/ss_16.png" alt="Screenshot 13" width="100%"></td>
+    <td><img src="docs/static/img/screenshots/ss_13.png" alt="Screenshot 13" width="100%"></td>
+    <td><img src="docs/static/img/screenshots/ss_14.png" alt="Screenshot 13" width="100%"></td>
+    <td><img src="docs/static/img/screenshots/ss_15.png" alt="Screenshot 13" width="100%"></td>
+    <td><img src="docs/static/img/screenshots/ss_16.png" alt="Screenshot 13" width="100%"></td>
   </tr>
 </table>
 

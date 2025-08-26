@@ -1,0 +1,89 @@
+---
+id: installation
+title: Installation Guide
+sidebar_label: Installation
+sidebar_position: 1
+description: Complete guide to install and set up Pika Finance in WordPress
+---
+
+# 🚀 Installation Guide
+
+Welcome to Pika Finance! This guide will walk you through installing and setting up Pika in your WordPress website. Pika is a powerful financial management plugin that brings AI-powered expense tracking and budgeting to WordPress.
+
+## 📋 Prerequisites
+
+Before installing Pika, ensure your WordPress site meets these requirements:
+
+- **WordPress Version**: 5.8 or higher
+- **PHP Version**: 8.1 or higher
+
+:::tip Pro Tip
+You can check your WordPress and server requirements in **WordPress Admin → Tools → Site Health**.
+:::
+
+## 🔧 Installation Methods
+
+### Method 1: WordPress Plugin Directory (Recommended)
+
+:::note Availability
+Pika Finance is currently under development and will be available in the WordPress Plugin Directory soon!
+:::
+
+Once published, installation will be as simple as:
+
+1. **Navigate to Plugins** in your WordPress admin
+2. **Click "Add New"**
+3. **Search for "Pika Finance"**
+4. **Click "Install Now"**
+5. **Click "Activate"**
+
+### Method 2: Manual Upload (Current Method)
+
+Since Pika is in development, you'll need to install it manually:
+
+#### Step 1: Download the Plugin
+
+1. **Visit the GitHub Repository**
+   - Go to [Pika Finance on GitHub](https://github.com/e-labInnovations/pika)
+   - Click the green "Code" button
+   - Select "Download ZIP"
+
+![Download Plugin](https://via.placeholder.com/400x300/6366f1/ffffff?text=Download+Plugin)
+
+#### Step 2: Upload to WordPress
+
+1. **Go to WordPress Admin → Plugins → Add New**
+2. **Click "Upload Plugin" at the top**
+3. **Choose the downloaded ZIP file**
+4. **Click "Install Now"**
+
+![Upload Plugin](https://via.placeholder.com/400x300/06b6d4/ffffff?text=Upload+Plugin)
+
+#### Step 3: Activate the Plugin
+
+1. **After installation, click "Activate Plugin"**
+2. **You'll see a success message**
+3. **Pika Finance will appear in your plugins list**
+
+![Activate Plugin](https://via.placeholder.com/400x300/10b981/ffffff?text=Activate+Plugin)
+
+### Method 3: Build from Source (Developers)
+
+For developers who want to build from source:
+
+```bash
+# Clone the repository
+git clone https://github.com/e-labInnovations/pika.git
+cd pika
+
+# Install frontend dependencies
+cd frontend
+npm install
+
+# Build the plugin package
+cd ..
+chmod +x build.sh
+./build.sh
+```
+
+This creates a `pika.zip` file you can upload via WordPress admin.

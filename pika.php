@@ -3,7 +3,7 @@
 /**
  * Plugin Name: Pika Finance
  * Plugin URI: https://pika.elabins.com
- * Description: Complete financial management solution for WordPress
+ * Description: AI-Powered Personal Finance & Expense Tracking for WordPress
  * Version: 1.0.0
  * Author: e-lab innovations
  * License: GPL v2 or later

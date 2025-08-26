@@ -13,7 +13,9 @@ const AppInfo = () => {
         </div>
         <h3 className="font-semibold text-slate-900 dark:text-white">Pika Finance</h3>
         <p className="text-sm text-slate-500 dark:text-slate-400">Version {appInfo?.version ?? 'loading...'}</p>
-        <p className="mt-2 text-xs text-slate-400 dark:text-slate-500">Simple personal finance management</p>
+        <p className="mt-2 text-xs text-slate-400 dark:text-slate-500">
+          AI-Powered Personal Finance & Expense Tracking
+        </p>
       </CardContent>
     </Card>
   );
