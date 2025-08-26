@@ -408,46 +408,49 @@ const RecentNotificationsTable: React.FC<RecentNotificationsTableProps> = ({ onN
           </div>
         )}
 
-        {/* Header with Actions */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <Button
-              onClick={() => setShowFilters(!showFilters)}
-              variant={showFilters ? 'secondary' : 'outline'}
-              className="flex items-center space-x-2"
-            >
-              <Filter className="h-4 w-4" />
-              <span>Filters</span>
-            </Button>
-            <Button
-              onClick={refreshNotifications}
-              variant="outline"
-              className="flex items-center space-x-2"
-            >
-              <RefreshCw className="h-4 w-4" />
-              <span>Refresh</span>
-            </Button>
-            <Button
-              onClick={sendBroadcastNotification}
-              className="flex items-center space-x-2"
-            >
-              <Send className="h-4 w-4" />
-              <span>Send Broadcast</span>
-            </Button>
+        {/* Header with Actions - Responsive */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-2">
+          <div className="flex flex-col xs:flex-row xs:items-center gap-2 xs:gap-4">
+            <div className="flex flex-row flex-wrap gap-2">
+              <Button
+                onClick={() => setShowFilters(!showFilters)}
+                variant={showFilters ? 'secondary' : 'outline'}
+                className="flex items-center space-x-2"
+              >
+                <Filter className="h-4 w-4" />
+                <span>Filters</span>
+              </Button>
+              <Button
+                onClick={refreshNotifications}
+                variant="outline"
+                className="flex items-center space-x-2"
+              >
+                <RefreshCw className="h-4 w-4" />
+                <span>Refresh</span>
+              </Button>
+              <Button
+                onClick={sendBroadcastNotification}
+                className="flex items-center space-x-2"
+              >
+                <Send className="h-4 w-4" />
+                <span className="hidden xs:inline">Send Broadcast</span>
+                <span className="xs:hidden">Send</span>
+              </Button>
+            </div>
           </div>
-          <div className="text-sm text-gray-500">
+          <div className="text-sm text-gray-500 text-right">
             {pagination.total} notifications
           </div>
         </div>
 
-        {/* Filters */}
+        {/* Filters - Responsive */}
         {showFilters && (
           <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
                 <Select onValueChange={(value) => updateFilter('status', value)} defaultValue="all">
-                  <SelectTrigger className="w-[180px]">
+                  <SelectTrigger className="w-full min-w-[140px]">
                     <SelectValue placeholder="Select a status" />
                   </SelectTrigger>
                   <SelectContent>
@@ -464,7 +467,7 @@ const RecentNotificationsTable: React.FC<RecentNotificationsTableProps> = ({ onN
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Target</label>
                 <Select onValueChange={(value) => updateFilter('target', value)} defaultValue="all">
-                  <SelectTrigger className="w-[180px]">
+                  <SelectTrigger className="w-full min-w-[140px]">
                     <SelectValue placeholder="Select a target" />
                   </SelectTrigger>
                   <SelectContent>
@@ -478,7 +481,7 @@ const RecentNotificationsTable: React.FC<RecentNotificationsTableProps> = ({ onN
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Date Range</label>
                 <Select onValueChange={(value) => updateFilter('dateRange', value)} defaultValue="7days">
-                  <SelectTrigger className="w-[180px]">
+                  <SelectTrigger className="w-full min-w-[140px]">
                     <SelectValue placeholder="Select a date range" />
                   </SelectTrigger>
                   <SelectContent>
@@ -506,7 +509,7 @@ const RecentNotificationsTable: React.FC<RecentNotificationsTableProps> = ({ onN
               </div>
             </div>
             
-            <div className="mt-4 flex justify-end">
+            <div className="mt-4 flex flex-col xs:flex-row xs:justify-end gap-2">
               <Button
                 onClick={clearFilters}
                 variant="outline"
@@ -631,16 +634,16 @@ const RecentNotificationsTable: React.FC<RecentNotificationsTableProps> = ({ onN
 
         {/* Pagination */}
         {pagination.totalPages > 1 && (
-          <div className="flex items-center justify-between">
-            <div className="text-sm text-gray-700">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div className="text-sm text-gray-700 text-center sm:text-left">
               Showing {((pagination.page - 1) * pagination.perPage) + 1} to {Math.min(pagination.page * pagination.perPage, pagination.total)} of {pagination.total} results
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex flex-wrap items-center justify-center gap-2">
               <Button
                 onClick={() => changePage(pagination.page - 1)}
                 disabled={pagination.page === 1}
                 variant="outline"
-                className="text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed min-w-[80px]"
               >
                 Previous
               </Button>
@@ -651,7 +654,7 @@ const RecentNotificationsTable: React.FC<RecentNotificationsTableProps> = ({ onN
                   <Button
                     key={page}
                     onClick={() => changePage(page)}
-                    className={`px-3 py-2 text-sm font-medium rounded-md ${
+                    className={`px-3 py-2 text-sm font-medium rounded-md min-w-[40px] ${
                       page === pagination.page
                         ? 'bg-blue-600 text-white'
                         : 'text-gray-500 bg-white border border-gray-300 hover:bg-gray-50'
@@ -666,7 +669,7 @@ const RecentNotificationsTable: React.FC<RecentNotificationsTableProps> = ({ onN
                 onClick={() => changePage(pagination.page + 1)}
                 disabled={pagination.page === pagination.totalPages}
                 variant="outline"
-                className="text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed min-w-[80px]"
               >
                 Next
               </Button>

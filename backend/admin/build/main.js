@@ -2087,16 +2087,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var lucide_react__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/chart-column.js");
-/* harmony import */ var lucide_react__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/loader-circle.js");
-/* harmony import */ var lucide_react__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/activity.js");
-/* harmony import */ var lucide_react__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/key.js");
-/* harmony import */ var lucide_react__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/trending-up.js");
-/* harmony import */ var lucide_react__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/users.js");
-/* harmony import */ var lucide_react__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/zap.js");
-/* harmony import */ var _AdminCard__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../AdminCard */ "./backend-dev/components/AdminCard.tsx");
-/* harmony import */ var _ui_button__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../ui/button */ "./backend-dev/components/ui/button.tsx");
-/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @wordpress/api-fetch */ "@wordpress/api-fetch");
-/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/__webpack_require__.n(_wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_13__);
+/* harmony import */ var lucide_react__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/circle-alert.js");
+/* harmony import */ var lucide_react__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/loader-circle.js");
+/* harmony import */ var lucide_react__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/activity.js");
+/* harmony import */ var lucide_react__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/key.js");
+/* harmony import */ var lucide_react__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/refresh-cw.js");
+/* harmony import */ var lucide_react__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/trending-up.js");
+/* harmony import */ var lucide_react__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/users.js");
+/* harmony import */ var lucide_react__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/zap.js");
+/* harmony import */ var _AdminCard__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../AdminCard */ "./backend-dev/components/AdminCard.tsx");
+/* harmony import */ var _ui_button__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../ui/button */ "./backend-dev/components/ui/button.tsx");
+/* harmony import */ var _ui_badge__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../../ui/badge */ "./backend-dev/components/ui/badge.tsx");
+/* harmony import */ var _ui_card__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../../ui/card */ "./backend-dev/components/ui/card.tsx");
+/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! @wordpress/api-fetch */ "@wordpress/api-fetch");
+/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_17___default = /*#__PURE__*/__webpack_require__.n(_wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_17__);
+
+
 
 
 
@@ -2136,7 +2142,7 @@ var UsageStats = function UsageStats(_ref) {
             setError(null);
             _context.prev = 1;
             _context.next = 2;
-            return _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_13___default()({
+            return _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_17___default()({
               path: '/pika/v1/admin/ai-usage-stats',
               method: 'GET'
             });
@@ -2178,158 +2184,247 @@ var UsageStats = function UsageStats(_ref) {
     loadUsageStats();
   };
   if (isLoading) {
-    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(_AdminCard__WEBPACK_IMPORTED_MODULE_11__["default"], {
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(_AdminCard__WEBPACK_IMPORTED_MODULE_13__["default"], {
       title: "AI Usage Statistics",
       subtitle: "Monitor your AI API usage and costs"
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
       className: "text-center py-8"
-    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(lucide_react__WEBPACK_IMPORTED_MODULE_5__["default"], {
-      className: "h-8 w-8 mx-auto text-blue-600 animate-spin mb-3"
-    }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("p", {
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
+      className: "inline-flex items-center justify-center w-12 h-12 bg-blue-50 rounded-full mb-3"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(lucide_react__WEBPACK_IMPORTED_MODULE_6__["default"], {
+      className: "h-6 w-6 text-blue-600 animate-spin"
+    })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("h3", {
+      className: "text-base font-medium text-gray-900 mb-1"
+    }, "Loading Statistics"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("p", {
       className: "text-gray-500"
-    }, "Loading usage statistics...")));
+    }, "Please wait while we fetch your AI usage data...")));
   }
   if (error || !stats) {
-    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(_AdminCard__WEBPACK_IMPORTED_MODULE_11__["default"], {
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(_AdminCard__WEBPACK_IMPORTED_MODULE_13__["default"], {
       title: "AI Usage Statistics",
       subtitle: "Monitor your AI API usage and costs"
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
       className: "text-center py-8"
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
-      className: "text-red-500 mb-3"
-    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(lucide_react__WEBPACK_IMPORTED_MODULE_6__["default"], {
-      className: "h-8 w-8 mx-auto mb-2"
-    }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("p", {
-      className: "text-sm font-medium"
-    }, "Failed to load statistics")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("p", {
+      className: "inline-flex items-center justify-center w-12 h-12 bg-red-50 rounded-full mb-3"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(lucide_react__WEBPACK_IMPORTED_MODULE_5__["default"], {
+      className: "h-6 w-6 text-red-600"
+    })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("h3", {
+      className: "text-base font-medium text-gray-900 mb-1"
+    }, "Failed to Load Statistics"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("p", {
       className: "text-gray-500 mb-4"
-    }, error || 'Unknown error occurred'), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(_ui_button__WEBPACK_IMPORTED_MODULE_12__.Button, {
-      onClick: refreshStats
-    }, "Try Again")));
+    }, error || 'Unknown error occurred'), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(_ui_button__WEBPACK_IMPORTED_MODULE_14__.Button, {
+      onClick: refreshStats,
+      className: "inline-flex items-center gap-2"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(lucide_react__WEBPACK_IMPORTED_MODULE_9__["default"], {
+      className: "h-4 w-4"
+    }), "Try Again")));
   }
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(_AdminCard__WEBPACK_IMPORTED_MODULE_11__["default"], {
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(_AdminCard__WEBPACK_IMPORTED_MODULE_13__["default"], {
     title: "AI Usage Statistics",
     subtitle: "Monitor your AI API usage and costs"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
     className: "space-y-6"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
-    className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
-    className: "bg-blue-50 p-4 rounded-lg border border-blue-100"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
     className: "flex items-center justify-between"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
-    className: "flex items-center"
+    className: "flex items-center gap-2"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
+    className: "p-1.5 bg-blue-50 rounded-lg"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(lucide_react__WEBPACK_IMPORTED_MODULE_4__["default"], {
-    className: "h-5 w-5 text-blue-600 mr-2"
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("p", {
-    className: "text-sm font-medium text-blue-900"
-  }, "Total API Calls"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("p", {
-    className: "text-2xl font-bold text-blue-600"
-  }, stats.totalApiCalls.toLocaleString()))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
-    className: "text-right"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("p", {
-    className: "text-xs text-blue-600 font-medium"
-  }, "This Month"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("p", {
-    className: "text-sm font-semibold text-blue-700"
-  }, stats.monthlyApiCalls.toLocaleString())))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
-    className: "bg-green-50 p-4 rounded-lg border border-green-100"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
-    className: "flex items-center"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(lucide_react__WEBPACK_IMPORTED_MODULE_7__["default"], {
-    className: "h-5 w-5 text-green-600 mr-2"
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("p", {
-    className: "text-sm font-medium text-green-900"
-  }, "API Key Status"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("p", {
-    className: "text-lg font-bold text-green-600"
-  }, stats.apiKeyStatus), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("p", {
-    className: "text-xs text-green-600"
-  }, stats.aiFeaturesEnabled ? 'Features Enabled' : 'Features Disabled')))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
-    className: "bg-purple-50 p-4 rounded-lg border border-purple-100"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
-    className: "flex items-center"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(lucide_react__WEBPACK_IMPORTED_MODULE_6__["default"], {
-    className: "h-5 w-5 text-purple-600 mr-2"
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("p", {
-    className: "text-sm font-medium text-purple-900"
-  }, "Monthly Cost"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("p", {
-    className: "text-2xl font-bold text-purple-600"
-  }, "$", stats.monthlyCost.toFixed(6)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("p", {
-    className: "text-xs text-purple-600"
-  }, stats.monthlyTokens.toLocaleString(), " tokens")))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
-    className: "bg-orange-50 p-4 rounded-lg border border-orange-100"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
-    className: "flex items-center"
+    className: "h-4 w-4 text-blue-600"
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("h3", {
+    className: "text-base font-semibold text-gray-900"
+  }, "Usage Overview"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("p", {
+    className: "text-sm text-gray-500"
+  }, "Real-time AI API consumption metrics"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(_ui_button__WEBPACK_IMPORTED_MODULE_14__.Button, {
+    onClick: refreshStats,
+    variant: "outline",
+    size: "sm",
+    className: "inline-flex items-center gap-2"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(lucide_react__WEBPACK_IMPORTED_MODULE_9__["default"], {
-    className: "h-5 w-5 text-orange-600 mr-2"
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("p", {
-    className: "text-sm font-medium text-orange-900"
-  }, "Active Users"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("p", {
-    className: "text-2xl font-bold text-orange-600"
-  }, stats.uniqueUsers.toLocaleString()), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("p", {
-    className: "text-xs text-orange-600"
-  }, "Using AI features"))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
-    className: "bg-gray-50 p-4 rounded-lg border border-gray-200"
+    className: "h-4 w-4"
+  }), "Refresh")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
+    className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(_ui_card__WEBPACK_IMPORTED_MODULE_16__.Card, {
+    className: "group hover:shadow-lg p-2 transition-all duration-300 border-l-4 border-l-blue-500"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(_ui_card__WEBPACK_IMPORTED_MODULE_16__.CardContent, {
+    className: "p-2"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
     className: "flex items-center justify-between mb-3"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("h4", {
-    className: "text-sm font-medium text-gray-900 flex items-center"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(lucide_react__WEBPACK_IMPORTED_MODULE_10__["default"], {
-    className: "h-4 w-4 mr-2 text-yellow-600"
-  }), "Token Usage Summary"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(_ui_button__WEBPACK_IMPORTED_MODULE_12__.Button, {
-    onClick: refreshStats,
-    variant: "ghost",
-    size: "sm"
-  }, "Refresh")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
+    className: "p-2 bg-blue-50 rounded-lg group-hover:bg-blue-100 transition-colors"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(lucide_react__WEBPACK_IMPORTED_MODULE_4__["default"], {
+    className: "h-5 w-5 text-blue-600"
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(_ui_badge__WEBPACK_IMPORTED_MODULE_15__.Badge, {
+    variant: "secondary",
+    className: "text-xs"
+  }, "Monthly")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
+    className: "space-y-1"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("p", {
+    className: "text-xl font-bold text-gray-900"
+  }, stats.totalApiCalls.toLocaleString()), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("p", {
+    className: "text-sm font-medium text-blue-600"
+  }, "Total API Calls"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("p", {
+    className: "text-xs text-gray-500"
+  }, stats.monthlyApiCalls.toLocaleString(), " this month")))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(_ui_card__WEBPACK_IMPORTED_MODULE_16__.Card, {
+    className: "group hover:shadow-lg p-2 transition-all duration-300 border-l-4 border-l-green-500"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(_ui_card__WEBPACK_IMPORTED_MODULE_16__.CardContent, {
+    className: "p-2"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
+    className: "flex items-center justify-between mb-3"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
+    className: "p-2 bg-green-50 rounded-lg group-hover:bg-green-100 transition-colors"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(lucide_react__WEBPACK_IMPORTED_MODULE_8__["default"], {
+    className: "h-5 w-5 text-green-600"
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(_ui_badge__WEBPACK_IMPORTED_MODULE_15__.Badge, {
+    variant: stats.aiFeaturesEnabled ? "default" : "destructive",
+    className: "text-xs"
+  }, stats.aiFeaturesEnabled ? 'Active' : 'Inactive')), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
+    className: "space-y-1"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("p", {
+    className: "text-lg font-bold text-gray-900"
+  }, stats.apiKeyStatus), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("p", {
+    className: "text-sm font-medium text-green-600"
+  }, "API Key Status"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("p", {
+    className: "text-xs text-gray-500"
+  }, stats.aiFeaturesEnabled ? 'All features enabled' : 'Features disabled')))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(_ui_card__WEBPACK_IMPORTED_MODULE_16__.Card, {
+    className: "group hover:shadow-lg p-2 transition-all duration-300 border-l-4 border-l-purple-500"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(_ui_card__WEBPACK_IMPORTED_MODULE_16__.CardContent, {
+    className: "p-2"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
+    className: "flex items-center justify-between mb-3"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
+    className: "p-2 bg-purple-50 rounded-lg group-hover:bg-purple-100 transition-colors"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(lucide_react__WEBPACK_IMPORTED_MODULE_7__["default"], {
+    className: "h-5 w-5 text-purple-600"
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(_ui_badge__WEBPACK_IMPORTED_MODULE_15__.Badge, {
+    variant: "outline",
+    className: "text-xs"
+  }, "Cost")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
+    className: "space-y-1"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("p", {
+    className: "text-xl font-bold text-gray-900"
+  }, "$", stats.monthlyCost.toFixed(6)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("p", {
+    className: "text-sm font-medium text-purple-600"
+  }, "Monthly Cost"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("p", {
+    className: "text-xs text-gray-500"
+  }, stats.monthlyTokens.toLocaleString(), " tokens consumed")))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(_ui_card__WEBPACK_IMPORTED_MODULE_16__.Card, {
+    className: "group hover:shadow-lg p-2 transition-all duration-300 border-l-4 border-l-orange-500"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(_ui_card__WEBPACK_IMPORTED_MODULE_16__.CardContent, {
+    className: "p-2"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
+    className: "flex items-center justify-between mb-3"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
+    className: "p-2 bg-orange-50 rounded-lg group-hover:bg-orange-100 transition-colors"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(lucide_react__WEBPACK_IMPORTED_MODULE_11__["default"], {
+    className: "h-5 w-5 text-orange-600"
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(_ui_badge__WEBPACK_IMPORTED_MODULE_15__.Badge, {
+    variant: "secondary",
+    className: "text-xs"
+  }, "Active")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
+    className: "space-y-1"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("p", {
+    className: "text-xl font-bold text-gray-900"
+  }, stats.uniqueUsers.toLocaleString()), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("p", {
+    className: "text-sm font-medium text-orange-600"
+  }, "Active Users"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("p", {
+    className: "text-xs text-gray-500"
+  }, "Using AI features this month"))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(_ui_card__WEBPACK_IMPORTED_MODULE_16__.Card, {
+    className: "bg-gradient-to-r from-blue-50 to-indigo-50 border-0 p-2"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(_ui_card__WEBPACK_IMPORTED_MODULE_16__.CardContent, {
+    className: "p-2"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
+    className: "flex items-center justify-between mb-4"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
+    className: "flex items-center gap-2"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
+    className: "p-1.5 bg-blue-100 rounded-lg"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(lucide_react__WEBPACK_IMPORTED_MODULE_12__["default"], {
+    className: "h-4 w-4 text-blue-600"
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("h4", {
+    className: "text-base font-semibold text-gray-900"
+  }, "Token Usage Summary"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("p", {
+    className: "text-sm text-gray-600"
+  }, "Comprehensive token consumption overview")))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
     className: "grid grid-cols-1 md:grid-cols-2 gap-4"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
-    className: "text-center p-3 bg-white rounded-lg border border-gray-200"
+    className: "bg-white p-4 rounded-lg border border-blue-200 shadow-sm"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
-    className: "text-lg font-semibold text-gray-900"
+    className: "text-center"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
+    className: "text-2xl font-bold text-blue-600 mb-1"
   }, stats.totalTokens.toLocaleString()), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
+    className: "text-sm font-medium text-gray-900 mb-1"
+  }, "Total Tokens"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
     className: "text-xs text-gray-500"
-  }, "Total Tokens (All Time)")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
-    className: "text-center p-3 bg-white rounded-lg border border-gray-200"
+  }, "All time consumption"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
+    className: "bg-white p-4 rounded-lg border border-blue-200 shadow-sm"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
-    className: "text-lg font-semibold text-gray-900"
+    className: "text-center"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
+    className: "text-2xl font-bold text-blue-600 mb-1"
   }, stats.monthlyTokens.toLocaleString()), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
+    className: "text-sm font-medium text-gray-900 mb-1"
+  }, "Monthly Tokens"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
     className: "text-xs text-gray-500"
-  }, "Total Tokens (This Month)")))), stats.recentUsage && stats.recentUsage.length > 0 && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
-    className: "bg-gray-50 p-4 rounded-lg border border-gray-200"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("h4", {
-    className: "text-sm font-medium text-gray-900 mb-3 flex items-center"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(lucide_react__WEBPACK_IMPORTED_MODULE_8__["default"], {
-    className: "h-4 w-4 mr-2 text-green-600"
-  }), "Recent Usage (Last 7 Days)"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
-    className: "overflow-x-auto"
+  }, "This month's consumption")))))), stats.recentUsage && stats.recentUsage.length > 0 && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(_ui_card__WEBPACK_IMPORTED_MODULE_16__.Card, {
+    className: "p-2"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(_ui_card__WEBPACK_IMPORTED_MODULE_16__.CardContent, {
+    className: "p-2"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
+    className: "flex items-center gap-2 mb-4"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
+    className: "p-1.5 bg-green-50 rounded-lg"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(lucide_react__WEBPACK_IMPORTED_MODULE_10__["default"], {
+    className: "h-4 w-4 text-green-600"
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("h4", {
+    className: "text-base font-semibold text-gray-900"
+  }, "Recent Usage"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("p", {
+    className: "text-sm text-gray-500"
+  }, "Last 7 days activity breakdown"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
+    className: "overflow-hidden rounded-lg border border-gray-200"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("table", {
     className: "min-w-full divide-y divide-gray-200"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("thead", {
-    className: "bg-white"
+    className: "bg-gray-50"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("th", {
-    className: "px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+    className: "px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
   }, "Date"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("th", {
-    className: "px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+    className: "px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
   }, "API Calls"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("th", {
-    className: "px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+    className: "px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
   }, "Tokens Used"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("th", {
-    className: "px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+    className: "px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
   }, "Active Users"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("tbody", {
     className: "bg-white divide-y divide-gray-200"
   }, stats.recentUsage.map(function (day, index) {
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("tr", {
       key: index,
-      className: "hover:bg-gray-50"
+      className: "hover:bg-gray-50 transition-colors"
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("td", {
-      className: "px-3 py-2 whitespace-nowrap text-sm text-gray-900"
-    }, new Date(day.date).toLocaleDateString()), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("td", {
-      className: "px-3 py-2 whitespace-nowrap text-sm text-gray-900"
-    }, day.calls.toLocaleString()), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("td", {
-      className: "px-3 py-2 whitespace-nowrap text-sm text-gray-900"
-    }, day.tokens.toLocaleString()), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("td", {
-      className: "px-3 py-2 whitespace-nowrap text-sm text-gray-900"
-    }, day.users.toLocaleString()));
-  })))))));
+      className: "px-4 py-2 whitespace-nowrap text-sm font-medium text-gray-900"
+    }, new Date(day.date).toLocaleDateString('en-US', {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric'
+    })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("td", {
+      className: "px-4 py-2 whitespace-nowrap text-sm text-gray-900"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(_ui_badge__WEBPACK_IMPORTED_MODULE_15__.Badge, {
+      variant: "outline",
+      className: "font-mono"
+    }, day.calls.toLocaleString())), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("td", {
+      className: "px-4 py-2 whitespace-nowrap text-sm text-gray-900"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(_ui_badge__WEBPACK_IMPORTED_MODULE_15__.Badge, {
+      variant: "secondary",
+      className: "font-mono"
+    }, day.tokens.toLocaleString())), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("td", {
+      className: "px-4 py-2 whitespace-nowrap text-sm text-gray-900"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(_ui_badge__WEBPACK_IMPORTED_MODULE_15__.Badge, {
+      variant: "default",
+      className: "font-mono"
+    }, day.users.toLocaleString())));
+  }))))))));
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (UsageStats);
 
@@ -2882,40 +2977,48 @@ var NotificationStats = function NotificationStats(_ref) {
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
     className: "space-y-6"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
-    className: "grid grid-cols-2 md:grid-cols-4 gap-4"
+    className: "flex flex-col md:flex-row gap-4"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
-    className: "text-center p-4 bg-blue-50 rounded-lg border border-blue-200"
+    className: "flex-1 flex items-center bg-white border border-blue-100 rounded-xl shadow-sm p-5 hover:shadow-md transition"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
+    className: "flex-shrink-0 bg-blue-100 rounded-full p-3 mr-4"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(lucide_react__WEBPACK_IMPORTED_MODULE_10__["default"], {
-    className: "h-8 w-8 mx-auto text-blue-600 mb-2"
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
-    className: "text-2xl font-bold text-blue-900"
+    className: "h-7 w-7 text-blue-600"
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
+    className: "text-lg font-semibold text-blue-900"
   }, stats === null || stats === void 0 || (_stats$unique_users = stats.unique_users) === null || _stats$unique_users === void 0 ? void 0 : _stats$unique_users.toLocaleString()), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
-    className: "text-sm text-blue-700"
-  }, "Unique Users")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
-    className: "text-center p-4 bg-green-50 rounded-lg border border-green-200"
+    className: "text-xs text-blue-600 tracking-wide uppercase font-medium"
+  }, "Unique Users"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
+    className: "flex-1 flex items-center bg-white border border-green-100 rounded-xl shadow-sm p-5 hover:shadow-md transition"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
+    className: "flex-shrink-0 bg-green-100 rounded-full p-3 mr-4"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(lucide_react__WEBPACK_IMPORTED_MODULE_5__["default"], {
-    className: "h-8 w-8 mx-auto text-green-600 mb-2"
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
-    className: "text-2xl font-bold text-green-900"
+    className: "h-7 w-7 text-green-600"
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
+    className: "text-lg font-semibold text-green-900"
   }, stats === null || stats === void 0 || (_stats$total_subscrip = stats.total_subscriptions) === null || _stats$total_subscrip === void 0 ? void 0 : _stats$total_subscrip.toLocaleString()), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
-    className: "text-sm text-green-700"
-  }, "Total Subscriptions")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
-    className: "text-center p-4 bg-purple-50 rounded-lg border border-purple-200"
+    className: "text-xs text-green-600 tracking-wide uppercase font-medium"
+  }, "Total Subscriptions"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
+    className: "flex-1 flex items-center bg-white border border-purple-100 rounded-xl shadow-sm p-5 hover:shadow-md transition"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
+    className: "flex-shrink-0 bg-purple-100 rounded-full p-3 mr-4"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(lucide_react__WEBPACK_IMPORTED_MODULE_7__["default"], {
-    className: "h-8 w-8 mx-auto text-purple-600 mb-2"
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
-    className: "text-2xl font-bold text-purple-900"
+    className: "h-7 w-7 text-purple-600"
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
+    className: "text-lg font-semibold text-purple-900"
   }, stats === null || stats === void 0 || (_stats$recent_activit = stats.recent_activity_7_days) === null || _stats$recent_activit === void 0 ? void 0 : _stats$recent_activit.toLocaleString()), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
-    className: "text-sm text-purple-700"
-  }, "Recent Activity (7 days)")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
-    className: "text-center p-4 bg-orange-50 rounded-lg border border-orange-200"
+    className: "text-xs text-purple-600 tracking-wide uppercase font-medium"
+  }, "Recent Activity (7d)"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
+    className: "flex-1 flex items-center bg-white border border-orange-100 rounded-xl shadow-sm p-5 hover:shadow-md transition"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
+    className: "flex-shrink-0 bg-orange-100 rounded-full p-3 mr-4"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(lucide_react__WEBPACK_IMPORTED_MODULE_9__["default"], {
-    className: "h-8 w-8 mx-auto text-orange-600 mb-2"
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
-    className: "text-2xl font-bold text-orange-900"
+    className: "h-7 w-7 text-orange-600"
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
+    className: "text-lg font-semibold text-orange-900"
   }, stats === null || stats === void 0 || (_stats$average_device = stats.average_devices_per_user) === null || _stats$average_device === void 0 ? void 0 : _stats$average_device.toFixed(1)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("div", {
-    className: "text-sm text-orange-700"
-  }, "Avg Devices/User"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(_ui_tabs__WEBPACK_IMPORTED_MODULE_14__.Tabs, {
+    className: "text-xs text-orange-600 tracking-wide uppercase font-medium"
+  }, "Avg Devices/User")))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(_ui_tabs__WEBPACK_IMPORTED_MODULE_14__.Tabs, {
     value: activeTab,
     onValueChange: setActiveTab,
     className: "w-full"
@@ -3624,9 +3727,11 @@ var RecentNotificationsTable = function RecentNotificationsTable(_ref) {
   }, "Devices Reached"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_4___default().createElement("p", {
     className: "text-lg font-bold text-orange-600"
   }, stats.total_devices_reached))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_4___default().createElement("div", {
-    className: "flex items-center justify-between"
+    className: "flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-2"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_4___default().createElement("div", {
-    className: "flex items-center space-x-4"
+    className: "flex flex-col xs:flex-row xs:items-center gap-2 xs:gap-4"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_4___default().createElement("div", {
+    className: "flex flex-row flex-wrap gap-2"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_4___default().createElement(_ui_button__WEBPACK_IMPORTED_MODULE_20__.Button, {
     onClick: function onClick() {
       return setShowFilters(!showFilters);
@@ -3646,12 +3751,16 @@ var RecentNotificationsTable = function RecentNotificationsTable(_ref) {
     className: "flex items-center space-x-2"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_4___default().createElement(lucide_react__WEBPACK_IMPORTED_MODULE_15__["default"], {
     className: "h-4 w-4"
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_4___default().createElement("span", null, "Send Broadcast"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_4___default().createElement("div", {
-    className: "text-sm text-gray-500"
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_4___default().createElement("span", {
+    className: "hidden xs:inline"
+  }, "Send Broadcast"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_4___default().createElement("span", {
+    className: "xs:hidden"
+  }, "Send")))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_4___default().createElement("div", {
+    className: "text-sm text-gray-500 text-right"
   }, pagination.total, " notifications")), showFilters && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_4___default().createElement("div", {
     className: "bg-gray-50 p-4 rounded-lg border border-gray-200"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_4___default().createElement("div", {
-    className: "grid grid-cols-1 md:grid-cols-4 gap-4"
+    className: "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_4___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_4___default().createElement("label", {
     className: "block text-sm font-medium text-gray-700 mb-1"
   }, "Status"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_4___default().createElement(_ui_select__WEBPACK_IMPORTED_MODULE_22__.Select, {
@@ -3660,7 +3769,7 @@ var RecentNotificationsTable = function RecentNotificationsTable(_ref) {
     },
     defaultValue: "all"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_4___default().createElement(_ui_select__WEBPACK_IMPORTED_MODULE_22__.SelectTrigger, {
-    className: "w-[180px]"
+    className: "w-full min-w-[140px]"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_4___default().createElement(_ui_select__WEBPACK_IMPORTED_MODULE_22__.SelectValue, {
     placeholder: "Select a status"
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_4___default().createElement(_ui_select__WEBPACK_IMPORTED_MODULE_22__.SelectContent, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_4___default().createElement(_ui_select__WEBPACK_IMPORTED_MODULE_22__.SelectItem, {
@@ -3683,7 +3792,7 @@ var RecentNotificationsTable = function RecentNotificationsTable(_ref) {
     },
     defaultValue: "all"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_4___default().createElement(_ui_select__WEBPACK_IMPORTED_MODULE_22__.SelectTrigger, {
-    className: "w-[180px]"
+    className: "w-full min-w-[140px]"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_4___default().createElement(_ui_select__WEBPACK_IMPORTED_MODULE_22__.SelectValue, {
     placeholder: "Select a target"
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_4___default().createElement(_ui_select__WEBPACK_IMPORTED_MODULE_22__.SelectContent, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_4___default().createElement(_ui_select__WEBPACK_IMPORTED_MODULE_22__.SelectItem, {
@@ -3700,7 +3809,7 @@ var RecentNotificationsTable = function RecentNotificationsTable(_ref) {
     },
     defaultValue: "7days"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_4___default().createElement(_ui_select__WEBPACK_IMPORTED_MODULE_22__.SelectTrigger, {
-    className: "w-[180px]"
+    className: "w-full min-w-[140px]"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_4___default().createElement(_ui_select__WEBPACK_IMPORTED_MODULE_22__.SelectValue, {
     placeholder: "Select a date range"
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_4___default().createElement(_ui_select__WEBPACK_IMPORTED_MODULE_22__.SelectContent, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_4___default().createElement(_ui_select__WEBPACK_IMPORTED_MODULE_22__.SelectItem, {
@@ -3728,7 +3837,7 @@ var RecentNotificationsTable = function RecentNotificationsTable(_ref) {
     placeholder: "Search notifications...",
     className: "w-full pl-10 pr-3"
   })))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_4___default().createElement("div", {
-    className: "mt-4 flex justify-end"
+    className: "mt-4 flex flex-col xs:flex-row xs:justify-end gap-2"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_4___default().createElement(_ui_button__WEBPACK_IMPORTED_MODULE_20__.Button, {
     onClick: clearFilters,
     variant: "outline",
@@ -3838,18 +3947,18 @@ var RecentNotificationsTable = function RecentNotificationsTable(_ref) {
       className: "h-4 w-4"
     })))));
   })))), pagination.totalPages > 1 && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_4___default().createElement("div", {
-    className: "flex items-center justify-between"
+    className: "flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_4___default().createElement("div", {
-    className: "text-sm text-gray-700"
+    className: "text-sm text-gray-700 text-center sm:text-left"
   }, "Showing ", (pagination.page - 1) * pagination.perPage + 1, " to ", Math.min(pagination.page * pagination.perPage, pagination.total), " of ", pagination.total, " results"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_4___default().createElement("div", {
-    className: "flex items-center space-x-2"
+    className: "flex flex-wrap items-center justify-center gap-2"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_4___default().createElement(_ui_button__WEBPACK_IMPORTED_MODULE_20__.Button, {
     onClick: function onClick() {
       return changePage(pagination.page - 1);
     },
     disabled: pagination.page === 1,
     variant: "outline",
-    className: "text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+    className: "text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed min-w-[80px]"
   }, "Previous"), Array.from({
     length: Math.min(5, pagination.totalPages)
   }, function (_, i) {
@@ -3859,7 +3968,7 @@ var RecentNotificationsTable = function RecentNotificationsTable(_ref) {
       onClick: function onClick() {
         return changePage(page);
       },
-      className: "px-3 py-2 text-sm font-medium rounded-md ".concat(page === pagination.page ? 'bg-blue-600 text-white' : 'text-gray-500 bg-white border border-gray-300 hover:bg-gray-50')
+      className: "px-3 py-2 text-sm font-medium rounded-md min-w-[40px] ".concat(page === pagination.page ? 'bg-blue-600 text-white' : 'text-gray-500 bg-white border border-gray-300 hover:bg-gray-50')
     }, page);
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_4___default().createElement(_ui_button__WEBPACK_IMPORTED_MODULE_20__.Button, {
     onClick: function onClick() {
@@ -3867,7 +3976,7 @@ var RecentNotificationsTable = function RecentNotificationsTable(_ref) {
     },
     disabled: pagination.page === pagination.totalPages,
     variant: "outline",
-    className: "text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+    className: "text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed min-w-[80px]"
   }, "Next"))), notifications.length === 0 && !isLoading && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_4___default().createElement("div", {
     className: "text-center py-8"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_4___default().createElement(lucide_react__WEBPACK_IMPORTED_MODULE_12__["default"], {

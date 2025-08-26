@@ -342,22 +342,27 @@ class Pika_Admin_Manager extends Pika_Base_Manager {
         }
         
         // Get API key status
-        $api_key_status = 'Not Configured';
+        // Shorter API key status labels
+        $api_key_status = 'None';
         if (!empty($global_api_key)) {
-            $api_key_status = 'Global Key Active';
-        } else {
-            // Check if any users have personal API keys
-            $personal_keys_sql = $this->db()->prepare("
-                SELECT COUNT(DISTINCT user_id) as total
-                FROM {$this->get_table_name('user_settings')}
-                WHERE setting_key = 'gemini_api_key'
-                AND setting_value IS NOT NULL
-                AND setting_value != ''
-            ");
-            $personal_keys_result = $this->db()->get_var($personal_keys_sql);
-            
-            if ($personal_keys_result > 0) {
-                $api_key_status = 'Personal Keys Only';
+            $api_key_status = 'Global';
+        }
+
+        // Check if any users have personal API keys
+        $personal_keys_sql = $this->db()->prepare("
+            SELECT COUNT(DISTINCT user_id) as total
+            FROM {$this->get_table_name('user_settings')}
+            WHERE setting_key = 'gemini_api_key'
+            AND setting_value IS NOT NULL
+            AND setting_value != ''
+        ");
+        $personal_keys_result = $this->db()->get_var($personal_keys_sql);
+
+        if ($personal_keys_result > 0) {
+            if (empty($global_api_key)) {
+                $api_key_status = 'Personal';
+            } else {
+                $api_key_status = 'Both';
             }
         }
         

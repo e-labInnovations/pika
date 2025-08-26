@@ -111,30 +111,47 @@ const NotificationStats: React.FC<NotificationStatsProps> = ({ onRefresh }) => {
   return (
     <AdminCard title="Notification Statistics" subtitle="Overview of push notification performance">
       <div className="space-y-6">
-        {/* Key Statistics */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="text-center p-4 bg-blue-50 rounded-lg border border-blue-200">
-            <Users className="h-8 w-8 mx-auto text-blue-600 mb-2" />
-            <div className="text-2xl font-bold text-blue-900">{stats?.unique_users?.toLocaleString()}</div>
-            <div className="text-sm text-blue-700">Unique Users</div>
+        {/* Redesigned Key Statistics */}
+        <div className="flex flex-col md:flex-row gap-4">
+          {/* Unique Users */}
+          <div className="flex-1 flex items-center bg-white border border-blue-100 rounded-xl shadow-sm p-5 hover:shadow-md transition">
+            <div className="flex-shrink-0 bg-blue-100 rounded-full p-3 mr-4">
+              <Users className="h-7 w-7 text-blue-600" />
+            </div>
+            <div>
+              <div className="text-lg font-semibold text-blue-900">{stats?.unique_users?.toLocaleString()}</div>
+              <div className="text-xs text-blue-600 tracking-wide uppercase font-medium">Unique Users</div>
+            </div>
           </div>
-          
-          <div className="text-center p-4 bg-green-50 rounded-lg border border-green-200">
-            <CheckCircle className="h-8 w-8 mx-auto text-green-600 mb-2" />
-            <div className="text-2xl font-bold text-green-900">{stats?.total_subscriptions?.toLocaleString()}</div>
-            <div className="text-sm text-green-700">Total Subscriptions</div>
+          {/* Total Subscriptions */}
+          <div className="flex-1 flex items-center bg-white border border-green-100 rounded-xl shadow-sm p-5 hover:shadow-md transition">
+            <div className="flex-shrink-0 bg-green-100 rounded-full p-3 mr-4">
+              <CheckCircle className="h-7 w-7 text-green-600" />
+            </div>
+            <div>
+              <div className="text-lg font-semibold text-green-900">{stats?.total_subscriptions?.toLocaleString()}</div>
+              <div className="text-xs text-green-600 tracking-wide uppercase font-medium">Total Subscriptions</div>
+            </div>
           </div>
-          
-          <div className="text-center p-4 bg-purple-50 rounded-lg border border-purple-200">
-            <Bell className="h-8 w-8 mx-auto text-purple-600 mb-2" />
-            <div className="text-2xl font-bold text-purple-900">{stats?.recent_activity_7_days?.toLocaleString()}</div>
-            <div className="text-sm text-purple-700">Recent Activity (7 days)</div>
+          {/* Recent Activity */}
+          <div className="flex-1 flex items-center bg-white border border-purple-100 rounded-xl shadow-sm p-5 hover:shadow-md transition">
+            <div className="flex-shrink-0 bg-purple-100 rounded-full p-3 mr-4">
+              <Bell className="h-7 w-7 text-purple-600" />
+            </div>
+            <div>
+              <div className="text-lg font-semibold text-purple-900">{stats?.recent_activity_7_days?.toLocaleString()}</div>
+              <div className="text-xs text-purple-600 tracking-wide uppercase font-medium">Recent Activity (7d)</div>
+            </div>
           </div>
-          
-          <div className="text-center p-4 bg-orange-50 rounded-lg border border-orange-200">
-            <TrendingUp className="h-8 w-8 mx-auto text-orange-600 mb-2" />
-            <div className="text-2xl font-bold text-orange-900">{stats?.average_devices_per_user?.toFixed(1)}</div>
-            <div className="text-sm text-orange-700">Avg Devices/User</div>
+          {/* Avg Devices/User */}
+          <div className="flex-1 flex items-center bg-white border border-orange-100 rounded-xl shadow-sm p-5 hover:shadow-md transition">
+            <div className="flex-shrink-0 bg-orange-100 rounded-full p-3 mr-4">
+              <TrendingUp className="h-7 w-7 text-orange-600" />
+            </div>
+            <div>
+              <div className="text-lg font-semibold text-orange-900">{stats?.average_devices_per_user?.toFixed(1)}</div>
+              <div className="text-xs text-orange-600 tracking-wide uppercase font-medium">Avg Devices/User</div>
+            </div>
           </div>
         </div>
 
