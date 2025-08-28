@@ -1,0 +1,626 @@
+---
+id: transactions
+title: Transactions API
+sidebar_label: Transactions
+description: Complete guide to Pika's transactions API for managing financial transactions, income, expenses, and transfers
+---
+
+# 💰 Transactions API
+
+The Transactions API is the core of Pika's financial management system. It allows you to create, read, update, and delete financial transactions including income, expenses, and transfers between accounts.
+
+## 📡 Base URL
+
+All transactions endpoints are prefixed with:
+```
+/wp-json/pika/v1/transactions
+```
+
+## 🚀 Endpoints
+
+### Get All Transactions
+
+Retrieve all transactions for the authenticated user with optional filtering and pagination.
+
+**Endpoint:** `GET /wp-json/pika/v1/transactions`
+
+**Headers:**
+- `Cookie`: Authentication cookie
+
+**Query Parameters:**
+- `type` (optional): Filter by transaction type (`income`, `expense`, `transfer`)
+- `category_id` (optional): Filter by category ID
+- `account_id` (optional): Filter by account ID
+- `person_id` (optional): Filter by person ID
+- `date_from` (optional): Filter transactions from date (YYYY-MM-DD)
+- `date_to` (optional): Filter transactions to date (YYYY-MM-DD)
+- `amount_min` (optional): Minimum amount filter
+- `amount_max` (optional): Maximum amount filter
+- `tags` (optional): Comma-separated tag IDs
+- `page` (optional): Page number for pagination (default: 1)
+- `per_page` (optional): Items per page (default: 20, max: 100)
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "transactions": [
+      {
+        "id": 1,
+        "title": "Grocery Shopping",
+        "amount": 85.50,
+        "type": "expense",
+        "date": "2024-01-15",
+        "note": "Weekly groceries from Walmart",
+        "categoryId": 1,
+        "accountId": 1,
+        "personId": null,
+        "tags": [2, 5],
+        "attachments": [3],
+        "category": {
+          "id": 1,
+          "name": "Food & Dining",
+          "icon": "utensils",
+          "color": "#ff6b6b"
+        },
+        "account": {
+          "id": 1,
+          "name": "Main Checking",
+          "icon": "credit-card",
+          "color": "#4ecdc4"
+        },
+        "person": null,
+        "createdAt": "2024-01-15T10:30:00Z",
+        "updatedAt": "2024-01-15T10:30:00Z"
+      },
+      {
+        "id": 2,
+        "title": "Salary Deposit",
+        "amount": 2500.00,
+        "type": "income",
+        "date": "2024-01-01",
+        "note": "Monthly salary from employer",
+        "categoryId": 3,
+        "accountId": 1,
+        "personId": null,
+        "tags": [1],
+        "attachments": [],
+        "category": {
+          "id": 3,
+          "name": "Salary",
+          "icon": "briefcase",
+          "color": "#45b7d1"
+        },
+        "account": {
+          "id": 1,
+          "name": "Main Checking",
+          "icon": "credit-card",
+          "color": "#4ecdc4"
+        },
+        "person": null,
+        "createdAt": "2024-01-01T09:00:00Z",
+        "updatedAt": "2024-01-01T09:00:00Z"
+      }
+    ],
+    "pagination": {
+      "total": 45,
+      "per_page": 20,
+      "current_page": 1,
+      "last_page": 3,
+      "from": 1,
+      "to": 20
+    },
+    "summary": {
+      "total_income": 5000.00,
+      "total_expenses": 1250.75,
+      "total_transfers": 500.00,
+      "net_amount": 3249.25
+    }
+  }
+}
+```
+
+**Example Request:**
+```bash
+curl -X GET "http://localhost:8000/wp-json/pika/v1/transactions?type=expense&date_from=2024-01-01&per_page=10" \
+  -H "Cookie: pika_token=base64_encoded_token"
+```
+
+### Get Transaction by ID
+
+Retrieve a specific transaction by its ID.
+
+**Endpoint:** `GET /wp-json/pika/v1/transactions/{id}`
+
+**Headers:**
+- `Cookie`: Authentication cookie
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "title": "Grocery Shopping",
+    "amount": 85.50,
+    "type": "expense",
+    "date": "2024-01-15",
+    "note": "Weekly groceries from Walmart",
+    "categoryId": 1,
+    "accountId": 1,
+    "personId": null,
+    "tags": [2, 5],
+    "attachments": [3],
+    "category": {
+      "id": 1,
+      "name": "Food & Dining",
+      "icon": "utensils",
+      "color": "#ff6b6b"
+    },
+    "account": {
+      "id": 1,
+      "name": "Main Checking",
+      "icon": "credit-card",
+      "color": "#4ecdc4"
+    },
+    "person": null,
+    "attachments": [
+      {
+        "id": 3,
+        "filename": "receipt.jpg",
+        "url": "https://example.com/uploads/receipt.jpg",
+        "type": "image",
+        "size": 245760
+      }
+    ],
+    "tags": [
+      {
+        "id": 2,
+        "name": "Essential",
+        "color": "#10b981"
+      },
+      {
+        "id": 5,
+        "name": "Weekly",
+        "color": "#3b82f6"
+      }
+    ],
+    "createdAt": "2024-01-15T10:30:00Z",
+    "updatedAt": "2024-01-15T10:30:00Z"
+  }
+}
+```
+
+**Example Request:**
+```bash
+curl -X GET http://localhost:8000/wp-json/pika/v1/transactions/1 \
+  -H "Cookie: pika_token=base64_encoded_token"
+```
+
+### Create Transaction
+
+Create a new transaction.
+
+**Endpoint:** `POST /wp-json/pika/v1/transactions`
+
+**Headers:**
+- `Cookie`: Authentication cookie
+- `Content-Type: application/json`
+
+**Request Body:**
+```json
+{
+  "title": "Coffee Shop",
+  "amount": 4.50,
+  "date": "2024-01-20",
+  "type": "expense",
+  "categoryId": 1,
+  "accountId": 1,
+  "personId": 3,
+  "tags": [2],
+  "attachments": [23],
+  "note": "Morning coffee from Starbucks"
+}
+```
+
+**Required Fields:**
+- `title` (string): Transaction title/description
+- `amount` (number): Transaction amount (positive number)
+- `date` (string): Transaction date (YYYY-MM-DD format)
+- `type` (string): Transaction type (`income`, `expense`, `transfer`)
+- `categoryId` (integer): Category ID
+- `accountId` (integer): Account ID
+
+**Optional Fields:**
+- `personId` (integer): Associated person ID
+- `tags` (array): Array of tag IDs
+- `attachments` (array): Array of attachment IDs
+- `note` (string): Additional notes
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Transaction created successfully",
+  "data": {
+    "id": 46,
+    "title": "Coffee Shop",
+    "amount": 4.50,
+    "type": "expense",
+    "date": "2024-01-20",
+    "note": "Morning coffee from Starbucks",
+    "categoryId": 1,
+    "accountId": 1,
+    "personId": 3,
+    "tags": [2],
+    "attachments": [23],
+    "category": {
+      "id": 1,
+      "name": "Food & Dining",
+      "icon": "utensils",
+      "color": "#ff6b6b"
+    },
+    "account": {
+      "id": 1,
+      "name": "Main Checking",
+      "icon": "credit-card",
+      "color": "#4ecdc4"
+    },
+    "person": {
+      "id": 3,
+      "name": "John Doe",
+      "avatar": "https://example.com/avatar.jpg"
+    },
+    "createdAt": "2024-01-20T08:30:00Z",
+    "updatedAt": "2024-01-20T08:30:00Z"
+  }
+}
+```
+
+**Example Request:**
+```bash
+curl -X POST http://localhost:8000/wp-json/pika/v1/transactions \
+  -H "Cookie: pika_token=base64_encoded_token" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Coffee Shop",
+    "amount": 4.50,
+    "date": "2024-01-20",
+    "type": "expense",
+    "categoryId": 1,
+    "accountId": 1,
+    "note": "Morning coffee from Starbucks"
+  }'
+```
+
+### Update Transaction
+
+Update an existing transaction.
+
+**Endpoint:** `PUT /wp-json/pika/v1/transactions/{id}`
+
+**Headers:**
+- `Cookie`: Authentication cookie
+- `Content-Type: application/json`
+
+**Request Body:**
+```json
+{
+  "title": "Coffee Shop - Updated",
+  "amount": 5.25,
+  "note": "Updated note for coffee transaction",
+  "attachments": [13],
+  "tags": [1, 3]
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Transaction updated successfully",
+  "data": {
+    "id": 46,
+    "title": "Coffee Shop - Updated",
+    "amount": 5.25,
+    "type": "expense",
+    "date": "2024-01-20",
+    "note": "Updated note for coffee transaction",
+    "categoryId": 1,
+    "accountId": 1,
+    "personId": 3,
+    "tags": [1, 3],
+    "attachments": [13],
+    "category": {
+      "id": 1,
+      "name": "Food & Dining",
+      "icon": "utensils",
+      "color": "#ff6b6b"
+    },
+    "account": {
+      "id": 1,
+      "name": "Main Checking",
+      "icon": "credit-card",
+      "color": "#4ecdc4"
+    },
+    "person": {
+      "id": 3,
+      "name": "John Doe",
+      "avatar": "https://example.com/avatar.jpg"
+    },
+    "createdAt": "2024-01-20T08:30:00Z",
+    "updatedAt": "2024-01-20T16:45:00Z"
+  }
+}
+```
+
+**Example Request:**
+```bash
+curl -X PUT http://localhost:8000/wp-json/pika/v1/transactions/46 \
+  -H "Cookie: pika_token=base64_encoded_token" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Coffee Shop - Updated",
+    "amount": 5.25,
+    "note": "Updated note for coffee transaction"
+  }'
+```
+
+### Delete Transaction
+
+Delete a transaction.
+
+**Endpoint:** `DELETE /wp-json/pika/v1/transactions/{id}`
+
+**Headers:**
+- `Cookie`: Authentication cookie
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Transaction deleted successfully"
+}
+```
+
+**Example Request:**
+```bash
+curl -X DELETE http://localhost:8000/wp-json/pika/v1/transactions/46 \
+  -H "Cookie: pika_token=base64_encoded_token"
+```
+
+## 💳 Transaction Types
+
+### Income Transactions
+- **Purpose**: Money coming into accounts
+- **Examples**: Salary, investments, gifts, refunds
+- **Amount**: Always positive
+- **Effect**: Increases account balance
+
+### Expense Transactions
+- **Purpose**: Money going out from accounts
+- **Examples**: Food, transportation, bills, shopping
+- **Amount**: Always positive (system handles negative internally)
+- **Effect**: Decreases account balance
+
+### Transfer Transactions
+- **Purpose**: Moving money between accounts
+- **Examples**: Savings transfers, account rebalancing
+- **Amount**: Always positive
+- **Effect**: Decreases source account, increases destination account
+
+## 🔗 Related Data
+
+### Categories
+- Each transaction must have a category
+- Categories determine transaction classification
+- Support for hierarchical organization
+
+### Accounts
+- Transactions are linked to accounts
+- Affects account balance calculations
+- Support for multiple account types
+
+### People
+- Optional association with people
+- Useful for shared expenses or tracking
+- Supports avatars and contact information
+
+### Tags
+- Flexible labeling system
+- Multiple tags per transaction
+- Color-coded for visual organization
+
+### Attachments
+- File attachments (receipts, invoices)
+- Support for images and documents
+- Automatic file type detection
+
+## 🚨 Error Responses
+
+### Transaction Not Found
+```json
+{
+  "success": false,
+  "error": "Transaction not found",
+  "code": "transaction_not_found",
+  "details": {
+    "id": 999
+  }
+}
+```
+
+### Invalid Transaction Type
+```json
+{
+  "success": false,
+  "error": "Invalid transaction type",
+  "code": "invalid_transaction_type",
+  "details": {
+    "field": "type",
+    "value": "invalid",
+    "allowed_values": ["income", "expense", "transfer"]
+  }
+}
+```
+
+### Invalid Amount
+```json
+{
+  "success": false,
+  "error": "Invalid amount",
+  "code": "invalid_amount",
+  "details": {
+    "field": "amount",
+    "value": -50,
+    "message": "Amount must be a positive number"
+  }
+}
+```
+
+### Category Not Found
+```json
+{
+  "success": false,
+  "error": "Category not found",
+  "code": "category_not_found",
+  "details": {
+    "field": "categoryId",
+    "value": 999
+  }
+}
+```
+
+### Account Not Found
+```json
+{
+  "success": false,
+  "error": "Account not found",
+  "code": "account_not_found",
+  "details": {
+    "field": "accountId",
+    "value": 999
+  }
+}
+```
+
+### Validation Error
+```json
+{
+  "success": false,
+  "error": "Validation failed",
+  "code": "validation_error",
+  "details": [
+    {
+      "field": "title",
+      "message": "Transaction title is required"
+    },
+    {
+      "field": "date",
+      "message": "Invalid date format. Use YYYY-MM-DD"
+    }
+  ]
+}
+```
+
+## 📱 Frontend Integration
+
+### React Hook Example
+
+```typescript
+import { useTransactions } from '../hooks/useTransactions';
+
+function TransactionsPage() {
+  const { transactions, createTransaction, updateTransaction, deleteTransaction, loading } = useTransactions();
+
+  const handleCreateTransaction = async (transactionData) => {
+    try {
+      await createTransaction(transactionData);
+      // Show success message
+    } catch (err) {
+      // Handle error
+    }
+  };
+
+  return (
+    <div>
+      {transactions.map(transaction => (
+        <TransactionCard 
+          key={transaction.id} 
+          transaction={transaction}
+          onEdit={updateTransaction}
+          onDelete={deleteTransaction}
+        />
+      ))}
+    </div>
+  );
+}
+```
+
+### Transactions Service
+
+```typescript
+// services/transactions.service.ts
+export class TransactionsService {
+  async getTransactions(params?: TransactionFilters): Promise<TransactionResponse> {
+    const response = await api.get('/transactions', { params });
+    return response.data.data;
+  }
+
+  async getTransaction(id: number): Promise<Transaction> {
+    const response = await api.get(`/transactions/${id}`);
+    return response.data.data;
+  }
+
+  async createTransaction(transactionData: CreateTransactionData): Promise<Transaction> {
+    const response = await api.post('/transactions', transactionData);
+    return response.data.data;
+  }
+
+  async updateTransaction(id: number, updates: Partial<Transaction>): Promise<Transaction> {
+    const response = await api.put(`/transactions/${id}`, updates);
+    return response.data.data;
+  }
+
+  async deleteTransaction(id: number): Promise<void> {
+    await api.delete(`/transactions/${id}`);
+  }
+}
+```
+
+## 💡 Best Practices
+
+1. **Transaction Naming**
+   - Use clear, descriptive titles
+   - Be consistent with naming conventions
+   - Include relevant details in notes
+
+2. **Amount Handling**
+   - Always send positive amounts
+   - Let the system handle sign conventions
+   - Validate amounts on the frontend
+
+3. **Date Management**
+   - Use ISO date format (YYYY-MM-DD)
+   - Consider timezone implications
+   - Validate date ranges
+
+4. **Related Data**
+   - Validate all related IDs before submission
+   - Handle missing or invalid relationships gracefully
+   - Provide user-friendly error messages
+
+5. **Performance**
+   - Use pagination for large datasets
+   - Implement efficient filtering
+   - Cache frequently accessed data
+
+## 📚 Related Documentation
+
+- [Categories API](./categories) - Manage transaction categories
+- [Accounts API](./accounts) - Manage financial accounts
+- [People API](./people) - Manage people and contacts
+- [Tags API](./tags) - Organize with tags
+- [Upload API](./upload) - Handle file attachments
+- [Analytics API](./analytics) - Transaction reporting and insights

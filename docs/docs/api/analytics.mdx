@@ -1,0 +1,778 @@
+---
+id: analytics
+title: Analytics API
+sidebar_label: Analytics
+description: Complete guide to Pika's analytics API for financial reporting, insights, and data analysis
+---
+
+# 📊 Analytics API
+
+The Analytics API provides comprehensive financial reporting and insights for your Pika data. This includes spending analysis, income tracking, budget monitoring, and various financial metrics to help you understand your financial patterns and make informed decisions.
+
+## 📡 Base URL
+
+All analytics endpoints are prefixed with:
+```
+/wp-json/pika/v1/analytics
+```
+
+## 🚀 Endpoints
+
+### Weekly Expenses
+
+Get weekly expense breakdown for the current month.
+
+**Endpoint:** `GET /wp-json/pika/v1/analytics/weekly-expenses`
+
+**Headers:**
+- `Cookie`: Authentication cookie
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "weekly_expenses": [
+      {
+        "week": 1,
+        "start_date": "2024-01-01",
+        "end_date": "2024-01-07",
+        "total_expenses": 450.75,
+        "transaction_count": 12,
+        "categories": [
+          {
+            "category_id": 1,
+            "category_name": "Food & Dining",
+            "amount": 180.50,
+            "percentage": 40.0
+          },
+          {
+            "category_id": 2,
+            "category_name": "Transportation",
+            "amount": 95.25,
+            "percentage": 21.1
+          }
+        ]
+      },
+      {
+        "week": 2,
+        "start_date": "2024-01-08",
+        "end_date": "2024-01-14",
+        "total_expenses": 320.00,
+        "transaction_count": 8,
+        "categories": [
+          {
+            "category_id": 1,
+            "category_name": "Food & Dining",
+            "amount": 150.00,
+            "percentage": 46.9
+          },
+          {
+            "category_id": 3,
+            "category_name": "Entertainment",
+            "amount": 80.00,
+            "percentage": 25.0
+          }
+        ]
+      }
+    ],
+    "summary": {
+      "total_expenses": 770.75,
+      "average_weekly": 385.38,
+      "total_transactions": 20,
+      "current_month": "January 2024"
+    }
+  }
+}
+```
+
+**Example Request:**
+```bash
+curl -X GET http://localhost:8000/wp-json/pika/v1/analytics/weekly-expenses \
+  -H "Cookie: pika_token=base64_encoded_token"
+```
+
+### Daily Summaries
+
+Get daily financial summaries for a specific month.
+
+**Endpoint:** `GET /wp-json/pika/v1/analytics/daily-summaries`
+
+**Headers:**
+- `Cookie`: Authentication cookie
+- `Content-Type: application/json`
+
+**Request Body:**
+```json
+{
+  "month": 7,
+  "year": 2025
+}
+```
+
+**Parameters:**
+- `month` (integer, required): Month number (1-12)
+- `year` (integer, required): Year (YYYY)
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "daily_summaries": [
+      {
+        "date": "2024-01-01",
+        "income": 2500.00,
+        "expenses": 0.00,
+        "transfers": 0.00,
+        "net_amount": 2500.00,
+        "transaction_count": 1,
+        "top_categories": [
+          {
+            "category_id": 3,
+            "category_name": "Salary",
+            "amount": 2500.00
+          }
+        ]
+      },
+      {
+        "date": "2024-01-02",
+        "income": 0.00,
+        "expenses": 85.50,
+        "transfers": 0.00,
+        "net_amount": -85.50,
+        "transaction_count": 2,
+        "top_categories": [
+          {
+            "category_id": 1,
+            "category_name": "Food & Dining",
+            "amount": 65.50
+          },
+          {
+            "category_id": 2,
+            "category_name": "Transportation",
+            "amount": 20.00
+          }
+        ]
+      }
+    ],
+    "summary": {
+      "month": "July 2025",
+      "total_income": 5000.00,
+      "total_expenses": 1250.75,
+      "total_transfers": 500.00,
+      "net_amount": 3249.25,
+      "total_transactions": 45,
+      "average_daily_expenses": 40.35
+    }
+  }
+}
+```
+
+**Example Request:**
+```bash
+curl -X GET http://localhost:8000/wp-json/pika/v1/analytics/daily-summaries \
+  -H "Cookie: pika_token=base64_encoded_token" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "month": 7,
+    "year": 2025
+  }'
+```
+
+### Monthly Summary
+
+Get comprehensive monthly financial summary.
+
+**Endpoint:** `GET /wp-json/pika/v1/analytics/monthly-summary`
+
+**Headers:**
+- `Cookie`: Authentication cookie
+- `Content-Type: application/json`
+
+**Request Body:**
+```json
+{
+  "month": 7,
+  "year": 2025
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "month": "July 2025",
+    "summary": {
+      "total_income": 5000.00,
+      "total_expenses": 1250.75,
+      "total_transfers": 500.00,
+      "net_amount": 3249.25,
+      "total_transactions": 45
+    },
+    "income_breakdown": {
+      "salary": 4000.00,
+      "investments": 800.00,
+      "gifts": 200.00
+    },
+    "expense_breakdown": {
+      "food_dining": 450.25,
+      "transportation": 200.50,
+      "entertainment": 150.00,
+      "utilities": 200.00,
+      "other": 250.00
+    },
+    "account_summary": [
+      {
+        "account_id": 1,
+        "account_name": "Main Checking",
+        "starting_balance": 2000.00,
+        "ending_balance": 3249.25,
+        "net_change": 1249.25
+      },
+      {
+        "account_id": 2,
+        "account_name": "Savings",
+        "starting_balance": 15000.00,
+        "ending_balance": 15500.00,
+        "net_change": 500.00
+      }
+    ],
+    "trends": {
+      "expense_trend": "decreasing",
+      "income_trend": "stable",
+      "savings_rate": 24.9,
+      "budget_compliance": 85.0
+    }
+  }
+}
+```
+
+### Monthly Category Spending
+
+Get spending breakdown by category for a specific month.
+
+**Endpoint:** `GET /wp-json/pika/v1/analytics/monthly-category-spending`
+
+**Headers:**
+- `Cookie`: Authentication cookie
+- `Content-Type: application/json`
+
+**Request Body:**
+```json
+{
+  "month": 7,
+  "year": 2025
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "month": "July 2025",
+    "category_spending": [
+      {
+        "category_id": 1,
+        "category_name": "Food & Dining",
+        "icon": "utensils",
+        "color": "#ff6b6b",
+        "total_amount": 450.25,
+        "transaction_count": 15,
+        "percentage": 36.0,
+        "average_per_transaction": 30.02,
+        "trend": "increasing"
+      },
+      {
+        "category_id": 2,
+        "category_name": "Transportation",
+        "icon": "car",
+        "color": "#4ecdc4",
+        "total_amount": 200.50,
+        "transaction_count": 8,
+        "percentage": 16.0,
+        "average_per_transaction": 25.06,
+        "trend": "stable"
+      },
+      {
+        "category_id": 3,
+        "category_name": "Entertainment",
+        "icon": "gamepad",
+        "color": "#a855f7",
+        "total_amount": 150.00,
+        "transaction_count": 5,
+        "percentage": 12.0,
+        "average_per_transaction": 30.00,
+        "trend": "decreasing"
+      }
+    ],
+    "summary": {
+      "total_expenses": 1250.75,
+      "total_categories": 8,
+      "top_category": "Food & Dining",
+      "top_category_percentage": 36.0
+    }
+  }
+}
+```
+
+### Monthly Tag Activity
+
+Get spending breakdown by tags for a specific month.
+
+**Endpoint:** `GET /wp-json/pika/v1/analytics/monthly-tag-activity`
+
+**Headers:**
+- `Cookie`: Authentication cookie
+- `Content-Type: application/json`
+
+**Request Body:**
+```json
+{
+  "month": 7,
+  "year": 2025
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "month": "July 2025",
+    "tag_activity": [
+      {
+        "tag_id": 1,
+        "tag_name": "Essential",
+        "color": "#10b981",
+        "total_amount": 800.25,
+        "transaction_count": 25,
+        "percentage": 64.0,
+        "categories": [
+          {
+            "category_id": 1,
+            "category_name": "Food & Dining",
+            "amount": 450.25
+          },
+          {
+            "category_id": 4,
+            "category_name": "Utilities",
+            "amount": 200.00
+          }
+        ]
+      },
+      {
+        "tag_id": 2,
+        "tag_name": "Weekly",
+        "color": "#3b82f6",
+        "total_amount": 300.50,
+        "transaction_count": 12,
+        "percentage": 24.0,
+        "categories": [
+          {
+            "category_id": 2,
+            "category_name": "Transportation",
+            "amount": 200.50
+          }
+        ]
+      }
+    ],
+    "summary": {
+      "total_tagged_expenses": 1250.75,
+      "total_tags": 5,
+      "most_active_tag": "Essential",
+      "most_active_tag_percentage": 64.0
+    }
+  }
+}
+```
+
+### Monthly Person Activity
+
+Get spending breakdown by people for a specific month.
+
+**Endpoint:** `GET /wp-json/pika/v1/analytics/monthly-person-activity`
+
+**Headers:**
+- `Cookie`: Authentication cookie
+- `Content-Type: application/json`
+
+**Request Body:**
+```json
+{
+  "month": 7,
+  "year": 2025
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "month": "July 2025",
+    "person_activity": [
+      {
+        "person_id": 1,
+        "person_name": "John Doe",
+        "type": "family",
+        "avatar": "https://example.com/avatar.jpg",
+        "total_amount": 600.25,
+        "transaction_count": 18,
+        "percentage": 48.0,
+        "categories": [
+          {
+            "category_id": 1,
+            "category_name": "Food & Dining",
+            "amount": 300.25
+          },
+          {
+            "category_id": 3,
+            "category_name": "Entertainment",
+            "amount": 150.00
+          }
+        ],
+        "shared_expenses": 400.25,
+        "personal_expenses": 200.00
+      },
+      {
+        "person_id": 2,
+        "person_name": "Jane Smith",
+        "type": "friend",
+        "avatar": null,
+        "total_amount": 250.50,
+        "transaction_count": 8,
+        "percentage": 20.0,
+        "categories": [
+          {
+            "category_id": 1,
+            "category_name": "Food & Dining",
+            "amount": 150.00
+          }
+        ],
+        "shared_expenses": 150.00,
+        "personal_expenses": 100.50
+      }
+    ],
+    "summary": {
+      "total_person_expenses": 1250.75,
+      "total_people": 5,
+      "most_active_person": "John Doe",
+      "most_active_person_percentage": 48.0,
+      "total_shared_expenses": 800.50
+    }
+  }
+}
+```
+
+### Person Transaction Summary
+
+Get detailed transaction summary for a specific person over time.
+
+**Endpoint:** `GET /wp-json/pika/v1/analytics/person-transaction-summary`
+
+**Headers:**
+- `Cookie`: Authentication cookie
+
+**Query Parameters:**
+- `personId` (required): Person ID
+- `timeBucket` (optional): Time grouping (`daily`, `weekly`, `monthly`, `yearly`)
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "person": {
+      "id": 1,
+      "name": "John Doe",
+      "type": "family",
+      "avatar": "https://example.com/avatar.jpg"
+    },
+    "time_bucket": "monthly",
+    "summary": {
+      "total_transactions": 45,
+      "total_amount": 2500.75,
+      "total_income": 0.00,
+      "total_expenses": 2500.75,
+      "net_amount": -2500.75
+    },
+    "time_series": [
+      {
+        "period": "January 2024",
+        "income": 0.00,
+        "expenses": 800.25,
+        "transfers": 0.00,
+        "net_amount": -800.25,
+        "transaction_count": 15
+      },
+      {
+        "period": "February 2024",
+        "income": 0.00,
+        "expenses": 750.50,
+        "transfers": 0.00,
+        "net_amount": -750.50,
+        "transaction_count": 12
+      }
+    ],
+    "category_breakdown": [
+      {
+        "category_id": 1,
+        "category_name": "Food & Dining",
+        "total_amount": 1200.50,
+        "transaction_count": 35,
+        "percentage": 48.0
+      },
+      {
+        "category_id": 3,
+        "category_name": "Entertainment",
+        "total_amount": 600.00,
+        "transaction_count": 10,
+        "percentage": 24.0
+      }
+    ],
+    "trends": {
+      "expense_trend": "decreasing",
+      "average_monthly_expenses": 833.58,
+      "most_expensive_month": "January 2024",
+      "least_expensive_month": "February 2024"
+    }
+  }
+}
+```
+
+**Example Request:**
+```bash
+curl -X GET "http://localhost:8000/wp-json/pika/v1/analytics/person-transaction-summary?personId=7&timeBucket=monthly" \
+  -H "Cookie: pika_token=base64_encoded_token"
+```
+
+## 📈 Analytics Features
+
+### Time-based Analysis
+- **Daily**: Day-by-day breakdown
+- **Weekly**: Weekly summaries and trends
+- **Monthly**: Monthly comprehensive reports
+- **Yearly**: Annual financial overview
+
+### Categorization
+- **Category-based**: Spending by transaction categories
+- **Tag-based**: Spending by custom tags
+- **Person-based**: Spending by people/contacts
+- **Account-based**: Financial activity by accounts
+
+### Trend Analysis
+- **Spending Trends**: Increasing, decreasing, or stable
+- **Income Trends**: Regular income patterns
+- **Savings Rate**: Percentage of income saved
+- **Budget Compliance**: Adherence to budget goals
+
+### Comparative Analysis
+- **Month-over-month**: Compare consecutive months
+- **Year-over-year**: Compare same month across years
+- **Category Comparison**: Compare spending across categories
+- **Person Comparison**: Compare spending across people
+
+## 🔍 Filtering and Parameters
+
+### Date Ranges
+- **Specific Month/Year**: `month` and `year` parameters
+- **Date Range**: `start_date` and `end_date` parameters
+- **Relative Dates**: `last_30_days`, `last_90_days`, etc.
+
+### Transaction Types
+- **Income**: Money coming in
+- **Expenses**: Money going out
+- **Transfers**: Money moving between accounts
+- **All**: Combined financial activity
+
+### Grouping Options
+- **By Category**: Group transactions by category
+- **By Tag**: Group transactions by tags
+- **By Person**: Group transactions by people
+- **By Account**: Group transactions by accounts
+
+## 📊 Response Formats
+
+### Summary Data
+- **Totals**: Aggregate amounts and counts
+- **Percentages**: Relative proportions
+- **Averages**: Mean values per transaction/period
+- **Trends**: Directional indicators
+
+### Detailed Breakdowns
+- **Category Lists**: Detailed category information
+- **Transaction Lists**: Individual transaction details
+- **Time Series**: Chronological data points
+- **Comparative Data**: Side-by-side comparisons
+
+### Metadata
+- **Time Periods**: Date ranges and periods
+- **Counts**: Transaction and category counts
+- **Percentages**: Relative proportions
+- **Trends**: Change indicators
+
+## 🚨 Error Responses
+
+### Invalid Date Parameters
+```json
+{
+  "success": false,
+  "error": "Invalid date parameters",
+  "code": "invalid_date_parameters",
+  "details": {
+    "field": "month",
+    "value": 13,
+    "message": "Month must be between 1 and 12"
+  }
+}
+```
+
+### Person Not Found
+```json
+{
+  "success": false,
+  "error": "Person not found",
+  "code": "person_not_found",
+  "details": {
+    "person_id": 999
+  }
+}
+```
+
+### No Data Available
+```json
+{
+  "success": false,
+  "error": "No data available for specified period",
+  "code": "no_data_available",
+  "details": {
+    "month": 7,
+    "year": 2025,
+    "message": "No transactions found for this period"
+  }
+}
+```
+
+### Invalid Time Bucket
+```json
+{
+  "success": false,
+  "error": "Invalid time bucket",
+  "code": "invalid_time_bucket",
+  "details": {
+    "field": "timeBucket",
+    "value": "invalid",
+    "allowed_values": ["daily", "weekly", "monthly", "yearly"]
+  }
+}
+```
+
+## 📱 Frontend Integration
+
+### React Hook Example
+
+```typescript
+import { useAnalytics } from '../hooks/useAnalytics';
+
+function AnalyticsPage() {
+  const { 
+    weeklyExpenses, 
+    monthlySummary, 
+    categorySpending,
+    loading,
+    error 
+  } = useAnalytics();
+
+  const handleMonthChange = (month: number, year: number) => {
+    // Fetch analytics for specific month
+  };
+
+  return (
+    <div>
+      <WeeklyExpensesChart data={weeklyExpenses} />
+      <MonthlySummaryCard data={monthlySummary} />
+      <CategorySpendingChart data={categorySpending} />
+    </div>
+  );
+}
+```
+
+### Analytics Service
+
+```typescript
+// services/analytics.service.ts
+export class AnalyticsService {
+  async getWeeklyExpenses(): Promise<WeeklyExpensesResponse> {
+    const response = await api.get('/analytics/weekly-expenses');
+    return response.data.data;
+  }
+
+  async getDailySummaries(month: number, year: number): Promise<DailySummariesResponse> {
+    const response = await api.get('/analytics/daily-summaries', {
+      data: { month, year }
+    });
+    return response.data.data;
+  }
+
+  async getMonthlySummary(month: number, year: number): Promise<MonthlySummaryResponse> {
+    const response = await api.get('/analytics/monthly-summary', {
+      data: { month, year }
+    });
+    return response.data.data;
+  }
+
+  async getCategorySpending(month: number, year: number): Promise<CategorySpendingResponse> {
+    const response = await api.get('/analytics/monthly-category-spending', {
+      data: { month, year }
+    });
+    return response.data.data;
+  }
+
+  async getPersonActivity(month: number, year: number): Promise<PersonActivityResponse> {
+    const response = await api.get('/analytics/monthly-person-activity', {
+      data: { month, year }
+    });
+    return response.data.data;
+  }
+
+  async getPersonTransactionSummary(personId: number, timeBucket: string): Promise<PersonTransactionSummaryResponse> {
+    const response = await api.get('/analytics/person-transaction-summary', {
+      params: { personId, timeBucket }
+    });
+    return response.data.data;
+  }
+}
+```
+
+## 💡 Best Practices
+
+1. **Data Caching**
+   - Cache analytics data for better performance
+   - Implement cache invalidation on data changes
+   - Use appropriate cache TTL for different time periods
+
+2. **Error Handling**
+   - Handle cases with no data gracefully
+   - Provide meaningful error messages
+   - Implement fallback displays for missing data
+
+3. **Performance Optimization**
+   - Use pagination for large datasets
+   - Implement efficient date range queries
+   - Cache frequently accessed analytics
+
+4. **User Experience**
+   - Show loading states during data fetch
+   - Provide interactive date selectors
+   - Implement real-time updates when possible
+
+## 📚 Related Documentation
+
+- [Transactions API](./transactions) - Transaction data for analytics
+- [Categories API](./categories) - Category-based analysis
+- [Tags API](./tags) - Tag-based analysis
+- [People API](./people) - People-based analysis
+- [Accounts API](./accounts) - Account-based analysis

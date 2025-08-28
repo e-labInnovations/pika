@@ -1,0 +1,10 @@
+{
+  "label": "API Reference",
+  "position": 2,
+  "link": {
+    "type": "generated-index",
+    "title": "Pika Finance API Reference",
+    "description": "Complete API documentation for Pika Finance, including authentication, transactions, categories, analytics, and AI features. Build powerful financial applications with our comprehensive REST API.",
+    "keywords": ["API", "REST", "finance", "transactions", "analytics", "AI", "WordPress", "plugin"]
+  }
+}

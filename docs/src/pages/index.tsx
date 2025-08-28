@@ -22,7 +22,7 @@ function HomepageHeader() {
               Pika Finance is a comprehensive financial management solution for WordPress that helps users track income, expenses, transfers, and manage their financial data with a modern PWA interface.
             </p>
             <div className={styles.heroButtons}>
-              <Link className="cta-button" to="/docs/intro">
+              <Link className="cta-button" to="/docs">
                 Get Started →
               </Link>
               <Link className="cta-button cta-button-secondary" to="https://github.com/e-labInnovations/pika">

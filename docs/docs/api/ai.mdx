@@ -1,0 +1,688 @@
+---
+id: ai
+title: AI API
+sidebar_label: AI
+description: Complete guide to Pika's AI API powered by Google Gemini for smart financial insights and automation
+---
+
+# 🤖 AI API
+
+The AI API leverages Google Gemini to provide intelligent financial insights, smart categorization, spending analysis, and automated financial recommendations. This API enables Pika to understand your financial patterns and provide personalized financial advice.
+
+## 📡 Base URL
+
+All AI endpoints are prefixed with:
+```
+/wp-json/pika/v1/ai
+```
+
+## 🚀 Endpoints
+
+### Test Gemini Response
+
+Test the AI connection and get a sample response from Google Gemini.
+
+**Endpoint:** `GET /wp-json/pika/v1/ai/test`
+
+**Headers:**
+- `Cookie`: Authentication cookie
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "response": "Hello! I'm your AI financial assistant powered by Google Gemini. I can help you with financial insights, spending analysis, and smart recommendations. How can I assist you today?",
+    "model": "gemini-pro",
+    "tokens_used": 45,
+    "response_time": 1.2,
+    "api_status": "connected",
+    "gemini_version": "1.0.0"
+  }
+}
+```
+
+**Example Request:**
+```bash
+curl -X GET http://localhost:8000/wp-json/pika/v1/ai/test \
+  -H "Cookie: pika_token=base64_encoded_token"
+```
+
+### Smart Categorization
+
+Automatically categorize transactions using AI.
+
+**Endpoint:** `POST /wp-json/pika/v1/ai/categorize`
+
+**Headers:**
+- `Cookie`: Authentication cookie
+- `Content-Type: application/json`
+
+**Request Body:**
+```json
+{
+  "transactions": [
+    {
+      "title": "Starbucks Coffee",
+      "amount": 4.50,
+      "merchant": "Starbucks",
+      "description": "Morning coffee purchase"
+    },
+    {
+      "title": "Walmart Groceries",
+      "amount": 85.75,
+      "merchant": "Walmart",
+      "description": "Weekly grocery shopping"
+    }
+  ]
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "categorized_transactions": [
+      {
+        "title": "Starbucks Coffee",
+        "amount": 4.50,
+        "merchant": "Starbucks",
+        "description": "Morning coffee purchase",
+        "suggested_category": {
+          "id": 1,
+          "name": "Food & Dining",
+          "confidence": 0.95,
+          "reasoning": "Coffee purchase from a food service establishment"
+        },
+        "suggested_tags": ["essential", "daily"]
+      },
+      {
+        "title": "Walmart Groceries",
+        "amount": 85.75,
+        "merchant": "Walmart",
+        "description": "Weekly grocery shopping",
+        "suggested_category": {
+          "id": 1,
+          "name": "Food & Dining",
+          "confidence": 0.98,
+          "reasoning": "Grocery shopping from a retail store"
+        },
+        "suggested_tags": ["essential", "weekly", "groceries"]
+      }
+    ],
+    "summary": {
+      "total_transactions": 2,
+      "categorized_count": 2,
+      "average_confidence": 0.965,
+      "processing_time": 2.1
+    }
+  }
+}
+```
+
+### Spending Insights
+
+Get AI-powered insights about your spending patterns.
+
+**Endpoint:** `POST /wp-json/pika/v1/ai/insights`
+
+**Headers:**
+- `Cookie`: Authentication cookie
+- `Content-Type: application/json`
+
+**Request Body:**
+```json
+{
+  "time_period": "last_30_days",
+  "insight_type": "spending_patterns",
+  "include_recommendations": true
+}
+```
+
+**Parameters:**
+- `time_period` (string): Time period for analysis (`last_7_days`, `last_30_days`, `last_90_days`, `last_year`)
+- `insight_type` (string): Type of insights (`spending_patterns`, `budget_analysis`, `savings_opportunities`, `trends`)
+- `include_recommendations` (boolean): Include AI recommendations
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "insights": {
+      "spending_patterns": {
+        "top_categories": [
+          {
+            "category": "Food & Dining",
+            "amount": 450.25,
+            "percentage": 36.0,
+            "trend": "increasing",
+            "insight": "Your food spending has increased by 15% compared to last month. This might be due to dining out more frequently."
+          },
+          {
+            "category": "Transportation",
+            "amount": 200.50,
+            "percentage": 16.0,
+            "trend": "stable",
+            "insight": "Transportation costs remain consistent, which is good for budget predictability."
+          }
+        ],
+        "unusual_spending": [
+          {
+            "transaction": "Electronics Store",
+            "amount": 299.99,
+            "category": "Shopping",
+            "insight": "This is a significant purchase outside your usual spending patterns. Consider if this aligns with your financial goals."
+          }
+        ]
+      },
+      "budget_analysis": {
+        "overall_status": "on_track",
+        "categories_over_budget": [],
+        "categories_under_budget": [
+          {
+            "category": "Entertainment",
+            "budgeted": 200.00,
+            "spent": 150.00,
+            "savings": 50.00
+          }
+        ]
+      },
+      "savings_opportunities": [
+        {
+          "type": "recurring_expense_reduction",
+          "description": "Consider reducing dining out from 3x to 2x per week",
+          "potential_savings": 75.00,
+          "impact": "medium"
+        },
+        {
+          "type": "subscription_optimization",
+          "description": "Review streaming service subscriptions for unused services",
+          "potential_savings": 25.00,
+          "impact": "low"
+        }
+      ]
+    },
+    "recommendations": [
+      {
+        "priority": "high",
+        "title": "Optimize Food Spending",
+        "description": "Your food spending is trending upward. Consider meal planning and reducing dining out to save $75-100 monthly.",
+        "action_items": [
+          "Plan meals for the week",
+          "Limit dining out to 2x per week",
+          "Use grocery store loyalty programs"
+        ]
+      },
+      {
+        "priority": "medium",
+        "title": "Review Subscriptions",
+        "description": "Audit your recurring subscriptions to identify potential savings.",
+        "action_items": [
+          "List all active subscriptions",
+          "Cancel unused services",
+          "Look for annual payment discounts"
+        ]
+      }
+    ],
+    "summary": {
+      "total_insights": 8,
+      "total_recommendations": 5,
+      "potential_monthly_savings": 100.00,
+      "processing_time": 3.5
+    }
+  }
+}
+```
+
+### Financial Advice
+
+Get personalized financial advice based on your financial situation.
+
+**Endpoint:** `POST /wp-json/pika/v1/ai/advice`
+
+**Headers:**
+- `Cookie`: Authentication cookie
+- `Content-Type: application/json`
+
+**Request Body:**
+```json
+{
+  "question": "How can I improve my savings rate?",
+  "context": {
+    "current_savings_rate": 15,
+    "income": 5000,
+    "monthly_expenses": 4250,
+    "financial_goals": ["emergency_fund", "vacation", "retirement"]
+  }
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "advice": {
+      "question": "How can I improve my savings rate?",
+      "answer": "Based on your current financial situation, here are several strategies to improve your savings rate from 15% to 20-25%:",
+      "strategies": [
+        {
+          "title": "Emergency Fund First",
+          "description": "Prioritize building a 3-6 month emergency fund before other savings goals.",
+          "target_amount": 12750,
+          "monthly_contribution": 425,
+          "timeline": "3 months"
+        },
+        {
+          "title": "50/30/20 Rule",
+          "description": "Allocate 50% to needs, 30% to wants, and 20% to savings.",
+          "current_allocation": "85/0/15",
+          "target_allocation": "50/30/20",
+          "monthly_savings_increase": 250
+        },
+        {
+          "title": "Expense Reduction",
+          "description": "Identify and reduce non-essential expenses.",
+          "potential_savings": 300,
+          "areas": ["dining out", "entertainment", "shopping"]
+        }
+      ],
+      "action_plan": [
+        {
+          "week_1": "Review and categorize all expenses from last month",
+          "week_2": "Set up automatic transfers to savings account",
+          "week_3": "Implement one expense reduction strategy",
+          "week_4": "Review progress and adjust plan"
+        }
+      ],
+      "expected_outcomes": {
+        "savings_rate_increase": "15% → 22%",
+        "monthly_savings_increase": 350,
+        "emergency_fund_completion": "3 months",
+        "long_term_impact": "Significant improvement in financial security and goal achievement"
+      }
+    },
+    "summary": {
+      "advice_quality": "high",
+      "personalization_level": "high",
+      "actionability": "high",
+      "processing_time": 4.2
+    }
+  }
+}
+```
+
+### Transaction Analysis
+
+Analyze individual transactions for insights and recommendations.
+
+**Endpoint:** `POST /wp-json/pika/v1/ai/analyze-transaction`
+
+**Headers:**
+- `Cookie`: Authentication cookie
+- `Content-Type: application/json`
+
+**Request Body:**
+```json
+{
+  "transaction": {
+    "title": "Amazon Purchase",
+    "amount": 89.99,
+    "category": "Shopping",
+    "date": "2024-01-20",
+    "merchant": "Amazon",
+    "description": "Electronics and household items"
+  },
+  "context": {
+    "monthly_budget": 200,
+    "monthly_spending": 150,
+    "spending_history": "increasing"
+  }
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "analysis": {
+      "transaction": {
+        "title": "Amazon Purchase",
+        "amount": 89.99,
+        "category": "Shopping",
+        "date": "2024-01-20"
+      },
+      "insights": [
+        {
+          "type": "budget_impact",
+          "description": "This purchase represents 45% of your monthly shopping budget",
+          "severity": "medium",
+          "details": "You have $110.01 remaining in your shopping budget for this month"
+        },
+        {
+          "type": "spending_pattern",
+          "description": "This is your largest single purchase this month",
+          "severity": "low",
+          "details": "Previous largest purchase was $45.50 on January 15"
+        },
+        {
+          "type": "category_analysis",
+          "description": "Shopping category spending is trending upward",
+          "severity": "medium",
+          "details": "You've spent 75% of your shopping budget in the first 20 days of the month"
+        }
+      ],
+      "recommendations": [
+        {
+          "priority": "high",
+          "title": "Monitor Shopping Budget",
+          "description": "You're approaching your monthly shopping budget limit. Consider delaying non-essential purchases until next month.",
+          "action": "Review remaining shopping needs for this month"
+        },
+        {
+          "priority": "medium",
+          "title": "Review Purchase Necessity",
+          "description": "Evaluate if this purchase aligns with your financial goals and current budget situation.",
+          "action": "Consider returning non-essential items if possible"
+        }
+      ],
+      "budget_status": {
+        "current_spending": 150,
+        "budget_limit": 200,
+        "remaining": 50,
+        "utilization": 75,
+        "status": "approaching_limit"
+      }
+    },
+    "summary": {
+      "analysis_quality": "high",
+      "insights_count": 3,
+      "recommendations_count": 2,
+      "processing_time": 2.8
+    }
+  }
+}
+```
+
+## 🤖 AI Features
+
+### Smart Categorization
+- **Automatic Classification**: AI automatically suggests categories for transactions
+- **Confidence Scoring**: Each suggestion includes a confidence level
+- **Learning**: Improves accuracy over time based on user feedback
+- **Merchant Recognition**: Identifies common merchants and their typical categories
+
+### Spending Insights
+- **Pattern Recognition**: Identifies spending patterns and trends
+- **Anomaly Detection**: Flags unusual or unexpected transactions
+- **Budget Analysis**: Compares spending against budget goals
+- **Savings Opportunities**: Suggests ways to reduce expenses
+
+### Financial Advice
+- **Personalized Recommendations**: Tailored advice based on your financial situation
+- **Goal-Oriented**: Advice aligned with your financial goals
+- **Actionable Steps**: Specific, implementable recommendations
+- **Progress Tracking**: Monitors improvement over time
+
+### Transaction Analysis
+- **Individual Insights**: Deep analysis of specific transactions
+- **Budget Impact**: Understanding how transactions affect your budget
+- **Context Awareness**: Considers your overall financial situation
+- **Risk Assessment**: Identifies potential financial risks
+
+## 🔧 Configuration
+
+### Gemini API Setup
+```bash
+# Set Gemini API key in settings
+curl -X PUT http://localhost:8000/wp-json/pika/v1/settings \
+  -H "Cookie: pika_token=base64_encoded_token" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "gemini_api_key": "AIzaSyD-your-actual-api-key"
+  }'
+```
+
+### AI Features Configuration
+```json
+{
+  "ai_features": {
+    "smart_categorization": true,
+    "spending_insights": true,
+    "financial_advice": true,
+    "transaction_analysis": true,
+    "auto_categorization": false,
+    "insight_frequency": "weekly"
+  }
+}
+```
+
+## 🚨 Error Responses
+
+### API Key Missing
+```json
+{
+  "success": false,
+  "error": "Gemini API key not configured",
+  "code": "gemini_api_key_missing",
+  "details": {
+    "message": "Please configure your Gemini API key in settings"
+  }
+}
+```
+
+### Invalid API Key
+```json
+{
+  "success": false,
+  "error": "Invalid Gemini API key",
+  "code": "invalid_gemini_api_key",
+  "details": {
+    "message": "The provided API key is invalid or expired"
+  }
+}
+```
+
+### Rate Limit Exceeded
+```json
+{
+  "success": false,
+  "error": "Rate limit exceeded",
+  "code": "rate_limit_exceeded",
+  "details": {
+    "message": "Too many AI requests. Please try again later.",
+    "retry_after": 300
+  }
+}
+```
+
+### AI Service Unavailable
+```json
+{
+  "success": false,
+  "error": "AI service temporarily unavailable",
+  "code": "ai_service_unavailable",
+  "details": {
+    "message": "The AI service is currently experiencing issues. Please try again later.",
+    "estimated_resolution": "2 hours"
+  }
+}
+```
+
+### Insufficient Data
+```json
+{
+  "success": false,
+  "error": "Insufficient data for analysis",
+  "code": "insufficient_data",
+  "details": {
+    "message": "Need at least 10 transactions for meaningful insights",
+    "current_transaction_count": 5,
+    "minimum_required": 10
+  }
+}
+```
+
+## 📱 Frontend Integration
+
+### React Hook Example
+
+```typescript
+import { useAI } from '../hooks/useAI';
+
+function AIPage() {
+  const { 
+    getInsights, 
+    getAdvice, 
+    analyzeTransaction,
+    loading,
+    error 
+  } = useAI();
+
+  const handleGetInsights = async () => {
+    try {
+      const insights = await getInsights({
+        time_period: 'last_30_days',
+        insight_type: 'spending_patterns',
+        include_recommendations: true
+      });
+      // Handle insights
+    } catch (err) {
+      // Handle error
+    }
+  };
+
+  return (
+    <div>
+      <button onClick={handleGetInsights} disabled={loading}>
+        Get AI Insights
+      </button>
+      {/* Display insights */}
+    </div>
+  );
+}
+```
+
+### AI Service
+
+```typescript
+// services/ai.service.ts
+export class AIService {
+  async testConnection(): Promise<AITestResponse> {
+    const response = await api.get('/ai/test');
+    return response.data.data;
+  }
+
+  async categorizeTransactions(transactions: Transaction[]): Promise<CategorizationResponse> {
+    const response = await api.post('/ai/categorize', { transactions });
+    return response.data.data;
+  }
+
+  async getInsights(params: InsightParams): Promise<InsightsResponse> {
+    const response = await api.post('/ai/insights', params);
+    return response.data.data;
+  }
+
+  async getFinancialAdvice(question: string, context: FinancialContext): Promise<AdviceResponse> {
+    const response = await api.post('/ai/advice', { question, context });
+    return response.data.data;
+  }
+
+  async analyzeTransaction(transaction: Transaction, context: TransactionContext): Promise<TransactionAnalysisResponse> {
+    const response = await api.post('/ai/analyze-transaction', { transaction, context });
+    return response.data.data;
+  }
+}
+```
+
+### AI Components
+
+```typescript
+// components/AIInsights.tsx
+function AIInsights({ insights, recommendations }) {
+  return (
+    <div className="ai-insights">
+      <h3>AI-Powered Insights</h3>
+      
+      <div className="insights-section">
+        <h4>Spending Patterns</h4>
+        {insights.spending_patterns.top_categories.map(category => (
+          <div key={category.category} className="insight-card">
+            <div className="category-info">
+              <span className="category-name">{category.category}</span>
+              <span className="amount">${category.amount}</span>
+            </div>
+            <p className="insight-text">{category.insight}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className="recommendations-section">
+        <h4>Recommendations</h4>
+        {recommendations.map(rec => (
+          <div key={rec.title} className={`recommendation-card priority-${rec.priority}`}>
+            <h5>{rec.title}</h5>
+            <p>{rec.description}</p>
+            <ul className="action-items">
+              {rec.action_items.map(item => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+```
+
+## 💡 Best Practices
+
+1. **API Key Management**
+   - Store API keys securely
+   - Rotate keys regularly
+   - Monitor API usage and costs
+   - Implement rate limiting
+
+2. **Data Privacy**
+   - Minimize data sent to AI services
+   - Anonymize sensitive information
+   - Implement data retention policies
+   - Get user consent for AI features
+
+3. **Performance Optimization**
+   - Cache AI responses when appropriate
+   - Implement request queuing for high-volume usage
+   - Use async processing for long-running AI tasks
+   - Provide fallback options when AI is unavailable
+
+4. **User Experience**
+   - Show loading states during AI processing
+   - Provide clear explanations of AI insights
+   - Allow users to override AI suggestions
+   - Implement feedback mechanisms for AI accuracy
+
+## 🔒 Security Considerations
+
+### Data Protection
+- **Encryption**: All data transmitted to AI services is encrypted
+- **Anonymization**: Personal identifiers are removed when possible
+- **Access Control**: AI features respect user privacy settings
+- **Audit Logging**: Track all AI API usage for security monitoring
+
+### API Security
+- **Rate Limiting**: Prevent abuse of AI endpoints
+- **Authentication**: All AI requests require valid authentication
+- **Input Validation**: Sanitize all inputs before sending to AI services
+- **Error Handling**: Avoid exposing sensitive information in error messages
+
+## 📚 Related Documentation
+
+- [Settings API](./settings) - Configure AI features and API keys
+- [Transactions API](./transactions) - Data source for AI analysis
+- [Analytics API](./analytics) - Financial data for AI insights
+- [Categories API](./categories) - AI-powered categorization
+- [Tags API](./tags) - AI-suggested tags

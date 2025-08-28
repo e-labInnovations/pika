@@ -1,0 +1,401 @@
+---
+id: settings
+title: Settings API
+sidebar_label: Settings
+description: Complete guide to Pika's settings API for managing user preferences and configuration
+---
+
+# ⚙️ Settings API
+
+The Settings API allows you to manage user preferences, application configuration, and system settings. This includes currency settings, AI configuration, and other user-specific preferences.
+
+## 📡 Base URL
+
+All settings endpoints are prefixed with:
+```
+/wp-json/pika/v1/settings
+```
+
+## 🚀 Endpoints
+
+### Get Settings
+
+Retrieve all current settings for the authenticated user.
+
+**Endpoint:** `GET /wp-json/pika/v1/settings`
+
+**Headers:**
+- `Cookie`: Authentication cookie
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "currency": "USD",
+    "date_format": "Y-m-d",
+    "time_format": "24h",
+    "timezone": "UTC",
+    "language": "en",
+    "gemini_api_key": "AIzaSyD-sample-api-key",
+    "notifications": {
+      "email": true,
+      "push": true,
+      "sms": false
+    },
+    "privacy": {
+      "data_sharing": false,
+      "analytics": true
+    },
+    "display": {
+      "theme": "auto",
+      "compact_mode": false,
+      "show_currency_symbol": true
+    }
+  }
+}
+```
+
+**Example Request:**
+```bash
+curl -X GET http://localhost:8000/wp-json/pika/v1/settings \
+  -H "Cookie: pika_token=base64_encoded_token"
+```
+
+### Update Settings
+
+Update one or more settings for the authenticated user.
+
+**Endpoint:** `PUT /wp-json/pika/v1/settings`
+
+**Headers:**
+- `Cookie`: Authentication cookie
+- `Content-Type: application/json`
+
+**Request Body:**
+```json
+{
+  "currency": "EUR",
+  "date_format": "d/m/Y",
+  "gemini_api_key": "new-api-key-here"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Settings updated successfully",
+  "data": {
+    "updated_fields": ["currency", "date_format", "gemini_api_key"],
+    "settings": {
+      "currency": "EUR",
+      "date_format": "d/m/Y",
+      "gemini_api_key": "new-api-key-here"
+    }
+  }
+}
+```
+
+## 🔧 Configuration Options
+
+### Currency Settings
+
+**Supported Currencies:**
+- `USD` - US Dollar
+- `EUR` - Euro
+- `GBP` - British Pound
+- `INR` - Indian Rupee
+- `JPY` - Japanese Yen
+- `CAD` - Canadian Dollar
+- `AUD` - Australian Dollar
+- And many more...
+
+**Example Request:**
+```bash
+curl -X PUT http://localhost:8000/wp-json/pika/v1/settings \
+  -H "Cookie: pika_token=base64_encoded_token" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "currency": "INR"
+  }'
+```
+
+### AI Configuration
+
+**Gemini API Key:**
+```bash
+curl -X PUT http://localhost:8000/wp-json/pika/v1/settings \
+  -H "Cookie: pika_token=base64_encoded_token" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "gemini_api_key": "AIzaSyD-sample-api-key"
+  }'
+```
+
+**AI Features Configuration:**
+```json
+{
+  "ai_features": {
+    "smart_categorization": true,
+    "spending_insights": true,
+    "budget_recommendations": true,
+    "financial_advice": false
+  }
+}
+```
+
+### Date and Time Settings
+
+**Date Format Options:**
+- `Y-m-d` - 2024-01-01 (ISO)
+- `d/m/Y` - 01/01/2024 (European)
+- `m/d/Y` - 01/01/2024 (US)
+- `d-m-Y` - 01-01-2024
+
+**Time Format Options:**
+- `12h` - 12-hour format (1:30 PM)
+- `24h` - 24-hour format (13:30)
+
+**Timezone Options:**
+- `UTC` - Coordinated Universal Time
+- `America/New_York` - Eastern Time
+- `Europe/London` - British Time
+- `Asia/Tokyo` - Japan Time
+
+**Example Request:**
+```bash
+curl -X PUT http://localhost:8000/wp-json/pika/v1/settings \
+  -H "Cookie: pika_token=base64_encoded_token" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "date_format": "d/m/Y",
+    "time_format": "12h",
+    "timezone": "Europe/London"
+  }'
+```
+
+### Notification Settings
+
+**Email Notifications:**
+```json
+{
+  "notifications": {
+    "email": {
+      "enabled": true,
+      "frequency": "daily",
+      "types": ["budget_alerts", "bill_reminders", "spending_reports"]
+    }
+  }
+}
+```
+
+**Push Notifications:**
+```json
+{
+  "notifications": {
+    "push": {
+      "enabled": true,
+      "categories": ["transactions", "budgets", "reminders"]
+    }
+  }
+}
+```
+
+### Privacy Settings
+
+**Data Sharing:**
+```json
+{
+  "privacy": {
+    "data_sharing": false,
+    "analytics": true,
+    "improvement_data": false,
+    "third_party_integrations": false
+  }
+}
+```
+
+### Display Settings
+
+**Theme Options:**
+```json
+{
+  "display": {
+    "theme": "auto",
+    "compact_mode": false,
+    "show_currency_symbol": true,
+    "decimal_places": 2,
+    "thousands_separator": ","
+  }
+}
+```
+
+## 🚨 Error Responses
+
+### Invalid Currency
+```json
+{
+  "success": false,
+  "error": "Invalid currency code",
+  "code": "invalid_currency",
+  "details": {
+    "field": "currency",
+    "value": "XYZ",
+    "allowed_values": ["USD", "EUR", "GBP", "INR"]
+  }
+}
+```
+
+### Invalid API Key
+```json
+{
+  "success": false,
+  "error": "Invalid Gemini API key format",
+  "code": "invalid_api_key",
+  "details": {
+    "field": "gemini_api_key",
+    "message": "API key must start with 'AIzaSy'"
+  }
+}
+```
+
+### Invalid Date Format
+```json
+{
+  "success": false,
+  "error": "Invalid date format",
+  "code": "invalid_date_format",
+  "details": {
+    "field": "date_format",
+    "value": "invalid-format",
+    "allowed_values": ["Y-m-d", "d/m/Y", "m/d/Y", "d-m-Y"]
+  }
+}
+```
+
+### Validation Error
+```json
+{
+  "success": false,
+  "error": "Validation failed",
+  "code": "validation_error",
+  "details": [
+    {
+      "field": "timezone",
+      "message": "Invalid timezone identifier"
+    },
+    {
+      "field": "language",
+      "message": "Language code must be 2 characters"
+    }
+  ]
+}
+```
+
+## 📱 Frontend Integration
+
+### React Hook Example
+
+```typescript
+import { useSettings } from '../hooks/useSettings';
+
+function SettingsPage() {
+  const { settings, updateSettings, loading, error } = useSettings();
+
+  const handleCurrencyChange = async (currency: string) => {
+    try {
+      await updateSettings({ currency });
+      // Show success message
+    } catch (err) {
+      // Handle error
+    }
+  };
+
+  return (
+    <div>
+      <select 
+        value={settings.currency} 
+        onChange={(e) => handleCurrencyChange(e.target.value)}
+      >
+        <option value="USD">USD - US Dollar</option>
+        <option value="EUR">EUR - Euro</option>
+        <option value="INR">INR - Indian Rupee</option>
+      </select>
+    </div>
+  );
+}
+```
+
+### Settings Service
+
+```typescript
+// services/settings.service.ts
+export class SettingsService {
+  async getSettings(): Promise<Settings> {
+    const response = await api.get('/settings');
+    return response.data.data;
+  }
+
+  async updateSettings(updates: Partial<Settings>): Promise<Settings> {
+    const response = await api.put('/settings', updates);
+    return response.data.data.settings;
+  }
+
+  async resetToDefaults(): Promise<Settings> {
+    const response = await api.post('/settings/reset');
+    return response.data.data;
+  }
+}
+```
+
+## 🔄 Settings Synchronization
+
+### Real-time Updates
+- Settings are automatically synchronized across all devices
+- Changes are reflected immediately in the UI
+- Background sync ensures consistency
+
+### Default Values
+```json
+{
+  "currency": "USD",
+  "date_format": "Y-m-d",
+  "time_format": "24h",
+  "timezone": "UTC",
+  "language": "en",
+  "theme": "auto",
+  "notifications": {
+    "email": true,
+    "push": true
+  }
+}
+```
+
+## 💡 Best Practices
+
+1. **Validate Settings Before Update**
+   - Check format requirements
+   - Validate against allowed values
+   - Provide user-friendly error messages
+
+2. **Batch Updates**
+   - Group related settings changes
+   - Reduce API calls for better performance
+   - Handle partial failures gracefully
+
+3. **User Experience**
+   - Show loading states during updates
+   - Provide immediate feedback
+   - Allow users to revert changes
+
+4. **Security**
+   - Validate all input on the server
+   - Sanitize sensitive data
+   - Implement rate limiting
+
+## 📚 Related Documentation
+
+- [Authentication API](./authentication) - User authentication
+- [App Info API](./app) - Application information
+- [AI API](./ai) - AI features configuration

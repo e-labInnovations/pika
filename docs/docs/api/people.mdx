@@ -1,0 +1,693 @@
+---
+id: people
+title: People API
+sidebar_label: People
+description: Complete guide to Pika's people API for managing contacts, shared expenses, and people-related transactions
+---
+
+# 👥 People API
+
+The People API allows you to manage contacts and people within Pika. This includes family members, roommates, business contacts, and anyone else you want to track in relation to your financial transactions. People can be associated with transactions for shared expenses, gifts, loans, and other financial interactions.
+
+## 📡 Base URL
+
+All people endpoints are prefixed with:
+```
+/wp-json/pika/v1/people
+```
+
+## 🚀 Endpoints
+
+### Get All People
+
+Retrieve all people for the authenticated user.
+
+**Endpoint:** `GET /wp-json/pika/v1/people`
+
+**Headers:**
+- `Cookie`: Authentication cookie
+
+**Query Parameters:**
+- `type` (optional): Filter by person type (`family`, `friend`, `business`, `roommate`)
+- `include_archived` (optional): Include archived people (default: false)
+- `include_stats` (optional): Include transaction statistics (default: true)
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "people": [
+      {
+        "id": 1,
+        "name": "John Doe",
+        "email": "john.doe@example.com",
+        "phone": "+1-555-0123",
+        "avatarId": 17,
+        "type": "family",
+        "relationship": "Spouse",
+        "isActive": true,
+        "isArchived": false,
+        "transactionCount": 12,
+        "totalAmount": 850.50,
+        "lastTransactionDate": "2024-01-20",
+        "avatar": {
+          "id": 17,
+          "filename": "john-avatar.jpg",
+          "url": "https://example.com/uploads/john-avatar.jpg",
+          "type": "image",
+          "size": 245760
+        },
+        "createdAt": "2024-01-01T10:00:00Z",
+        "updatedAt": "2024-01-20T16:45:00Z"
+      },
+      {
+        "id": 2,
+        "name": "Jane Smith",
+        "email": "jane.smith@example.com",
+        "phone": "+1-555-0456",
+        "avatarId": null,
+        "type": "friend",
+        "relationship": "Best Friend",
+        "isActive": true,
+        "isArchived": false,
+        "transactionCount": 8,
+        "totalAmount": 320.25,
+        "lastTransactionDate": "2024-01-18",
+        "avatar": null,
+        "createdAt": "2024-01-01T10:00:00Z",
+        "updatedAt": "2024-01-18T14:30:00Z"
+      },
+      {
+        "id": 3,
+        "name": "Mike Johnson",
+        "email": "mike@business.com",
+        "phone": "+1-555-0789",
+        "avatarId": null,
+        "type": "business",
+        "relationship": "Business Partner",
+        "isActive": true,
+        "isArchived": false,
+        "transactionCount": 5,
+        "totalAmount": 1500.00,
+        "lastTransactionDate": "2024-01-15",
+        "avatar": null,
+        "createdAt": "2024-01-01T10:00:00Z",
+        "updatedAt": "2024-01-15T11:20:00Z"
+      }
+    ],
+    "summary": {
+      "total_people": 15,
+      "active_people": 12,
+      "archived_people": 3,
+      "total_transactions": 25,
+      "total_amount": 2670.75
+    }
+  }
+}
+```
+
+**Example Request:**
+```bash
+curl -X GET "http://localhost:8000/wp-json/pika/v1/people?type=family" \
+  -H "Cookie: pika_token=base64_encoded_token"
+```
+
+### Get Person by ID
+
+Retrieve a specific person by their ID.
+
+**Endpoint:** `GET /wp-json/pika/v1/people/{id}`
+
+**Headers:**
+- `Cookie`: Authentication cookie
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "name": "John Doe",
+    "email": "john.doe@example.com",
+    "phone": "+1-555-0123",
+    "avatarId": 17,
+    "type": "family",
+    "relationship": "Spouse",
+    "isActive": true,
+    "isArchived": false,
+    "transactionCount": 12,
+    "totalAmount": 850.50,
+    "lastTransactionDate": "2024-01-20",
+    "avatar": {
+      "id": 17,
+      "filename": "john-avatar.jpg",
+      "url": "https://example.com/uploads/john-avatar.jpg",
+      "type": "image",
+      "size": 245760
+    },
+    "recentTransactions": [
+      {
+        "id": 45,
+        "title": "Grocery Shopping",
+        "amount": 85.50,
+        "type": "expense",
+        "date": "2024-01-20",
+        "category": "Food & Dining"
+      },
+      {
+        "id": 44,
+        "title": "Movie Tickets",
+        "amount": 32.00,
+        "type": "expense",
+        "date": "2024-01-19",
+        "category": "Entertainment"
+      }
+    ],
+    "transactionSummary": {
+      "total_expenses": 650.50,
+      "total_income": 200.00,
+      "net_amount": -450.50,
+      "shared_expenses": 400.25,
+      "personal_expenses": 250.25
+    },
+    "createdAt": "2024-01-01T10:00:00Z",
+    "updatedAt": "2024-01-20T16:45:00Z"
+  }
+}
+```
+
+**Example Request:**
+```bash
+curl -X GET http://localhost:8000/wp-json/pika/v1/people/1 \
+  -H "Cookie: pika_token=base64_encoded_token"
+```
+
+### Create Person
+
+Create a new person.
+
+**Endpoint:** `POST /wp-json/pika/v1/people`
+
+**Headers:**
+- `Cookie`: Authentication cookie
+- `Content-Type: application/json`
+
+**Request Body:**
+```json
+{
+  "name": "Sarah Wilson",
+  "email": "sarah.wilson@example.com",
+  "phone": "+1-555-0321",
+  "avatarId": 18,
+  "type": "friend",
+  "relationship": "College Friend"
+}
+```
+
+**Required Fields:**
+- `name` (string): Person's full name
+
+**Optional Fields:**
+- `email` (string): Email address
+- `phone` (string): Phone number
+- `avatarId` (integer): Avatar image ID
+- `type` (string): Person type (`family`, `friend`, `business`, `roommate`)
+- `relationship` (string): Relationship description
+- `notes` (string): Additional notes
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Person created successfully",
+  "data": {
+    "id": 4,
+    "name": "Sarah Wilson",
+    "email": "sarah.wilson@example.com",
+    "phone": "+1-555-0321",
+    "avatarId": 18,
+    "type": "friend",
+    "relationship": "College Friend",
+    "isActive": true,
+    "isArchived": false,
+    "transactionCount": 0,
+    "totalAmount": 0.00,
+    "lastTransactionDate": null,
+    "avatar": {
+      "id": 18,
+      "filename": "sarah-avatar.jpg",
+      "url": "https://example.com/uploads/sarah-avatar.jpg",
+      "type": "image",
+      "size": 198400
+    },
+    "createdAt": "2024-01-21T15:30:00Z",
+    "updatedAt": "2024-01-21T15:30:00Z"
+  }
+}
+```
+
+**Example Request:**
+```bash
+curl -X POST http://localhost:8000/wp-json/pika/v1/people \
+  -H "Cookie: pika_token=base64_encoded_token" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Sarah Wilson",
+    "email": "sarah.wilson@example.com",
+    "phone": "+1-555-0321",
+    "type": "friend",
+    "relationship": "College Friend"
+  }'
+```
+
+### Update Person
+
+Update an existing person.
+
+**Endpoint:** `PUT /wp-json/pika/v1/people/{id}`
+
+**Headers:**
+- `Cookie`: Authentication cookie
+- `Content-Type: application/json`
+
+**Request Body:**
+```json
+{
+  "name": "Sarah Wilson - Updated",
+  "relationship": "Best College Friend",
+  "notes": "Lives in New York, works in finance"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Person updated successfully",
+  "data": {
+    "id": 4,
+    "name": "Sarah Wilson - Updated",
+    "email": "sarah.wilson@example.com",
+    "phone": "+1-555-0321",
+    "avatarId": 18,
+    "type": "friend",
+    "relationship": "Best College Friend",
+    "notes": "Lives in New York, works in finance",
+    "isActive": true,
+    "isArchived": false,
+    "transactionCount": 0,
+    "totalAmount": 0.00,
+    "lastTransactionDate": null,
+    "avatar": {
+      "id": 18,
+      "filename": "sarah-avatar.jpg",
+      "url": "https://example.com/uploads/sarah-avatar.jpg",
+      "type": "image",
+      "size": 198400
+    },
+    "createdAt": "2024-01-21T15:30:00Z",
+    "updatedAt": "2024-01-21T16:45:00Z"
+  }
+}
+```
+
+**Example Request:**
+```bash
+curl -X PUT http://localhost:8000/wp-json/pika/v1/people/4 \
+  -H "Cookie: pika_token=base64_encoded_token" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Sarah Wilson - Updated",
+    "relationship": "Best College Friend"
+  }'
+```
+
+### Delete Person
+
+Delete a person. People with transactions cannot be deleted.
+
+**Endpoint:** `DELETE /wp-json/pika/v1/people/{id}`
+
+**Headers:**
+- `Cookie`: Authentication cookie
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Person deleted successfully"
+}
+```
+
+**Example Request:**
+```bash
+curl -X DELETE http://localhost:8000/wp-json/pika/v1/people/4 \
+  -H "Cookie: pika_token=base64_encoded_token"
+```
+
+## 👥 Person Types
+
+### Family
+- **Purpose**: Immediate and extended family members
+- **Examples**: Spouse, children, parents, siblings
+- **Features**: Shared expenses, family budgets, inheritance tracking
+- **Common Use Cases**: Household expenses, family vacations, gifts
+
+### Friend
+- **Purpose**: Personal friends and acquaintances
+- **Examples**: Close friends, college friends, neighbors
+- **Features**: Shared activities, personal loans, gifts
+- **Common Use Cases**: Dinner outings, shared events, personal loans
+
+### Business
+- **Purpose**: Professional and business contacts
+- **Examples**: Business partners, clients, vendors
+- **Features**: Business expenses, professional relationships
+- **Common Use Cases**: Business lunches, client gifts, vendor payments
+
+### Roommate
+- **Purpose**: People sharing living expenses
+- **Examples**: Roommates, housemates, co-tenants
+- **Features**: Shared rent, utilities, household expenses
+- **Common Use Cases**: Rent splitting, utility bills, shared groceries
+
+## 🎨 Person Properties
+
+### Avatar Management
+- **Upload**: Support for profile pictures
+- **Formats**: JPG, PNG, GIF
+- **Size Limits**: Maximum 5MB
+- **Auto-resize**: Automatic thumbnail generation
+- **Fallback**: Default avatar for missing images
+
+### Contact Information
+- **Email**: Primary contact method
+- **Phone**: Phone number with international format support
+- **Address**: Optional physical address
+- **Social Media**: Optional social media handles
+
+### Relationship Tracking
+- **Type**: Categorization (family, friend, business, roommate)
+- **Description**: Free-text relationship details
+- **Notes**: Additional information and context
+- **Tags**: Custom labels for organization
+
+## 🔄 Person Operations
+
+### Person Archiving
+
+```bash
+# Archive a person (soft delete)
+curl -X PUT http://localhost:8000/wp-json/pika/v1/people/4 \
+  -H "Cookie: pika_token=base64_encoded_token" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "isArchived": true
+  }'
+```
+
+### Person Reactivation
+
+```bash
+# Reactivate an archived person
+curl -X PUT http://localhost:8000/wp-json/pika/v1/people/4 \
+  -H "Cookie: pika_token=base64_encoded_token" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "isArchived": false
+  }'
+```
+
+### Avatar Upload
+
+```bash
+# Upload avatar for a person
+curl -X POST http://localhost:8000/wp-json/pika/v1/upload/avatar \
+  -H "Cookie: pika_token=base64_encoded_token" \
+  -F "entityType=person" \
+  -F "file=@avatar.jpg"
+```
+
+### Transaction Association
+
+```bash
+# Associate a person with a transaction
+curl -X PUT http://localhost:8000/wp-json/pika/v1/transactions/45 \
+  -H "Cookie: pika_token=base64_encoded_token" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "personId": 1
+  }'
+```
+
+## 🚨 Error Responses
+
+### Person Not Found
+```json
+{
+  "success": false,
+  "error": "Person not found",
+  "code": "person_not_found",
+  "details": {
+    "id": 999
+  }
+}
+```
+
+### Invalid Person Type
+```json
+{
+  "success": false,
+  "error": "Invalid person type",
+  "code": "invalid_person_type",
+  "details": {
+    "field": "type",
+    "value": "invalid",
+    "allowed_values": ["family", "friend", "business", "roommate"]
+  }
+}
+```
+
+### Cannot Delete Person with Transactions
+```json
+{
+  "success": false,
+  "error": "Cannot delete person with existing transactions",
+  "code": "person_has_transactions",
+  "details": {
+    "id": 1,
+    "transaction_count": 12
+  }
+}
+```
+
+### Invalid Email Format
+```json
+{
+  "success": false,
+  "error": "Invalid email format",
+  "code": "invalid_email_format",
+  "details": {
+    "field": "email",
+    "value": "invalid-email",
+    "message": "Please enter a valid email address"
+  }
+}
+```
+
+### Validation Error
+```json
+{
+  "success": false,
+  "error": "Validation failed",
+  "code": "validation_error",
+  "details": [
+    {
+      "field": "name",
+      "message": "Person name is required"
+    },
+    {
+      "field": "phone",
+      "message": "Invalid phone number format"
+    }
+  ]
+}
+```
+
+## 📱 Frontend Integration
+
+### React Hook Example
+
+```typescript
+import { usePeople } from '../hooks/usePeople';
+
+function PeoplePage() {
+  const { people, createPerson, updatePerson, deletePerson, loading } = usePeople();
+
+  const handleCreatePerson = async (personData) => {
+    try {
+      await createPerson(personData);
+      // Show success message
+    } catch (err) {
+      // Handle error
+    }
+  };
+
+  return (
+    <div>
+      {people.map(person => (
+        <PersonCard 
+          key={person.id} 
+          person={person}
+          onEdit={updatePerson}
+          onDelete={deletePerson}
+        />
+      ))}
+    </div>
+  );
+}
+```
+
+### People Service
+
+```typescript
+// services/people.service.ts
+export class PeopleService {
+  async getPeople(params?: PeopleFilters): Promise<PeopleResponse> {
+    const response = await api.get('/people', { params });
+    return response.data.data;
+  }
+
+  async getPerson(id: number): Promise<Person> {
+    const response = await api.get(`/people/${id}`);
+    return response.data.data;
+  }
+
+  async createPerson(personData: CreatePersonData): Promise<Person> {
+    const response = await api.post('/people', personData);
+    return response.data.data;
+  }
+
+  async updatePerson(id: number, updates: Partial<Person>): Promise<Person> {
+    const response = await api.put(`/people/${id}`, updates);
+    return response.data.data;
+  }
+
+  async deletePerson(id: number): Promise<void> {
+    await api.delete(`/people/${id}`);
+  }
+
+  async archivePerson(id: number): Promise<Person> {
+    return this.updatePerson(id, { isArchived: true });
+  }
+
+  async reactivatePerson(id: number): Promise<Person> {
+    return this.updatePerson(id, { isArchived: false });
+  }
+
+  async uploadAvatar(id: number, file: File): Promise<Person> {
+    const formData = new FormData();
+    formData.append('entityType', 'person');
+    formData.append('file', file);
+    
+    const response = await api.post('/upload/avatar', formData);
+    const avatarId = response.data.data.id;
+    
+    return this.updatePerson(id, { avatarId });
+  }
+}
+```
+
+### Person Form Component
+
+```typescript
+// components/PersonForm.tsx
+function PersonForm({ person, onSubmit, onCancel }) {
+  const [formData, setFormData] = useState({
+    name: person?.name || '',
+    email: person?.email || '',
+    phone: person?.phone || '',
+    type: person?.type || 'friend',
+    relationship: person?.relationship || ''
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmit(formData);
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        type="text"
+        placeholder="Full Name"
+        value={formData.name}
+        onChange={(e) => setFormData({...formData, name: e.target.value})}
+        required
+      />
+      
+      <select
+        value={formData.type}
+        onChange={(e) => setFormData({...formData, type: e.target.value})}
+      >
+        <option value="family">Family</option>
+        <option value="friend">Friend</option>
+        <option value="business">Business</option>
+        <option value="roommate">Roommate</option>
+      </select>
+      
+      <button type="submit">Save Person</button>
+      <button type="button" onClick={onCancel}>Cancel</button>
+    </form>
+  );
+}
+```
+
+## 💡 Best Practices
+
+1. **Person Naming**
+   - Use full names for clarity
+   - Be consistent with naming conventions
+   - Include titles if relevant (Dr., Prof., etc.)
+
+2. **Contact Information**
+   - Validate email and phone formats
+   - Use international phone number format
+   - Keep contact info up to date
+
+3. **Relationship Management**
+   - Use descriptive relationship terms
+   - Group people logically by type
+   - Archive inactive relationships
+
+4. **Privacy and Security**
+   - Don't store sensitive personal information
+   - Respect privacy preferences
+   - Implement proper access controls
+
+5. **Performance**
+   - Cache people data when possible
+   - Implement efficient searching
+   - Use pagination for large lists
+
+## 📊 People Analytics
+
+### Transaction Statistics
+- Total transactions per person
+- Spending patterns and trends
+- Shared expense tracking
+- Net financial position
+
+### Relationship Insights
+- Most active contacts
+- Financial relationship strength
+- Shared expense frequency
+- Payment history
+
+## 📚 Related Documentation
+
+- [Transactions API](./transactions) - Associate people with transactions
+- [Upload API](./upload) - Handle person avatars
+- [Analytics API](./analytics) - People-based reporting
+- [Settings API](./settings) - Contact preferences

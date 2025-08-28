@@ -107,15 +107,11 @@ const config: Config = {
           items: [
             {
               label: 'Getting Started',
-              to: '/docs/intro',
+              to: '/docs/',
             },
             {
               label: 'API Reference',
-              to: '/docs/api',
-            },
-            {
-              label: 'Deployment',
-              to: '/docs/deployment',
+              to: '/docs/api/authentication',
             },
           ],
         },
@@ -146,7 +142,7 @@ const config: Config = {
     },
     prism: {
       theme: prismThemes.github,
-      darkTheme: prismThemes.dracula,
+      darkTheme: prismThemes.vsDark,
     },
   } satisfies Preset.ThemeConfig,
 };

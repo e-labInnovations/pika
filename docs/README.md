@@ -89,9 +89,8 @@ Key configuration options in `docusaurus.config.ts`:
 
 ## 📚 Documentation
 
-- **Getting Started**: `/docs/intro`
-- **API Reference**: `/docs/api`
-- **Deployment**: `/docs/deployment`
+- **Getting Started**: `/docs/introduction`
+- **API Reference**: `/docs/api/authentication`
 
 ## 🤝 Contributing
 
