@@ -102,13 +102,15 @@ class Pika_Auth_Controller extends Pika_Base_Controller {
 
         // Set pika_token cookie
         $token_value = base64_encode("$user_login:$password");
+        $lifetime = time() + (1 * YEAR_IN_SECONDS);
         setcookie(
             "pika_token",
             $token_value,
             [
+                "expires" => $lifetime,
                 "httponly" => true,
                 "secure" => true,
-                "samesite" => "Strict",
+                "samesite" => "Lax",
                 "path" => "/"
             ]
         );
