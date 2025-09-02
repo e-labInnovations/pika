@@ -27,77 +27,35 @@ Retrieve all tags for the authenticated user.
 **Headers:**
 - `Cookie`: Authentication cookie
 
-**Query Parameters:**
-- `type` (optional): Filter by tag type (`expense`, `income`, `transfer`, `all`)
-- `include_archived` (optional): Include archived tags (default: false)
-- `include_counts` (optional): Include transaction counts (default: true)
-
 **Response:**
 ```json
-{
-  "success": true,
-  "data": {
-    "tags": [
-      {
-        "id": 1,
-        "name": "Essential",
-        "color": "#10b981",
-        "bgColor": "#ecfdf5",
-        "icon": "star",
-        "description": "Essential expenses that cannot be avoided",
-        "type": "expense",
-        "isSystem": false,
-        "isArchived": false,
-        "transactionCount": 28,
-        "totalAmount": 1250.75,
-        "createdAt": "2024-01-01T10:00:00Z",
-        "updatedAt": "2024-01-15T14:30:00Z"
-      },
-      {
-        "id": 2,
-        "name": "Weekly",
-        "color": "#3b82f6",
-        "bgColor": "#eff6ff",
-        "icon": "calendar",
-        "description": "Recurring weekly expenses",
-        "type": "expense",
-        "isSystem": false,
-        "isArchived": false,
-        "transactionCount": 15,
-        "totalAmount": 450.25,
-        "createdAt": "2024-01-01T10:00:00Z",
-        "updatedAt": "2024-01-10T09:15:00Z"
-      },
-      {
-        "id": 3,
-        "name": "Business",
-        "color": "#8b5cf6",
-        "bgColor": "#faf5ff",
-        "icon": "briefcase",
-        "description": "Business-related expenses and income",
-        "type": "all",
-        "isSystem": true,
-        "isArchived": false,
-        "transactionCount": 8,
-        "totalAmount": 2500.00,
-        "createdAt": "2024-01-01T10:00:00Z",
-        "updatedAt": "2024-01-01T10:00:00Z"
-      }
-    ],
-    "summary": {
-      "total_tags": 15,
-      "active_tags": 12,
-      "archived_tags": 3,
-      "system_tags": 5
-    }
-  }
-}
+[
+  {
+      "id": "6",
+      "name": "Business",
+      "color": "#FFFFFF",
+      "bgColor": "#2D3748",
+      "icon": "briefcase-business",
+      "description": "Business transactions",
+      "isSystem": true
+  },
+  {
+      "id": "11",
+      "name": "IRCTC",
+      "color": "#ffffff",
+      "bgColor": "#9A3412",
+      "icon": "train-front",
+      "description": "",
+      "isSystem": false
+  },
+  ...
+]
 ```
 
 **Example Request:**
 ```bash
-curl -X GET "http://localhost:8000/wp-json/pika/v1/tags?type=expense" \
-  -H "Cookie: pika_token=base64_encoded_token"
+curl -X GET "http://localhost:8000/wp-json/pika/v1/tags" \
+  -H "Cookie: pika_token=token"
 ```
 
 ### Get Tag by ID
@@ -112,45 +70,20 @@ Retrieve a specific tag by its ID.
 **Response:**
 ```json
 {
-  "success": true,
-  "data": {
-    "id": 1,
-    "name": "Essential",
-    "color": "#10b981",
-    "bgColor": "#ecfdf5",
-    "icon": "star",
-    "description": "Essential expenses that cannot be avoided",
-    "type": "expense",
-    "isSystem": false,
-    "isArchived": false,
-    "transactionCount": 28,
-    "totalAmount": 1250.75,
-    "recentTransactions": [
-      {
-        "id": 45,
-        "title": "Grocery Shopping",
-        "amount": 85.50,
-        "type": "expense",
-        "date": "2024-01-20"
-      },
-      {
-        "id": 44,
-        "title": "Gas Station",
-        "amount": 45.00,
-        "type": "expense",
-        "date": "2024-01-19"
-      }
-    ],
-    "createdAt": "2024-01-01T10:00:00Z",
-    "updatedAt": "2024-01-15T14:30:00Z"
-  }
+    "id": "19",
+    "name": "Amazon",
+    "color": "#000000",
+    "bgColor": "#Cea968",
+    "icon": "redo",
+    "description": "",
+    "isSystem": false
 }
 ```
 
 **Example Request:**
 ```bash
-curl -X GET http://localhost:8000/wp-json/pika/v1/tags/1 \
-  -H "Cookie: pika_token=base64_encoded_token"
+curl -X GET http://localhost:8000/wp-json/pika/v1/tags/19 \
+  -H "Cookie: pika_token=token"
 ```
 
 ### Create Tag
@@ -166,12 +99,11 @@ Create a new tag.
 **Request Body:**
 ```json
 {
-  "name": "Vacation",
-  "color": "#f59e0b",
-  "bgColor": "#fffbeb",
-  "icon": "plane",
-  "description": "Vacation and travel-related expenses",
-  "type": "expense"
+    "name":"Friends",
+    "description":"",
+    "icon":"users",
+    "bgColor":"#10B981",
+    "color":"#ffffff"
 }
 ```
 
@@ -182,44 +114,32 @@ Create a new tag.
 - `color` (string): Text color (hex format)
 - `bgColor` (string): Background color (hex format)
 - `icon` (string): Icon identifier
-- `description` (string): Tag description
-- `type` (string): Tag type (`expense`, `income`, `transfer`, `all`)
+- `description` (string): Tag description - Used for AI context
 
 **Response:**
 ```json
 {
-  "success": true,
-  "message": "Tag created successfully",
-  "data": {
-    "id": 16,
-    "name": "Vacation",
-    "color": "#f59e0b",
-    "bgColor": "#fffbeb",
-    "icon": "plane",
-    "description": "Vacation and travel-related expenses",
-    "type": "expense",
-    "isSystem": false,
-    "isArchived": false,
-    "transactionCount": 0,
-    "totalAmount": 0.00,
-    "createdAt": "2024-01-21T15:30:00Z",
-    "updatedAt": "2024-01-21T15:30:00Z"
-  }
+    "id": "20",
+    "name": "Friends",
+    "color": "#ffffff",
+    "bgColor": "#10B981",
+    "icon": "users",
+    "description": "",
+    "isSystem": false
 }
 ```
 
 **Example Request:**
 ```bash
 curl -X POST http://localhost:8000/wp-json/pika/v1/tags \
-  -H "Cookie: pika_token=base64_encoded_token" \
+  -H "Cookie: pika_token=token" \
   -H "Content-Type: application/json" \
   -d '{
-    "name": "Vacation",
-    "color": "#f59e0b",
-    "bgColor": "#fffbeb",
-    "icon": "plane",
-    "description": "Vacation and travel-related expenses",
-    "type": "expense"
+    "name":"Friends",
+    "description":"",
+    "icon":"users",
+    "bgColor":"#10B981",
+    "color":"#ffffff"
   }'
 ```
 
@@ -236,43 +156,41 @@ Update an existing tag.
 **Request Body:**
 ```json
 {
-  "name": "Vacation & Travel",
-  "description": "Updated description for vacation tag",
-  "color": "#d97706"
+  "name":"Friends",
+  "description":"Sharing and splitting all expenses among my friends.",
+  "icon":"users",
+  "bgColor":"#3B82F6",
+  "color":"#ffffff"
 }
 ```
 
 **Response:**
 ```json
 {
-  "success": true,
-  "message": "Tag updated successfully",
-  "data": {
-    "id": 16,
-    "name": "Vacation & Travel",
-    "color": "#d97706",
-    "bgColor": "#fffbeb",
-    "icon": "plane",
-    "description": "Updated description for vacation tag",
-    "type": "expense",
-    "isSystem": false,
-    "isArchived": false,
-    "transactionCount": 0,
-    "totalAmount": 0.00,
-    "createdAt": "2024-01-21T15:30:00Z",
-    "updatedAt": "2024-01-21T16:45:00Z"
-  }
+    "id": "20",
+    "user_id": "2",
+    "name": "Friends",
+    "icon": "users",
+    "color": "#ffffff",
+    "bg_color": "#3B82F6",
+    "description": "Sharing and splitting all expenses among my friends.",
+    "is_active": "1",
+    "created_at": "2025-09-02 04:06:12",
+    "updated_at": "2025-09-02 04:09:12"
 }
 ```
 
 **Example Request:**
 ```bash
-curl -X PUT http://localhost:8000/wp-json/pika/v1/tags/16 \
-  -H "Cookie: pika_token=base64_encoded_token" \
+curl -X PUT http://localhost:8000/wp-json/pika/v1/tags/20 \
+  -H "Cookie: pika_token=token" \
   -H "Content-Type: application/json" \
   -d '{
-    "name": "Vacation & Travel",
-    "description": "Updated description for vacation tag"
+    "name":"Friends",
+    "description":"Sharing and splitting all expenses among my friends.",
+    "icon":"users",
+    "bgColor":"#3B82F6",
+    "color":"#ffffff"
   }'
 ```
 
@@ -287,16 +205,13 @@ Delete a tag. System tags cannot be deleted.
 
 **Response:**
 ```json
-{
-  "success": true,
-  "message": "Tag deleted successfully"
-}
+{"message":"Tag deleted successfully"}
 ```
 
 **Example Request:**
 ```bash
-curl -X DELETE http://localhost:8000/wp-json/pika/v1/tags/16 \
-  -H "Cookie: pika_token=base64_encoded_token"
+curl -X DELETE http://localhost:8000/wp-json/pika/v1/tags/20 \
+  -H "Cookie: pika_token=token"
 ```
 
 ## 🏷️ Tag Properties
@@ -304,21 +219,7 @@ curl -X DELETE http://localhost:8000/wp-json/pika/v1/tags/16 \
 ### Icon Options
 
 **Available Icons:**
-- `star` - Essential/Important
-- `calendar` - Time-based (weekly, monthly)
-- `plane` - Travel/Vacation
-- `briefcase` - Business
-- `heart` - Personal/Health
-- `gift` - Gifts/Donations
-- `home` - Housing/Home
-- `car` - Transportation
-- `utensils` - Food/Dining
-- `shopping-bag` - Shopping
-- `medical-cross` - Healthcare
-- `graduation-cap` - Education
-- `gamepad` - Entertainment
-- `trending-up` - Investment
-- `credit-card` - Banking/Finance
+- All lucide icons
 
 ### Color Format
 
@@ -327,276 +228,49 @@ curl -X DELETE http://localhost:8000/wp-json/pika/v1/tags/16 \
 - **Recommended**: Use contrasting colors for readability
 - **Accessibility**: Consider color blindness when choosing colors
 
-### Tag Types
-
-- **`expense`**: Only applies to expense transactions
-- **`income`**: Only applies to income transactions
-- **`transfer`**: Only applies to transfer transactions
-- **`all`**: Applies to all transaction types
-
-## 🔄 Tag Operations
-
-### Tag Archiving
-
-```bash
-# Archive a tag (soft delete)
-curl -X PUT http://localhost:8000/wp-json/pika/v1/tags/16 \
-  -H "Cookie: pika_token=base64_encoded_token" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "isArchived": true
-  }'
-```
-
-### Tag Reactivation
-
-```bash
-# Reactivate an archived tag
-curl -X PUT http://localhost:8000/wp-json/pika/v1/tags/16 \
-  -H "Cookie: pika_token=base64_encoded_token" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "isArchived": false
-  }'
-```
-
-### Bulk Tag Operations
-
-```bash
-# Apply multiple tags to a transaction
-curl -X PUT http://localhost:8000/wp-json/pika/v1/transactions/45 \
-  -H "Cookie: pika_token=base64_encoded_token" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "tags": [1, 2, 5]
-  }'
-```
-
 ## 🚨 Error Responses
 
+### Tag Name Not Unique
+
+This error occurs when you try to create a tag with a name that's already in use, ensuring that all tag names remain distinct.
+
+```json
+{
+  "code": "tag_name_not_unique",
+  "message": "Tag name is not unique.",
+  "data": {
+    "status": 400
+  }
+}
+```
+
 ### Tag Not Found
+
+This error is returned when an operation is requested for a tag that doesn't exist in the database. 🏷️
+
 ```json
 {
-  "success": false,
-  "error": "Tag not found",
   "code": "tag_not_found",
-  "details": {
-    "id": 999
+  "message": "Tag not found.",
+  "data": {
+    "status": 404
   }
 }
 ```
 
-### Invalid Tag Type
+### Invalid Tag Name
+
+This response is used when the provided tag name doesn't meet validation criteria, such as being empty, too long, or containing invalid characters.
+
 ```json
 {
-  "success": false,
-  "error": "Invalid tag type",
-  "code": "invalid_tag_type",
-  "details": {
-    "field": "type",
-    "value": "invalid",
-    "allowed_values": ["expense", "income", "transfer", "all"]
+  "code": "invalid_name",
+  "message": "Invalid tag name.",
+  "data": {
+    "status": 400
   }
 }
 ```
-
-### Cannot Delete System Tag
-```json
-{
-  "success": false,
-  "error": "Cannot delete system tag",
-  "code": "system_tag_protected",
-  "details": {
-    "id": 3,
-    "name": "Business"
-  }
-}
-```
-
-### Tag Name Already Exists
-```json
-{
-  "success": false,
-  "error": "Tag name already exists",
-  "code": "tag_name_exists",
-  "details": {
-    "field": "name",
-    "value": "Essential",
-    "existing_id": 1
-  }
-}
-```
-
-### Validation Error
-```json
-{
-  "success": false,
-  "error": "Validation failed",
-  "code": "validation_error",
-  "details": [
-    {
-      "field": "name",
-      "message": "Tag name is required"
-    },
-    {
-      "field": "color",
-      "message": "Invalid color format. Use hex color code (e.g., #10b981)"
-    }
-  ]
-}
-```
-
-## 📱 Frontend Integration
-
-### React Hook Example
-
-```typescript
-import { useTags } from '../hooks/useTags';
-
-function TagsPage() {
-  const { tags, createTag, updateTag, deleteTag, loading } = useTags();
-
-  const handleCreateTag = async (tagData) => {
-    try {
-      await createTag(tagData);
-      // Show success message
-    } catch (err) {
-      // Handle error
-    }
-  };
-
-  return (
-    <div>
-      {tags.map(tag => (
-        <TagCard 
-          key={tag.id} 
-          tag={tag}
-          onEdit={updateTag}
-          onDelete={deleteTag}
-        />
-      ))}
-    </div>
-  );
-}
-```
-
-### Tags Service
-
-```typescript
-// services/tags.service.ts
-export class TagsService {
-  async getTags(params?: TagFilters): Promise<TagResponse> {
-    const response = await api.get('/tags', { params });
-    return response.data.data;
-  }
-
-  async getTag(id: number): Promise<Tag> {
-    const response = await api.get(`/tags/${id}`);
-    return response.data.data;
-  }
-
-  async createTag(tagData: CreateTagData): Promise<Tag> {
-    const response = await api.post('/tags', tagData);
-    return response.data.data;
-  }
-
-  async updateTag(id: number, updates: Partial<Tag>): Promise<Tag> {
-    const response = await api.put(`/tags/${id}`, updates);
-    return response.data.data;
-  }
-
-  async deleteTag(id: number): Promise<void> {
-    await api.delete(`/tags/${id}`);
-  }
-
-  async archiveTag(id: number): Promise<Tag> {
-    return this.updateTag(id, { isArchived: true });
-  }
-
-  async reactivateTag(id: number): Promise<Tag> {
-    return this.updateTag(id, { isArchived: false });
-  }
-}
-```
-
-### Tag Selection Component
-
-```typescript
-// components/TagSelector.tsx
-function TagSelector({ selectedTags, onTagsChange, availableTags }) {
-  const handleTagToggle = (tagId: number) => {
-    const newTags = selectedTags.includes(tagId)
-      ? selectedTags.filter(id => id !== tagId)
-      : [...selectedTags, tagId];
-    onTagsChange(newTags);
-  };
-
-  return (
-    <div className="tag-selector">
-      {availableTags.map(tag => (
-        <button
-          key={tag.id}
-          className={`tag ${selectedTags.includes(tag.id) ? 'selected' : ''}`}
-          onClick={() => handleTagToggle(tag.id)}
-          style={{
-            backgroundColor: tag.bgColor,
-            color: tag.color,
-            border: `1px solid ${tag.color}`
-          }}
-        >
-          {tag.name}
-        </button>
-      ))}
-    </div>
-  );
-}
-```
-
-## 💡 Best Practices
-
-1. **Tag Naming**
-   - Use clear, descriptive names
-   - Keep names short but meaningful
-   - Be consistent with naming conventions
-   - Avoid abbreviations
-
-2. **Color Selection**
-   - Choose contrasting colors for readability
-   - Use consistent color schemes
-   - Consider accessibility (color blindness)
-   - Use light backgrounds with dark text
-
-3. **Tag Organization**
-   - Group related tags logically
-   - Use consistent icon choices
-   - Limit the number of tags per transaction
-   - Archive unused tags instead of deleting
-
-4. **System Tags**
-   - Don't modify system tags
-   - Use them as templates for custom tags
-   - Respect their predefined structure
-   - Build upon existing system tags
-
-5. **Performance**
-   - Cache tag data when possible
-   - Implement efficient tag filtering
-   - Use pagination for large tag lists
-   - Optimize tag queries
-
-## 📊 Tag Analytics
-
-### Usage Statistics
-- Transaction counts per tag
-- Total amounts per tag
-- Tag frequency over time
-- Popular tag combinations
-
-### Reporting
-- Tag-based expense reports
-- Tag spending trends
-- Tag comparison charts
-- Tag efficiency metrics
 
 ## 📚 Related Documentation
 

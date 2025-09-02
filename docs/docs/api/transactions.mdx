@@ -42,89 +42,154 @@ Retrieve all transactions for the authenticated user with optional filtering and
 
 **Response:**
 ```json
-{
-  "success": true,
-  "data": {
-    "transactions": [
-      {
-        "id": 1,
-        "title": "Grocery Shopping",
-        "amount": 85.50,
+[
+    {
+        "id": "81",
+        "title": "hello",
+        "amount": "90.0000",
+        "date": "2025-08-23T05:19:18+00:00",
         "type": "expense",
-        "date": "2024-01-15",
-        "note": "Weekly groceries from Walmart",
-        "categoryId": 1,
-        "accountId": 1,
-        "personId": null,
-        "tags": [2, 5],
-        "attachments": [3],
         "category": {
-          "id": 1,
-          "name": "Food & Dining",
-          "icon": "utensils",
-          "color": "#ff6b6b"
+            "id": "31",
+            "name": "Books",
+            "icon": "book",
+            "color": "#FFFFFF",
+            "bgColor": "#2C5282",
+            "description": "Books and supplies",
+            "isSystem": true,
+            "isParent": false,
+            "type": "expense",
+            "parentId": "29",
+            "children": []
         },
         "account": {
-          "id": 1,
-          "name": "Main Checking",
-          "icon": "credit-card",
-          "color": "#4ecdc4"
+            "id": "1",
+            "name": "Federal",
+            "description": "Main Account",
+            "avatar": {
+                "id": "1",
+                "url": "http:\/\/localhost:8000\/wp-content\/uploads\/pika\/avatars\/account-6889ac3ac6f73-1753852986.jpg",
+                "type": "image",
+                "name": "1000118509.jpg",
+                "size": "9444"
+            },
+            "lastTransactionAt": null,
+            "totalTransactions": 0,
+            "balance": "-50921.7500",
+            "icon": "wallet",
+            "bgColor": "#3B82F6",
+            "color": "#ffffff"
         },
         "person": null,
-        "createdAt": "2024-01-15T10:30:00Z",
-        "updatedAt": "2024-01-15T10:30:00Z"
-      },
-      {
-        "id": 2,
-        "title": "Salary Deposit",
-        "amount": 2500.00,
-        "type": "income",
-        "date": "2024-01-01",
-        "note": "Monthly salary from employer",
-        "categoryId": 3,
-        "accountId": 1,
-        "personId": null,
-        "tags": [1],
+        "toAccount": {
+            "id": "2",
+            "name": "Wallet",
+            "description": "",
+            "avatar": null,
+            "lastTransactionAt": null,
+            "totalTransactions": 0,
+            "balance": "400.0000",
+            "icon": "wallet",
+            "bgColor": "#3B82F6",
+            "color": "#ffffff"
+        },
+        "note": "",
         "attachments": [],
+        "tags": []
+    },
+    {
+        "id": "80",
+        "title": "test",
+        "amount": "89.0000",
+        "date": "2025-08-06T23:34:18+00:00",
+        "type": "expense",
         "category": {
-          "id": 3,
-          "name": "Salary",
-          "icon": "briefcase",
-          "color": "#45b7d1"
+            "id": "60",
+            "name": "Food Order",
+            "icon": "hamburger",
+            "color": "#ffffff",
+            "bgColor": "#0891B2",
+            "description": "Food order from online",
+            "isSystem": false,
+            "isParent": false,
+            "type": "expense",
+            "parentId": "1",
+            "children": []
         },
         "account": {
-          "id": 1,
-          "name": "Main Checking",
-          "icon": "credit-card",
-          "color": "#4ecdc4"
+            "id": "1",
+            "name": "Federal",
+            "description": "Main Account",
+            "avatar": {
+                "id": "1",
+                "url": "http:\/\/localhost:8000\/wp-content\/uploads\/pika\/avatars\/account-6889ac3ac6f73-1753852986.jpg",
+                "type": "image",
+                "name": "1000118509.jpg",
+                "size": "9444"
+            },
+            "lastTransactionAt": null,
+            "totalTransactions": 0,
+            "balance": "-50921.7500",
+            "icon": "wallet",
+            "bgColor": "#3B82F6",
+            "color": "#ffffff"
         },
         "person": null,
-        "createdAt": "2024-01-01T09:00:00Z",
-        "updatedAt": "2024-01-01T09:00:00Z"
-      }
-    ],
-    "pagination": {
-      "total": 45,
-      "per_page": 20,
-      "current_page": 1,
-      "last_page": 3,
-      "from": 1,
-      "to": 20
+        "toAccount": null,
+        "note": "",
+        "attachments": [],
+        "tags": []
     },
-    "summary": {
-      "total_income": 5000.00,
-      "total_expenses": 1250.75,
-      "total_transfers": 500.00,
-      "net_amount": 3249.25
+    {
+        "id": "79",
+        "title": "ash",
+        "amount": "89.0000",
+        "date": "2025-08-06T23:30:35+00:00",
+        "type": "expense",
+        "category": {
+            "id": "2",
+            "name": "Dining Out",
+            "icon": "utensils",
+            "color": "#FFFFFF",
+            "bgColor": "#DD6B20",
+            "description": "Restaurant and dining out expenses",
+            "isSystem": true,
+            "isParent": false,
+            "type": "expense",
+            "parentId": "1",
+            "children": []
+        },
+        "account": {
+            "id": "1",
+            "name": "Federal",
+            "description": "Main Account",
+            "avatar": {
+                "id": "1",
+                "url": "http:\/\/localhost:8000\/wp-content\/uploads\/pika\/avatars\/account-6889ac3ac6f73-1753852986.jpg",
+                "type": "image",
+                "name": "1000118509.jpg",
+                "size": "9444"
+            },
+            "lastTransactionAt": null,
+            "totalTransactions": 0,
+            "balance": "-50921.7500",
+            "icon": "wallet",
+            "bgColor": "#3B82F6",
+            "color": "#ffffff"
+        },
+        "person": null,
+        "toAccount": null,
+        "note": "",
+        "attachments": [],
+        "tags": []
     }
-  }
-}
+]
 ```
 
 **Example Request:**
 ```bash
-curl -X GET "http://localhost:8000/wp-json/pika/v1/transactions?type=expense&date_from=2024-01-01&per_page=10" \
-  -H "Cookie: pika_token=base64_encoded_token"
+curl -X GET "http://localhost:8000/wp-json/pika/v1/transactions" \
+  -H "Cookie: pika_token=token"
 ```
 
 ### Get Transaction by ID
@@ -139,63 +204,65 @@ Retrieve a specific transaction by its ID.
 **Response:**
 ```json
 {
-  "success": true,
-  "data": {
-    "id": 1,
-    "title": "Grocery Shopping",
-    "amount": 85.50,
+    "id": "81",
+    "title": "hello",
+    "amount": "90.0000",
+    "date": "2025-08-23T05:19:18+00:00",
     "type": "expense",
-    "date": "2024-01-15",
-    "note": "Weekly groceries from Walmart",
-    "categoryId": 1,
-    "accountId": 1,
-    "personId": null,
-    "tags": [2, 5],
-    "attachments": [3],
     "category": {
-      "id": 1,
-      "name": "Food & Dining",
-      "icon": "utensils",
-      "color": "#ff6b6b"
+        "id": "31",
+        "name": "Books",
+        "icon": "book",
+        "color": "#FFFFFF",
+        "bgColor": "#2C5282",
+        "description": "Books and supplies",
+        "isSystem": true,
+        "isParent": false,
+        "type": "expense",
+        "parentId": "29",
+        "children": []
     },
     "account": {
-      "id": 1,
-      "name": "Main Checking",
-      "icon": "credit-card",
-      "color": "#4ecdc4"
+        "id": "1",
+        "name": "Federal",
+        "description": "Main Account",
+        "avatar": {
+            "id": "1",
+            "url": "http:\/\/localhost:8000\/wp-content\/uploads\/pika\/avatars\/account-6889ac3ac6f73-1753852986.jpg",
+            "type": "image",
+            "name": "1000118509.jpg",
+            "size": "9444"
+        },
+        "lastTransactionAt": null,
+        "totalTransactions": 0,
+        "balance": "-50921.7500",
+        "icon": "wallet",
+        "bgColor": "#3B82F6",
+        "color": "#ffffff"
     },
     "person": null,
-    "attachments": [
-      {
-        "id": 3,
-        "filename": "receipt.jpg",
-        "url": "https://example.com/uploads/receipt.jpg",
-        "type": "image",
-        "size": 245760
-      }
-    ],
-    "tags": [
-      {
-        "id": 2,
-        "name": "Essential",
-        "color": "#10b981"
-      },
-      {
-        "id": 5,
-        "name": "Weekly",
-        "color": "#3b82f6"
-      }
-    ],
-    "createdAt": "2024-01-15T10:30:00Z",
-    "updatedAt": "2024-01-15T10:30:00Z"
-  }
+    "toAccount": {
+        "id": "2",
+        "name": "Wallet",
+        "description": "",
+        "avatar": null,
+        "lastTransactionAt": null,
+        "totalTransactions": 0,
+        "balance": "400.0000",
+        "icon": "wallet",
+        "bgColor": "#3B82F6",
+        "color": "#ffffff"
+    },
+    "note": "",
+    "attachments": [],
+    "tags": []
 }
 ```
 
 **Example Request:**
 ```bash
-curl -X GET http://localhost:8000/wp-json/pika/v1/transactions/1 \
-  -H "Cookie: pika_token=base64_encoded_token"
+curl -X GET http://localhost:8000/wp-json/pika/v1/transactions/81 \
+  -H "Cookie: pika_token=token"
 ```
 
 ### Create Transaction
@@ -211,16 +278,17 @@ Create a new transaction.
 **Request Body:**
 ```json
 {
-  "title": "Coffee Shop",
-  "amount": 4.50,
-  "date": "2024-01-20",
-  "type": "expense",
-  "categoryId": 1,
-  "accountId": 1,
-  "personId": 3,
-  "tags": [2],
-  "attachments": [23],
-  "note": "Morning coffee from Starbucks"
+  "title":"Test tnx",
+  "amount":190,
+  "date":"2025-09-02T04:17:48.301Z",
+  "type":"expense",
+  "categoryId":"31",
+  "accountId":"1",
+  "personId":null,
+  "toAccountId":null,
+  "note":"",
+  "tags":["5"],
+  "attachments":[]
 }
 ```
 
@@ -237,60 +305,82 @@ Create a new transaction.
 - `tags` (array): Array of tag IDs
 - `attachments` (array): Array of attachment IDs
 - `note` (string): Additional notes
+- `toAccount (string|integer): Account ID
 
 **Response:**
 ```json
 {
-  "success": true,
-  "message": "Transaction created successfully",
-  "data": {
-    "id": 46,
-    "title": "Coffee Shop",
-    "amount": 4.50,
+    "id": "82",
+    "title": "Test tnx",
+    "amount": "190.0000",
+    "date": "2025-09-02T04:17:48+00:00",
     "type": "expense",
-    "date": "2024-01-20",
-    "note": "Morning coffee from Starbucks",
-    "categoryId": 1,
-    "accountId": 1,
-    "personId": 3,
-    "tags": [2],
-    "attachments": [23],
     "category": {
-      "id": 1,
-      "name": "Food & Dining",
-      "icon": "utensils",
-      "color": "#ff6b6b"
+        "id": "31",
+        "name": "Books",
+        "icon": "book",
+        "color": "#FFFFFF",
+        "bgColor": "#2C5282",
+        "description": "Books and supplies",
+        "isSystem": true,
+        "isParent": false,
+        "type": "expense",
+        "parentId": "29",
+        "children": []
     },
     "account": {
-      "id": 1,
-      "name": "Main Checking",
-      "icon": "credit-card",
-      "color": "#4ecdc4"
+        "id": "1",
+        "name": "Federal",
+        "description": "Main Account",
+        "avatar": {
+            "id": "1",
+            "url": "http:\/\/localhost:8000\/wp-content\/uploads\/pika\/avatars\/account-6889ac3ac6f73-1753852986.jpg",
+            "type": "image",
+            "name": "1000118509.jpg",
+            "size": "9444"
+        },
+        "lastTransactionAt": null,
+        "totalTransactions": 0,
+        "balance": "-51111.7500",
+        "icon": "wallet",
+        "bgColor": "#3B82F6",
+        "color": "#ffffff"
     },
-    "person": {
-      "id": 3,
-      "name": "John Doe",
-      "avatar": "https://example.com/avatar.jpg"
-    },
-    "createdAt": "2024-01-20T08:30:00Z",
-    "updatedAt": "2024-01-20T08:30:00Z"
-  }
+    "person": null,
+    "toAccount": null,
+    "note": "",
+    "attachments": [],
+    "tags": [
+        {
+            "id": "5",
+            "name": "Personal",
+            "color": "#FFFFFF",
+            "bgColor": "#DD6B20",
+            "icon": "user",
+            "description": "Personal transactions",
+            "isSystem": true
+        }
+    ]
 }
 ```
 
 **Example Request:**
 ```bash
 curl -X POST http://localhost:8000/wp-json/pika/v1/transactions \
-  -H "Cookie: pika_token=base64_encoded_token" \
+  -H "Cookie: pika_token=token" \
   -H "Content-Type: application/json" \
   -d '{
-    "title": "Coffee Shop",
-    "amount": 4.50,
-    "date": "2024-01-20",
-    "type": "expense",
-    "categoryId": 1,
-    "accountId": 1,
-    "note": "Morning coffee from Starbucks"
+    "title":"Test tnx",
+    "amount":190,
+    "date":"2025-09-02T04:17:48.301Z",
+    "type":"expense",
+    "categoryId":"31",
+    "accountId":"1",
+    "personId":null,
+    "toAccountId":null,
+    "note":"",
+    "tags":["5"],
+    "attachments":[]
   }'
 ```
 
@@ -307,63 +397,94 @@ Update an existing transaction.
 **Request Body:**
 ```json
 {
-  "title": "Coffee Shop - Updated",
-  "amount": 5.25,
-  "note": "Updated note for coffee transaction",
-  "attachments": [13],
-  "tags": [1, 3]
+  "title":"Test tnx - updated",
+  "amount":190,
+  "date":"2025-09-02T04:17:48+00:00",
+  "type":"expense",
+  "categoryId":"31",
+  "accountId":"1",
+  "personId":null,
+  "toAccountId":null,
+  "note":"",
+  "tags":["5"],
+  "attachments":[]
 }
 ```
 
 **Response:**
 ```json
 {
-  "success": true,
-  "message": "Transaction updated successfully",
-  "data": {
-    "id": 46,
-    "title": "Coffee Shop - Updated",
-    "amount": 5.25,
+    "id": "82",
+    "title": "Test tnx - updated",
+    "amount": "190.0000",
+    "date": "2025-09-02T04:17:48+00:00",
     "type": "expense",
-    "date": "2024-01-20",
-    "note": "Updated note for coffee transaction",
-    "categoryId": 1,
-    "accountId": 1,
-    "personId": 3,
-    "tags": [1, 3],
-    "attachments": [13],
     "category": {
-      "id": 1,
-      "name": "Food & Dining",
-      "icon": "utensils",
-      "color": "#ff6b6b"
+        "id": "31",
+        "name": "Books",
+        "icon": "book",
+        "color": "#FFFFFF",
+        "bgColor": "#2C5282",
+        "description": "Books and supplies",
+        "isSystem": true,
+        "isParent": false,
+        "type": "expense",
+        "parentId": "29",
+        "children": []
     },
     "account": {
-      "id": 1,
-      "name": "Main Checking",
-      "icon": "credit-card",
-      "color": "#4ecdc4"
+        "id": "1",
+        "name": "Federal",
+        "description": "Main Account",
+        "avatar": {
+            "id": "1",
+            "url": "http:\/\/localhost:8000\/wp-content\/uploads\/pika\/avatars\/account-6889ac3ac6f73-1753852986.jpg",
+            "type": "image",
+            "name": "1000118509.jpg",
+            "size": "9444"
+        },
+        "lastTransactionAt": null,
+        "totalTransactions": 0,
+        "balance": "-51111.7500",
+        "icon": "wallet",
+        "bgColor": "#3B82F6",
+        "color": "#ffffff"
     },
-    "person": {
-      "id": 3,
-      "name": "John Doe",
-      "avatar": "https://example.com/avatar.jpg"
-    },
-    "createdAt": "2024-01-20T08:30:00Z",
-    "updatedAt": "2024-01-20T16:45:00Z"
-  }
+    "person": null,
+    "toAccount": null,
+    "note": "",
+    "attachments": [],
+    "tags": [
+        {
+            "id": "5",
+            "name": "Personal",
+            "color": "#FFFFFF",
+            "bgColor": "#DD6B20",
+            "icon": "user",
+            "description": "Personal transactions",
+            "isSystem": true
+        }
+    ]
 }
 ```
 
 **Example Request:**
 ```bash
-curl -X PUT http://localhost:8000/wp-json/pika/v1/transactions/46 \
-  -H "Cookie: pika_token=base64_encoded_token" \
+curl -X PUT http://localhost:8000/wp-json/pika/v1/transactions/82 \
+  -H "Cookie: pika_token=token" \
   -H "Content-Type: application/json" \
   -d '{
-    "title": "Coffee Shop - Updated",
-    "amount": 5.25,
-    "note": "Updated note for coffee transaction"
+    "title":"Test tnx - updated",
+    "amount":190,
+    "date":"2025-09-02T04:17:48+00:00",
+    "type":"expense",
+    "categoryId":"31",
+    "accountId":"1",
+    "personId":null,
+    "toAccountId":null,
+    "note":"",
+    "tags":["5"],
+    "attachments":[]
   }'
 ```
 
@@ -378,16 +499,13 @@ Delete a transaction.
 
 **Response:**
 ```json
-{
-  "success": true,
-  "message": "Transaction deleted successfully"
-}
+{"message":"Transaction deleted successfully"}
 ```
 
 **Example Request:**
 ```bash
-curl -X DELETE http://localhost:8000/wp-json/pika/v1/transactions/46 \
-  -H "Cookie: pika_token=base64_encoded_token"
+curl -X DELETE http://localhost:8000/wp-json/pika/v1/transactions/82 \
+  -H "Cookie: pika_token=token"
 ```
 
 ## 💳 Transaction Types
@@ -439,182 +557,169 @@ curl -X DELETE http://localhost:8000/wp-json/pika/v1/transactions/46 \
 
 ## 🚨 Error Responses
 
-### Transaction Not Found
+### Invalid Title
+
+This error is returned when a transaction's **title** is missing, empty, or doesn't meet validation requirements.
+
 ```json
 {
-  "success": false,
-  "error": "Transaction not found",
-  "code": "transaction_not_found",
-  "details": {
-    "id": 999
+  "code": "invalid_title",
+  "message": "Invalid title",
+  "data": {
+    "status": 400
   }
 }
 ```
 
-### Invalid Transaction Type
-```json
-{
-  "success": false,
-  "error": "Invalid transaction type",
-  "code": "invalid_transaction_type",
-  "details": {
-    "field": "type",
-    "value": "invalid",
-    "allowed_values": ["income", "expense", "transfer"]
-  }
-}
-```
 
 ### Invalid Amount
+
+This error occurs when the **amount** provided for a transaction is not a number **greater than 0**. 💰
+
 ```json
 {
-  "success": false,
-  "error": "Invalid amount",
   "code": "invalid_amount",
-  "details": {
-    "field": "amount",
-    "value": -50,
-    "message": "Amount must be a positive number"
+  "message": "Invalid amount, must be greater than 0",
+  "data": {
+    "status": 400
   }
 }
 ```
 
-### Category Not Found
+
+### Invalid Date
+
+This response is used when the transaction **date** is not a valid date string or is in an unrecognized format. 🗓️
+
 ```json
 {
-  "success": false,
-  "error": "Category not found",
-  "code": "category_not_found",
-  "details": {
-    "field": "categoryId",
-    "value": 999
+  "code": "invalid_date",
+  "message": "Invalid date",
+  "data": {
+    "status": 400
   }
 }
 ```
 
-### Account Not Found
+
+### Invalid Type
+
+This error is triggered if the transaction **type** is not one of the three accepted values: `"income"`, `"expense"`, or `"transfer"`.
+
 ```json
 {
-  "success": false,
-  "error": "Account not found",
-  "code": "account_not_found",
-  "details": {
-    "field": "accountId",
-    "value": 999
+  "code": "invalid_type",
+  "message": "Invalid type, must be \"income\", \"expense\" or \"transfer\"",
+  "data": {
+    "status": 400
   }
 }
 ```
 
-### Validation Error
+
+### Invalid Category ID
+
+This error indicates that the **category ID** associated with the transaction is either malformed or doesn't exist.
+
 ```json
 {
-  "success": false,
-  "error": "Validation failed",
-  "code": "validation_error",
-  "details": [
-    {
-      "field": "title",
-      "message": "Transaction title is required"
-    },
-    {
-      "field": "date",
-      "message": "Invalid date format. Use YYYY-MM-DD"
-    }
-  ]
-}
-```
-
-## 📱 Frontend Integration
-
-### React Hook Example
-
-```typescript
-import { useTransactions } from '../hooks/useTransactions';
-
-function TransactionsPage() {
-  const { transactions, createTransaction, updateTransaction, deleteTransaction, loading } = useTransactions();
-
-  const handleCreateTransaction = async (transactionData) => {
-    try {
-      await createTransaction(transactionData);
-      // Show success message
-    } catch (err) {
-      // Handle error
-    }
-  };
-
-  return (
-    <div>
-      {transactions.map(transaction => (
-        <TransactionCard 
-          key={transaction.id} 
-          transaction={transaction}
-          onEdit={updateTransaction}
-          onDelete={deleteTransaction}
-        />
-      ))}
-    </div>
-  );
-}
-```
-
-### Transactions Service
-
-```typescript
-// services/transactions.service.ts
-export class TransactionsService {
-  async getTransactions(params?: TransactionFilters): Promise<TransactionResponse> {
-    const response = await api.get('/transactions', { params });
-    return response.data.data;
-  }
-
-  async getTransaction(id: number): Promise<Transaction> {
-    const response = await api.get(`/transactions/${id}`);
-    return response.data.data;
-  }
-
-  async createTransaction(transactionData: CreateTransactionData): Promise<Transaction> {
-    const response = await api.post('/transactions', transactionData);
-    return response.data.data;
-  }
-
-  async updateTransaction(id: number, updates: Partial<Transaction>): Promise<Transaction> {
-    const response = await api.put(`/transactions/${id}`, updates);
-    return response.data.data;
-  }
-
-  async deleteTransaction(id: number): Promise<void> {
-    await api.delete(`/transactions/${id}`);
+  "code": "invalid_category_id",
+  "message": "Invalid category id",
+  "data": {
+    "status": 400
   }
 }
 ```
 
-## 💡 Best Practices
 
-1. **Transaction Naming**
-   - Use clear, descriptive titles
-   - Be consistent with naming conventions
-   - Include relevant details in notes
+### Invalid Account ID
 
-2. **Amount Handling**
-   - Always send positive amounts
-   - Let the system handle sign conventions
-   - Validate amounts on the frontend
+This response is used when the transaction's source **account ID** is invalid or doesn't correspond to an existing account.
 
-3. **Date Management**
-   - Use ISO date format (YYYY-MM-DD)
-   - Consider timezone implications
-   - Validate date ranges
+```json
+{
+  "code": "invalid_account_id",
+  "message": "Invalid account id",
+  "data": {
+    "status": 400
+  }
+}
+```
 
-4. **Related Data**
-   - Validate all related IDs before submission
-   - Handle missing or invalid relationships gracefully
-   - Provide user-friendly error messages
 
-5. **Performance**
-   - Use pagination for large datasets
-   - Implement efficient filtering
-   - Cache frequently accessed data
+### Invalid Person ID
+
+This error occurs when the **person ID** linked to the transaction is invalid or not found.
+
+```json
+{
+  "code": "invalid_person_id",
+  "message": "Invalid person id",
+  "data": {
+    "status": 400
+  }
+}
+```
+
+
+### Invalid To Account ID
+
+Specifically for transfers, this error is returned when the destination account ID (`to_account_id`) is invalid.
+
+```json
+{
+  "code": "invalid_to_account_id",
+  "message": "Invalid to account id",
+  "data": {
+    "status": 400
+  }
+}
+```
+
+
+### Invalid Tags
+
+This error indicates that the data provided for **tags** is not in the correct format (e.g., not an array of valid tag IDs).
+
+```json
+{
+  "code": "invalid_tags",
+  "message": "Invalid tags",
+  "data": {
+    "status": 400
+  }
+}
+```
+
+
+### Invalid Attachments
+
+This response is used when the data for **attachments** is malformed, such as not being an array of valid attachment objects. 📎
+
+```json
+{
+  "code": "invalid_attachments",
+  "message": "Invalid attachments",
+  "data": {
+    "status": 400
+  }
+}
+```
+
+
+### Transaction Not Found
+
+This error is returned when an attempt is made to access or modify a transaction that **does not exist**.
+
+```json
+{
+  "code": "not_found",
+  "message": "Transaction not found",
+  "data": {
+    "status": 404
+  }
+}
+```
 
 ## 📚 Related Documentation
 

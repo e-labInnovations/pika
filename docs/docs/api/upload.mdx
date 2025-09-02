@@ -20,7 +20,7 @@ All upload endpoints are prefixed with:
 
 ### Upload Avatar
 
-Upload an avatar image for users, people, or accounts.
+Upload an avatar image for people, or accounts.
 
 **Endpoint:** `POST /wp-json/pika/v1/upload/avatar`
 
@@ -29,7 +29,7 @@ Upload an avatar image for users, people, or accounts.
 - `Content-Type: multipart/form-data`
 
 **Form Data:**
-- `entityType` (string, required): Type of entity (`person`, `account`, `user`)
+- `entityType` (string, required): Type of entity (`person`, `account`)
 - `file` (file, required): Image file to upload
 
 **Supported File Types:**
@@ -40,31 +40,18 @@ Upload an avatar image for users, people, or accounts.
 **Response:**
 ```json
 {
-  "success": true,
-  "message": "Avatar uploaded successfully",
-  "data": {
-    "id": 17,
-    "filename": "avatar_123.jpg",
-    "original_name": "profile_picture.jpg",
-    "url": "https://example.com/uploads/avatars/avatar_123.jpg",
-    "thumbnail_url": "https://example.com/uploads/avatars/thumbnails/avatar_123_thumb.jpg",
+    "id": "15",
+    "url": "http:\/\/localhost:8000\/wp-content\/uploads\/pika\/avatars\/person-68b671f88bad1-1756787192.jpg",
     "type": "image",
-    "mime_type": "image/jpeg",
-    "size": 245760,
-    "dimensions": {
-      "width": 300,
-      "height": 300
-    },
-    "entity_type": "person",
-    "created_at": "2024-01-21T15:30:00Z"
-  }
+    "name": "avatar.jpg",
+    "size": "9246"
 }
 ```
 
 **Example Request:**
 ```bash
 curl -X POST http://localhost:8000/wp-json/pika/v1/upload/avatar \
-  -H "Cookie: pika_token=base64_encoded_token" \
+  -H "Cookie: pika_token=token" \
   -F "entityType=person" \
   -F "file=@avatar.jpg"
 ```
@@ -91,98 +78,21 @@ Upload files as attachments to transactions (receipts, invoices, documents).
 **Response:**
 ```json
 {
-  "success": true,
-  "message": "Attachment uploaded successfully",
-  "data": {
-    "id": 23,
-    "filename": "receipt_456.pdf",
-    "original_name": "grocery_receipt.pdf",
-    "url": "https://example.com/uploads/attachments/receipt_456.pdf",
-    "type": "document",
-    "mime_type": "application/pdf",
-    "size": 1024000,
-    "entity_type": "transaction",
-    "attachment_type": "document",
-    "created_at": "2024-01-21T16:45:00Z"
-  }
+    "id": "16",
+    "url": "http:\/\/localhost:8000\/wp-content\/uploads\/pika\/attachments\/transaction-68b6723b80518-1756787259.jpg",
+    "type": "image",
+    "name": "f6974bbe-7717-4801-b0c7-e6195c2f9835.jpg",
+    "size": "1566701"
 }
 ```
 
 **Example Request:**
 ```bash
 curl -X POST http://localhost:8000/wp-json/pika/v1/upload/attachment \
-  -H "Cookie: pika_token=base64_encoded_token" \
+  -H "Cookie: pika_token=token" \
   -F "entityType=transaction" \
-  -F "attachmentType=document" \
-  -F "file=@receipt.pdf"
-```
-
-### Get Upload Info
-
-Retrieve information about a specific uploaded file.
-
-**Endpoint:** `GET /wp-json/pika/v1/upload/{id}`
-
-**Headers:**
-- `Cookie`: Authentication cookie
-
-**Response:**
-```json
-{
-  "success": true,
-  "data": {
-    "id": 17,
-    "filename": "avatar_123.jpg",
-    "original_name": "profile_picture.jpg",
-    "url": "https://example.com/uploads/avatars/avatar_123.jpg",
-    "thumbnail_url": "https://example.com/uploads/avatars/thumbnails/avatar_123_thumb.jpg",
-    "type": "image",
-    "mime_type": "image/jpeg",
-    "size": 245760,
-    "dimensions": {
-      "width": 300,
-      "height": 300
-    },
-    "entity_type": "person",
-    "attachment_type": null,
-    "metadata": {
-      "uploaded_by": 1,
-      "upload_date": "2024-01-21T15:30:00Z",
-      "file_hash": "abc123def456"
-    },
-    "created_at": "2024-01-21T15:30:00Z",
-    "updated_at": "2024-01-21T15:30:00Z"
-  }
-}
-```
-
-**Example Request:**
-```bash
-curl -X GET http://localhost:8000/wp-json/pika/v1/upload/17 \
-  -H "Cookie: pika_token=base64_encoded_token"
-```
-
-### Delete Upload
-
-Delete an uploaded file.
-
-**Endpoint:** `DELETE /wp-json/pika/v1/upload/{id}`
-
-**Headers:**
-- `Cookie`: Authentication cookie
-
-**Response:**
-```json
-{
-  "success": true,
-  "message": "File deleted successfully"
-}
-```
-
-**Example Request:**
-```bash
-curl -X DELETE http://localhost:8000/wp-json/pika/v1/upload/17 \
-  -H "Cookie: pika_token=base64_encoded_token"
+  -F "attachmentType=image" \
+  -F "file=@receipt.jpg"
 ```
 
 ## 📁 File Types and Limits
@@ -228,304 +138,174 @@ curl -X DELETE http://localhost:8000/wp-json/pika/v1/upload/17 \
 - **Access Logging**: Track all file access attempts
 - **Backup Protection**: Secure backup procedures
 
-## 🔄 File Operations
-
-### Thumbnail Generation
-```bash
-# Avatars automatically generate thumbnails
-# Thumbnails are stored in /uploads/avatars/thumbnails/
-# Thumbnail dimensions: 150x150 pixels
-```
-
-### File Optimization
-```bash
-# Images are automatically optimized
-# JPEG quality: 85%
-# PNG compression: Enabled
-# WebP conversion: Available
-```
-
-### Metadata Extraction
-```bash
-# Image dimensions are extracted
-# File hashes are generated
-# Upload timestamps are recorded
-# User information is tracked
-```
-
 ## 🚨 Error Responses
 
-### File Too Large
-```json
-{
-  "success": false,
-  "error": "File size exceeds limit",
-  "code": "file_too_large",
-  "details": {
-    "file_size": 10485760,
-    "max_size": 5242880,
-    "file_name": "large_image.jpg"
-  }
-}
-```
-
-### Invalid File Type
-```json
-{
-  "success": false,
-  "error": "Invalid file type",
-  "code": "invalid_file_type",
-  "details": {
-    "file_type": "application/exe",
-    "allowed_types": ["image/jpeg", "image/png", "image/gif"],
-    "file_name": "malware.exe"
-  }
-}
-```
-
 ### Upload Failed
+
+This is a general-purpose error for when a file upload fails for an unspecified reason, such as a network interruption or server-side issue.
+
 ```json
 {
-  "success": false,
-  "error": "Upload failed",
   "code": "upload_failed",
-  "details": {
-    "reason": "Disk space insufficient",
-    "available_space": "1.2GB",
-    "required_space": "5MB"
+  "message": "Upload failed.",
+  "data": {
+    "status": 400
   }
 }
 ```
 
-### File Not Found
+### Upload Not Found
+
+This error is returned when an attempt is made to access an uploaded file or its record that **does not exist**.
+
 ```json
 {
-  "success": false,
-  "error": "File not found",
-  "code": "file_not_found",
-  "details": {
-    "file_id": 999,
-    "message": "The requested file does not exist"
+  "code": "upload_not_found",
+  "message": "Upload not found.",
+  "data": {
+    "status": 404
   }
 }
 ```
 
-### Permission Denied
+### Upload Not Allowed
+
+This error indicates that the user **lacks the necessary permissions** to upload a file in the given context. 🚫
+
 ```json
 {
-  "success": false,
-  "error": "Permission denied",
-  "code": "permission_denied",
-  "details": {
-    "file_id": 17,
-    "message": "You don't have permission to access this file"
+  "code": "upload_not_allowed",
+  "message": "Upload not allowed.",
+  "data": {
+    "status": 403
   }
 }
 ```
 
-## 📱 Frontend Integration
+### File Size Exceeded
 
-### React Hook Example
+This response is used when the uploaded file is **larger than the maximum allowed size** (e.g., 5MB).
 
-```typescript
-import { useUpload } from '../hooks/useUpload';
-
-function AvatarUpload({ entityType, onUploadComplete }) {
-  const { uploadAvatar, uploadAttachment, loading, error } = useUpload();
-
-  const handleFileUpload = async (file) => {
-    try {
-      const result = await uploadAvatar(file, entityType);
-      onUploadComplete(result);
-    } catch (err) {
-      // Handle error
-    }
-  };
-
-  return (
-    <div>
-      <input 
-        type="file" 
-        accept="image/*" 
-        onChange={(e) => handleFileUpload(e.target.files[0])}
-        disabled={loading}
-      />
-      {error && <div className="error">{error}</div>}
-    </div>
-  );
-}
-```
-
-### Upload Service
-
-```typescript
-// services/upload.service.ts
-export class UploadService {
-  async uploadAvatar(file: File, entityType: string): Promise<UploadResponse> {
-    const formData = new FormData();
-    formData.append('entityType', entityType);
-    formData.append('file', file);
-    
-    const response = await api.post('/upload/avatar', formData);
-    return response.data.data;
-  }
-
-  async uploadAttachment(file: File, entityType: string, attachmentType: string): Promise<UploadResponse> {
-    const formData = new FormData();
-    formData.append('entityType', entityType);
-    formData.append('attachmentType', attachmentType);
-    formData.append('file', file);
-    
-    const response = await api.post('/upload/attachment', formData);
-    return response.data.data;
-  }
-
-  async getUploadInfo(id: number): Promise<UploadInfo> {
-    const response = await api.get(`/upload/${id}`);
-    return response.data.data;
-  }
-
-  async deleteUpload(id: number): Promise<void> {
-    await api.delete(`/upload/${id}`);
-  }
-
-  async getUploadUrl(id: number): Promise<string> {
-    const uploadInfo = await this.getUploadInfo(id);
-    return uploadInfo.url;
+```json
+{
+  "code": "file_size_exceeded",
+  "message": "File size exceeded, max file size is 5MB.",
+  "data": {
+    "status": 400
   }
 }
 ```
 
-### File Upload Component
+### Invalid Image Type
 
-```typescript
-// components/FileUpload.tsx
-function FileUpload({ 
-  entityType, 
-  attachmentType, 
-  onUploadComplete, 
-  acceptedTypes = "*",
-  maxSize = 5 * 1024 * 1024 
-}) {
-  const [dragActive, setDragActive] = useState(false);
-  const [uploading, setUploading] = useState(false);
-  const { uploadAvatar, uploadAttachment } = useUpload();
+This error is triggered when an image is uploaded with a file extension that is **not on the approved list**.
 
-  const handleUpload = async (file: File) => {
-    if (file.size > maxSize) {
-      alert('File too large');
-      return;
-    }
-
-    setUploading(true);
-    try {
-      let result;
-      if (entityType === 'transaction') {
-        result = await uploadAttachment(file, entityType, attachmentType);
-      } else {
-        result = await uploadAvatar(file, entityType);
-      }
-      onUploadComplete(result);
-    } catch (err) {
-      console.error('Upload failed:', err);
-    } finally {
-      setUploading(false);
-    }
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setDragActive(false);
-    
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      handleUpload(e.dataTransfer.files[0]);
-    }
-  };
-
-  return (
-    <div 
-      className={`file-upload ${dragActive ? 'drag-active' : ''}`}
-      onDragOver={(e) => e.preventDefault()}
-      onDragEnter={(e) => e.preventDefault()}
-      onDrop={handleDrop}
-    >
-      <input
-        type="file"
-        accept={acceptedTypes}
-        onChange={(e) => e.target.files?.[0] && handleUpload(e.target.files[0])}
-        disabled={uploading}
-      />
-      
-      {uploading && <div className="uploading">Uploading...</div>}
-      
-      <div className="upload-hint">
-        Drag and drop a file here, or click to select
-      </div>
-    </div>
-  );
+```json
+{
+  "code": "invalid_image_type",
+  "message": "Image type not allowed. Allowed image types are: jpg, jpeg, png, gif, svg, webp.",
+  "data": {
+    "status": 400
+  }
 }
 ```
 
-## 💡 Best Practices
+### Invalid Document Type
 
-1. **File Validation**
-   - Always validate file types on the frontend
-   - Check file sizes before upload
-   - Implement proper error handling
-   - Show user-friendly error messages
+This error occurs when a document is uploaded with a file extension that is **not on the approved list**.
 
-2. **User Experience**
-   - Show upload progress indicators
-   - Provide drag-and-drop functionality
-   - Display file previews when possible
-   - Allow file replacement
-
-3. **Security**
-   - Validate files on both client and server
-   - Implement proper access controls
-   - Use secure file storage locations
-   - Monitor for suspicious uploads
-
-4. **Performance**
-   - Compress images before upload
-   - Use appropriate file formats
-   - Implement upload queuing for multiple files
-   - Cache frequently accessed files
-
-## 🔧 Configuration
-
-### File Size Limits
-```php
-// Maximum file sizes (in bytes)
-'avatar_max_size' => 5 * 1024 * 1024,      // 5MB
-'image_max_size' => 5 * 1024 * 1024,       // 5MB
-'document_max_size' => 10 * 1024 * 1024,   // 10MB
+```json
+{
+  "code": "invalid_document_type",
+  "message": "Document type not allowed. Allowed document types are: pdf.",
+  "data": {
+    "status": 400
+  }
+}
 ```
 
-### Allowed File Types
-```php
-// Allowed MIME types
-'avatar_types' => [
-    'image/jpeg',
-    'image/png',
-    'image/gif',
-    'image/webp'
-],
-'document_types' => [
-    'application/pdf',
-    'application/msword',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    'text/plain'
-]
+### Invalid Image MIME Type
+
+This error checks the file's actual content type (MIME type) and is returned if it's **not an allowed image format**, preventing file extension spoofing.
+
+```json
+{
+  "code": "invalid_image_mime_type",
+  "message": "Image mime type not allowed. Allowed image mime types are: image/png, image/jpeg, image/gif, image/svg+xml, image/webp.",
+  "data": {
+    "status": 400
+  }
+}
 ```
 
-### Storage Configuration
-```php
-// Upload directories
-'upload_path' => '/wp-content/uploads/pika/',
-'avatar_path' => '/wp-content/uploads/pika/avatars/',
-'attachment_path' => '/wp-content/uploads/pika/attachments/',
-'thumbnail_path' => '/wp-content/uploads/pika/thumbnails/'
+### Invalid Document MIME Type
+
+Similar to the image MIME type check, this error is returned if a document's **actual content type is not allowed**.
+
+```json
+{
+  "code": "invalid_document_mime_type",
+  "message": "Document mime type not allowed. Allowed document mime types are: application/pdf.",
+  "data": {
+    "status": 400
+  }
+}
+```
+
+### Invalid Type
+
+This error relates to the **purpose of the upload**. It's used if the specified type isn't one of the valid categories like `avatar`, `attachment`, etc.
+
+```json
+{
+  "code": "invalid_type",
+  "message": "File type not allowed. Allowed file types are: avatar, attachment, other.",
+  "data": {
+    "status": 400
+  }
+}
+```
+
+### Invalid Attachment Type
+
+This error is for when the **kind of attachment** is invalid. For example, if the system only accepts `image` or `document` attachments and something else is provided.
+
+```json
+{
+  "code": "invalid_attachment_type",
+  "message": "Attachment type not allowed. Allowed attachment types are: image, document.",
+  "data": {
+    "status": 400
+  }
+}
+```
+
+### Invalid Entity Type
+
+This error specifies that the item the file is being **attached to** is not a valid type (e.g., `person`, `account`, `transaction`).
+
+```json
+{
+  "code": "invalid_entity_type",
+  "message": "Entity type not allowed. Allowed entity types are: person, account, transaction, other.",
+  "data": {
+    "status": 400
+  }
+}
+```
+
+### Invalid File
+
+This error is returned when the request is submitted **without the actual file data** attached.
+
+```json
+{
+  "code": "invalid_file",
+  "message": "File missing you request.",
+  "data": {
+    "status": 400
+  }
+}
 ```
 
 ## 📚 Related Documentation

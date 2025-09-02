@@ -23,6 +23,16 @@
   --pika-danger: #ef4444;
   --pika-gradient: linear-gradient(135deg, #6366f1 0%, #06b6d4 100%);
   --pika-gradient-dark: linear-gradient(135deg, #4f46e5 0%, #0891b2 100%);
+  
+  /* Light mode colors */
+  --pika-bg-primary: #ffffff;
+  --pika-bg-secondary: #f8fafc;
+  --pika-bg-tertiary: #e2e8f0;
+  --pika-text-primary: #1e293b;
+  --pika-text-secondary: #64748b;
+  --pika-border: #f1f5f9;
+  --pika-shadow: rgba(0, 0, 0, 0.08);
+  --pika-shadow-hover: rgba(0, 0, 0, 0.12);
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
@@ -35,6 +45,16 @@
   --ifm-color-primary-lighter: #c7d2fe;
   --ifm-color-primary-lightest: #e0e7ff;
   --docusaurus-highlighted-code-line-bg: rgba(129, 140, 248, 0.3);
+  
+  /* Dark mode specific colors */
+  --pika-bg-primary: #0f172a;
+  --pika-bg-secondary: #1e293b;
+  --pika-bg-tertiary: #334155;
+  --pika-text-primary: #f8fafc;
+  --pika-text-secondary: #cbd5e1;
+  --pika-border: #334155;
+  --pika-shadow: rgba(0, 0, 0, 0.3);
+  --pika-shadow-hover: rgba(0, 0, 0, 0.5);
 }
 
 /* Custom Pika styles */
@@ -192,4 +212,22 @@
   .stat-number {
     font-size: 2rem;
   }
+}
+
+/* Navbar transparent/solid on scroll for landing page */
+.home-navbar {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  transition: all 0.3s ease-in-out;
+  background-color: transparent !important;
+  backdrop-filter: none;
+  border-bottom: none;
+}
+
+/* Ensure navbar doesn't interfere with hero section */
+.hero {
+  margin-top: 0 !important;
 }

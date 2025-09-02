@@ -34,70 +34,43 @@ Retrieve all categories for the authenticated user.
 
 **Response:**
 ```json
-{
-  "success": true,
-  "data": {
-    "categories": [
-      {
-        "id": 1,
-        "name": "Food & Dining",
-        "icon": "utensils",
-        "color": "#ff6b6b",
-        "bgColor": "#fff5f5",
-        "type": "expense",
-        "description": "Restaurants, groceries, and food delivery",
-        "parentId": null,
-        "isSystem": false,
-        "transactionCount": 45,
-        "totalAmount": 1250.75,
-        "createdAt": "2024-01-01T10:00:00Z",
-        "updatedAt": "2024-01-15T14:30:00Z"
-      },
-      {
-        "id": 2,
-        "name": "Transportation",
-        "icon": "car",
-        "color": "#4ecdc4",
-        "bgColor": "#f0fdfa",
-        "type": "expense",
-        "description": "Fuel, public transport, and vehicle maintenance",
-        "parentId": null,
-        "isSystem": false,
-        "transactionCount": 23,
-        "totalAmount": 450.25,
-        "createdAt": "2024-01-01T10:00:00Z",
-        "updatedAt": "2024-01-10T09:15:00Z"
-      },
-      {
-        "id": 3,
-        "name": "Salary",
-        "icon": "briefcase",
-        "color": "#45b7d1",
-        "bgColor": "#f0f9ff",
-        "type": "income",
-        "description": "Regular employment income",
-        "parentId": null,
+[
+    {
+        "id": "33",
+        "name": "Personal Care",
+        "icon": "smile",
+        "color": "#FFFFFF",
+        "bgColor": "#48BB78",
+        "description": "Personal care expenses",
         "isSystem": true,
-        "transactionCount": 12,
-        "totalAmount": 15000.00,
-        "createdAt": "2024-01-01T10:00:00Z",
-        "updatedAt": "2024-01-01T10:00:00Z"
-      }
-    ],
-    "pagination": {
-      "total": 15,
-      "per_page": 20,
-      "current_page": 1,
-      "last_page": 1
-    }
-  }
-}
+        "isParent": true,
+        "type": "expense",
+        "parentId": null,
+        "children": [
+            {
+                "id": "36",
+                "name": "Fitness",
+                "icon": "dumbbell",
+                "color": "#FFFFFF",
+                "bgColor": "#2F855A",
+                "description": "Fitness and gym expenses",
+                "isSystem": true,
+                "isParent": false,
+                "type": "expense",
+                "parentId": "33",
+                "children": []
+            },
+            ...
+        ]
+    },
+    ...
+]
 ```
 
 **Example Request:**
 ```bash
 curl -X GET "http://localhost:8000/wp-json/pika/v1/categories?type=expense" \
-  -H "Cookie: pika_token=base64_encoded_token"
+  -H "Cookie: pika_token=token"
 ```
 
 ### Get Category by ID
@@ -112,42 +85,24 @@ Retrieve a specific category by its ID.
 **Response:**
 ```json
 {
-  "success": true,
-  "data": {
-    "id": 1,
-    "name": "Food & Dining",
-    "icon": "utensils",
-    "color": "#ff6b6b",
-    "bgColor": "#fff5f5",
-    "type": "expense",
-    "description": "Restaurants, groceries, and food delivery",
-    "parentId": null,
+    "id": "68",
+    "name": "Home WiFi",
+    "icon": "house-wifi",
+    "color": "#ffffff",
+    "bgColor": "#EAB308",
+    "description": "",
     "isSystem": false,
-    "transactionCount": 45,
-    "totalAmount": 1250.75,
-    "children": [
-      {
-        "id": 4,
-        "name": "Restaurants",
-        "icon": "utensils",
-        "color": "#ff8787",
-        "bgColor": "#fff0f0",
-        "type": "expense",
-        "parentId": 1,
-        "transactionCount": 28,
-        "totalAmount": 850.50
-      }
-    ],
-    "createdAt": "2024-01-01T10:00:00Z",
-    "updatedAt": "2024-01-15T14:30:00Z"
-  }
+    "isParent": false,
+    "type": "expense",
+    "parentId": "17",
+    "children": []
 }
 ```
 
 **Example Request:**
 ```bash
-curl -X GET http://localhost:8000/wp-json/pika/v1/categories/1 \
-  -H "Cookie: pika_token=base64_encoded_token"
+curl -X GET http://localhost:8000/wp-json/pika/v1/categories/68 \
+  -H "Cookie: pika_token=token"
 ```
 
 ### Create Category
@@ -163,13 +118,13 @@ Create a new category.
 **Request Body:**
 ```json
 {
-  "name": "Entertainment",
-  "icon": "film",
-  "color": "#a855f7",
-  "bgColor": "#faf5ff",
-  "type": "expense",
-  "description": "Movies, games, and entertainment activities",
-  "parentId": null
+    "name":"Test Category",
+    "description":"Description content",
+    "icon":"wallet",
+    "bgColor":"#3B82F6",
+    "color":"#ffffff",
+    "type":"expense",
+    "parentId":"29"
 }
 ```
 
@@ -187,38 +142,33 @@ Create a new category.
 **Response:**
 ```json
 {
-  "success": true,
-  "message": "Category created successfully",
-  "data": {
-    "id": 16,
-    "name": "Entertainment",
-    "icon": "film",
-    "color": "#a855f7",
-    "bgColor": "#faf5ff",
-    "type": "expense",
-    "description": "Movies, games, and entertainment activities",
-    "parentId": null,
+    "id": "69",
+    "name": "Test Category",
+    "icon": "wallet",
+    "color": "#ffffff",
+    "bgColor": "#3B82F6",
+    "description": "Description content",
     "isSystem": false,
-    "transactionCount": 0,
-    "totalAmount": 0.00,
-    "createdAt": "2024-01-20T15:30:00Z",
-    "updatedAt": "2024-01-20T15:30:00Z"
-  }
+    "isParent": false,
+    "type": "expense",
+    "parentId": "29",
+    "children": []
 }
 ```
 
 **Example Request:**
 ```bash
 curl -X POST http://localhost:8000/wp-json/pika/v1/categories \
-  -H "Cookie: pika_token=base64_encoded_token" \
+  -H "Cookie: pika_token=token" \
   -H "Content-Type: application/json" \
   -d '{
-    "name": "Entertainment",
-    "icon": "film",
-    "color": "#a855f7",
-    "bgColor": "#faf5ff",
-    "type": "expense",
-    "description": "Movies, games, and entertainment activities"
+    "name":"Test Category",
+    "description":"Description content",
+    "icon":"wallet",
+    "bgColor":"#3B82F6",
+    "color":"#ffffff",
+    "type":"expense",
+    "parentId":"29"
   }'
 ```
 
@@ -235,43 +185,38 @@ Update an existing category.
 **Request Body:**
 ```json
 {
-  "name": "Entertainment & Leisure",
-  "description": "Updated description for entertainment category",
-  "color": "#9333ea"
+    "name":"Test Category Updated",
+    "icon":"eye",
+    "bgColor":"#F97316",
 }
 ```
 
 **Response:**
 ```json
 {
-  "success": true,
-  "message": "Category updated successfully",
-  "data": {
-    "id": 16,
-    "name": "Entertainment & Leisure",
-    "icon": "film",
-    "color": "#9333ea",
-    "bgColor": "#faf5ff",
-    "type": "expense",
-    "description": "Updated description for entertainment category",
-    "parentId": null,
+    "id": "69",
+    "name": "Test Category Updated",
+    "icon": "eye",
+    "color": "#ffffff",
+    "bgColor": "#F97316",
+    "description": "Description content",
     "isSystem": false,
-    "transactionCount": 0,
-    "totalAmount": 0.00,
-    "createdAt": "2024-01-20T15:30:00Z",
-    "updatedAt": "2024-01-20T16:45:00Z"
-  }
+    "isParent": false,
+    "type": "expense",
+    "parentId": "29",
+    "children": []
 }
 ```
 
 **Example Request:**
 ```bash
-curl -X PUT http://localhost:8000/wp-json/pika/v1/categories/16 \
-  -H "Cookie: pika_token=base64_encoded_token" \
+curl -X PUT http://localhost:8000/wp-json/pika/v1/categories/29 \
+  -H "Cookie: pika_token=token" \
   -H "Content-Type: application/json" \
   -d '{
-    "name": "Entertainment & Leisure",
-    "description": "Updated description for entertainment category"
+    "name":"Test Category Updated",
+    "icon":"eye",
+    "bgColor":"#F97316",
   }'
 ```
 
@@ -286,16 +231,13 @@ Delete a category. System categories cannot be deleted.
 
 **Response:**
 ```json
-{
-  "success": true,
-  "message": "Category deleted successfully"
-}
+{"message":"Category deleted successfully"}
 ```
 
 **Example Request:**
 ```bash
-curl -X DELETE http://localhost:8000/wp-json/pika/v1/categories/16 \
-  -H "Cookie: pika_token=base64_encoded_token"
+curl -X DELETE http://localhost:8000/wp-json/pika/v1/categories/29 \
+  -H "Cookie: pika_token=token"
 ```
 
 ## 🎨 Category Properties
@@ -303,18 +245,7 @@ curl -X DELETE http://localhost:8000/wp-json/pika/v1/categories/16 \
 ### Icon Options
 
 **Available Icons:**
-- `utensils` - Food & Dining
-- `car` - Transportation
-- `home` - Housing
-- `briefcase` - Work & Income
-- `shopping-bag` - Shopping
-- `heart` - Health & Fitness
-- `graduation-cap` - Education
-- `gift` - Gifts & Donations
-- `plane` - Travel
-- `gamepad` - Entertainment
-- `medical-cross` - Healthcare
-- `credit-card` - Banking & Finance
+- All Lucide icons
 
 ### Color Format
 
@@ -334,202 +265,147 @@ curl -X DELETE http://localhost:8000/wp-json/pika/v1/categories/16 \
 
 ```json
 {
-  "id": 1,
-  "name": "Food & Dining",
-  "type": "expense",
-  "children": [
-    {
-      "id": 4,
-      "name": "Restaurants",
-      "parentId": 1
-    },
-    {
-      "id": 5,
-      "name": "Groceries",
-      "parentId": 1
-    },
-    {
-      "id": 6,
-      "name": "Fast Food",
-      "parentId": 1
-    }
-  ]
-}
-```
-
-### Creating Subcategories
-
-```bash
-curl -X POST http://localhost:8000/wp-json/pika/v1/categories \
-  -H "Cookie: pika_token=base64_encoded_token" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "Italian Restaurants",
-    "icon": "utensils",
+    "id": "29",
+    "name": "Education",
+    "icon": "graduation-cap",
+    "color": "#FFFFFF",
+    "bgColor": "#4299E1",
+    "description": "Education expenses",
+    "isSystem": true,
+    "isParent": true,
     "type": "expense",
-    "parentId": 4
-  }'
+    "parentId": null,
+    "children": [
+        {
+            "id": "31",
+            "name": "Books",
+            "icon": "book",
+            "color": "#FFFFFF",
+            "bgColor": "#2C5282",
+            "description": "Books and supplies",
+            "isSystem": true,
+            "isParent": false,
+            "type": "expense",
+            "parentId": "29",
+            "children": []
+        },
+        {
+            "id": "32",
+            "name": "Courses",
+            "icon": "notebook-pen",
+            "color": "#FFFFFF",
+            "bgColor": "#2A4365",
+            "description": "Online courses and training",
+            "isSystem": true,
+            "isParent": false,
+            "type": "expense",
+            "parentId": "29",
+            "children": []
+        },
+        ...
+    ]
+}
 ```
 
 ## 🚨 Error Responses
 
-### Category Not Found
+### Category Name Not Unique
+
+This error occurs when attempting to create or update a category with a name that is already in use by another category at the same level.
+
 ```json
 {
-  "success": false,
-  "error": "Category not found",
+  "code": "category_name_not_unique",
+  "message": "Category name is not unique.",
+  "data": {
+    "status": 400
+  }
+}
+```
+
+### Category Not Found
+
+This error is returned when an operation is requested on a category that does not exist in the database.
+
+```json
+{
   "code": "category_not_found",
-  "details": {
-    "id": 999
+  "message": "Category not found.",
+  "data": {
+    "status": 404
+  }
+}
+```
+
+### Invalid Parent Category
+
+This error indicates that the specified parent category ID is either non-existent or invalid, preventing the creation of a sub-category relationship.
+
+```json
+{
+  "code": "invalid_parent_category",
+  "message": "Invalid parent category.",
+  "data": {
+    "status": 400
   }
 }
 ```
 
 ### Invalid Category Type
+
+This error is triggered when the `type` field for a category is not one of the allowed values.
+
 ```json
 {
-  "success": false,
-  "error": "Invalid category type",
-  "code": "invalid_category_type",
-  "details": {
-    "field": "type",
-    "value": "invalid",
-    "allowed_values": ["income", "expense", "transfer"]
+  "code": "invalid_type",
+  "message": "Invalid category type. Type must be one of the following: income, expense, transfer.",
+  "data": {
+    "status": 400
   }
 }
 ```
 
-### Cannot Delete System Category
+### Invalid Category Name
+
+This response is used when the provided category name does not meet validation criteria (e.g., it is empty, too long, or contains invalid characters).
+
 ```json
 {
-  "success": false,
-  "error": "Cannot delete system category",
-  "code": "system_category_protected",
-  "details": {
-    "id": 3,
-    "name": "Salary"
+  "code": "invalid_name",
+  "message": "Invalid category name.",
+  "data": {
+    "status": 400
   }
 }
 ```
 
-### Category Has Transactions
+### Parent Cannot Be Child
+
+This error prevents creating a circular dependency where a parent category is assigned as a child of one of its own descendants.
+
 ```json
 {
-  "success": false,
-  "error": "Cannot delete category with existing transactions",
-  "code": "category_has_transactions",
-  "details": {
-    "id": 1,
-    "transaction_count": 45
+  "code": "parent_cannot_be_child",
+  "message": "Parent category can not be a child category.",
+  "data": {
+    "status": 400
   }
 }
 ```
 
-### Validation Error
+### Category Has Children
+
+This error occurs when attempting to delete a category that still has sub-categories (children) linked to it. The child categories must be deleted or reassigned first.
+
 ```json
 {
-  "success": false,
-  "error": "Validation failed",
-  "code": "validation_error",
-  "details": [
-    {
-      "field": "name",
-      "message": "Category name is required"
-    },
-    {
-      "field": "color",
-      "message": "Invalid color format. Use hex color code (e.g., #ff6b6b)"
-    }
-  ]
-}
-```
-
-## 📱 Frontend Integration
-
-### React Hook Example
-
-```typescript
-import { useCategories } from '../hooks/useCategories';
-
-function CategoriesPage() {
-  const { categories, createCategory, updateCategory, deleteCategory, loading } = useCategories();
-
-  const handleCreateCategory = async (categoryData) => {
-    try {
-      await createCategory(categoryData);
-      // Show success message
-    } catch (err) {
-      // Handle error
-    }
-  };
-
-  return (
-    <div>
-      {categories.map(category => (
-        <CategoryCard 
-          key={category.id} 
-          category={category}
-          onEdit={updateCategory}
-          onDelete={deleteCategory}
-        />
-      ))}
-    </div>
-  );
-}
-```
-
-### Categories Service
-
-```typescript
-// services/categories.service.ts
-export class CategoriesService {
-  async getCategories(params?: CategoryFilters): Promise<Category[]> {
-    const response = await api.get('/categories', { params });
-    return response.data.data.categories;
-  }
-
-  async getCategory(id: number): Promise<Category> {
-    const response = await api.get(`/categories/${id}`);
-    return response.data.data;
-  }
-
-  async createCategory(categoryData: CreateCategoryData): Promise<Category> {
-    const response = await api.post('/categories', categoryData);
-    return response.data.data;
-  }
-
-  async updateCategory(id: number, updates: Partial<Category>): Promise<Category> {
-    const response = await api.put(`/categories/${id}`, updates);
-    return response.data.data;
-  }
-
-  async deleteCategory(id: number): Promise<void> {
-    await api.delete(`/categories/${id}`);
+  "code": "category_has_children",
+  "message": "Category has children. Please delete the children first.",
+  "data": {
+    "status": 400
   }
 }
 ```
-
-## 💡 Best Practices
-
-1. **Category Naming**
-   - Use clear, descriptive names
-   - Avoid abbreviations
-   - Be consistent with naming conventions
-
-2. **Color Selection**
-   - Choose contrasting colors for readability
-   - Use consistent color schemes
-   - Consider accessibility (color blindness)
-
-3. **Hierarchy Management**
-   - Keep category depth reasonable (max 3-4 levels)
-   - Use parent categories for broad grouping
-   - Avoid overly specific subcategories
-
-4. **System Categories**
-   - Don't modify system categories
-   - Use them as templates for custom categories
-   - Respect their predefined structure
 
 ## 📚 Related Documentation
 

@@ -28,88 +28,65 @@ Retrieve all accounts for the authenticated user.
 - `Cookie`: Authentication cookie
 
 **Query Parameters:**
-- `type` (optional): Filter by account type (`checking`, `savings`, `credit`, `investment`, `cash`)
-- `include_archived` (optional): Include archived accounts (default: false)
-- `include_balance` (optional): Include current balance (default: true)
 
 **Response:**
 ```json
-{
-  "success": true,
-  "data": {
-    "accounts": [
-      {
-        "id": 1,
-        "name": "Main Checking",
-        "description": "Primary checking account for daily expenses",
-        "type": "checking",
-        "icon": "credit-card",
-        "color": "#4ecdc4",
-        "bgColor": "#f0fdfa",
-        "balance": 3249.25,
-        "currency": "USD",
-        "isActive": true,
-        "isArchived": false,
-        "transactionCount": 45,
-        "lastTransactionDate": "2024-01-20",
-        "avatarId": 10,
-        "createdAt": "2024-01-01T10:00:00Z",
-        "updatedAt": "2024-01-20T16:45:00Z"
-      },
-      {
-        "id": 2,
-        "name": "Savings Account",
-        "description": "High-yield savings for emergency fund",
-        "type": "savings",
-        "icon": "piggy-bank",
-        "color": "#10b981",
-        "bgColor": "#f0fdf4",
-        "balance": 15000.00,
-        "currency": "USD",
-        "isActive": true,
-        "isArchived": false,
-        "transactionCount": 12,
-        "lastTransactionDate": "2024-01-15",
-        "avatarId": null,
-        "createdAt": "2024-01-01T10:00:00Z",
-        "updatedAt": "2024-01-15T14:30:00Z"
-      },
-      {
-        "id": 3,
-        "name": "Credit Card",
-        "description": "Primary credit card for rewards",
-        "type": "credit",
-        "icon": "credit-card",
-        "color": "#f59e0b",
-        "bgColor": "#fffbeb",
-        "balance": -1250.75,
-        "currency": "USD",
-        "isActive": true,
-        "isArchived": false,
-        "transactionCount": 23,
-        "lastTransactionDate": "2024-01-19",
-        "creditLimit": 10000.00,
-        "dueDate": "2024-02-15",
-        "avatarId": null,
-        "createdAt": "2024-01-01T10:00:00Z",
-        "updatedAt": "2024-01-19T11:20:00Z"
-      }
-    ],
-    "summary": {
-      "total_accounts": 3,
-      "total_balance": 16998.50,
-      "total_assets": 18249.25,
-      "total_liabilities": 1250.75,
-      "net_worth": 16998.50
-    }
+[
+  {
+    "id": "1",
+    "name": "Federal",
+    "description": "Main Account",
+    "avatar": {
+        "id": "1",
+        "url": "http:\/\/localhost:8000\/wp-content\/uploads\/pika\/avatars\/account-6889ac3ac6f73-175385289.jpg",
+        "type": "image",
+        "name": "1000118509.jpg",
+        "size": "9444"
+    },
+    "lastTransactionAt": null,
+    "totalTransactions": 0,
+    "balance": "-50921.7500",
+    "icon": "wallet",
+    "bgColor": "#3B82F6",
+    "color": "#ffffff"
+  },
+  {
+    "id": "3",
+    "name": "Pluxee",
+    "description": "Meal Account",
+    "avatar": {
+        "id": "3",
+        "url": "http:\/\/localhost:8000\/wp-content\/uploads\/pika\/avatars\/account-6889acc50c37c-17538899.png",
+        "type": "image",
+        "name": "1000118516.png",
+        "size": "4331"
+    },
+    "lastTransactionAt": null,
+    "totalTransactions": 0,
+    "balance": "-3181.4600",
+    "icon": "wallet",
+    "bgColor": "#3B82F6",
+    "color": "#ffffff"
+  },
+  {
+    "id": "2",
+    "name": "Wallet",
+    "description": "",
+    "avatar": null,
+    "lastTransactionAt": null,
+    "totalTransactions": 0,
+    "balance": "400.0000",
+    "icon": "wallet",
+    "bgColor": "#3B82F6",
+    "color": "#ffffff"
   }
-}
+],
 ```
 
 **Example Request:**
 ```bash
-curl -X GET "http://localhost:8000/wp-json/pika/v1/accounts?type=checking" \
-  -H "Cookie: pika_token=base64_encoded_token"
+curl -X GET "http://localhost:8000/wp-json/pika/v1/accounts" \
+  -H "Cookie: pika_token=token"
 ```
 
 ### Get Account by ID
@@ -124,55 +101,29 @@ Retrieve a specific account by its ID.
 **Response:**
 ```json
 {
-  "success": true,
-  "data": {
-    "id": 1,
-    "name": "Main Checking",
-    "description": "Primary checking account for daily expenses",
-    "type": "checking",
-    "icon": "credit-card",
-    "color": "#4ecdc4",
-    "bgColor": "#f0fdfa",
-    "balance": 3249.25,
-    "currency": "USD",
-    "isActive": true,
-    "isArchived": false,
-    "transactionCount": 45,
-    "lastTransactionDate": "2024-01-20",
-    "avatarId": 10,
-    "avatar": {
-      "id": 10,
-      "filename": "checking-avatar.jpg",
-      "url": "https://example.com/uploads/checking-avatar.jpg",
-      "type": "image",
-      "size": 102400
-    },
-    "recentTransactions": [
-      {
-        "id": 45,
-        "title": "Coffee Shop",
-        "amount": 4.50,
-        "type": "expense",
-        "date": "2024-01-20"
-      },
-      {
-        "id": 44,
-        "title": "Grocery Shopping",
-        "amount": 85.50,
-        "type": "expense",
-        "date": "2024-01-19"
-      }
-    ],
-    "createdAt": "2024-01-01T10:00:00Z",
-    "updatedAt": "2024-01-20T16:45:00Z"
-  }
+  "id": "1",
+  "name": "Federal",
+  "description": "Main Account",
+  "avatar": {
+    "id": "1",
+    "url": "http:\/\/localhost:8000\/wp-content\/uploads\/pika\/avatars\/account-6889ac3ac6f73-1753852899.jpg",
+    "type": "image",
+    "name": "1000118509.jpg",
+    "size": "9444"
+  },
+  "lastTransactionAt": null,
+  "totalTransactions": 0,
+  "balance": "-50921.7500",
+  "icon": "wallet",
+  "bgColor": "#3B82F6",
+  "color": "#ffffff"
 }
 ```
 
 **Example Request:**
 ```bash
 curl -X GET http://localhost:8000/wp-json/pika/v1/accounts/1 \
-  -H "Cookie: pika_token=base64_encoded_token"
+  -H "Cookie: pika_token=token"
 ```
 
 ### Create Account
@@ -188,70 +139,53 @@ Create a new account.
 **Request Body:**
 ```json
 {
-  "name": "Investment Portfolio",
-  "description": "Diversified investment account for long-term growth",
-  "type": "investment",
+  "name": "SBI",
+  "description": "Secondary account",
   "icon": "trending-up",
   "color": "#8b5cf6",
-  "bgColor": "#faf5ff",
-  "initialBalance": 5000.00,
-  "avatarId": 15
+  "bgColor": "#faf5ff"
 }
 ```
 
 **Required Fields:**
 - `name` (string): Account name
-- `type` (string): Account type
 
 **Optional Fields:**
 - `description` (string): Account description
 - `icon` (string): Icon identifier
 - `color` (string): Text color (hex format)
 - `bgColor` (string): Background color (hex format)
-- `initialBalance` (number): Starting balance
 - `avatarId` (integer): Avatar image ID
-- `creditLimit` (number): Credit limit for credit cards
-- `dueDate` (string): Due date for credit cards (YYYY-MM-DD)
 
 **Response:**
 ```json
 {
-  "success": true,
-  "message": "Account created successfully",
-  "data": {
-    "id": 4,
-    "name": "Investment Portfolio",
-    "description": "Diversified investment account for long-term growth",
-    "type": "investment",
-    "icon": "trending-up",
-    "color": "#8b5cf6",
-    "bgColor": "#faf5ff",
-    "balance": 5000.00,
-    "currency": "USD",
-    "isActive": true,
-    "isArchived": false,
-    "transactionCount": 0,
-    "lastTransactionDate": null,
-    "avatarId": 15,
-    "createdAt": "2024-01-21T10:00:00Z",
-    "updatedAt": "2024-01-21T10:00:00Z"
-  }
+  "id": "3",
+  "name": "SBI",
+  "description": "Secondary account",
+  "avatar": null,
+  "lastTransactionAt": null,
+  "totalTransactions": 0,
+  "balance": "0",
+  "icon": "trending-up",
+  "bgColor": "#8b5cf6",
+  "color": "#faf5ff"
 }
 ```
 
 **Example Request:**
 ```bash
 curl -X POST http://localhost:8000/wp-json/pika/v1/accounts \
-  -H "Cookie: pika_token=base64_encoded_token" \
+  -H "Cookie: pika_token=token" \
   -H "Content-Type: application/json" \
   -d '{
-    "name": "Investment Portfolio",
-    "description": "Diversified investment account for long-term growth",
-    "type": "investment",
+    **Request Body:**
+  {
+    "name": "SBI",
+    "description": "Secondary account",
     "icon": "trending-up",
     "color": "#8b5cf6",
-    "bgColor": "#faf5ff",
-    "initialBalance": 5000.00
+    "bgColor": "#faf5ff"
   }'
 ```
 
@@ -268,8 +202,7 @@ Update an existing account.
 **Request Body:**
 ```json
 {
-  "name": "Investment Portfolio - Updated",
-  "description": "Updated description for investment account",
+  "name": "SBI - Updated",
   "color": "#7c3aed"
 }
 ```
@@ -277,37 +210,27 @@ Update an existing account.
 **Response:**
 ```json
 {
-  "success": true,
-  "message": "Account updated successfully",
-  "data": {
-    "id": 4,
-    "name": "Investment Portfolio - Updated",
-    "description": "Updated description for investment account",
-    "type": "investment",
-    "icon": "trending-up",
-    "color": "#7c3aed",
-    "bgColor": "#faf5ff",
-    "balance": 5000.00,
-    "currency": "USD",
-    "isActive": true,
-    "isArchived": false,
-    "transactionCount": 0,
-    "lastTransactionDate": null,
-    "avatarId": 15,
-    "createdAt": "2024-01-21T10:00:00Z",
-    "updatedAt": "2024-01-21T16:45:00Z"
-  }
+  "id": "3",
+  "name": "SBI - Updated",
+  "description": "Secondary account",
+  "avatar": null,
+  "lastTransactionAt": null,
+  "totalTransactions": 0,
+  "balance": "0",
+  "icon": "trending-up",
+  "bgColor": "#7c3aed",
+  "color": "#faf5ff"
 }
 ```
 
 **Example Request:**
 ```bash
 curl -X PUT http://localhost:8000/wp-json/pika/v1/accounts/4 \
-  -H "Cookie: pika_token=base64_encoded_token" \
+  -H "Cookie: pika_token=token" \
   -H "Content-Type: application/json" \
   -d '{
-    "name": "Investment Portfolio - Updated",
-    "description": "Updated description for investment account"
+    "name": "SBI - Updated",
+    "color": "#7c3aed"
   }'
 ```
 
@@ -331,56 +254,15 @@ Delete an account. Accounts with transactions cannot be deleted.
 **Example Request:**
 ```bash
 curl -X DELETE http://localhost:8000/wp-json/pika/v1/accounts/4 \
-  -H "Cookie: pika_token=base64_encoded_token"
+  -H "Cookie: pika_token=token"
 ```
-
-## 🏦 Account Types
-
-### Checking Account
-- **Purpose**: Daily transactions and expenses
-- **Features**: Unlimited transactions, check writing
-- **Balance**: Can be positive or negative (overdraft)
-- **Interest**: Usually low or no interest
-
-### Savings Account
-- **Purpose**: Emergency fund and short-term savings
-- **Features**: Limited transactions, higher interest
-- **Balance**: Always positive
-- **Interest**: Higher than checking accounts
-
-### Credit Card
-- **Purpose**: Credit-based purchases
-- **Features**: Credit limit, due dates, rewards
-- **Balance**: Negative (amount owed)
-- **Interest**: Charged on unpaid balances
-
-### Investment Account
-- **Purpose**: Long-term wealth building
-- **Features**: Securities trading, portfolio management
-- **Balance**: Can fluctuate with market
-- **Interest**: Variable returns
-
-### Cash Account
-- **Purpose**: Physical cash tracking
-- **Features**: Manual balance updates
-- **Balance**: Always positive
-- **Interest**: None
 
 ## 🎨 Account Properties
 
 ### Icon Options
 
 **Available Icons:**
-- `credit-card` - Checking/Credit Cards
-- `piggy-bank` - Savings
-- `trending-up` - Investment
-- `wallet` - Cash
-- `bank` - Traditional Banking
-- `home` - Mortgage
-- `car` - Auto Loan
-- `graduation-cap` - Student Loan
-- `medical-cross` - Health Savings
-- `gift` - Gift Cards
+- All Lucide icon names
 
 ### Color Format
 
@@ -388,75 +270,15 @@ curl -X DELETE http://localhost:8000/wp-json/pika/v1/accounts/4 \
 - **Background Color**: Hex color code (e.g., `#f0fdfa`)
 - **Recommended**: Use contrasting colors for readability
 
-### Balance Management
-
-- **Positive Balance**: Available funds
-- **Negative Balance**: Amount owed (credit cards, loans)
-- **Zero Balance**: No funds available
-- **Automatic Updates**: Balance updates with transactions
-
-## 🔄 Account Operations
-
-### Balance Adjustments
-
-```bash
-# Adjust account balance manually
-curl -X PUT http://localhost:8000/wp-json/pika/v1/accounts/1 \
-  -H "Cookie: pika_token=base64_encoded_token" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "balance": 3500.00
-  }'
-```
-
-### Account Archiving
-
-```bash
-# Archive an account (soft delete)
-curl -X PUT http://localhost:8000/wp-json/pika/v1/accounts/4 \
-  -H "Cookie: pika_token=base64_encoded_token" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "isArchived": true
-  }'
-```
-
-### Account Reactivation
-
-```bash
-# Reactivate an archived account
-curl -X PUT http://localhost:8000/wp-json/pika/v1/accounts/4 \
-  -H "Cookie: pika_token=base64_encoded_token" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "isArchived": false
-  }'
-```
-
 ## 🚨 Error Responses
 
 ### Account Not Found
 ```json
 {
-  "success": false,
-  "error": "Account not found",
-  "code": "account_not_found",
-  "details": {
-    "id": 999
-  }
-}
-```
-
-### Invalid Account Type
-```json
-{
-  "success": false,
-  "error": "Invalid account type",
-  "code": "invalid_account_type",
-  "details": {
-    "field": "type",
-    "value": "invalid",
-    "allowed_values": ["checking", "savings", "credit", "investment", "cash"]
+  "code":"account_not_found",
+  "message":"Account not found",
+  "data":{
+    "status":404
   }
 }
 ```
@@ -464,118 +286,10 @@ curl -X PUT http://localhost:8000/wp-json/pika/v1/accounts/4 \
 ### Cannot Delete Account with Transactions
 ```json
 {
-  "success": false,
-  "error": "Cannot delete account with existing transactions",
-  "code": "account_has_transactions",
-  "details": {
-    "id": 1,
-    "transaction_count": 45
-  }
-}
-```
-
-### Invalid Balance
-```json
-{
-  "success": false,
-  "error": "Invalid balance",
-  "code": "invalid_balance",
-  "details": {
-    "field": "balance",
-    "value": "invalid",
-    "message": "Balance must be a valid number"
-  }
-}
-```
-
-### Validation Error
-```json
-{
-  "success": false,
-  "error": "Validation failed",
-  "code": "validation_error",
-  "details": [
-    {
-      "field": "name",
-      "message": "Account name is required"
-    },
-    {
-      "field": "color",
-      "message": "Invalid color format. Use hex color code (e.g., #4ecdc4)"
-    }
-  ]
-}
-```
-
-## 📱 Frontend Integration
-
-### React Hook Example
-
-```typescript
-import { useAccounts } from '../hooks/useAccounts';
-
-function AccountsPage() {
-  const { accounts, createAccount, updateAccount, deleteAccount, loading } = useAccounts();
-
-  const handleCreateAccount = async (accountData) => {
-    try {
-      await createAccount(accountData);
-      // Show success message
-    } catch (err) {
-      // Handle error
-    }
-  };
-
-  return (
-    <div>
-      {accounts.map(account => (
-        <AccountCard 
-          key={account.id} 
-          account={account}
-          onEdit={updateAccount}
-          onDelete={deleteAccount}
-        />
-      ))}
-    </div>
-  );
-}
-```
-
-### Accounts Service
-
-```typescript
-// services/accounts.service.ts
-export class AccountsService {
-  async getAccounts(params?: AccountFilters): Promise<AccountResponse> {
-    const response = await api.get('/accounts', { params });
-    return response.data.data;
-  }
-
-  async getAccount(id: number): Promise<Account> {
-    const response = await api.get(`/accounts/${id}`);
-    return response.data.data;
-  }
-
-  async createAccount(accountData: CreateAccountData): Promise<Account> {
-    const response = await api.post('/accounts', accountData);
-    return response.data.data;
-  }
-
-  async updateAccount(id: number, updates: Partial<Account>): Promise<Account> {
-    const response = await api.put(`/accounts/${id}`, updates);
-    return response.data.data;
-  }
-
-  async deleteAccount(id: number): Promise<void> {
-    await api.delete(`/accounts/${id}`);
-  }
-
-  async archiveAccount(id: number): Promise<Account> {
-    return this.updateAccount(id, { isArchived: true });
-  }
-
-  async reactivateAccount(id: number): Promise<Account> {
-    return this.updateAccount(id, { isArchived: false });
+  "code":"account_has_transactions",
+  "message":"Account has transactions. Please delete the transactions first.",
+  "data":{
+    "status":400
   }
 }
 ```
@@ -583,29 +297,12 @@ export class AccountsService {
 ## 💡 Best Practices
 
 1. **Account Naming**
-   - Use clear, descriptive names
-   - Include account type in name if helpful
+   - Use clear, descriptive names (Used by AI model)
    - Be consistent with naming conventions
 
 2. **Balance Management**
    - Let the system handle balance calculations
    - Only manually adjust for reconciliation
-   - Validate balance changes
-
-3. **Account Organization**
-   - Group related accounts logically
-   - Use consistent icons and colors
-   - Archive unused accounts instead of deleting
-
-4. **Security**
-   - Don't store sensitive account numbers
-   - Use secure authentication
-   - Implement proper access controls
-
-5. **Performance**
-   - Cache account data when possible
-   - Implement efficient balance calculations
-   - Use pagination for large datasets
 
 ## 📚 Related Documentation
 

@@ -30,56 +30,11 @@ Retrieve general information about the Pika application.
 **Response:**
 ```json
 {
-  "success": true,
-  "data": {
-    "app": {
-      "name": "Pika Finance",
-      "version": "1.0.0",
-      "description": "Smart WordPress Financial Management Plugin",
-      "author": "e-lab innovations",
-      "website": "https://pika.elabins.com",
-      "support_url": "https://github.com/e-labinnovations/pika/issues",
-      "documentation_url": "https://docs.pika.elabins.com"
-    },
-    "system": {
-      "php_version": "8.1.0",
-      "wordpress_version": "6.4.0",
-      "mysql_version": "8.0.0",
-      "server_software": "Apache/2.4.0",
-      "memory_limit": "256M",
-      "max_execution_time": 30
-    },
-    "features": {
-      "ai_enabled": true,
-      "pwa_enabled": true,
-      "push_notifications": true,
-      "import_export": true,
-      "multi_currency": true,
-      "recurring_transactions": true,
-      "budget_tracking": true,
-      "financial_goals": true
-    },
-    "status": {
-      "overall": "healthy",
-      "database": "connected",
-      "ai_service": "available",
-      "storage": "sufficient",
-      "last_check": "2024-01-21T10:00:00Z"
-    },
-    "limits": {
-      "max_file_size": "10MB",
-      "max_transactions_per_month": 10000,
-      "max_categories": 1000,
-      "max_tags": 500,
-      "max_accounts": 100,
-      "max_people": 200
-    },
-    "timestamps": {
-      "created_at": "2024-01-01T00:00:00Z",
-      "last_updated": "2024-01-21T10:00:00Z",
-      "last_maintenance": "2024-01-20T02:00:00Z"
-    }
-  }
+    "name": "Pika Finance",
+    "version": "1.0.0",
+    "description": "AI-Powered Personal Finance &amp; Expense Tracking for WordPress <cite>By e-lab innovations.<\/cite>",
+    "app_id": "562f6819-9357-454d-a82b-23a45137a3cd",
+    "base_url": "http:\/\/localhost:8000"
 }
 ```
 
@@ -100,687 +55,117 @@ Retrieve lists of available data and features in the application.
 **Response:**
 ```json
 {
-  "success": true,
-  "data": {
-    "currencies": [
-      {
-        "code": "USD",
-        "name": "US Dollar",
-        "symbol": "$",
-        "position": "before",
-        "decimal_places": 2
-      },
-      {
-        "code": "EUR",
-        "name": "Euro",
-        "symbol": "€",
-        "position": "before",
-        "decimal_places": 2
-      },
-      {
-        "code": "GBP",
-        "name": "British Pound",
-        "symbol": "£",
-        "position": "before",
-        "decimal_places": 2
-      },
-      {
-        "code": "INR",
-        "name": "Indian Rupee",
-        "symbol": "₹",
-        "position": "before",
-        "decimal_places": 2
-      },
-      {
-        "code": "JPY",
-        "name": "Japanese Yen",
-        "symbol": "¥",
-        "position": "before",
-        "decimal_places": 0
-      }
+    "categories": [
+        {
+            "id": "33",
+            "name": "Personal Care",
+            "icon": "smile",
+            "color": "#FFFFFF",
+            "bgColor": "#48BB78",
+            "description": "Personal care expenses",
+            "isSystem": true,
+            "isParent": true,
+            "type": "expense",
+            "parentId": null,
+            "children": [
+                {
+                    "id": "36",
+                    "name": "Fitness",
+                    "icon": "dumbbell",
+                    "color": "#FFFFFF",
+                    "bgColor": "#2F855A",
+                    "description": "Fitness and gym expenses",
+                    "isSystem": true,
+                    "isParent": false,
+                    "type": "expense",
+                    "parentId": "33",
+                    "children": []
+                },
+                ...
+            ]
+        },
+        ...
     ],
-    "account_types": [
-      {
-        "id": "checking",
-        "name": "Checking Account",
-        "description": "Daily transactions and expenses",
-        "icon": "credit-card",
-        "supports_negative_balance": true
-      },
-      {
-        "id": "savings",
-        "name": "Savings Account",
-        "description": "Emergency fund and short-term savings",
-        "icon": "piggy-bank",
-        "supports_negative_balance": false
-      },
-      {
-        "id": "credit",
-        "name": "Credit Card",
-        "description": "Credit-based purchases",
-        "icon": "credit-card",
-        "supports_negative_balance": true
-      },
-      {
-        "id": "investment",
-        "name": "Investment Account",
-        "description": "Long-term wealth building",
-        "icon": "trending-up",
-        "supports_negative_balance": false
-      },
-      {
-        "id": "cash",
-        "name": "Cash Account",
-        "description": "Physical cash tracking",
-        "icon": "wallet",
-        "supports_negative_balance": false
-      }
+    "accounts": [
+        {
+            "id": "1",
+            "name": "Federal",
+            "description": "Main Account",
+            "avatar": {
+                "id": "1",
+                "url": "http:\/\/localhost:8000\/wp-content\/uploads\/pika\/avatars\/account-6889ac3ac6f73-1753859306.jpg",
+                "type": "image",
+                "name": "1000118509.jpg",
+                "size": "9444"
+            },
+            "lastTransactionAt": null,
+            "totalTransactions": 0,
+            "balance": "-50921.7500",
+            "icon": "wallet",
+            "bgColor": "#3B82F6",
+            "color": "#ffffff"
+        },
+        ...
     ],
-    "transaction_types": [
-      {
-        "id": "income",
-        "name": "Income",
-        "description": "Money coming into accounts",
-        "icon": "trending-up",
-        "color": "#10b981"
-      },
-      {
-        "id": "expense",
-        "name": "Expense",
-        "description": "Money going out from accounts",
-        "icon": "trending-down",
-        "color": "#ef4444"
-      },
-      {
-        "id": "transfer",
-        "name": "Transfer",
-        "description": "Moving money between accounts",
-        "icon": "repeat",
-        "color": "#3b82f6"
-      }
+    "people": [
+        {
+            "id": "7",
+            "name": "Lucy",
+            "description": "Aunty",
+            "email": "",
+            "phone": "",
+            "avatar": null,
+            "lastTransactionAt": "2025-08-03 03:38:37",
+            "totalTransactions": "5",
+            "balance": "0.0000"
+        },
+        ...
     ],
-    "category_types": [
-      {
-        "id": "income",
-        "name": "Income Categories",
-        "description": "Categories for money coming in",
-        "icon": "trending-up",
-        "color": "#10b981"
-      },
-      {
-        "id": "expense",
-        "name": "Expense Categories",
-        "description": "Categories for money going out",
-        "icon": "trending-down",
-        "color": "#ef4444"
-      },
-      {
-        "id": "transfer",
-        "name": "Transfer Categories",
-        "description": "Categories for money movement",
-        "icon": "repeat",
-        "color": "#3b82f6"
-      }
-    ],
-    "person_types": [
-      {
-        "id": "family",
-        "name": "Family",
-        "description": "Immediate and extended family members",
-        "icon": "users",
-        "color": "#8b5cf6"
-      },
-      {
-        "id": "friend",
-        "name": "Friend",
-        "description": "Personal friends and acquaintances",
-        "icon": "user",
-        "color": "#06b6d4"
-      },
-      {
-        "id": "business",
-        "name": "Business",
-        "description": "Professional and business contacts",
-        "icon": "briefcase",
-        "color": "#f59e0b"
-      },
-      {
-        "id": "roommate",
-        "name": "Roommate",
-        "description": "People sharing living expenses",
-        "icon": "home",
-        "color": "#84cc16"
-      }
-    ],
-    "tag_types": [
-      {
-        "id": "expense",
-        "name": "Expense Tags",
-        "description": "Tags for expense transactions",
-        "icon": "tag",
-        "color": "#ef4444"
-      },
-      {
-        "id": "income",
-        "name": "Income Tags",
-        "description": "Tags for income transactions",
-        "icon": "tag",
-        "color": "#10b981"
-      },
-      {
-        "id": "transfer",
-        "name": "Transfer Tags",
-        "description": "Tags for transfer transactions",
-        "icon": "tag",
-        "color": "#3b82f6"
-      },
-      {
-        "id": "all",
-        "name": "Universal Tags",
-        "description": "Tags for all transaction types",
-        "icon": "tag",
-        "color": "#6b7280"
-      }
-    ],
-    "file_types": [
-      {
-        "type": "image",
-        "extensions": ["jpg", "jpeg", "png", "gif", "webp"],
-        "max_size": "5MB",
-        "description": "Image files for receipts and avatars"
-      },
-      {
-        "type": "document",
-        "extensions": ["pdf", "doc", "docx", "txt"],
-        "max_size": "10MB",
-        "description": "Document files for invoices and receipts"
-      }
-    ],
-    "notification_types": [
-      {
-        "id": "transaction",
-        "name": "Transaction Notifications",
-        "description": "Notifications about transactions",
-        "icon": "credit-card",
-        "enabled_by_default": true
-      },
-      {
-        "id": "budget",
-        "name": "Budget Notifications",
-        "description": "Notifications about budget status",
-        "icon": "pie-chart",
-        "enabled_by_default": true
-      },
-      {
-        "id": "reminder",
-        "name": "Reminder Notifications",
-        "description": "Notifications about due reminders",
-        "icon": "bell",
-        "enabled_by_default": true
-      },
-      {
-        "id": "system",
-        "name": "System Notifications",
-        "description": "System and maintenance notifications",
-        "icon": "settings",
-        "enabled_by_default": false
-      }
-    ],
-    "export_formats": [
-      {
-        "id": "json",
-        "name": "JSON",
-        "description": "Structured data format",
-        "icon": "file-text",
-        "supports_all_data": true
-      },
-      {
-        "id": "csv",
-        "name": "CSV",
-        "description": "Comma-separated values",
-        "icon": "file-text",
-        "supports_all_data": true
-      },
-      {
-        "id": "pdf",
-        "name": "PDF Report",
-        "description": "Formatted financial reports",
-        "icon": "file-text",
-        "supports_all_data": false
-      }
+    "tags": [
+        {
+            "id": "6",
+            "name": "Business",
+            "color": "#FFFFFF",
+            "bgColor": "#2D3748",
+            "icon": "briefcase-business",
+            "description": "Business transactions",
+            "isSystem": true
+        },
+        {
+            "id": "1",
+            "name": "Initial Balance",
+            "color": "#FFFFFF",
+            "bgColor": "#38A169",
+            "icon": "plus-circle",
+            "description": "Initial account balance transaction",
+            "isSystem": true
+        },
+        ...
     ]
-  }
 }
 ```
 
 **Example Request:**
 ```bash
 curl -X GET http://localhost:8000/wp-json/pika/v1/app/lists \
-  -H "Cookie: pika_token=base64_encoded_token"
-```
-
-### Get System Status
-
-Retrieve detailed system status and health information.
-
-**Endpoint:** `GET /wp-json/pika/v1/app/status`
-
-**Headers:**
-- `Cookie`: Authentication cookie
-
-**Response:**
-```json
-{
-  "success": true,
-  "data": {
-    "overall_status": "healthy",
-    "checks": {
-      "database": {
-        "status": "connected",
-        "response_time": 15,
-        "last_check": "2024-01-21T10:00:00Z",
-        "details": "MySQL connection successful"
-      },
-      "ai_service": {
-        "status": "available",
-        "response_time": 1200,
-        "last_check": "2024-01-21T10:00:00Z",
-        "details": "Gemini API responding normally"
-      },
-      "storage": {
-        "status": "sufficient",
-        "used_space": "2.5GB",
-        "total_space": "50GB",
-        "last_check": "2024-01-21T10:00:00Z",
-        "details": "5% of storage used"
-      },
-      "memory": {
-        "status": "optimal",
-        "used_memory": "128MB",
-        "memory_limit": "256MB",
-        "last_check": "2024-01-21T10:00:00Z",
-        "details": "50% of memory limit used"
-      },
-      "performance": {
-        "status": "good",
-        "average_response_time": 250,
-        "last_check": "2024-01-21T10:00:00Z",
-        "details": "Response times within normal range"
-      }
-    },
-    "maintenance": {
-      "scheduled_maintenance": false,
-      "last_maintenance": "2024-01-20T02:00:00Z",
-      "next_maintenance": "2024-01-27T02:00:00Z",
-      "maintenance_window": "2:00 AM - 4:00 AM UTC"
-    },
-    "updates": {
-      "plugin_version": "1.0.0",
-      "latest_version": "1.0.1",
-      "update_available": true,
-      "update_type": "minor",
-      "changelog_url": "https://github.com/e-labinnovations/pika/releases"
-    },
-    "statistics": {
-      "total_users": 150,
-      "total_transactions": 25000,
-      "total_categories": 45,
-      "total_accounts": 75,
-      "system_uptime": "99.9%",
-      "last_24h_requests": 1500
-    }
-  }
-}
-```
-
-**Example Request:**
-```bash
-curl -X GET http://localhost:8000/wp-json/pika/v1/app/status \
-  -H "Cookie: pika_token=base64_encoded_token"
-```
-
-### Get Feature Flags
-
-Retrieve current feature flags and their status.
-
-**Endpoint:** `GET /wp-json/pika/v1/app/features`
-
-**Headers:**
-- `Cookie`: Authentication cookie
-
-**Response:**
-```json
-{
-  "success": true,
-  "data": {
-    "features": {
-      "ai_enabled": {
-        "enabled": true,
-        "configurable": true,
-        "description": "AI-powered financial insights and categorization",
-        "dependencies": ["gemini_api_key"],
-        "user_override": true
-      },
-      "pwa_enabled": {
-        "enabled": true,
-        "configurable": false,
-        "description": "Progressive Web App functionality",
-        "dependencies": [],
-        "user_override": false
-      },
-      "push_notifications": {
-        "enabled": true,
-        "configurable": true,
-        "description": "Push notification system",
-        "dependencies": ["vapid_keys"],
-        "user_override": true
-      },
-      "import_export": {
-        "enabled": true,
-        "configurable": true,
-        "description": "Data import and export functionality",
-        "dependencies": ["file_upload"],
-        "user_override": true
-      },
-      "multi_currency": {
-        "enabled": true,
-        "configurable": true,
-        "description": "Support for multiple currencies",
-        "dependencies": ["currency_data"],
-        "user_override": true
-      },
-      "recurring_transactions": {
-        "enabled": true,
-        "configurable": true,
-        "description": "Recurring transaction management",
-        "dependencies": ["reminders"],
-        "user_override": true
-      },
-      "budget_tracking": {
-        "enabled": true,
-        "configurable": true,
-        "description": "Budget tracking and monitoring",
-        "dependencies": ["analytics"],
-        "user_override": true
-      },
-      "financial_goals": {
-        "enabled": false,
-        "configurable": true,
-        "description": "Financial goal setting and tracking",
-        "dependencies": ["goals_module"],
-        "user_override": false
-      }
-    },
-    "experimental_features": {
-      "advanced_analytics": {
-        "enabled": false,
-        "description": "Advanced financial analytics and predictions",
-        "stability": "beta",
-        "feedback_url": "https://github.com/e-labinnovations/pika/issues"
-      },
-      "ai_chat": {
-        "enabled": false,
-        "description": "AI-powered financial chat assistant",
-        "stability": "alpha",
-        "feedback_url": "https://github.com/e-labinnovations/pika/issues"
-      }
-    },
-    "feature_groups": {
-      "core": ["transactions", "categories", "accounts", "analytics"],
-      "advanced": ["ai", "pwa", "push_notifications", "import_export"],
-      "premium": ["financial_goals", "advanced_analytics", "ai_chat"]
-    }
-  }
-}
-```
-
-**Example Request:**
-```bash
-curl -X GET http://localhost:8000/wp-json/pika/v1/app/features \
-  -H "Cookie: pika_token=base64_encoded_token"
-```
-
-## 📱 App Information
-
-### Application Details
-- **Name**: Pika Finance
-- **Version**: Current version number
-- **Description**: Application description and purpose
-- **Author**: Development team information
-- **Website**: Official website URL
-- **Support**: Support and documentation links
-
-### System Requirements
-- **PHP Version**: Minimum required PHP version
-- **WordPress Version**: Compatible WordPress versions
-- **MySQL Version**: Database version requirements
-- **Server Software**: Web server compatibility
-- **Memory Limits**: PHP memory requirements
-- **Execution Time**: Maximum script execution time
-
-### Available Features
-- **AI Integration**: Google Gemini-powered features
-- **PWA Support**: Progressive Web App capabilities
-- **Push Notifications**: Real-time notification system
-- **Import/Export**: Data portability features
-- **Multi-Currency**: International currency support
-- **Recurring Transactions**: Automated transaction management
-- **Budget Tracking**: Financial goal monitoring
-- **Financial Goals**: Long-term planning features
-
-## 🔧 Configuration
-
-### Feature Flags
-```json
-{
-  "ai_enabled": true,
-  "pwa_enabled": true,
-  "push_notifications": true,
-  "import_export": true,
-  "multi_currency": true,
-  "recurring_transactions": true,
-  "budget_tracking": true,
-  "financial_goals": false
-}
-```
-
-### System Limits
-```json
-{
-  "max_file_size": "10MB",
-  "max_transactions_per_month": 10000,
-  "max_categories": 1000,
-  "max_tags": 500,
-  "max_accounts": 100,
-  "max_people": 200
-}
+  -H "Cookie: pika_token=token"
 ```
 
 ## 🚨 Error Responses
 
-### Service Unavailable
+### Application Information Not Found
+
+This error is returned when essential application information or configuration settings cannot be located.
+
 ```json
 {
-  "success": false,
-  "error": "Service temporarily unavailable",
-  "code": "service_unavailable",
-  "details": {
-    "message": "The application is currently undergoing maintenance",
-    "estimated_resolution": "30 minutes"
+  "code": "app_info_not_found",
+  "message": "App info not found",
+  "data": {
+    "status": 404
   }
 }
 ```
-
-### Feature Not Available
-```json
-{
-  "success": false,
-  "error": "Feature not available",
-  "code": "feature_not_available",
-  "details": {
-    "feature": "financial_goals",
-    "message": "This feature is not enabled in your current plan",
-    "upgrade_required": true
-  }
-}
-```
-
-### System Error
-```json
-{
-  "success": false,
-  "error": "System error occurred",
-  "code": "system_error",
-  "details": {
-    "message": "An unexpected error occurred while retrieving system information",
-    "error_id": "sys_001",
-    "timestamp": "2024-01-21T10:00:00Z"
-  }
-}
-```
-
-## 📱 Frontend Integration
-
-### React Hook Example
-
-```typescript
-import { useAppInfo } from '../hooks/useAppInfo';
-
-function AppInfoPage() {
-  const { 
-    appInfo, 
-    appLists, 
-    systemStatus, 
-    features,
-    loading,
-    error 
-  } = useAppInfo();
-
-  return (
-    <div>
-      <AppInfoCard data={appInfo} />
-      <SystemStatusCard data={systemStatus} />
-      <FeaturesList data={features} />
-    </div>
-  );
-}
-```
-
-### App Info Service
-
-```typescript
-// services/app.service.ts
-export class AppService {
-  async getAppInfo(): Promise<AppInfoResponse> {
-    const response = await api.get('/app/info');
-    return response.data.data;
-  }
-
-  async getAppLists(): Promise<AppListsResponse> {
-    const response = await api.get('/app/lists');
-    return response.data.data;
-  }
-
-  async getSystemStatus(): Promise<SystemStatusResponse> {
-    const response = await api.get('/app/status');
-    return response.data.data;
-  }
-
-  async getFeatures(): Promise<FeaturesResponse> {
-    const response = await api.get('/app/features');
-    return response.data.data;
-  }
-
-  async checkFeatureAvailability(featureName: string): Promise<boolean> {
-    const features = await this.getFeatures();
-    return features.features[featureName]?.enabled || false;
-  }
-}
-```
-
-### App Info Components
-
-```typescript
-// components/AppInfoCard.tsx
-function AppInfoCard({ data }) {
-  return (
-    <div className="app-info-card">
-      <h3>{data.app.name}</h3>
-      <p className="version">v{data.app.version}</p>
-      <p className="description">{data.app.description}</p>
-      
-      <div className="system-info">
-        <h4>System Requirements</h4>
-        <div className="requirement">
-          <span>PHP:</span> {data.system.php_version}
-        </div>
-        <div className="requirement">
-          <span>WordPress:</span> {data.system.wordpress_version}
-        </div>
-      </div>
-
-      <div className="status">
-        <h4>System Status</h4>
-        <div className={`status-indicator ${data.status.overall}`}>
-          {data.status.overall}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// components/SystemStatusCard.tsx
-function SystemStatusCard({ data }) {
-  return (
-    <div className="system-status-card">
-      <h3>System Status</h3>
-      
-      {Object.entries(data.checks).map(([checkName, checkData]) => (
-        <div key={checkName} className={`status-check ${checkData.status}`}>
-          <span className="check-name">{checkName}</span>
-          <span className="check-status">{checkData.status}</span>
-          <span className="check-details">{checkData.details}</span>
-        </div>
-      ))}
-
-      <div className="maintenance-info">
-        <h4>Maintenance</h4>
-        {data.maintenance.scheduled_maintenance ? (
-          <div className="maintenance-scheduled">
-            Scheduled maintenance: {data.maintenance.maintenance_window}
-          </div>
-        ) : (
-          <div className="no-maintenance">
-            No scheduled maintenance
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-```
-
-## 💡 Best Practices
-
-1. **Feature Detection**
-   - Check feature availability before using
-   - Provide fallbacks for disabled features
-   - Show appropriate upgrade prompts
-
-2. **System Monitoring**
-   - Monitor system status regularly
-   - Handle system errors gracefully
-   - Provide user feedback on system health
-
-3. **Performance Optimization**
-   - Cache app info when possible
-   - Implement efficient status checking
-   - Use background monitoring for critical services
-
-4. **User Experience**
-   - Show loading states during checks
-   - Provide clear status indicators
-   - Offer help for system issues
 
 ## 📚 Related Documentation
 
