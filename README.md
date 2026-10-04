@@ -1,4 +1,38 @@
 <div align="center">
+
+<table>
+<tr>
+<td align="center" width="800">
+
+# 🚧 Pika v1 is discontinued
+
+This repository contains the **legacy Pika Finance implementation**  
+and is no longer under active development.
+
+Pika has moved to a new architecture built with  
+**Next.js** for the backend and **React Native** for the mobile app.
+
+<br>
+
+| 🧩 Component | 🚀 New Repository |
+|:---|:---|
+| **Backend** | [**pika-v2**](https://github.com/e-labInnovations/pika-v2) |
+| **Mobile App** | [**pika-app**](https://github.com/e-labInnovations/pika-app) |
+
+<br>
+
+**Please use the new repositories for all future development.**
+
+</td>
+</tr>
+</table>
+
+</div>
+
+
+
+
+<div align="center">
   <img src="docs/static/img/icons/full-sized-logo-output.svg" width="120" height="120" alt="Pika Icon">
   <h1>Pika Finance</h1>
 
